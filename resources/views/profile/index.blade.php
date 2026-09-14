@@ -146,12 +146,12 @@
                 @csrf
                 <div class="form-group">
                     <label class="form-label">ชื่อ - นามสกุล *</label>
-                    <input type="text" name="name" class="form-control" value="{{ old('name', $user->name) }}" required>
+                    <input type="text" name="name" class="form-control" value="{{ old('name', trim($customer->first_name . ' ' . $customer->last_name)) }}" required>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">อีเมล (Email) *</label>
-                    <input type="email" name="email" class="form-control" value="{{ old('email', $user->email) }}" required>
+                    <input type="email" name="email" class="form-control" value="{{ old('email', $customer->email) }}" required>
                 </div>
 
                 <div class="form-group">
