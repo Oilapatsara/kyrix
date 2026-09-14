@@ -8,6 +8,13 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\RentalController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\Owner\OwnerDashboardController;
+use App\Http\Controllers\Owner\OwnerDressController;
+use App\Http\Controllers\Owner\OwnerBookingController;
+use App\Http\Controllers\Owner\OwnerPaymentController;
+use App\Http\Controllers\Owner\OwnerReturnController;
+use App\Http\Controllers\Owner\OwnerCustomerController;
+use App\Http\Controllers\Owner\OwnerReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -77,19 +84,53 @@ Route::middleware('customer')->group(function(){
 });
 
 /* =========================
-   OWNER
-   ใช้ Laravel Auth จาก users
+   OWNER (ADMIN PANEL)
+   ใช้ Laravel Auth + OwnerMiddleware
 ========================= */
-Route::middleware('auth')->group(function(){
+Route::middleware(['auth', 'owner'])->prefix('owner')->name('owner.')->group(function(){
 
-    Route::get('/owner/dashboard',function(){
-        if(auth()->user()->role!=='owner'){
-            Auth::logout();
-            return redirect()->route('login')->withErrors([
-                'email'=>'ไม่มีสิทธิ์เข้าถึงหน้านี้'
-            ]);
-        }
+    // Dashboard
+    Route::get('/dashboard', [OwnerDashboardController::class, 'index'])->name('dashboard');
 
-        return view('owner.dashboard');
-    })->name('owner.dashboard');
+    // Dresses Management
+    Route::prefix('dresses')->name('dresses.')->group(function(){
+        Route::get('/', [OwnerDressController::class, 'index'])->name('index');
+        Route::get('/create', [OwnerDressController::class, 'create'])->name('create');
+        Route::post('/store', [OwnerDressController::class, 'store'])->name('store');
+        Route::get('/{id}/edit', [OwnerDressController::class, 'edit'])->name('edit');
+        Route::post('/{id}/update', [OwnerDressController::class, 'update'])->name('update');
+        Route::delete('/{id}/delete', [OwnerDressController::class, 'destroy'])->name('destroy');
+        Route::post('/{id}/toggle-status', [OwnerDressController::class, 'toggleStatus'])->name('toggle-status');
+    });
+
+    // Bookings / Rentals Management (แก้ไขชื่อ Route updateStatus ให้ตรงกัน)
+    Route::prefix('bookings')->name('bookings.')->group(function(){
+        Route::get('/', [OwnerBookingController::class, 'index'])->name('index');
+        Route::get('/{id}', [OwnerBookingController::class, 'show'])->name('show');
+        Route::post('/{id}/status', [OwnerBookingController::class, 'updateStatus'])->name('updateStatus');
+    });
+
+    // Payments Verification
+    Route::prefix('payments')->name('payments.')->group(function(){
+        Route::get('/', [OwnerPaymentController::class, 'index'])->name('index');
+        Route::post('/{id}/approve', [OwnerPaymentController::class, 'approve'])->name('approve');
+        Route::post('/{id}/reject', [OwnerPaymentController::class, 'reject'])->name('reject');
+    });
+
+    // Returns Management
+    Route::prefix('returns')->name('returns.')->group(function(){
+        Route::get('/', [OwnerReturnController::class, 'index'])->name('index');
+        Route::post('/{id}/confirm', [OwnerReturnController::class, 'confirmReturn'])->name('confirm');
+    });
+
+    // Customers Management
+    Route::prefix('customers')->name('customers.')->group(function(){
+        Route::get('/', [OwnerCustomerController::class, 'index'])->name('index');
+        Route::get('/{id}', [OwnerCustomerController::class, 'show'])->name('show');
+    });
+
+    // Reports & Analytics
+    Route::prefix('reports')->name('reports.')->group(function(){
+        Route::get('/', [OwnerReportController::class, 'index'])->name('index');
+    });
 });
