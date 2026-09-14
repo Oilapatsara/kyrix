@@ -28,9 +28,11 @@ use App\Http\Controllers\Owner\OwnerReportController;
 */
 
 
-/* =========================
-   PUBLIC
-========================= */
+/*
+|--------------------------------------------------------------------------
+| PUBLIC
+|--------------------------------------------------------------------------
+*/
 
 Route::get('/', [HomeController::class, 'index'])
     ->name('home');
@@ -42,9 +44,11 @@ Route::get('/dresses/{id}', [ProductController::class, 'show'])
     ->name('products.show');
 
 
-/* =========================
-   CART
-========================= */
+/*
+|--------------------------------------------------------------------------
+| CART
+|--------------------------------------------------------------------------
+*/
 
 Route::prefix('cart')->name('cart.')->group(function () {
 
@@ -66,9 +70,11 @@ Route::prefix('cart')->name('cart.')->group(function () {
 });
 
 
-/* =========================
-   AUTH
-========================= */
+/*
+|--------------------------------------------------------------------------
+| AUTH
+|--------------------------------------------------------------------------
+*/
 
 Route::get('/login', [AuthController::class, 'showLogin'])
     ->name('login');
@@ -92,10 +98,13 @@ Route::post('/logout', [AuthController::class, 'logout'])
     ->name('logout');
 
 
-/* =========================
-   SOCIAL LOGIN
-   Google / Facebook
-========================= */
+/*
+|--------------------------------------------------------------------------
+| SOCIAL LOGIN
+|--------------------------------------------------------------------------
+| Google / Facebook
+|--------------------------------------------------------------------------
+*/
 
 Route::get('/auth/{provider}/redirect', [SocialAuthController::class, 'redirect'])
     ->name('social.redirect');
@@ -104,10 +113,11 @@ Route::get('/auth/{provider}/callback', [SocialAuthController::class, 'callback'
     ->name('social.callback');
 
 
-/* =========================
-   CUSTOMER
-   ใช้ CustomerMiddleware
-========================= */
+/*
+|--------------------------------------------------------------------------
+| CUSTOMER
+|--------------------------------------------------------------------------
+*/
 
 Route::middleware('customer')->group(function () {
 
@@ -116,7 +126,11 @@ Route::middleware('customer')->group(function () {
     })->name('customer.dashboard');
 
 
-    /* Booking */
+    /*
+    |--------------------------------------------------------------------------
+    | Booking
+    |--------------------------------------------------------------------------
+    */
 
     Route::post('/dresses/{id}/book', [RentalController::class, 'book'])
         ->name('rentals.book');
@@ -128,7 +142,11 @@ Route::middleware('customer')->group(function () {
         ->name('rentals.payment.submit');
 
 
-    /* Checkout */
+    /*
+    |--------------------------------------------------------------------------
+    | Checkout
+    |--------------------------------------------------------------------------
+    */
 
     Route::get('/checkout', [CheckoutController::class, 'index'])
         ->name('checkout.index');
@@ -137,7 +155,11 @@ Route::middleware('customer')->group(function () {
         ->name('checkout.process');
 
 
-    /* Rentals */
+    /*
+    |--------------------------------------------------------------------------
+    | Rentals
+    |--------------------------------------------------------------------------
+    */
 
     Route::get('/my-rentals', [RentalController::class, 'index'])
         ->name('rentals.index');
@@ -155,7 +177,11 @@ Route::middleware('customer')->group(function () {
         ->name('rentals.history');
 
 
-    /* Profile */
+    /*
+    |--------------------------------------------------------------------------
+    | Profile
+    |--------------------------------------------------------------------------
+    */
 
     Route::get('/profile', [ProfileController::class, 'index'])
         ->name('profile.index');
@@ -167,7 +193,11 @@ Route::middleware('customer')->group(function () {
         ->name('profile.password');
 
 
-    /* Reviews */
+    /*
+    |--------------------------------------------------------------------------
+    | Reviews
+    |--------------------------------------------------------------------------
+    */
 
     Route::get(
         '/rentals/{rental}/products/{product}/review',
@@ -180,24 +210,32 @@ Route::middleware('customer')->group(function () {
 });
 
 
-/* =========================
-   OWNER / ADMIN PANEL
-   ใช้ Laravel Auth + OwnerMiddleware
-========================= */
+/*
+|--------------------------------------------------------------------------
+| OWNER / ADMIN PANEL
+|--------------------------------------------------------------------------
+*/
 
 Route::middleware(['auth', 'owner'])
     ->prefix('owner')
     ->name('owner.')
     ->group(function () {
 
-
-        /* Dashboard */
+        /*
+        |--------------------------------------------------------------------------
+        | Dashboard
+        |--------------------------------------------------------------------------
+        */
 
         Route::get('/dashboard', [OwnerDashboardController::class, 'index'])
             ->name('dashboard');
 
 
-        /* Dresses Management */
+        /*
+        |--------------------------------------------------------------------------
+        | Dresses Management
+        |--------------------------------------------------------------------------
+        */
 
         Route::prefix('dresses')->name('dresses.')->group(function () {
 
@@ -225,7 +263,11 @@ Route::middleware(['auth', 'owner'])
         });
 
 
-        /* Bookings / Rentals Management */
+        /*
+        |--------------------------------------------------------------------------
+        | Bookings / Rentals Management
+        |--------------------------------------------------------------------------
+        */
 
         Route::prefix('bookings')->name('bookings.')->group(function () {
 
@@ -241,7 +283,11 @@ Route::middleware(['auth', 'owner'])
         });
 
 
-        /* Payments Verification */
+        /*
+        |--------------------------------------------------------------------------
+        | Payments Verification
+        |--------------------------------------------------------------------------
+        */
 
         Route::prefix('payments')->name('payments.')->group(function () {
 
@@ -257,7 +303,11 @@ Route::middleware(['auth', 'owner'])
         });
 
 
-        /* Returns Management */
+        /*
+        |--------------------------------------------------------------------------
+        | Returns Management
+        |--------------------------------------------------------------------------
+        */
 
         Route::prefix('returns')->name('returns.')->group(function () {
 
@@ -270,20 +320,43 @@ Route::middleware(['auth', 'owner'])
         });
 
 
-        /* Customers Management */
+        /*
+        |--------------------------------------------------------------------------
+        | Customers Management
+        |--------------------------------------------------------------------------
+        */
 
         Route::prefix('customers')->name('customers.')->group(function () {
 
             Route::get('/', [OwnerCustomerController::class, 'index'])
                 ->name('index');
 
+            Route::get('/create', [OwnerCustomerController::class, 'create'])
+                ->name('create');
+
+            Route::post('/store', [OwnerCustomerController::class, 'store'])
+                ->name('store');
+
             Route::get('/{id}', [OwnerCustomerController::class, 'show'])
                 ->name('show');
+
+            Route::get('/{id}/edit', [OwnerCustomerController::class, 'edit'])
+                ->name('edit');
+
+            Route::put('/{id}', [OwnerCustomerController::class, 'update'])
+                ->name('update');
+
+            Route::delete('/{id}', [OwnerCustomerController::class, 'destroy'])
+                ->name('destroy');
 
         });
 
 
-        /* Reports & Analytics */
+        /*
+        |--------------------------------------------------------------------------
+        | Reports & Analytics
+        |--------------------------------------------------------------------------
+        */
 
         Route::prefix('reports')->name('reports.')->group(function () {
 
