@@ -7,7 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@yield('title', 'KYRIX | ร้านเช่าชุดราตรี ชุดไทย ชุดแต่งงาน สูทสากล')</title>
+    <title>
+        @yield('title', 'KYRIX | ร้านเช่าชุดราตรี ชุดไทย ชุดแต่งงาน สูทสากล')
+    </title>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -81,7 +83,9 @@
         a {
             text-decoration: none;
             color: inherit;
-            transition: all 0.2s ease;
+
+            transition:
+                all 0.2s ease;
         }
 
 
@@ -123,7 +127,8 @@
 
             z-index: 100;
 
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+            box-shadow:
+                0 2px 10px rgba(0, 0, 0, 0.03);
         }
 
 
@@ -187,7 +192,6 @@
 
         .nav-links {
             display: flex;
-
             align-items: center;
 
             gap: 28px;
@@ -211,7 +215,8 @@
 
             display: block;
 
-            transition: color 0.25s ease;
+            transition:
+                color 0.25s ease;
         }
 
 
@@ -272,6 +277,7 @@
 
         .search-box {
             position: relative;
+
             width: 220px;
         }
 
@@ -279,7 +285,8 @@
         .search-box input {
             width: 100%;
 
-            padding: 9px 36px 9px 14px;
+            padding:
+                9px 36px 9px 14px;
 
             border-radius: 30px;
 
@@ -403,7 +410,8 @@
 
             gap: 8px;
 
-            padding: 8px 16px;
+            padding:
+                5px 10px 5px 5px;
 
             border-radius: 30px;
 
@@ -417,18 +425,41 @@
 
             font-weight: 500;
 
-            transition: all 0.2s;
+            transition: all 0.2s ease;
+
+            font-family: inherit;
         }
 
 
         .user-trigger:hover {
             border-color: var(--primary);
+
+            background: var(--primary-soft);
         }
 
 
+        /* รูปโปรไฟล์ */
+
+        .profile-avatar {
+            width: 34px;
+            height: 34px;
+
+            border-radius: 50%;
+
+            object-fit: cover;
+
+            display: block;
+
+            border:
+                2px solid var(--primary-soft);
+        }
+
+
+        /* ถ้ายังไม่มีรูป */
+
         .user-avatar {
-            width: 28px;
-            height: 28px;
+            width: 34px;
+            height: 34px;
 
             border-radius: 50%;
 
@@ -440,11 +471,30 @@
             align-items: center;
             justify-content: center;
 
-            font-size: 12px;
+            font-size: 13px;
 
             font-weight: 700;
+
+            flex-shrink: 0;
         }
 
+
+        .profile-name {
+            max-width: 130px;
+
+            white-space: nowrap;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+
+            font-weight: 500;
+        }
+
+
+        /* ==============================
+           Dropdown
+        ============================== */
 
         .dropdown-menu {
             position: absolute;
@@ -455,13 +505,16 @@
 
             background: #fff;
 
-            min-width: 220px;
+            min-width: 250px;
 
-            border-radius: var(--radius-md);
+            border-radius:
+                var(--radius-md);
 
-            box-shadow: var(--shadow-md);
+            box-shadow:
+                var(--shadow-md);
 
-            border: 1px solid var(--border);
+            border:
+                1px solid var(--border);
 
             padding: 8px 0;
 
@@ -478,15 +531,19 @@
 
         .dropdown-item {
             display: flex;
+
             align-items: center;
 
             gap: 10px;
 
-            padding: 10px 18px;
+            padding:
+                10px 18px;
 
             font-size: 14px;
 
             color: var(--text-main);
+
+            width: 100%;
         }
 
 
@@ -507,17 +564,56 @@
 
 
         /* ==============================
+           Dropdown User Info
+        ============================== */
+
+        .profile-dropdown-header {
+            padding:
+                14px 18px;
+
+            border-bottom:
+                1px solid var(--border);
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+        }
+
+
+        .profile-dropdown-name {
+            font-size: 14px;
+
+            font-weight: 600;
+
+            color: var(--text-main);
+        }
+
+
+        .profile-dropdown-role {
+            font-size: 12px;
+
+            color: var(--text-muted);
+
+            margin-top: 2px;
+        }
+
+
+        /* ==============================
            Buttons
         ============================== */
 
         .btn {
             display: inline-flex;
+
             align-items: center;
             justify-content: center;
 
             gap: 8px;
 
-            padding: 11px 22px;
+            padding:
+                11px 22px;
 
             border-radius: 10px;
 
@@ -531,7 +627,8 @@
 
             border: none;
 
-            transition: all 0.25s ease;
+            transition:
+                all 0.25s ease;
 
             text-decoration: none;
         }
@@ -539,17 +636,20 @@
 
         .btn-primary {
             background: var(--primary);
+
             color: #fff;
         }
 
 
         .btn-primary:hover {
-            background: var(--primary-dark);
+            background:
+                var(--primary-dark);
 
             box-shadow:
                 0 8px 20px rgba(122, 31, 43, 0.25);
 
-            transform: translateY(-2px);
+            transform:
+                translateY(-2px);
         }
 
 
@@ -558,17 +658,20 @@
 
             color: var(--primary);
 
-            border: 1px solid var(--primary);
+            border:
+                1px solid var(--primary);
         }
 
 
         .btn-secondary:hover {
-            background: var(--primary-soft);
+            background:
+                var(--primary-soft);
         }
 
 
         .btn-gold {
-            background: var(--gold);
+            background:
+                var(--gold);
 
             color: #fff;
         }
@@ -583,7 +686,8 @@
 
 
         .btn-sm {
-            padding: 7px 14px;
+            padding:
+                7px 14px;
 
             font-size: 13px;
 
@@ -603,20 +707,25 @@
         .alerts-container {
             max-width: 1280px;
 
-            margin: 20px auto 0;
+            margin:
+                20px auto 0;
 
-            padding: 0 24px;
+            padding:
+                0 24px;
         }
 
 
         .alert {
-            padding: 14px 20px;
+            padding:
+                14px 20px;
 
-            border-radius: var(--radius-md);
+            border-radius:
+                var(--radius-md);
 
             margin-bottom: 16px;
 
             display: flex;
+
             align-items: center;
 
             gap: 12px;
@@ -625,7 +734,8 @@
 
             font-weight: 500;
 
-            box-shadow: var(--shadow-sm);
+            box-shadow:
+                var(--shadow-sm);
         }
 
 
@@ -634,7 +744,8 @@
 
             color: #1a7f47;
 
-            border: 1px solid #b7ecd0;
+            border:
+                1px solid #b7ecd0;
         }
 
 
@@ -644,7 +755,8 @@
 
             color: #b91c1c;
 
-            border: 1px solid #fecaca;
+            border:
+                1px solid #fecaca;
         }
 
 
@@ -653,7 +765,8 @@
 
             color: #b45309;
 
-            border: 1px solid #fde68a;
+            border:
+                1px solid #fde68a;
         }
 
 
@@ -677,7 +790,8 @@
 
             gap: 6px;
 
-            padding: 4px 10px;
+            padding:
+                4px 10px;
 
             border-radius: 20px;
 
@@ -700,7 +814,9 @@
 
 
         .badge-primary {
-            background: var(--primary-soft);
+            background:
+                var(--primary-soft);
+
             color: var(--primary);
         }
 
@@ -754,7 +870,8 @@
 
             padding-top: 60px;
 
-            border-top: 3px solid var(--primary);
+            border-top:
+                3px solid var(--primary);
         }
 
 
@@ -763,7 +880,8 @@
 
             margin: 0 auto;
 
-            padding: 0 24px 50px;
+            padding:
+                0 24px 50px;
 
             display: grid;
 
@@ -837,6 +955,7 @@
 
         .contact-info li {
             display: flex;
+
             align-items: flex-start;
 
             gap: 12px;
@@ -857,9 +976,11 @@
 
 
         .footer-bottom {
-            border-top: 1px solid #332d29;
+            border-top:
+                1px solid #332d29;
 
-            padding: 20px 24px;
+            padding:
+                20px 24px;
 
             text-align: center;
 
@@ -871,8 +992,6 @@
 
         /* ==============================
            BACK TO TOP
-           ซ่อนอยู่ด้านบน
-           แสดงเมื่อเลื่อนลง
         ============================== */
 
         .back-to-top {
@@ -893,6 +1012,7 @@
             color: #fff;
 
             display: flex;
+
             align-items: center;
             justify-content: center;
 
@@ -903,7 +1023,8 @@
             opacity: 0;
             visibility: hidden;
 
-            transform: translateY(25px);
+            transform:
+                translateY(25px);
 
             transition:
                 opacity 0.3s ease,
@@ -919,33 +1040,31 @@
         }
 
 
-        /* แสดงเมื่อเลื่อนลง */
-
         .back-to-top.show {
             opacity: 1;
 
             visibility: visible;
 
-            transform: translateY(0);
+            transform:
+                translateY(0);
         }
 
 
-        /* Hover แล้วเด้งขึ้น */
-
         .back-to-top:hover {
-            background: var(--primary-dark);
+            background:
+                var(--primary-dark);
 
-            transform: translateY(-7px);
+            transform:
+                translateY(-7px);
 
             box-shadow:
                 0 14px 30px rgba(122, 31, 43, 0.35);
         }
 
 
-        /* ตอนกด */
-
         .back-to-top:active {
-            transform: translateY(-2px) scale(0.94);
+            transform:
+                translateY(-2px) scale(0.94);
         }
 
 
@@ -956,7 +1075,8 @@
 
 
         .back-to-top:hover i {
-            transform: translateY(-3px);
+            transform:
+                translateY(-3px);
         }
 
 
@@ -997,19 +1117,27 @@
 
 
             .footer-container {
-                grid-template-columns: 1fr 1fr;
+                grid-template-columns:
+                    1fr 1fr;
             }
+
         }
 
 
         @media (max-width: 600px) {
 
             .footer-container {
-                grid-template-columns: 1fr;
+                grid-template-columns:
+                    1fr;
             }
 
 
             .top-banner {
+                display: none;
+            }
+
+
+            .profile-name {
                 display: none;
             }
 
@@ -1021,6 +1149,7 @@
                 right: 16px;
                 bottom: 16px;
             }
+
         }
     </style>
 
@@ -1126,7 +1255,9 @@
             </ul>
 
 
-            <!-- Header Actions -->
+            <!-- ==============================
+                 Header Actions
+            ============================== -->
 
             <div class="header-actions">
 
@@ -1149,7 +1280,9 @@
                 <!-- Cart -->
 
                 @php
+
                     $cartCount = count(session('cart', []));
+
                 @endphp
 
 
@@ -1167,25 +1300,58 @@
                 </a>
 
 
-                <!-- User -->
+                <!-- ==============================
+                     User / Guest
+                ============================== -->
 
-                @auth
+                @php
+
+                    /*
+                     * ใช้ Laravel Auth ก่อน
+                     * ถ้าไม่มี จะลองใช้ session('user')
+                     */
+
+                    $currentUser = auth()->user() ?? session('user');
+
+                    $userName = $currentUser
+                        ? data_get($currentUser, 'name') ?? (data_get($currentUser, 'username') ?? 'ผู้ใช้งาน')
+                        : null;
+
+                    $profileImage = $currentUser ? data_get($currentUser, 'profile_image') : null;
+
+                @endphp
+
+
+                @if ($currentUser)
+
+
+                    <!-- ==============================
+                         Logged In Profile
+                    ============================== -->
 
                     <div class="user-menu">
 
 
-                        <div class="user-trigger">
+                        <!-- Profile Button -->
+
+                        <button type="button" class="user-trigger" aria-label="เมนูผู้ใช้งาน">
 
 
-                            <div class="user-avatar">
+                            @if ($profileImage)
+                                <img src="{{ $profileImage }}" alt="รูปโปรไฟล์" class="profile-avatar">
+                            @else
+                                <div class="user-avatar">
 
-                                {{ mb_substr(auth()->user()->name, 0, 1) }}
+                                    {{ mb_substr($userName, 0, 1) }}
 
-                            </div>
+                                </div>
+                            @endif
 
 
-                            <span>
-                                {{ auth()->user()->name }}
+                            <span class="profile-name">
+
+                                {{ $userName }}
+
                             </span>
 
 
@@ -1193,82 +1359,155 @@
                             </i>
 
 
-                        </div>
+                        </button>
 
+
+                        <!-- ==============================
+                             Profile Dropdown
+                        ============================== -->
 
                         <div class="dropdown-menu">
 
 
+                            <!-- User Info -->
+
+                            <div class="profile-dropdown-header">
+
+
+                                @if ($profileImage)
+                                    <img src="{{ $profileImage }}" alt="รูปโปรไฟล์" class="profile-avatar"
+                                        style="
+                                            width: 42px;
+                                            height: 42px;
+                                        ">
+                                @else
+                                    <div class="user-avatar"
+                                        style="
+                                            width: 42px;
+                                            height: 42px;
+                                            font-size: 16px;
+                                        ">
+
+                                        {{ mb_substr($userName, 0, 1) }}
+
+                                    </div>
+                                @endif
+
+
+                                <div>
+
+                                    <div class="profile-dropdown-name">
+
+                                        {{ $userName }}
+
+                                    </div>
+
+
+                                    <div class="profile-dropdown-role">
+
+                                        สมาชิก KYRIX
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- Dashboard -->
+
                             <a href="{{ route('customer.dashboard') }}" class="dropdown-item">
 
-                                <i class="fa-solid fa-gauge-high"></i>
+                                <i class="fa-solid fa-gauge-high">
+                                </i>
 
                                 แดชบอร์ดของฉัน
 
                             </a>
 
 
+                            <!-- Rentals -->
+
                             <a href="{{ route('rentals.index') }}" class="dropdown-item">
 
-                                <i class="fa-solid fa-clock-rotate-left"></i>
+                                <i class="fa-solid fa-clock-rotate-left">
+                                </i>
 
                                 การจองของฉัน
 
                             </a>
 
 
+                            <!-- History -->
+
                             <a href="{{ route('rentals.history') }}" class="dropdown-item">
 
-                                <i class="fa-solid fa-box-archive"></i>
+                                <i class="fa-solid fa-box-archive">
+                                </i>
 
                                 ประวัติการเช่าชุด
 
                             </a>
 
 
+                            <!-- Profile -->
+
                             <a href="{{ route('profile.index') }}" class="dropdown-item">
 
-                                <i class="fa-solid fa-user-pen"></i>
+                                <i class="fa-solid fa-user-pen">
+                                </i>
 
                                 ข้อมูลส่วนตัว / ที่อยู่
 
                             </a>
 
 
-                            <div class="dropdown-divider"></div>
+                            <div class="dropdown-divider">
+                            </div>
 
 
-                            <form action="{{ route('logout') }}" method="POST">
+                            <!-- Logout -->
 
-                                @csrf
+                            @if (auth()->check())
+                                <form action="{{ route('logout') }}" method="POST">
 
+                                    @csrf
 
-                                <button type="submit" class="dropdown-item"
-                                    style="
-                                        width: 100%;
-                                        border: none;
-                                        background: none;
-                                        cursor: pointer;
-                                        text-align: left;
-                                        color: #dc2626;
-                                    ">
+                                    <button type="submit" class="dropdown-item"
+                                        style="
+                                            width: 100%;
+                                            border: none;
+                                            background: none;
+                                            cursor: pointer;
+                                            text-align: left;
+                                            color: #dc2626;
+                                        ">
 
-                                    <i class="fa-solid fa-right-from-bracket"></i>
+                                        <i class="fa-solid fa-right-from-bracket">
+                                        </i>
 
-                                    ออกจากระบบ
+                                        ออกจากระบบ
 
-                                </button>
+                                    </button>
 
-
-                            </form>
+                                </form>
+                            @endif
 
 
                         </div>
 
-
                     </div>
                 @else
-                    <div style="display: flex; gap: 8px;">
+                    <!-- ==============================
+                         Guest
+                    ============================== -->
+
+                    <div
+                        style="
+                            display: flex;
+                            gap: 8px;
+                        ">
+
 
                         <a href="{{ route('login') }}" class="btn btn-secondary btn-sm">
 
@@ -1283,10 +1522,11 @@
 
                         </a>
 
+
                     </div>
 
 
-                @endauth
+                @endif
 
 
             </div>
@@ -1308,7 +1548,8 @@
             @if (session('success'))
                 <div class="alert alert-success">
 
-                    <i class="fa-solid fa-circle-check"></i>
+                    <i class="fa-solid fa-circle-check">
+                    </i>
 
                     <span>
                         {{ session('success') }}
@@ -1321,7 +1562,8 @@
             @if (session('error'))
                 <div class="alert alert-error">
 
-                    <i class="fa-solid fa-circle-exclamation"></i>
+                    <i class="fa-solid fa-circle-exclamation">
+                    </i>
 
                     <span>
                         {{ session('error') }}
@@ -1334,7 +1576,8 @@
             @if (session('warning'))
                 <div class="alert alert-warning">
 
-                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <i class="fa-solid fa-triangle-exclamation">
+                    </i>
 
                     <span>
                         {{ session('warning') }}
@@ -1374,6 +1617,7 @@
 
             <div class="footer-col">
 
+
                 <span class="logo" style="color: #fff;">
 
                     KYRIX
@@ -1381,11 +1625,16 @@
                 </span>
 
 
-                <p style="margin-top: 14px; max-width: 320px;">
+                <p
+                    style="
+                        margin-top: 14px;
+                        max-width: 320px;
+                    ">
 
                     ร้านเช่าชุดออนไลน์อันดับหนึ่ง
-                    บริการเช่าชุดราตรี ชุดไทย ชุดแต่งงาน
-                    และสูทสากลเกรดพรีเมียม
+                    บริการเช่าชุดราตรี ชุดไทย
+                    ชุดแต่งงาน และสูทสากล
+                    เกรดพรีเมียม
                     คัตติ้งเนี้ยบ สะอาด หอม
                     พร้อมใช้งานสำหรับวันสำคัญของคุณ
 
@@ -1414,7 +1663,8 @@
                             cursor: default;
                         ">
 
-                        <i class="fa-brands fa-facebook-f"></i>
+                        <i class="fa-brands fa-facebook-f">
+                        </i>
 
                     </a>
 
@@ -1433,7 +1683,8 @@
                             cursor: default;
                         ">
 
-                        <i class="fa-brands fa-instagram"></i>
+                        <i class="fa-brands fa-instagram">
+                        </i>
 
                     </a>
 
@@ -1452,7 +1703,8 @@
                             cursor: default;
                         ">
 
-                        <i class="fa-brands fa-line"></i>
+                        <i class="fa-brands fa-line">
+                        </i>
 
                     </a>
 
@@ -1471,12 +1723,14 @@
                             cursor: default;
                         ">
 
-                        <i class="fa-brands fa-tiktok"></i>
+                        <i class="fa-brands fa-tiktok">
+                        </i>
 
                     </a>
 
 
                 </div>
+
 
             </div>
 
@@ -1484,6 +1738,7 @@
             <!-- Footer Menu -->
 
             <div class="footer-col">
+
 
                 <h4>
                     เมนูลัด
@@ -1550,12 +1805,14 @@
 
                 </ul>
 
+
             </div>
 
 
             <!-- Categories -->
 
             <div class="footer-col">
+
 
                 <h4>
                     ประเภทชุด
@@ -1622,12 +1879,14 @@
 
                 </ul>
 
+
             </div>
 
 
             <!-- Contact -->
 
             <div class="footer-col" id="contact">
+
 
                 <h4>
                     ติดต่อร้าน KYRIX
@@ -1639,7 +1898,8 @@
 
                     <li>
 
-                        <i class="fa-solid fa-location-dot"></i>
+                        <i class="fa-solid fa-location-dot">
+                        </i>
 
                         <span>
 
@@ -1654,7 +1914,8 @@
 
                     <li>
 
-                        <i class="fa-solid fa-phone"></i>
+                        <i class="fa-solid fa-phone">
+                        </i>
 
                         <span>
                             06525990723
@@ -1665,7 +1926,8 @@
 
                     <li>
 
-                        <i class="fa-solid fa-envelope"></i>
+                        <i class="fa-solid fa-envelope">
+                        </i>
 
                         <span>
                             apatsara1a@gmail.com
@@ -1676,10 +1938,12 @@
 
                     <li>
 
-                        <i class="fa-solid fa-clock"></i>
+                        <i class="fa-solid fa-clock">
+                        </i>
 
                         <span>
-                            เปิดบริการทุกวัน: 10:00 - 20:00 น.
+                            เปิดบริการทุกวัน:
+                            10:00 - 20:00 น.
                         </span>
 
                     </li>
@@ -1706,8 +1970,7 @@
 
 
     <!-- ==============================
-         Back To Top Button
-         ซ่อนจนกว่าจะเลื่อนลง
+         Back To Top
     ============================== -->
 
     <button type="button" class="back-to-top" id="backToTop" aria-label="กลับขึ้นด้านบน" title="กลับขึ้นด้านบน">
@@ -1722,379 +1985,425 @@
     ============================== -->
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener(
+            'DOMContentLoaded',
+            function() {
 
 
-            /* =========================================
-               Navigation Sliding Indicator
-            ========================================= */
+                /* =========================================
+                   Navigation Sliding Indicator
+                ========================================= */
 
-            const nav =
-                document.querySelector('.nav-links');
+                const nav =
+                    document.querySelector(
+                        '.nav-links'
+                    );
 
-            const indicator =
-                document.querySelector('.nav-indicator');
+                const indicator =
+                    document.querySelector(
+                        '.nav-indicator'
+                    );
 
-            const links =
-                document.querySelectorAll('.nav-links a');
-
-
-            if (nav && indicator && links.length) {
-
-
-                /*
-                 * เลื่อนขีดไปหาเมนูที่เลือก
-                 */
-
-                function moveIndicator(link, animate = true) {
-
-                    if (!link) {
-
-                        indicator.style.width = '0px';
-
-                        return;
-                    }
+                const links =
+                    document.querySelectorAll(
+                        '.nav-links a'
+                    );
 
 
-                    const navRect =
-                        nav.getBoundingClientRect();
-
-                    const linkRect =
-                        link.getBoundingClientRect();
-
-
-                    const left =
-                        linkRect.left - navRect.left;
+                if (
+                    nav &&
+                    indicator &&
+                    links.length
+                ) {
 
 
-                    const width =
-                        linkRect.width;
+                    /*
+                     * ขยับเส้นไปหาเมนู
+                     */
+
+                    function moveIndicator(
+                        link,
+                        animate = true
+                    ) {
+
+                        if (!link) {
+
+                            indicator.style.width =
+                                '0px';
+
+                            return;
+                        }
 
 
-                    if (!animate) {
+                        const navRect =
+                            nav.getBoundingClientRect();
 
-                        indicator.style.transition = 'none';
-
-                    } else {
-
-                        indicator.style.transition =
-                            'transform 0.45s cubic-bezier(0.4, 0, 0.2, 1), width 0.45s cubic-bezier(0.4, 0, 0.2, 1)';
-
-                    }
+                        const linkRect =
+                            link.getBoundingClientRect();
 
 
-                    indicator.style.width =
-                        width + 'px';
+                        const left =
+                            linkRect.left -
+                            navRect.left;
 
 
-                    indicator.style.transform =
-                        `translateX(${left}px)`;
+                        const width =
+                            linkRect.width;
 
 
-                    if (!animate) {
+                        if (!animate) {
 
-                        requestAnimationFrame(function() {
+                            indicator.style.transition =
+                                'none';
+
+                        } else {
 
                             indicator.style.transition =
                                 'transform 0.45s cubic-bezier(0.4, 0, 0.2, 1), width 0.45s cubic-bezier(0.4, 0, 0.2, 1)';
 
-                        });
+                        }
 
+
+                        indicator.style.width =
+                            width + 'px';
+
+
+                        indicator.style.transform =
+                            `translateX(${left}px)`;
+
+
+                        if (!animate) {
+
+                            requestAnimationFrame(
+                                function() {
+
+                                    indicator.style.transition =
+                                        'transform 0.45s cubic-bezier(0.4, 0, 0.2, 1), width 0.45s cubic-bezier(0.4, 0, 0.2, 1)';
+
+                                }
+                            );
+                        }
                     }
-                }
 
 
-                /*
-                 * ตั้งเมนู active
-                 */
+                    /*
+                     * ตั้ง Active Menu
+                     */
 
-                function setActive(link) {
+                    function setActive(link) {
 
-                    links.forEach(function(item) {
+                        links.forEach(
+                            function(item) {
 
-                        item.classList.remove('active');
+                                item.classList.remove(
+                                    'active'
+                                );
 
-                    });
-
-
-                    if (link) {
-
-                        link.classList.add('active');
-
-                        moveIndicator(link, true);
-
-                    }
-                }
-
-
-                /*
-                 * หาเมนู active ตอนโหลดหน้า
-                 */
-
-                let activeLink =
-                    document.querySelector(
-                        '.nav-links a.active'
-                    );
-
-
-                /*
-                 * ตรวจสอบ hash ใน URL
-                 */
-
-                const hash =
-                    window.location.hash;
-
-
-                if (hash) {
-
-                    const hashLink =
-                        document.querySelector(
-                            `.nav-links a[data-hash="${hash.substring(1)}"]`
+                            }
                         );
 
 
-                    if (hashLink) {
+                        if (link) {
 
-                        activeLink = hashLink;
+                            link.classList.add(
+                                'active'
+                            );
 
+                            moveIndicator(
+                                link,
+                                true
+                            );
+                        }
                     }
-                }
 
 
-                /*
-                 * วางขีดตอนเริ่มต้น
-                 */
+                    /*
+                     * หาเมนูที่ active ตอนโหลด
+                     */
 
-                if (activeLink) {
+                    let activeLink =
+                        document.querySelector(
+                            '.nav-links a.active'
+                        );
 
-                    moveIndicator(
-                        activeLink,
-                        false
+
+                    /*
+                     * ตรวจสอบ hash
+                     */
+
+                    const hash =
+                        window.location.hash;
+
+
+                    if (hash) {
+
+                        const hashLink =
+                            document.querySelector(
+                                `.nav-links a[data-hash="${hash.substring(1)}"]`
+                            );
+
+
+                        if (hashLink) {
+
+                            activeLink =
+                                hashLink;
+                        }
+                    }
+
+
+                    /*
+                     * แสดงเส้นตอนเริ่มต้น
+                     */
+
+                    if (activeLink) {
+
+                        moveIndicator(
+                            activeLink,
+                            false
+                        );
+
+                        activeLink.classList.add(
+                            'active'
+                        );
+                    }
+
+
+                    /*
+                     * คลิกเมนู
+                     */
+
+                    links.forEach(
+                        function(link) {
+
+                            link.addEventListener(
+                                'click',
+                                function(e) {
+
+                                    const href =
+                                        this.getAttribute(
+                                            'href'
+                                        ) || '';
+
+
+                                    /*
+                                     * Hash Link
+                                     */
+
+                                    if (
+                                        this.classList.contains(
+                                            'js-hash-link'
+                                        ) &&
+                                        href.includes('#')
+                                    ) {
+
+                                        e.preventDefault();
+
+
+                                        setActive(
+                                            this
+                                        );
+
+
+                                        const hashValue =
+                                            this.dataset.hash;
+
+
+                                        const section =
+                                            document.getElementById(
+                                                hashValue
+                                            );
+
+
+                                        if (section) {
+
+                                            section.scrollIntoView({
+                                                behavior: 'smooth',
+                                                block: 'start'
+                                            });
+
+                                        }
+
+
+                                        history.pushState(
+                                            null,
+                                            '',
+                                            '#' +
+                                            hashValue
+                                        );
+
+
+                                        return;
+                                    }
+
+
+                                    /*
+                                     * Link ปกติ
+                                     */
+
+                                    setActive(this);
+
+                                }
+                            );
+                        }
                     );
 
-                    activeLink.classList.add('active');
 
-                }
+                    /*
+                     * Resize
+                     */
 
+                    window.addEventListener(
+                        'resize',
+                        function() {
 
-                /*
-                 * เมื่อคลิกเมนู
-                 */
-
-                links.forEach(function(link) {
-
-                    link.addEventListener(
-                        'click',
-                        function(e) {
-
-                            const href =
-                                this.getAttribute('href') || '';
+                            const current =
+                                document.querySelector(
+                                    '.nav-links a.active'
+                                );
 
 
-                            /*
-                             * Hash Navigation
-                             */
+                            if (current) {
 
-                            if (
-                                this.classList.contains('js-hash-link') &&
-                                href.includes('#')
-                            ) {
+                                moveIndicator(
+                                    current,
+                                    false
+                                );
+                            }
 
-                                e.preventDefault();
-
-
-                                setActive(this);
+                        }
+                    );
 
 
-                                const hashValue =
-                                    this.dataset.hash;
+                    /*
+                     * Browser Back / Forward
+                     */
+
+                    window.addEventListener(
+                        'popstate',
+                        function() {
+
+                            const currentHash =
+                                window.location.hash;
 
 
-                                const section =
-                                    document.getElementById(
-                                        hashValue
+                            if (currentHash) {
+
+                                const hashLink =
+                                    document.querySelector(
+                                        `.nav-links a[data-hash="${currentHash.substring(1)}"]`
                                     );
 
 
-                                if (section) {
+                                if (hashLink) {
 
-                                    section.scrollIntoView({
-                                        behavior: 'smooth',
-                                        block: 'start'
-                                    });
+                                    setActive(
+                                        hashLink
+                                    );
 
+                                    return;
                                 }
-
-
-                                history.pushState(
-                                    null,
-                                    '',
-                                    '#' + hashValue
-                                );
-
-
-                                return;
                             }
 
 
-                            /*
-                             * เมนูเปลี่ยนหน้า
-                             */
+                            const homeLink =
+                                document.querySelector(
+                                    '.nav-links a[href="{{ route('home') }}"]'
+                                );
 
-                            setActive(this);
+
+                            if (homeLink) {
+
+                                setActive(
+                                    homeLink
+                                );
+                            }
 
                         }
                     );
 
-                });
-
-
-                /*
-                 * ปรับตำแหน่งขีดเมื่อ resize
-                 */
-
-                window.addEventListener(
-                    'resize',
-                    function() {
-
-                        const current =
-                            document.querySelector(
-                                '.nav-links a.active'
-                            );
-
-
-                        if (current) {
-
-                            moveIndicator(
-                                current,
-                                false
-                            );
-
-                        }
-
-                    }
-                );
-
-
-                /*
-                 * Back / Forward Browser
-                 */
-
-                window.addEventListener(
-                    'popstate',
-                    function() {
-
-                        const currentHash =
-                            window.location.hash;
-
-
-                        if (currentHash) {
-
-                            const hashLink =
-                                document.querySelector(
-                                    `.nav-links a[data-hash="${currentHash.substring(1)}"]`
-                                );
-
-
-                            if (hashLink) {
-
-                                setActive(hashLink);
-
-                                return;
-
-                            }
-                        }
-
-
-                        const homeLink =
-                            document.querySelector(
-                                '.nav-links a[href="{{ route('home') }}"]'
-                            );
-
-
-                        if (homeLink) {
-
-                            setActive(homeLink);
-
-                        }
-                    }
-                );
-
-            }
-
-
-            /* =========================================
-               Back To Top
-            ========================================= */
-
-            const backToTop =
-                document.getElementById(
-                    'backToTop'
-                );
-
-
-            if (backToTop) {
-
-
-                /*
-                 * แสดงปุ่มเมื่อเลื่อนลงเกิน 300px
-                 */
-
-                function toggleBackToTop() {
-
-                    if (window.scrollY > 300) {
-
-                        backToTop.classList.add('show');
-
-                    } else {
-
-                        backToTop.classList.remove('show');
-
-                    }
                 }
 
 
-                /*
-                 * ตรวจจับการ scroll
-                 */
+                /* =========================================
+                   Back To Top
+                ========================================= */
 
-                window.addEventListener(
-                    'scroll',
-                    toggleBackToTop, {
-                        passive: true
+                const backToTop =
+                    document.getElementById(
+                        'backToTop'
+                    );
+
+
+                if (backToTop) {
+
+
+                    /*
+                     * แสดงเมื่อเลื่อนเกิน 300px
+                     */
+
+                    function toggleBackToTop() {
+
+                        if (
+                            window.scrollY >
+                            300
+                        ) {
+
+                            backToTop.classList.add(
+                                'show'
+                            );
+
+                        } else {
+
+                            backToTop.classList.remove(
+                                'show'
+                            );
+
+                        }
                     }
-                );
 
 
-                /*
-                 * ตรวจสอบสถานะตอนเปิดหน้า
-                 */
+                    /*
+                     * ตรวจจับ Scroll
+                     */
 
-                toggleBackToTop();
+                    window.addEventListener(
+                        'scroll',
+                        toggleBackToTop, {
+                            passive: true
+                        }
+                    );
 
 
-                /*
-                 * กดปุ่มแล้วกลับขึ้นด้านบน
-                 */
+                    /*
+                     * ตรวจสอบทันทีตอนโหลด
+                     */
 
-                backToTop.addEventListener(
-                    'click',
-                    function() {
+                    toggleBackToTop();
 
-                        window.scrollTo({
 
-                            top: 0,
+                    /*
+                     * กดกลับขึ้นบน
+                     */
 
-                            behavior: 'smooth'
+                    backToTop.addEventListener(
+                        'click',
+                        function() {
 
-                        });
+                            window.scrollTo({
 
-                    }
-                );
+                                top: 0,
+
+                                behavior: 'smooth'
+
+                            });
+
+                        }
+                    );
+
+                }
 
             }
-
-        });
+        );
     </script>
 
 
