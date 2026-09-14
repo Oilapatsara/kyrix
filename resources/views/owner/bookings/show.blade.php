@@ -275,7 +275,7 @@
         <div class="admin-heading">
             <span class="eyebrow">KYRIX RENTAL · BOOKING DETAIL</span>
             <div style="display: flex; align-items: center; gap: 14px; margin-top: 4px;">
-                <h1>รายละเอียดการเช่า #{{ $rental->booking_code ?? $rentalId }}</h1>
+                <h1>รายละเอียดการเช่า #{{ $rental->formatted_code ?? $rentalId }}</h1>
                 <span class="status-badge {{ $statusClass }}">{{ $statusText }}</span>
             </div>
             <p>ตรวจสอบข้อมูลรายการเช่า ข้อมูลลูกค้า และอัปเดตสถานะการดำเนินงานคำสั่งซื้อ</p>
@@ -329,11 +329,11 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <div style="font-weight: 700; color: var(--maroon-900);">{{ $product->product_name ?? 'ชุดสินค้า' }}</div>
+                                    <div style="font-weight: 700; color: var(--maroon-900);">{{ $product->name ?? $product->product_name ?? 'ชุดสินค้า' }}</div>
                                     <div style="font-size: 11px; color: var(--muted); margin-top: 2px;">รหัส: {{ $product->product_code ?? '-' }}</div>
                                 </td>
                                 <td style="text-align: center; font-weight: 600;">{{ $detail->quantity ?? 1 }}</td>
-                                <td style="text-align: right; font-weight: 750; color: var(--maroon-900);">฿{{ number_format($detail->price ?? $product->rental_price ?? 0, 2) }}</td>
+                                <td style="text-align: right; font-weight: 750; color: var(--maroon-900);">฿{{ number_format($detail->rental_price ?? $detail->price ?? $product->rental_price ?? 0, 2) }}</td>
                             </tr>
                             @empty
                             <tr>
@@ -377,7 +377,7 @@
                 @php $customer = $rental->customer ?? null; @endphp
                 <div class="info-row">
                     <span class="info-label">ชื่อ-นามสกุล</span>
-                    <span class="info-value">{{ $customer->name ?? $customer->customer_name ?? 'ไม่ระบุ' }}</span>
+                    <span class="info-value">{{ $customer ? $customer->full_name : 'ไม่ระบุ' }}</span>
                 </div>
                 <div class="info-row">
                     <span class="info-label">เบอร์โทรศัพท์</span>
@@ -404,7 +404,7 @@
                 </div>
                 <div class="info-row" style="margin-top: 6px; padding-top: 12px; border-top: 1px solid var(--line);">
                     <span class="info-label" style="font-weight: 750; color: var(--maroon-900);">ยอดรวมทั้งสิ้น</span>
-                    <span class="info-value" style="font-size: 18px; font-weight: 800; color: var(--maroon-900);">฿{{ number_format($rental->total_amount ?? 0, 2) }}</span>
+                    <span class="info-value" style="font-size: 18px; font-weight: 800; color: var(--maroon-900);">฿{{ number_format($rental->grand_total ?? $rental->total_amount ?? 0, 2) }}</span>
                 </div>
 
                 <!-- ฟอร์มเปลี่ยนสถานะ -->
@@ -418,6 +418,7 @@
                                 <option value="confirmed" {{ $statusCode == 'confirmed' ? 'selected' : '' }}>ยืนยันแล้ว</option>
                                 <option value="renting" {{ $statusCode == 'renting' ? 'selected' : '' }}>กำลังเช่า</option>
                                 <option value="returned" {{ $statusCode == 'returned' ? 'selected' : '' }}>คืนชุดแล้ว</option>
+                                <option value="completed" {{ $statusCode == 'completed' ? 'selected' : '' }}>เสร็จสิ้น</option>
                                 <option value="cancelled" {{ $statusCode == 'cancelled' ? 'selected' : '' }}>ยกเลิก</option>
                             </select>
                         </div>

@@ -97,7 +97,6 @@
         background-color: #fdfbfb;
     }
 
-    /* สถานะรูปแบบต่างๆ */
     .status-badge {
         display: inline-flex;
         align-items: center;
@@ -193,17 +192,26 @@
                             'cancelled' => 'status-cancelled',
                             default     => 'status-default'
                         };
-                        $bookingId = $booking->rental_id ?? $booking->id;
+                        $bookingId = $booking->rental_id;
+
+                        // ดึงชื่อและนามสกุลจากตาราง customers[cite: 1]
+                        $firstName = trim($booking->customer->first_name ?? '');
+                        $lastName = trim($booking->customer->last_name ?? '');
+                        $fullName = trim($firstName . ' ' . $lastName);
+                        
+                        if ($fullName === '') {
+                            $fullName = $booking->customer_name ?? 'ไม่ระบุชื่อ';
+                        }
                     @endphp
                     <tr>
                         <td>
                             <strong style="color: var(--maroon-900);">
-                                {{ $booking->booking_code ?? ('#' . $bookingId) }}
+                                {{ $booking->rental_code ?? ('#' . $bookingId) }}
                             </strong>
                         </td>
                         <td>
                             <div style="font-weight: 650; color: #2d1e21;">
-                                {{ $booking->customer->name ?? $booking->customer_name ?? 'ไม่ระบุชื่อ' }}
+                                {{ $fullName }}
                             </div>
                             @if(!empty($booking->customer->phone))
                                 <div style="font-size: 11px; color: var(--muted); margin-top: 2px;">

@@ -16,27 +16,26 @@
 
     <style>
         :root {
-            --maroon-950: #2d080f;
-            --maroon-900: #430d17;
-            --maroon-800: #5c1522;
-            --maroon-700: #6f1a2b;
-            --maroon-600: #832033;
-            --gold:       #c79a5c;
-            --gold-dark:  #a97f45;
-            --gold-light: #f6eedf;
-            --rose-bg:    #fbf0f2;
-            --rose-text:  #7f2138;
-            --cream:      #faf7f4;
+            --maroon-950: #4a0f19;
+            --maroon-900: #751B2A; /* สีแดงเข้มไวน์แดงตามรูปโลโก้ */
+            --maroon-800: #7A2031;
+            --maroon-700: #8c2539;
+            --gold:       #C5A059; /* สีทองพรีเมียมละมุนตา */
+            --gold-dark:  #A88349;
+            --gold-light: #f9f6f0;
+            --rose-bg:    #fcf3f4;
+            --rose-text:  #751B2A;
+            --cream:      #faf8f6;
             --surface:    #ffffff;
-            --ink:        #241417;
-            --muted:      #8a7a7d;
-            --line:       #efe6e4;
+            --ink:        #2b1a1d;
+            --muted:      #8a7c7f;
+            --line:       #f0e8e6;
             --radius-sm:  8px;
             --radius-md:  12px;
             --radius-lg:  18px;
-            --shadow-sm:  0 2px 8px rgba(36, 20, 23, 0.04);
-            --shadow-md:  0 8px 24px rgba(36, 20, 23, 0.08);
-            --shadow-lg:  0 14px 35px rgba(67, 13, 23, 0.12);
+            --shadow-sm:  0 2px 8px rgba(43, 26, 29, 0.04);
+            --shadow-md:  0 8px 24px rgba(43, 26, 29, 0.08);
+            --shadow-lg:  0 14px 35px rgba(117, 27, 42, 0.12);
         }
 
         * {
@@ -68,7 +67,7 @@
             position: sticky;
             top: 0;
             z-index: 1000;
-            box-shadow: 0 4px 20px rgba(67, 13, 23, 0.04);
+            box-shadow: 0 4px 20px rgba(117, 27, 42, 0.03);
         }
 
         .admin-nav-container {
@@ -78,7 +77,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            height: 72px;
+            height: 76px;
         }
 
         .admin-brand {
@@ -87,73 +86,84 @@
             gap: 14px;
         }
 
-        .admin-brand .logo-text {
-            font-family: "Playfair Display", serif;
-            font-size: 24px;
-            font-weight: 700;
-            letter-spacing: 2px;
-            color: var(--maroon-900);
+        .admin-brand .logo-container {
             display: flex;
-            align-items: center;
-            gap: 8px;
+            flex-direction: column;
+            line-height: 1.1;
         }
 
-        .admin-badge {
-            background: linear-gradient(135deg, var(--maroon-800), var(--maroon-950));
-            color: var(--gold);
-            font-size: 11px;
-            font-weight: 750;
-            letter-spacing: 1px;
-            padding: 4px 10px;
-            border-radius: 6px;
-            border: 1px solid rgba(199, 154, 92, 0.4);
+        .admin-brand .logo-text {
+            font-family: "Playfair Display", serif;
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: 2.5px;
+            color: var(--maroon-900);
+        }
+
+        .admin-brand .logo-subtext {
+            font-size: 9.5px;
+            font-weight: 700;
+            letter-spacing: 2.8px;
+            color: var(--gold-dark);
             text-transform: uppercase;
+            margin-top: 3px;
         }
 
         /* MENU LINKS */
         .admin-menu {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 24px;
             list-style: none;
+            height: 100%;
         }
 
         .admin-menu-link {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 9px 15px;
-            border-radius: 9px;
-            font-size: 13.5px;
-            font-weight: 600;
-            color: #554448;
+            padding: 0 2px;
+            height: 100%;
+            font-size: 14px;
+            font-weight: 500;
+            color: #4a3b3e;
             transition: all .2s ease;
             position: relative;
         }
 
         .admin-menu-link i {
-            font-size: 14px;
+            font-size: 13.5px;
             color: var(--muted);
             transition: color .2s;
         }
 
         .admin-menu-link:hover {
-            background: var(--rose-bg);
-            color: var(--maroon-800);
+            color: var(--maroon-900);
         }
 
         .admin-menu-link:hover i {
-            color: var(--maroon-800);
+            color: var(--maroon-900);
         }
 
         .admin-menu-link.active {
-            background: var(--maroon-900);
-            color: #ffffff;
-            box-shadow: 0 4px 12px rgba(67, 13, 23, 0.25);
+            color: var(--maroon-900);
+            font-weight: 700;
         }
 
         .admin-menu-link.active i {
-            color: var(--gold);
+            color: var(--maroon-900);
+        }
+
+        /* Active bottom border indicator style */
+        .admin-menu-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--maroon-900);
+            border-radius: 3px 3px 0 0;
         }
 
         /* RIGHT ACTIONS */
@@ -161,6 +171,53 @@
             display: flex;
             align-items: center;
             gap: 14px;
+        }
+
+        /* SEARCH BOX */
+        .admin-search-box {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .admin-search-input {
+            background: #faf8f7;
+            border: 1px solid var(--line);
+            border-radius: 99px;
+            padding: 9px 38px 9px 16px;
+            font-size: 13px;
+            color: var(--ink);
+            width: 220px;
+            outline: none;
+            transition: all .2s;
+            font-family: inherit;
+        }
+
+        .admin-search-input::placeholder {
+            color: #b5a4a7;
+        }
+
+        .admin-search-input:focus {
+            border-color: var(--gold);
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(197, 160, 89, 0.15);
+            width: 240px;
+        }
+
+        .admin-search-btn {
+            position: absolute;
+            right: 14px;
+            background: none;
+            border: none;
+            color: var(--muted);
+            cursor: pointer;
+            font-size: 13px;
+            transition: color .2s;
+        }
+
+        .admin-search-input:focus ~ .admin-search-btn,
+        .admin-search-box:hover .admin-search-btn {
+            color: var(--maroon-900);
         }
 
         /* NOTIFICATION BELL */
@@ -171,20 +228,20 @@
         .notif-bell-btn {
             width: 40px;
             height: 40px;
-            border-radius: 10px;
-            background: var(--cream);
-            border: 1px solid var(--line);
+            border-radius: 50%;
+            background: var(--rose-bg);
+            border: 1px solid rgba(117, 27, 42, 0.1);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--maroon-800);
+            color: var(--maroon-900);
             cursor: pointer;
             position: relative;
             transition: all .2s;
         }
 
         .notif-bell-btn:hover {
-            background: var(--rose-bg);
+            background: #f7e6e8;
             border-color: var(--gold);
         }
 
@@ -252,10 +309,6 @@
             background: #fdfbfb;
         }
 
-        .notif-item.unread {
-            background: #fff8f8;
-        }
-
         .notif-icon-box {
             width: 32px;
             height: 32px;
@@ -288,46 +341,27 @@
             font-size: 12.5px;
         }
 
-        .btn-storefront {
-            display: inline-flex;
-            align-items: center;
-            gap: 7px;
-            padding: 8px 14px;
-            border-radius: 8px;
-            font-size: 12.5px;
-            font-weight: 600;
-            background: #fff;
-            color: var(--maroon-800);
-            border: 1px solid var(--line);
-            transition: all .2s;
-        }
-
-        .btn-storefront:hover {
-            border-color: var(--gold);
-            background: var(--gold-light);
-            color: var(--maroon-900);
-        }
-
         .admin-user-pill {
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 6px 12px 6px 6px;
-            background: #faf7f4;
+            padding: 5px 16px 5px 6px;
+            background: #fff;
             border: 1px solid var(--line);
             border-radius: 30px;
+            box-shadow: var(--shadow-sm);
         }
 
         .admin-avatar {
             width: 34px;
             height: 34px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--maroon-700), var(--maroon-950));
-            color: var(--gold);
+            background: var(--maroon-900);
+            color: #ffffff;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 700;
         }
 
@@ -339,6 +373,9 @@
             font-size: 12.5px;
             font-weight: 700;
             color: var(--maroon-900);
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .admin-user-role {
@@ -350,14 +387,15 @@
             background: none;
             border: none;
             cursor: pointer;
-            width: 34px;
-            height: 34px;
+            width: 32px;
+            height: 32px;
             border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: #937d81;
             transition: all .2s;
+            margin-left: 4px;
         }
 
         .btn-logout:hover {
@@ -434,6 +472,18 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        @media (max-width: 1200px) {
+            .admin-menu {
+                gap: 16px;
+            }
+            .admin-search-input {
+                width: 160px;
+            }
+            .admin-search-input:focus {
+                width: 180px;
+            }
+        }
+
         @media (max-width: 1024px) {
             .admin-menu {
                 display: none;
@@ -449,9 +499,9 @@
     <header class="admin-nav">
         <div class="admin-nav-container">
             <div class="admin-brand">
-                <a href="{{ route('owner.dashboard') }}" class="logo-text">
-                    KYRIX
-                    <span class="admin-badge">ADMIN</span>
+                <a href="{{ route('owner.dashboard') }}" class="logo-container">
+                    <span class="logo-text">KYRIX</span>
+                    <span class="logo-subtext">DRESS RENTAL</span>
                 </a>
             </div>
 
@@ -504,10 +554,17 @@
             <!-- RIGHT ACTIONS -->
             <div class="admin-nav-actions">
                 
+                <!-- SEARCH INPUT BOX -->
+                <form action="{{ route('owner.dresses.index') }}" method="GET" class="admin-search-box">
+                    <input type="text" name="search" class="admin-search-input" placeholder="ค้นหาชุดสวย..." value="{{ request('search') }}">
+                    <button type="submit" class="admin-search-btn">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                </form>
+
                 <!-- NOTIFICATION BELL (OVERDUE RETURNS) -->
                 @php
                     use App\Models\Rental;
-                    // ค้นหารายการเช่าที่เลยกำหนดคืน (end_date น้อยกว่าวันนี้ และสถานะไม่ใช่ returned หรือ cancelled)
                     $today = \Carbon\Carbon::today();
                     $overdueRentals = Rental::with('customer')
                         ->whereDate('end_date', '<', $today)
@@ -517,7 +574,7 @@
 
                 <div class="notif-dropdown-wrapper">
                     <button type="button" class="notif-bell-btn" id="notifBellBtn" onclick="toggleNotifDropdown(event)" title="แจ้งเตือนชุดเกินกำหนด">
-                        <i class="fa-regular fa-bell"></i>
+                        <i class="fa-solid fa-bag-shopping" style="font-size: 14px;"></i>
                         @if($overdueRentals->count() > 0)
                             <span class="notif-badge-count" id="notifBadgeCount">{{ $overdueRentals->count() }}</span>
                         @endif
@@ -554,17 +611,16 @@
                     </div>
                 </div>
 
-                <a href="{{ route('home') }}" target="_blank" class="btn-storefront" title="เปิดดูหน้าร้าน">
-                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                    <span>หน้าร้าน</span>
-                </a>
-
+                <!-- USER PROFILE PILL -->
                 <div class="admin-user-pill">
                     <div class="admin-avatar">
-                        <i class="fa-solid fa-crown"></i>
+                        {{ mb_substr(auth()->user()->name ?? 'อ', 0, 1) }}
                     </div>
                     <div class="admin-user-info">
-                        <div class="admin-user-name">{{ auth()->user()->name ?? 'เจ้าของร้าน' }}</div>
+                        <div class="admin-user-name">
+                            {{ auth()->user()->name ?? 'เจ้าของร้าน' }}
+                            <i class="fa-solid fa-chevron-down" style="font-size: 10px; color: var(--muted);"></i>
+                        </div>
                         <div class="admin-user-role">ผู้ดูแลร้าน KYRIX</div>
                     </div>
                     <form action="{{ route('logout') }}" method="POST" style="display:inline;">
@@ -574,6 +630,7 @@
                         </button>
                     </form>
                 </div>
+
             </div>
         </div>
     </header>
@@ -643,7 +700,6 @@
             menu.classList.toggle('show');
         }
 
-        // ปิดเมนูดรอปดาวน์เมื่อคลิกพื้นที่อื่น
         window.addEventListener('click', function() {
             const menu = document.getElementById('notifDropdownMenu');
             if (menu && menu.classList.contains('show')) {
@@ -651,15 +707,13 @@
             }
         });
 
-        // ฟังก์ชันจัดการเวลาอ่าน (คงอยู่ 12 ชม. แล้วหายไป)
         function markNotifRead(rentalId) {
             let readNotifs = JSON.parse(localStorage.getItem('kyrix_read_notifs') || '{}');
             const now = new Date().getTime();
-            readNotifs[rentalId] = now; // บันทึกเวลาที่กดอ่าน
+            readNotifs[rentalId] = now;
             localStorage.setItem('kyrix_read_notifs', JSON.stringify(readNotifs));
         }
 
-        // ตรวจสอบและซ่อนรายการที่อ่านแล้วเกิน 12 ชั่วโมงตอนโหลดหน้าเว็บ
         document.addEventListener("DOMContentLoaded", function() {
             let readNotifs = JSON.parse(localStorage.getItem('kyrix_read_notifs') || '{}');
             const now = new Date().getTime();
@@ -668,7 +722,7 @@
 
             for (let id in readNotifs) {
                 if (now - readNotifs[id] > twelveHours) {
-                    delete readNotifs[id]; // ลบออกเมื่อเกิน 12 ชม.
+                    delete readNotifs[id];
                     updated = true;
                 }
             }
@@ -676,10 +730,6 @@
             if (updated) {
                 localStorage.setItem('kyrix_read_notifs', JSON.stringify(readNotifs));
             }
-
-            // ซ่อนการแจ้งเตือนของ rental ที่เพิ่งกดอ่านไปไม่เกิน 12 ชม.
-            const items = document.querySelectorAll('.notif-item');
-            // สามารถใช้สคริปต์เพิ่มเติมถ้าต้องการซ่อน element ในดรอปดาวน์ทันทีที่กดอ่าน
         });
     </script>
 
