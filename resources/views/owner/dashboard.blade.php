@@ -80,24 +80,24 @@
 @push('styles')
 <style>
     :root {
-        --maroon-900: #430d17;
-        --maroon-800: #5c1522;
-        --maroon-700: #6f1a2b;
-        --maroon-600: #832033;
-        --gold:       #c79a5c;
-        --gold-dark:  #a97f45;
-        --rose-bg:    #f7e7ea;
-        --rose-text:  #7f2138;
-        --cream:      #faf7f4;
-        --ink:        #241417;
-        --muted:      #8a7a7d;
-        --line:       #efe6e4;
+        --burgundy-900: #3b1119;
+        --burgundy-800: #4a1622;
+        --burgundy-700: #5c1d2b;
+        --burgundy-600: #732537;
+        --gold:         #b89053;
+        --gold-dark:    #99733d;
+        --surface:      #ffffff;
+        --background:   #fcfbfa;
+        --ink:          #1f1416;
+        --muted:        #6e5c60;
+        --line:         #e8e2df;
+        --radius:       10px;
     }
 
     * { box-sizing: border-box; }
 
-    .kyrix-dashboard { color: var(--ink); padding: 0; }
-    .kyrix-container { max-width: 100%; margin: 0 auto; }
+    .kyrix-dashboard { color: var(--ink); padding: 4px 0; }
+    .kyrix-container { max-width: 1400px; margin: 0 auto; }
 
     /* TOP BAR */
     .dashboard-header {
@@ -105,222 +105,230 @@
         align-items: flex-end;
         justify-content: space-between;
         gap: 20px;
-        margin-bottom: 22px;
+        margin-bottom: 24px;
+        border-bottom: 1px solid var(--line);
+        padding-bottom: 16px;
     }
     .dashboard-heading .eyebrow {
         display: inline-block;
         color: var(--gold-dark);
-        font-size: 12px;
+        font-size: 11px;
         font-weight: 700;
-        letter-spacing: 2px;
-        margin-bottom: 7px;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        margin-bottom: 4px;
     }
     .dashboard-heading h1 {
         margin: 0;
         font-family: "Playfair Display", "Noto Sans Thai", serif;
-        font-size: 30px;
+        font-size: 26px;
         font-weight: 700;
-        color: var(--maroon-900);
+        color: var(--burgundy-900);
     }
-    .dashboard-heading p { margin: 7px 0 0; color: var(--muted); font-size: 14px; }
+    .dashboard-heading p { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
 
-    .header-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .header-actions { display: flex; gap: 8px; flex-wrap: wrap; }
     .dashboard-btn {
         display: inline-flex;
         align-items: center;
         justify-content: center;
         gap: 8px;
-        min-height: 42px;
-        padding: 0 18px;
-        border-radius: 10px;
+        height: 38px;
+        padding: 0 16px;
+        border-radius: var(--radius);
         text-decoration: none;
         font-size: 13px;
-        font-weight: 650;
-        transition: .2s ease;
+        font-weight: 600;
+        transition: all 0.2s ease;
         border: 1px solid transparent;
+        cursor: pointer;
     }
     .dashboard-btn.primary {
-        background: linear-gradient(135deg, var(--maroon-700), var(--maroon-900));
+        background: var(--burgundy-900);
         color: #fff;
-        box-shadow: 0 8px 18px rgba(111, 26, 43, .28);
     }
-    .dashboard-btn.primary:hover { transform: translateY(-1px); box-shadow: 0 10px 22px rgba(111, 26, 43, .35); }
-    .dashboard-btn.secondary { background: #fff; color: var(--maroon-800); border-color: var(--line); }
-    .dashboard-btn.secondary:hover { border-color: var(--gold); background: #fffdfb; }
+    .dashboard-btn.primary:hover { background: var(--burgundy-800); }
+    .dashboard-btn.secondary { 
+        background: #fff; 
+        color: var(--burgundy-900); 
+        border-color: var(--line); 
+    }
+    .dashboard-btn.secondary:hover { border-color: var(--gold); background: #faf8f7; }
 
     /* HERO BANNER */
     .owner-hero {
         position: relative;
         overflow: hidden;
-        border-radius: 20px;
-        padding: 30px 34px;
-        margin-bottom: 22px;
-        background: radial-gradient(120% 160% at 100% 0%, rgba(199, 154, 92, .35), transparent 55%), linear-gradient(120deg, var(--maroon-800), var(--maroon-900));
+        border-radius: var(--radius);
+        padding: 24px 28px;
+        margin-bottom: 20px;
+        background: linear-gradient(135deg, var(--burgundy-900), var(--burgundy-700));
         color: #fff;
         display: flex;
         align-items: center;
         justify-content: space-between;
         gap: 20px;
         flex-wrap: wrap;
+        border: 1px solid rgba(184, 144, 83, 0.2);
     }
     .owner-hero-badge {
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        padding: 5px 12px;
-        border-radius: 999px;
-        background: rgba(255, 255, 255, .14);
-        color: var(--gold);
+        padding: 4px 10px;
+        border-radius: 4px;
+        background: rgba(184, 144, 83, 0.15);
+        color: #e6c594;
         font-size: 11px;
-        font-weight: 700;
-        letter-spacing: 1px;
-        margin-bottom: 12px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        margin-bottom: 8px;
     }
-    .owner-hero h2 { margin: 0; font-family: "Playfair Display", "Noto Sans Thai", serif; font-size: 24px; }
-    .owner-hero p { margin: 8px 0 0; font-size: 13px; color: rgba(255, 255, 255, .78); max-width: 520px; }
-    .owner-hero-actions { display: flex; gap: 10px; flex-wrap: wrap; position: relative; z-index: 2; }
-    .owner-hero-actions .dashboard-btn.primary { background: var(--gold); color: var(--maroon-900); box-shadow: none; }
-    .owner-hero-actions .dashboard-btn.primary:hover { background: #d6ac70; }
-    .owner-hero-actions .dashboard-btn.secondary { background: rgba(255, 255, 255, .08); color: #fff; border-color: rgba(255, 255, 255, .25); }
+    .owner-hero h2 { margin: 0; font-family: "Playfair Display", "Noto Sans Thai", serif; font-size: 22px; font-weight: 600; }
+    .owner-hero p { margin: 6px 0 0; font-size: 13px; color: rgba(255, 255, 255, 0.8); max-width: 550px; line-height: 1.5; }
+    .owner-hero-actions { display: flex; gap: 8px; flex-wrap: wrap; position: relative; z-index: 2; }
+    .owner-hero-actions .dashboard-btn.primary { background: var(--gold); color: #fff; border: none; }
+    .owner-hero-actions .dashboard-btn.primary:hover { background: #a67f47; }
+    .owner-hero-actions .dashboard-btn.secondary { background: rgba(255, 255, 255, 0.08); color: #fff; border-color: rgba(255, 255, 255, 0.2); }
+    .owner-hero-actions .dashboard-btn.secondary:hover { background: rgba(255, 255, 255, 0.15); }
 
     /* KPI */
-    .stats-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-bottom: 18px; }
+    .stats-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-bottom: 20px; }
     .stat-card {
-        background: #fff;
+        background: var(--surface);
         border: 1px solid var(--line);
-        border-radius: 16px;
-        padding: 20px;
-        min-height: 145px;
-        box-shadow: 0 3px 18px rgba(111, 26, 43, .04);
-        position: relative;
-        overflow: hidden;
+        border-radius: var(--radius);
+        padding: 18px 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
     }
-    .stat-card::after {
-        content: "";
-        position: absolute;
-        right: -35px;
-        bottom: -45px;
-        width: 120px;
-        height: 120px;
-        border-radius: 50%;
-        background: var(--rose-bg);
-    }
-    .stat-top { display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 2; }
-    .stat-label { color: var(--muted); font-size: 13px; font-weight: 550; }
+    .stat-top { display: flex; align-items: center; justify-content: space-between; }
+    .stat-label { color: var(--muted); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
     .stat-icon {
-        width: 38px; height: 38px;
+        width: 32px; height: 32px;
         display: flex; align-items: center; justify-content: center;
-        border-radius: 11px; background: var(--rose-bg); color: var(--rose-text); font-size: 16px;
+        border-radius: 6px; background: #f4efed; color: var(--burgundy-800); font-size: 14px;
     }
-    .stat-value { margin-top: 16px; font-size: 25px; line-height: 1; font-weight: 750; color: var(--maroon-900); position: relative; z-index: 2; }
-    .stat-sub { margin-top: 9px; font-size: 12px; color: var(--muted); position: relative; z-index: 2; }
+    .stat-value { margin-top: 12px; font-size: 24px; font-weight: 700; color: var(--burgundy-900); letter-spacing: -0.5px; }
+    .stat-sub { margin-top: 4px; font-size: 11px; color: var(--muted); }
 
     /* MAIN GRID */
-    .dashboard-grid { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(320px, .85fr); gap: 18px; }
-    .card { background: #fff; border: 1px solid var(--line); border-radius: 16px; box-shadow: 0 3px 18px rgba(111, 26, 43, .04); }
-    .card-header { display: flex; align-items: center; justify-content: space-between; gap: 15px; padding: 19px 20px; border-bottom: 1px solid var(--line); }
-    .card-title { margin: 0; font-size: 15px; font-weight: 750; color: var(--maroon-900); }
-    .card-description { margin: 4px 0 0; color: var(--muted); font-size: 12px; }
-    .card-link { font-size: 12px; color: var(--rose-text); text-decoration: none; font-weight: 650; }
+    .dashboard-grid { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(320px, 0.9fr); gap: 20px; margin-bottom: 20px; }
+    .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+    .card-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 20px; border-bottom: 1px solid var(--line); }
+    .card-title { margin: 0; font-size: 14px; font-weight: 700; color: var(--burgundy-900); }
+    .card-description { margin: 2px 0 0; color: var(--muted); font-size: 11px; }
+    .card-link { font-size: 12px; color: var(--burgundy-700); text-decoration: none; font-weight: 600; }
     .card-link:hover { text-decoration: underline; }
     .card-body { padding: 20px; }
 
     /* CHART */
-    .chart-card { min-height: 390px; }
-    .chart-wrapper { height: 290px; position: relative; }
+    .chart-card { display: flex; flex-direction: column; }
+    .chart-wrapper { height: 260px; position: relative; width: 100%; }
 
     /* QUICK MENU */
     .quick-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
     .quick-item {
-        display: flex; align-items: center; gap: 12px; padding: 13px;
-        background: var(--cream); border: 1px solid var(--line); border-radius: 12px;
-        color: var(--ink); text-decoration: none; transition: .2s ease;
+        display: flex; align-items: center; gap: 10px; padding: 12px;
+        background: #fbf9f8; border: 1px solid var(--line); border-radius: 8px;
+        color: var(--ink); text-decoration: none; transition: all 0.15s ease;
     }
-    .quick-item:hover { background: #fff; border-color: var(--gold); transform: translateY(-1px); }
+    .quick-item:hover { background: #fff; border-color: var(--gold); }
     .quick-icon {
-        width: 36px; height: 36px; flex: 0 0 36px;
+        width: 32px; height: 32px; flex: 0 0 32px;
         display: flex; align-items: center; justify-content: center;
-        background: var(--rose-bg); border-radius: 10px; color: var(--rose-text);
+        background: #f0e9e7; border-radius: 6px; color: var(--burgundy-800); font-size: 13px;
     }
-    .quick-name { font-size: 12px; font-weight: 700; color: var(--maroon-900); }
-    .quick-desc { margin-top: 3px; font-size: 10px; color: var(--muted); }
+    .quick-name { font-size: 12px; font-weight: 650; color: var(--burgundy-900); }
+    .quick-desc { margin-top: 2px; font-size: 10px; color: var(--muted); }
 
     /* TABLES */
     .table-wrapper { overflow-x: auto; }
-    .kyrix-table { width: 100%; border-collapse: collapse; min-width: 650px; }
-    .kyrix-table th { text-align: left; padding: 12px 14px; background: var(--cream); color: var(--muted); font-size: 11px; font-weight: 700; white-space: nowrap; }
-    .kyrix-table td { padding: 14px; border-top: 1px solid var(--line); color: #4a3a3d; font-size: 12px; vertical-align: middle; }
-    .booking-code { font-weight: 750; color: var(--maroon-900); }
-    .customer-name { font-weight: 650; color: #3a2b2e; }
-    .customer-phone { margin-top: 3px; color: var(--muted); font-size: 10px; }
+    .kyrix-table { width: 100%; border-collapse: collapse; min-width: 600px; }
+    .kyrix-table th { text-align: left; padding: 10px 16px; background: #fbf9f8; color: var(--muted); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--line); }
+    .kyrix-table td { padding: 12px 16px; border-bottom: 1px solid var(--line); color: var(--ink); font-size: 12px; vertical-align: middle; }
+    .kyrix-table tr:last-child td { border-bottom: none; }
+    .booking-code { font-weight: 650; color: var(--burgundy-900); }
+    .customer-name { font-weight: 600; }
+    .customer-phone { margin-top: 2px; color: var(--muted); font-size: 11px; }
 
     /* STATUS BADGES */
-    .status-badge { display: inline-flex; align-items: center; padding: 5px 9px; border-radius: 999px; font-size: 10px; font-weight: 700; white-space: nowrap; }
-    .status-pending { background: #fff5dd; color: #9a6b00; }
-    .status-confirmed { background: #edf5ff; color: #4773a6; }
-    .status-warning { background: #fff0e7; color: #b65e25; }
-    .status-paid { background: #eef7ef; color: #4f7e53; }
-    .status-rented { background: var(--rose-bg); color: var(--rose-text); }
-    .status-returning { background: #fdf1e3; color: var(--gold-dark); }
-    .status-returned { background: #eef7f7; color: #477f80; }
-    .status-completed { background: #f4ece2; color: var(--maroon-800); }
-    .status-cancelled { background: #f5f5f5; color: #888; }
-    .status-default { background: #f5f5f5; color: #777; }
+    .status-badge { display: inline-flex; align-items: center; padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; letter-spacing: 0.3px; }
+    .status-pending { background: #fff8e8; color: #8a6200; border: 1px solid #fce8bd; }
+    .status-confirmed { background: #eef4fb; color: #356294; border: 1px solid #d2e3f5; }
+    .status-warning { background: #fef0eb; color: #a14e1a; border: 1px solid #fcdbd0; }
+    .status-paid { background: #edf7ee; color: #3b6b3f; border: 1px solid #d2edd4; }
+    .status-rented { background: #f7e7ea; color: var(--burgundy-800); border: 1px solid #ecd3d7; }
+    .status-returning { background: #fdf5ea; color: #9c6d1f; border: 1px solid #fae4c8; }
+    .status-returned { background: #edf6f6; color: #366b6c; border: 1px solid #cee8e8; }
+    .status-completed { background: #f3efe9; color: #52413b; border: 1px solid #e2dacd; }
+    .status-cancelled { background: #f4f4f4; color: #666; border: 1px solid #e0e0e0; }
+    .status-default { background: #f4f4f4; color: #666; border: 1px solid #e0e0e0; }
 
     /* SIDE LIST */
     .side-list { display: flex; flex-direction: column; }
-    .side-item { display: flex; align-items: center; gap: 12px; padding: 13px 0; border-bottom: 1px solid var(--line); }
-    .side-item:last-child { border-bottom: 0; }
+    .side-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+    .side-item:last-child { border-bottom: 0; padding-bottom: 0; }
+    .side-item:first-child { padding-top: 0; }
     .side-avatar {
-        width: 40px; height: 40px; flex: 0 0 40px; border-radius: 11px;
-        background: var(--rose-bg); color: var(--rose-text);
-        display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 750;
+        width: 34px; height: 34px; flex: 0 0 34px; border-radius: 6px;
+        background: #f4efed; color: var(--burgundy-800);
+        display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700;
     }
     .side-content { min-width: 0; flex: 1; }
-    .side-title { font-size: 12px; font-weight: 700; color: #3a2b2e; }
-    .side-meta { margin-top: 4px; color: var(--muted); font-size: 10px; }
-    .side-price { font-size: 12px; font-weight: 750; color: var(--maroon-900); white-space: nowrap; }
+    .side-title { font-size: 12px; font-weight: 650; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .side-meta { margin-top: 2px; color: var(--muted); font-size: 11px; }
+    .side-price { font-size: 12px; font-weight: 700; color: var(--burgundy-900); white-space: nowrap; }
 
     /* LOWER GRID */
-    .lower-grid { display: grid; grid-template-columns: 1.2fr .8fr; gap: 18px; margin-top: 18px; }
+    .lower-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; margin-bottom: 20px; }
 
-    /* POPULAR DRESSES GRID & IMAGES FIX */
-    .dress-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-    .dress-item { border: 1px solid var(--line); border-radius: 13px; overflow: hidden; background: #fff; }
+    /* POPULAR DRESSES GRID */
+    .dress-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .dress-item { border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: #fff; display: flex; flex-direction: column; }
+    
+    /* ปรับสัดส่วนรูปภาพเป็นแนวตั้ง 3:4 เพื่อให้พอดีกับรูปชุดและแสดงเต็มใบโดยไม่ถูกตัด */
     .dress-image {
-        height: 140px;
-        background: var(--cream);
+        aspect-ratio: 3 / 4;
+        background: #f7f4f2;
         display: flex;
         align-items: center;
         justify-content: center;
         overflow: hidden;
         position: relative;
     }
-    .dress-image img { width: 100%; height: 100%; object-fit: cover; }
-    .dress-placeholder { color: var(--muted); font-size: 26px; }
-    .dress-info { padding: 12px; }
-    .dress-name { font-size: 12px; font-weight: 700; color: #3a2b2e; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .dress-meta { display: flex; justify-content: space-between; gap: 5px; margin-top: 6px; font-size: 10px; color: var(--muted); }
+    .dress-image img { 
+        width: 100%; 
+        height: 100%; 
+        object-fit: contain; 
+    }
+    .dress-placeholder { color: var(--muted); font-size: 24px; }
+    .dress-info { padding: 12px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; }
+    .dress-name { font-size: 12px; font-weight: 700; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .dress-meta { display: flex; justify-content: space-between; gap: 5px; margin-top: 6px; font-size: 11px; color: var(--muted); }
+    .dress-price { font-weight: 700; color: var(--burgundy-900); }
 
     /* RETURN ALERT */
-    .return-item { padding: 13px 0; border-bottom: 1px solid var(--line); }
-    .return-item:last-child { border-bottom: 0; }
+    .return-item { padding: 10px 0; border-bottom: 1px solid var(--line); }
+    .return-item:last-child { border-bottom: 0; padding-bottom: 0; }
+    .return-item:first-child { padding-top: 0; }
     .return-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-    .return-name { font-size: 12px; font-weight: 700; color: #3a2b2e; }
-    .return-date { color: var(--gold-dark); font-size: 10px; font-weight: 700; }
-    .return-detail { margin-top: 5px; color: var(--muted); font-size: 10px; }
+    .return-name { font-size: 12px; font-weight: 650; color: var(--ink); }
+    .return-date { color: var(--gold-dark); font-size: 11px; font-weight: 700; background: #fbf9f8; padding: 2px 6px; border-radius: 4px; border: 1px solid var(--line); }
+    .return-detail { margin-top: 3px; color: var(--muted); font-size: 11px; }
 
     /* EMPTY */
-    .empty-state { padding: 35px 15px; text-align: center; color: #c2aeb1; }
-    .empty-icon { font-size: 25px; margin-bottom: 9px; opacity: .55; color: var(--rose-text); }
-    .empty-text { font-size: 12px; }
+    .empty-state { padding: 30px 15px; text-align: center; color: var(--muted); }
+    .empty-icon { font-size: 22px; margin-bottom: 6px; opacity: 0.5; color: var(--burgundy-700); }
+    .empty-text { font-size: 12px; font-weight: 500; }
 
     @media (max-width: 1200px) {
         .stats-grid { grid-template-columns: repeat(2, 1fr); }
         .dashboard-grid, .lower-grid { grid-template-columns: 1fr; }
     }
     @media (max-width: 768px) {
-        .kyrix-dashboard { padding: 18px; }
+        .kyrix-dashboard { padding: 12px; }
         .dashboard-header { align-items: flex-start; flex-direction: column; }
         .stats-grid, .quick-grid, .dress-list { grid-template-columns: 1fr; }
     }
@@ -334,13 +342,13 @@
         <!-- HEADER -->
         <div class="dashboard-header">
             <div class="dashboard-heading">
-                <span class="eyebrow">KYRIX RENTAL · ADMIN</span>
-                <h1>ภาพรวมร้าน</h1>
-                <p>จัดการและติดตามการเช่าชุดของร้านคุณในหน้าเดียว</p>
+                <span class="eyebrow">KYRIX RENTAL · MANAGEMENT</span>
+                <h1>ภาพรวมระบบร้าน</h1>
+                <p>ควบคุมและตรวจสอบภาพรวมการเช่าชุดทั้งหมดภายในหน้าเดียว</p>
             </div>
             <div class="header-actions">
                 <a href="{{ Route::has('owner.bookings.index') ? route('owner.bookings.index') : '#' }}" class="dashboard-btn secondary">
-                    <i class="fa-regular fa-calendar"></i> รายการเช่า
+                    <i class="fa-regular fa-calendar"></i> รายการเช่าทั้งหมด
                 </a>
                 <a href="{{ Route::has('owner.dresses.create') ? route('owner.dresses.create') : '#' }}" class="dashboard-btn primary">
                     <i class="fa-solid fa-plus"></i> เพิ่มชุดใหม่
@@ -352,17 +360,17 @@
         <div class="owner-hero">
             <div>
                 <span class="owner-hero-badge">
-                    <i class="fa-solid fa-store"></i> OWNER PANEL
+                    <i class="fa-solid fa-store"></i> ADMIN PANEL
                 </span>
                 <h2>ยินดีต้อนรับกลับมา, {{ $ownerName }}</h2>
-                <p>วันนี้มีรายได้ ฿{{ $money($todayRevenue) }} และมีรายการรอดำเนินการ {{ number_format($pendingBookings) }} รายการที่ควรตรวจสอบ</p>
+                <p>ยอดขายวันนี้รวม <strong>฿{{ $money($todayRevenue) }}</strong> และมีรายการรอดำเนินการตรวจสอบทั้งสิ้น <strong>{{ number_format($pendingBookings) }} รายการ</strong></p>
             </div>
             <div class="owner-hero-actions">
                 <a href="{{ Route::has('owner.bookings.index') ? route('owner.bookings.index') : '#' }}" class="dashboard-btn secondary">
-                    <i class="fa-regular fa-clock"></i> รายการรอดำเนินการ
+                    <i class="fa-regular fa-clock"></i> ตรวจสอบคิวรอดำเนินการ
                 </a>
                 <a href="{{ Route::has('owner.reports.index') ? route('owner.reports.index') : '#' }}" class="dashboard-btn primary">
-                    <i class="fa-solid fa-chart-column"></i> ดูรายงานร้าน
+                    <i class="fa-solid fa-chart-line"></i> รายงานสถิติเชิงลึก
                 </a>
             </div>
         </div>
@@ -372,37 +380,37 @@
             <div class="stat-card">
                 <div class="stat-top">
                     <div class="stat-label">รายได้เดือนนี้</div>
-                    <div class="stat-icon"><i class="fa-solid fa-baht-sign"></i></div>
+                    <div class="stat-icon"><i class="fa-solid fa-wallet"></i></div>
                 </div>
                 <div class="stat-value">฿{{ $money($monthlyRevenue) }}</div>
-                <div class="stat-sub">รายรับรวมของเดือนปัจจุบัน</div>
+                <div class="stat-sub">ยอดรับรวมเดือนปัจจุบัน</div>
             </div>
 
             <div class="stat-card">
                 <div class="stat-top">
                     <div class="stat-label">รายได้วันนี้</div>
-                    <div class="stat-icon"><i class="fa-solid fa-chart-line"></i></div>
+                    <div class="stat-icon"><i class="fa-solid fa-coins"></i></div>
                 </div>
                 <div class="stat-value">฿{{ $money($todayRevenue) }}</div>
-                <div class="stat-sub">รายรับที่เกิดขึ้นวันนี้</div>
+                <div class="stat-sub">ยอดเงินที่เกิดขึ้นในวันนี้</div>
             </div>
 
             <div class="stat-card">
                 <div class="stat-top">
-                    <div class="stat-label">กำลังเช่า</div>
+                    <div class="stat-label">กำลังเช่าอยู่</div>
                     <div class="stat-icon"><i class="fa-solid fa-shirt"></i></div>
                 </div>
                 <div class="stat-value">{{ number_format($activeRentals) }}</div>
-                <div class="stat-sub">ชุดที่อยู่ระหว่างการเช่า</div>
+                <div class="stat-sub">ชุดที่ถูกสวมใส่อยู่ขณะนี้</div>
             </div>
 
             <div class="stat-card">
                 <div class="stat-top">
-                    <div class="stat-label">รอการดำเนินการ</div>
+                    <div class="stat-label">รอดำเนินการ</div>
                     <div class="stat-icon"><i class="fa-regular fa-clock"></i></div>
                 </div>
                 <div class="stat-value">{{ number_format($pendingBookings) }}</div>
-                <div class="stat-sub">รายการที่ต้องตรวจสอบ</div>
+                <div class="stat-sub">รายการที่ต้องตรวจสอบด่วน</div>
             </div>
         </div>
 
@@ -413,10 +421,10 @@
             <div class="card chart-card">
                 <div class="card-header">
                     <div>
-                        <h2 class="card-title">รายได้ของร้าน (กราฟแท่ง)</h2>
-                        <p class="card-description">ภาพรวมรายได้รายเดือนประจำปี</p>
+                        <h2 class="card-title">สถิติรายได้รายเดือน</h2>
+                        <p class="card-description">กราฟเปรียบเทียบยอดรายรับตลอดปีปัจจุบัน</p>
                     </div>
-                    <span class="card-link">ปี {{ now()->year + 543 }}</span>
+                    <span class="card-link">ปี พ.ศ. {{ now()->year + 543 }}</span>
                 </div>
                 <div class="card-body">
                     <div class="chart-wrapper">
@@ -429,8 +437,8 @@
             <div class="card">
                 <div class="card-header">
                     <div>
-                        <h2 class="card-title">เมนูจัดการ</h2>
-                        <p class="card-description">ทางลัดสำหรับเจ้าของร้าน</p>
+                        <h2 class="card-title">เมนูลัดผู้ดูแลระบบ</h2>
+                        <p class="card-description">ทางด่วนเข้าถึงฟังก์ชันสำคัญของร้าน</p>
                     </div>
                 </div>
                 <div class="card-body">
@@ -439,28 +447,28 @@
                             <div class="quick-icon"><i class="fa-solid fa-shirt"></i></div>
                             <div>
                                 <div class="quick-name">ชุดทั้งหมด</div>
-                                <div class="quick-desc">{{ number_format($totalDresses) }} ชุด</div>
+                                <div class="quick-desc">{{ number_format($totalDresses) }} รายการ</div>
                             </div>
                         </a>
                         <a href="{{ Route::has('owner.bookings.index') ? route('owner.bookings.index') : '#' }}" class="quick-item">
                             <div class="quick-icon"><i class="fa-regular fa-calendar-days"></i></div>
                             <div>
-                                <div class="quick-name">รายการเช่า</div>
-                                <div class="quick-desc">{{ number_format($totalBookings) }} รายการ</div>
+                                <div class="quick-name">การเช่า</div>
+                                <div class="quick-desc">{{ number_format($totalBookings) }} คิว</div>
                             </div>
                         </a>
                         <a href="{{ Route::has('owner.customers.index') ? route('owner.customers.index') : '#' }}" class="quick-item">
                             <div class="quick-icon"><i class="fa-solid fa-users"></i></div>
                             <div>
                                 <div class="quick-name">ลูกค้า</div>
-                                <div class="quick-desc">{{ number_format($totalCustomers) }} คน</div>
+                                <div class="quick-desc">{{ number_format($totalCustomers) }} บัญชี</div>
                             </div>
                         </a>
                         <a href="{{ Route::has('owner.payments.index') ? route('owner.payments.index') : '#' }}" class="quick-item">
                             <div class="quick-icon"><i class="fa-solid fa-receipt"></i></div>
                             <div>
                                 <div class="quick-name">การชำระเงิน</div>
-                                <div class="quick-desc">ตรวจสอบรายการ</div>
+                                <div class="quick-desc">ตรวจสอบสลิป</div>
                             </div>
                         </a>
                         <a href="{{ Route::has('owner.returns.index') ? route('owner.returns.index') : '#' }}" class="quick-item">
@@ -471,10 +479,10 @@
                             </div>
                         </a>
                         <a href="{{ Route::has('owner.reports.index') ? route('owner.reports.index') : '#' }}" class="quick-item">
-                            <div class="quick-icon"><i class="fa-solid fa-chart-column"></i></div>
+                            <div class="quick-icon"><i class="fa-solid fa-chart-pie"></i></div>
                             <div>
                                 <div class="quick-name">รายงาน</div>
-                                <div class="quick-desc">รายงานร้าน</div>
+                                <div class="quick-desc">สรุปยอดบัญชี</div>
                             </div>
                         </a>
                     </div>
@@ -483,25 +491,25 @@
         </div>
 
         <!-- RECENT BOOKINGS -->
-        <div class="card" style="margin-top:18px;">
+        <div class="card" style="margin-bottom: 20px;">
             <div class="card-header">
                 <div>
                     <h2 class="card-title">รายการเช่าล่าสุด</h2>
-                    <p class="card-description">รายการเช่าที่เกิดขึ้นล่าสุด</p>
+                    <p class="card-description">ประวัติการทำรายการจองชุดล่าสุดภายในระบบ</p>
                 </div>
-                <a href="{{ Route::has('owner.bookings.index') ? route('owner.bookings.index') : '#' }}" class="card-link">ดูทั้งหมด</a>
+                <a href="{{ Route::has('owner.bookings.index') ? route('owner.bookings.index') : '#' }}" class="card-link">ดูทั้งหมด &rarr;</a>
             </div>
             <div class="table-wrapper">
                 @if($recentBookings instanceof \Illuminate\Support\Collection && $recentBookings->count())
                     <table class="kyrix-table">
                         <thead>
                             <tr>
-                                <th>เลขที่เช่า</th>
+                                <th>รหัสการเช่า</th>
                                 <th>ลูกค้า</th>
-                                <th>วันรับ</th>
-                                <th>วันคืน</th>
-                                <th>ยอดรวม</th>
-                                <th>สถานะ</th>
+                                <th>วันรับชุด</th>
+                                <th>วันคืนชุด</th>
+                                <th>ยอดรวมทั้งสิ้น</th>
+                                <th>สถานะปัจจุบัน</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -542,13 +550,13 @@
                 @else
                     <div class="empty-state">
                         <div class="empty-icon"><i class="fa-regular fa-calendar-xmark"></i></div>
-                        <div class="empty-text">ยังไม่มีรายการเช่า</div>
+                        <div class="empty-text">ยังไม่มีรายการเช่าในขณะนี้</div>
                     </div>
                 @endif
             </div>
         </div>
 
-        <!-- LOWER GRID -->
+        <!-- LOWER GRID (RETURNS & PAYMENTS) -->
         <div class="lower-grid">
             
             <!-- UPCOMING RETURNS -->
@@ -556,7 +564,7 @@
                 <div class="card-header">
                     <div>
                         <h2 class="card-title">ชุดที่ใกล้ถึงกำหนดคืน</h2>
-                        <p class="card-description">รายการที่เจ้าของร้านควรติดตาม</p>
+                        <p class="card-description">รายการที่ต้องติดต่อรับคืนชุดตามกำหนด</p>
                     </div>
                     <a href="{{ Route::has('owner.returns.index') ? route('owner.returns.index') : '#' }}" class="card-link">ดูทั้งหมด</a>
                 </div>
@@ -571,23 +579,23 @@
                                 @endphp
                                 <div class="return-item">
                                     <div class="return-top">
-                                        <div class="return-name">{{ $returnDress }}</div>
+                                        <div class="return-name"><i class="fa-solid fa-shirt text-muted me-1"></i> {{ $returnDress }}</div>
                                         <div class="return-date">
                                             @if($returnDate)
-                                                {{ \Carbon\Carbon::parse($returnDate)->format('d/m/Y') }}
+                                                คืน: {{ \Carbon\Carbon::parse($returnDate)->format('d/m/Y') }}
                                             @else
                                                 -
                                             @endif
                                         </div>
                                     </div>
-                                    <div class="return-detail">ลูกค้า: {{ $returnCustomer }}</div>
+                                    <div class="return-detail">ผู้เช่า: {{ $returnCustomer }}</div>
                                 </div>
                             @endforeach
                         </div>
                     @else
                         <div class="empty-state">
-                            <div class="empty-icon"><i class="fa-solid fa-check"></i></div>
-                            <div class="empty-text">ไม่มีชุดที่ใกล้ถึงกำหนดคืน</div>
+                            <div class="empty-icon"><i class="fa-regular fa-circle-check"></i></div>
+                            <div class="empty-text">ไม่มีชุดที่ใกล้กำหนดคืนในช่วงนี้</div>
                         </div>
                     @endif
                 </div>
@@ -597,8 +605,8 @@
             <div class="card">
                 <div class="card-header">
                     <div>
-                        <h2 class="card-title">การชำระเงินที่ต้องตรวจสอบ</h2>
-                        <p class="card-description">รายการที่รอเจ้าของร้านตรวจสอบ</p>
+                        <h2 class="card-title">การชำระเงินรอตรวจสอบ</h2>
+                        <p class="card-description">สลิปโอนเงินที่รอการยืนยันจากคุณ</p>
                     </div>
                     <a href="{{ Route::has('owner.payments.index') ? route('owner.payments.index') : '#' }}" class="card-link">ดูทั้งหมด</a>
                 </div>
@@ -611,10 +619,10 @@
                                     $paymentAmount = $payment->amount ?? $payment->total_amount ?? 0;
                                 @endphp
                                 <div class="side-item">
-                                    <div class="side-avatar"><i class="fa-solid fa-baht-sign"></i></div>
+                                    <div class="side-avatar"><i class="fa-solid fa-receipt"></i></div>
                                     <div class="side-content">
                                         <div class="side-title">{{ $paymentCustomer }}</div>
-                                        <div class="side-meta">รอตรวจสอบการชำระเงิน</div>
+                                        <div class="side-meta">รอตรวจสอบยอดโอนเงิน</div>
                                     </div>
                                     <div class="side-price">฿{{ $money($paymentAmount) }}</div>
                                 </div>
@@ -623,21 +631,21 @@
                     @else
                         <div class="empty-state">
                             <div class="empty-icon"><i class="fa-regular fa-circle-check"></i></div>
-                            <div class="empty-text">ไม่มีรายการที่รอตรวจสอบ</div>
+                            <div class="empty-text">ไม่มีรายการชำระเงินที่ค้างตรวจสอบ</div>
                         </div>
                     @endif
                 </div>
             </div>
         </div>
 
-        <!-- POPULAR DRESSES (FIXED IMAGE & PRODUCTION READY) -->
-        <div class="card" style="margin-top:18px;">
+        <!-- POPULAR DRESSES -->
+        <div class="card">
             <div class="card-header">
                 <div>
-                    <h2 class="card-title">ชุดที่มีการเช่าสูง</h2>
-                    <p class="card-description">ชุดที่ได้รับความนิยมสูงสุดจากลูกค้า</p>
+                    <h2 class="card-title">ชุดยอดนิยมสูงสุด</h2>
+                    <p class="card-description">ชุดที่มีสถิติการถูกจองเช่าสูงสุดในร้าน</p>
                 </div>
-                <a href="{{ Route::has('owner.dresses.index') ? route('owner.dresses.index') : '#' }}" class="card-link">จัดการชุด</a>
+                <a href="{{ Route::has('owner.dresses.index') ? route('owner.dresses.index') : '#' }}" class="card-link">จัดการชุดทั้งหมด</a>
             </div>
             <div class="card-body">
                 @if($popularDresses instanceof \Illuminate\Support\Collection && $popularDresses->count())
@@ -647,23 +655,21 @@
                                 $dressName = $dress->name ?? $dress->dress_name ?? $dress->product_name ?? 'ไม่ระบุชื่อชุด';
                                 $dressPrice = $dress->rental_price ?? $dress->rent_price ?? $dress->price ?? 0;
                                 
-                                // ระบบดึงรูปภาพครอบคลุมทุกรูปแบบโครงสร้าง Database ใน Laravel
+                                // ระบบดึงรูปภาพครอบคลุมทุกโครงสร้าง Database
                                 $dressImage = null;
-                                if (isset($dress->images) && $dress->images->count() > 0) {
-                                    $dressImage = $dress->images->first()->image_path ?? $dress->images->first()->url ?? null;
-                                } elseif (!empty($dress->image)) {
+                                if (isset($dress->images) && is_iterable($dress->images) && count($dress->images) > 0) {
+                                    $firstImg = is_array($dress->images) ? $dress->images[0] : $dress->images->first();
+                                    $dressImage = $firstImg->image_path ?? $firstImg->url ?? $firstImg->path ?? null;
+                                } elseif (isset($dress->image)) {
                                     $dressImage = $dress->image;
-                                } elseif (!empty($dress->image_path)) {
+                                } elseif (isset($dress->image_path)) {
                                     $dressImage = $dress->image_path;
                                 }
-
-                                $rentCount = $dress->bookings_count ?? $dress->rental_count ?? 0;
                             @endphp
                             <div class="dress-item">
                                 <div class="dress-image">
                                     @if($dressImage)
-                                        {{-- ตรวจสอบว่าเป็น URL ภายนอกหรืออยู่ใน Storage --}}
-                                        <img src="{{ Str::startsWith($dressImage, ['http://', 'https://']) ? $dressImage : asset('storage/' . ltrim($dressImage, '/')) }}" alt="{{ $dressName }}">
+                                        <img src="{{ asset($dressImage) }}" alt="{{ $dressName }}">
                                     @else
                                         <div class="dress-placeholder"><i class="fa-solid fa-shirt"></i></div>
                                     @endif
@@ -671,8 +677,8 @@
                                 <div class="dress-info">
                                     <div class="dress-name" title="{{ $dressName }}">{{ $dressName }}</div>
                                     <div class="dress-meta">
-                                        <span>฿{{ $money($dressPrice) }}</span>
-                                        <span>เช่า {{ $rentCount }} ครั้ง</span>
+                                        <span>ค่าเช่า</span>
+                                        <span class="dress-price">฿{{ $money($dressPrice) }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -681,7 +687,7 @@
                 @else
                     <div class="empty-state">
                         <div class="empty-icon"><i class="fa-solid fa-shirt"></i></div>
-                        <div class="empty-text">ยังไม่มีข้อมูลชุดยอดนิยม</div>
+                        <div class="empty-text">ยังไม่มีข้อมูลชุดยอดนิยมในขณะนี้</div>
                     </div>
                 @endif
             </div>
@@ -694,65 +700,63 @@
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    const canvas = document.getElementById('revenueBarChart');
-    if (!canvas) { return; }
+    document.addEventListener("DOMContentLoaded", function () {
+        const ctx = document.getElementById('revenueBarChart');
+        if (ctx) {
+            const months = @json($monthlyLabels);
+            const revenues = @json($monthlyData);
 
-    const labels = @json($monthlyLabels);
-    const values = @json($monthlyData);
-    const ctx = canvas.getContext('2d');
-
-    // สร้างกราฟแท่ง (Bar Chart) ธีมสีเบอร์กันดีและทอง
-    new Chart(canvas, {
-        type: 'bar',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'รายได้ (บาท)',
-                data: values,
-                backgroundColor: '#6f1a2b',
-                hoverBackgroundColor: '#c79a5c',
-                borderRadius: 6,
-                borderSkipped: false,
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { display: false },
-                tooltip: {
-                    backgroundColor: '#430d17',
-                    titleColor: '#f7e7ea',
-                    bodyColor: '#fff',
-                    padding: 10,
-                    cornerRadius: 8,
-                    callbacks: {
-                        label: function (context) {
-                            return ' รายได้: ฿' + Number(context.raw || 0).toLocaleString('th-TH', { minimumFractionDigits: 2 });
-                        }
-                    }
-                }
-            },
-            scales: {
-                x: {
-                    grid: { display: false },
-                    ticks: { color: '#8a7a7d', font: { size: 11 } }
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: months,
+                    datasets: [{
+                        label: 'รายได้ (บาท)',
+                        data: revenues,
+                        backgroundColor: '#5c1d2b',
+                        hoverBackgroundColor: '#3b1119',
+                        borderRadius: 4,
+                        barThickness: 'flex',
+                        maxBarThickness: 32,
+                    }]
                 },
-                y: {
-                    beginAtZero: true,
-                    grid: { color: '#f0e6e4' },
-                    ticks: {
-                        color: '#8a7a7d',
-                        font: { size: 10 },
-                        callback: function (value) {
-                            return '฿' + Number(value).toLocaleString('th-TH');
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let value = context.parsed.y || 0;
+                                    return ' รายได้: ฿' + value.toLocaleString('th-TH', { minimumFractionDigits: 2 });
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { display: false },
+                            ticks: { font: { size: 11, family: 'Noto Sans Thai' }, color: '#6e5c60' }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: '#e8e2df', borderDash: [4, 4] },
+                            ticks: { 
+                                font: { size: 11, family: 'Noto Sans Thai' }, 
+                                color: '#6e5c60',
+                                callback: function(value) {
+                                    if (value >= 1000) {
+                                        return (value / 1000).toLocaleString() + 'k';
+                                    }
+                                    return value;
+                                }
+                            }
                         }
                     }
                 }
-            }
+            });
         }
     });
-});
 </script>
 @endpush
