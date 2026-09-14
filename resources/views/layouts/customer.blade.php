@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,7 +10,9 @@
     <!-- Google Fonts: Prompt & Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Prompt:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
 
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -30,8 +33,8 @@
             --radius-sm: 8px;
             --radius-md: 14px;
             --radius-lg: 20px;
-            --shadow-sm: 0 4px 12px rgba(0,0,0,0.03);
-            --shadow-md: 0 10px 30px rgba(0,0,0,0.06);
+            --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.03);
+            --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.06);
             --shadow-lg: 0 20px 50px rgba(122, 31, 43, 0.12);
         }
 
@@ -67,6 +70,7 @@
             justify-content: space-between;
             align-items: center;
         }
+
         .top-banner a {
             color: var(--gold);
             font-weight: 500;
@@ -79,7 +83,7 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
         }
 
         .header-container {
@@ -96,6 +100,7 @@
             display: flex;
             flex-direction: column;
         }
+
         .logo {
             font-family: 'Plus Jakarta Sans', sans-serif;
             font-size: 28px;
@@ -104,6 +109,7 @@
             color: var(--primary);
             line-height: 1;
         }
+
         .logo-sub {
             font-size: 10px;
             letter-spacing: 3px;
@@ -119,18 +125,18 @@
             gap: 28px;
             list-style: none;
         }
+
         .nav-links a {
             font-size: 15px;
             font-weight: 500;
             color: var(--text-main);
             padding: 6px 0;
             position: relative;
+            transition: color 0.25s ease;
         }
-        .nav-links a:hover,
-        .nav-links a.active {
-            color: var(--primary);
-        }
-        .nav-links a.active::after {
+
+        /* เส้นขีดใต้ทุกลิงก์ — ซ่อนไว้ก่อน */
+        .nav-links a::after {
             content: '';
             position: absolute;
             bottom: 0;
@@ -139,6 +145,27 @@
             height: 2px;
             background: var(--primary);
             border-radius: 2px;
+            transform: scaleX(0);
+            transform-origin: left center;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Hover — เส้นสไลด์ออกจากซ้าย */
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-links a:hover::after {
+            transform: scaleX(1);
+        }
+
+        /* Active — เส้นแสดงเต็มตลอดเวลา */
+        .nav-links a.active {
+            color: var(--primary);
+        }
+
+        .nav-links a.active::after {
+            transform: scaleX(1);
         }
 
         .header-actions {
@@ -151,6 +178,7 @@
             position: relative;
             width: 220px;
         }
+
         .search-box input {
             width: 100%;
             padding: 9px 36px 9px 14px;
@@ -161,12 +189,14 @@
             font-size: 13px;
             transition: all 0.2s;
         }
+
         .search-box input:focus {
             outline: none;
             border-color: var(--primary);
             background: #fff;
-            box-shadow: 0 0 0 3px rgba(122,31,43,0.1);
+            box-shadow: 0 0 0 3px rgba(122, 31, 43, 0.1);
         }
+
         .search-box button {
             position: absolute;
             right: 12px;
@@ -191,11 +221,13 @@
             font-size: 18px;
             transition: all 0.2s;
         }
+
         .cart-btn:hover {
             background: var(--primary);
             color: #fff;
             transform: translateY(-2px);
         }
+
         .cart-badge {
             position: absolute;
             top: -4px;
@@ -210,12 +242,13 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
         }
 
         .user-menu {
             position: relative;
         }
+
         .user-trigger {
             display: flex;
             align-items: center;
@@ -229,9 +262,11 @@
             font-weight: 500;
             transition: all 0.2s;
         }
+
         .user-trigger:hover {
             border-color: var(--primary);
         }
+
         .user-avatar {
             width: 28px;
             height: 28px;
@@ -258,9 +293,11 @@
             display: none;
             z-index: 200;
         }
+
         .user-menu:hover .dropdown-menu {
             display: block;
         }
+
         .dropdown-item {
             display: flex;
             align-items: center;
@@ -269,10 +306,12 @@
             font-size: 14px;
             color: var(--text-main);
         }
+
         .dropdown-item:hover {
             background: var(--primary-soft);
             color: var(--primary);
         }
+
         .dropdown-divider {
             height: 1px;
             background: var(--border);
@@ -295,36 +334,44 @@
             transition: all 0.25s ease;
             text-decoration: none;
         }
+
         .btn-primary {
             background: var(--primary);
             color: #fff;
         }
+
         .btn-primary:hover {
             background: var(--primary-dark);
-            box-shadow: 0 8px 20px rgba(122,31,43,0.25);
+            box-shadow: 0 8px 20px rgba(122, 31, 43, 0.25);
             transform: translateY(-2px);
         }
+
         .btn-secondary {
             background: #fff;
             color: var(--primary);
             border: 1px solid var(--primary);
         }
+
         .btn-secondary:hover {
             background: var(--primary-soft);
         }
+
         .btn-gold {
             background: var(--gold);
             color: #fff;
         }
+
         .btn-gold:hover {
             background: #b58c3f;
-            box-shadow: 0 8px 20px rgba(198,156,76,0.3);
+            box-shadow: 0 8px 20px rgba(198, 156, 76, 0.3);
         }
+
         .btn-sm {
             padding: 7px 14px;
             font-size: 13px;
             border-radius: 8px;
         }
+
         .btn-block {
             width: 100%;
         }
@@ -335,6 +382,7 @@
             margin: 20px auto 0;
             padding: 0 24px;
         }
+
         .alert {
             padding: 14px 20px;
             border-radius: var(--radius-md);
@@ -346,16 +394,20 @@
             font-weight: 500;
             box-shadow: var(--shadow-sm);
         }
+
         .alert-success {
             background: #edfbf3;
             color: #1a7f47;
             border: 1px solid #b7ecd0;
         }
-        .alert-error, .alert-danger {
+
+        .alert-error,
+        .alert-danger {
             background: #fdf2f2;
             color: #b91c1c;
             border: 1px solid #fecaca;
         }
+
         .alert-warning {
             background: #fffbeb;
             color: #b45309;
@@ -377,15 +429,51 @@
             font-size: 12px;
             font-weight: 600;
         }
-        .badge-warning { background: #fef3c7; color: #b45309; }
-        .badge-info { background: #e0f2fe; color: #0369a1; }
-        .badge-primary { background: var(--primary-soft); color: var(--primary); }
-        .badge-indigo { background: #e0e7ff; color: #4338ca; }
-        .badge-teal { background: #ccfbf1; color: #0f766e; }
-        .badge-amber { background: #ffedd5; color: #c2410c; }
-        .badge-success { background: #dcfce7; color: #15803d; }
-        .badge-emerald { background: #d1fae5; color: #065f46; }
-        .badge-danger { background: #fee2e2; color: #b91c1c; }
+
+        .badge-warning {
+            background: #fef3c7;
+            color: #b45309;
+        }
+
+        .badge-info {
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+
+        .badge-primary {
+            background: var(--primary-soft);
+            color: var(--primary);
+        }
+
+        .badge-indigo {
+            background: #e0e7ff;
+            color: #4338ca;
+        }
+
+        .badge-teal {
+            background: #ccfbf1;
+            color: #0f766e;
+        }
+
+        .badge-amber {
+            background: #ffedd5;
+            color: #c2410c;
+        }
+
+        .badge-success {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .badge-emerald {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-danger {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
 
         /* Footer */
         .footer {
@@ -395,6 +483,7 @@
             padding-top: 60px;
             border-top: 3px solid var(--primary);
         }
+
         .footer-container {
             max-width: 1280px;
             margin: 0 auto;
@@ -403,6 +492,7 @@
             grid-template-columns: 2fr 1fr 1fr 1.5fr;
             gap: 40px;
         }
+
         .footer-col h4 {
             color: #fff;
             font-size: 17px;
@@ -410,6 +500,7 @@
             position: relative;
             padding-bottom: 8px;
         }
+
         .footer-col h4::after {
             content: '';
             position: absolute;
@@ -419,25 +510,31 @@
             height: 2px;
             background: var(--gold);
         }
+
         .footer-col p {
             font-size: 14px;
             line-height: 1.8;
             color: #a69e97;
         }
+
         .footer-links {
             list-style: none;
         }
+
         .footer-links li {
             margin-bottom: 10px;
         }
+
         .footer-links a {
             color: #a69e97;
             font-size: 14px;
         }
+
         .footer-links a:hover {
             color: var(--gold);
             padding-left: 5px;
         }
+
         .contact-info li {
             display: flex;
             align-items: flex-start;
@@ -446,10 +543,12 @@
             font-size: 14px;
             color: #a69e97;
         }
+
         .contact-info i {
             color: var(--gold);
             margin-top: 4px;
         }
+
         .footer-bottom {
             border-top: 1px solid #332d29;
             padding: 20px 24px;
@@ -472,20 +571,25 @@
             .nav-links {
                 display: none;
             }
+
             .mobile-menu-btn {
                 display: block;
             }
+
             .search-box {
                 display: none;
             }
+
             .footer-container {
                 grid-template-columns: 1fr 1fr;
             }
         }
+
         @media (max-width: 600px) {
             .footer-container {
                 grid-template-columns: 1fr;
             }
+
             .top-banner {
                 display: none;
             }
@@ -493,16 +597,9 @@
     </style>
     @stack('styles')
 </head>
+
 <body>
-    <!-- Top info bar -->
-    <div class="top-banner">
-        <div>
-            <span><i class="fa-solid fa-sparkles" style="color: var(--gold); margin-right: 6px;"></i> สัมผัสประสบการณ์เช่าชุดหรู คัตติ้งระดับพรีเมียม พร้อมบริการปรับไซซ์และซักรีดฟรี</span>
-        </div>
-        <div>
-            <span>โทรด่วน: <a href="tel:0891234567">089-123-4567</a> | Line: @KYRIXDRESS</span>
-        </div>
-    </div>
+
 
     <!-- Header Navigation -->
     <header class="header">
@@ -513,11 +610,19 @@
             </a>
 
             <ul class="nav-links">
-                <li><a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'active' : '' }}">หน้าแรก</a></li>
-                <li><a href="{{ route('products.index') }}" class="{{ request()->routeIs('products.*') ? 'active' : '' }}">ชุดทั้งหมด</a></li>
-                <li><a href="{{ route('home') }}#categories">ประเภทชุด</a></li>
-                <li><a href="{{ route('home') }}#how-it-works">วิธีการเช่า</a></li>
-                <li><a href="{{ route('home') }}#contact">ติดต่อร้าน</a></li>
+                <li><a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'active' : '' }}">หน้าแรก</a>
+                </li>
+                <li><a href="{{ route('products.index') }}"
+                        class="{{ request()->routeIs('products.*') ? 'active' : '' }}">ชุดทั้งหมด</a></li>
+                <li><a href="{{ route('home') }}#categories"
+                        class="{{ request()->is('/') && request()->server('QUERY_STRING') == '' ? '' : '' }} js-hash-link"
+                        data-hash="categories">ประเภทชุด</a></li>
+                <li><a href="{{ route('home') }}#how-it-works"
+                        class="js-hash-link"
+                        data-hash="how-it-works">วิธีการเช่า</a></li>
+                <li><a href="{{ route('home') }}#contact"
+                        class="js-hash-link"
+                        data-hash="contact">ติดต่อร้าน</a></li>
             </ul>
 
             <div class="header-actions">
@@ -533,7 +638,7 @@
                 @endphp
                 <a href="{{ route('cart.index') }}" class="cart-btn" title="ตะกร้าเช่าชุด">
                     <i class="fa-solid fa-bag-shopping"></i>
-                    @if($cartCount > 0)
+                    @if ($cartCount > 0)
                         <span class="cart-badge">{{ $cartCount }}</span>
                     @endif
                 </a>
@@ -562,7 +667,8 @@
                             <div class="dropdown-divider"></div>
                             <form action="{{ route('logout') }}" method="POST">
                                 @csrf
-                                <button type="submit" class="dropdown-item" style="width: 100%; border: none; background: none; cursor: pointer; text-align: left; color: #dc2626;">
+                                <button type="submit" class="dropdown-item"
+                                    style="width: 100%; border: none; background: none; cursor: pointer; text-align: left; color: #dc2626;">
                                     <i class="fa-solid fa-right-from-bracket"></i> ออกจากระบบ
                                 </button>
                             </form>
@@ -579,21 +685,21 @@
     </header>
 
     <!-- Flash Alerts -->
-    @if(session('success') || session('error') || session('warning'))
+    @if (session('success') || session('error') || session('warning'))
         <div class="alerts-container">
-            @if(session('success'))
+            @if (session('success'))
                 <div class="alert alert-success">
                     <i class="fa-solid fa-circle-check"></i>
                     <span>{{ session('success') }}</span>
                 </div>
             @endif
-            @if(session('error'))
+            @if (session('error'))
                 <div class="alert alert-error">
                     <i class="fa-solid fa-circle-exclamation"></i>
                     <span>{{ session('error') }}</span>
                 </div>
             @endif
-            @if(session('warning'))
+            @if (session('warning'))
                 <div class="alert alert-warning">
                     <i class="fa-solid fa-triangle-exclamation"></i>
                     <span>{{ session('warning') }}</span>
@@ -613,13 +719,26 @@
             <div class="footer-col">
                 <span class="logo" style="color: #fff;">KYRIX</span>
                 <p style="margin-top: 14px; max-width: 320px;">
-                    ร้านเช่าชุดออนไลน์อันดับหนึ่ง บริการเช่าชุดราตรี ชุดไทย ชุดแต่งงาน และสูทสากลเกรดพรีเมียม คัตติ้งเนี้ยบ สะอาด หอม พร้อมใช้งานสำหรับวันสำคัญของคุณ
+                    ร้านเช่าชุดออนไลน์อันดับหนึ่ง บริการเช่าชุดราตรี ชุดไทย ชุดแต่งงาน และสูทสากลเกรดพรีเมียม
+                    คัตติ้งเนี้ยบ สะอาด หอม พร้อมใช้งานสำหรับวันสำคัญของคุณ
                 </p>
                 <div style="display: flex; gap: 12px; margin-top: 20px;">
-                    <a href="#" style="width: 36px; height: 36px; border-radius: 50%; background: #2f2824; display: flex; align-items: center; justify-content: center; color: var(--gold);"><i class="fa-brands fa-facebook-f"></i></a>
-                    <a href="#" style="width: 36px; height: 36px; border-radius: 50%; background: #2f2824; display: flex; align-items: center; justify-content: center; color: var(--gold);"><i class="fa-brands fa-instagram"></i></a>
-                    <a href="#" style="width: 36px; height: 36px; border-radius: 50%; background: #2f2824; display: flex; align-items: center; justify-content: center; color: var(--gold);"><i class="fa-brands fa-line"></i></a>
-                    <a href="#" style="width: 36px; height: 36px; border-radius: 50%; background: #2f2824; display: flex; align-items: center; justify-content: center; color: var(--gold);"><i class="fa-brands fa-tiktok"></i></a>
+                    <a href="javascript:void(0)" title="Facebook — เร็วๆ นี้"
+                        style="width: 36px; height: 36px; border-radius: 50%; background: #2f2824; display: flex; align-items: center; justify-content: center; color: var(--gold); opacity: 0.6; cursor: default;">
+                        <i class="fa-brands fa-facebook-f"></i>
+                    </a>
+                    <a href="javascript:void(0)" title="Instagram — เร็วๆ นี้"
+                        style="width: 36px; height: 36px; border-radius: 50%; background: #2f2824; display: flex; align-items: center; justify-content: center; color: var(--gold); opacity: 0.6; cursor: default;">
+                        <i class="fa-brands fa-instagram"></i>
+                    </a>
+                    <a href="javascript:void(0)" title="Line — เร็วๆ นี้"
+                        style="width: 36px; height: 36px; border-radius: 50%; background: #2f2824; display: flex; align-items: center; justify-content: center; color: var(--gold); opacity: 0.6; cursor: default;">
+                        <i class="fa-brands fa-line"></i>
+                    </a>
+                    <a href="javascript:void(0)" title="TikTok — เร็วๆ นี้"
+                        style="width: 36px; height: 36px; border-radius: 50%; background: #2f2824; display: flex; align-items: center; justify-content: center; color: var(--gold); opacity: 0.6; cursor: default;">
+                        <i class="fa-brands fa-tiktok"></i>
+                    </a>
                 </div>
             </div>
 
@@ -650,15 +769,15 @@
                 <ul class="contact-info" style="list-style: none;">
                     <li>
                         <i class="fa-solid fa-location-dot"></i>
-                        <span>88/9 ซอยสุขุมวิท 55 (ทองหล่อ) แขวงคลองตันเหนือ เขตวัฒนา กรุงเทพฯ 10110</span>
+                        <span>77 ตำบลในเมือง อำเภอเมือง จังหวัดนครราชสีมา 30000</span>
                     </li>
                     <li>
                         <i class="fa-solid fa-phone"></i>
-                        <span>089-123-4567, 02-987-6543</span>
+                        <span>06525990723</span>
                     </li>
                     <li>
                         <i class="fa-solid fa-envelope"></i>
-                        <span>contact@kyrixrental.com</span>
+                        <span>apatsara1a@gmail.com</span>
                     </li>
                     <li>
                         <i class="fa-solid fa-clock"></i>
@@ -674,4 +793,5 @@
 
     @stack('scripts')
 </body>
+
 </html>
