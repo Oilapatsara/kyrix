@@ -354,8 +354,8 @@
                         <strong style="color: var(--text-main);">฿{{ number_format($serviceTotal) }}</strong>
                     </div>
 
-                    <div style="background: #edfbf3; border: 1px solid #b7ecd0; padding: 10px 12px; border-radius: 8px; font-size: 12px; color: #166534; margin-bottom: 16px;">
-                        <i class="fa-solid fa-shield-check"></i> ยอดเงินมัดจำ <strong>฿{{ number_format($depositTotal) }}</strong> จะคืนเข้าบัญชีคุณทันทีหลังคืนชุด
+                    <div style="background: #edfbf3; border: 1px solid #b7ecd0; padding: 10px 12px; border-radius: 8px; font-size: 12px; color: #166534; margin-bottom: 16px; line-height: 1.5;">
+                        <i class="fa-solid fa-shield-check"></i> เงินมัดจำประกันชุด <strong>฿{{ number_format($depositTotal) }}</strong> จะได้รับคืนทันทีในวันที่คืนชุด หากเจ้าหน้าที่ตรวจสภาพแล้วชุดไม่มีการเสียหาย (กรณีชุดเสียหาย ทางร้านขอสงวนสิทธิ์ไม่คืนเงินมัดจำ)
                     </div>
 
                     <div style="display: flex; justify-content: space-between; font-size: 22px; font-weight: 800; color: var(--primary); margin-bottom: 24px;">

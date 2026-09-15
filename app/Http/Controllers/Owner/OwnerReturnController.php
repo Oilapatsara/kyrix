@@ -52,37 +52,101 @@ class OwnerReturnController extends Controller
     {
         $rental = Rental::with('details.product')->findOrFail($id);
 
+        if (in_array($rental->status, ['returned', 'completed'], true)) {
+            return back()->with('error', 'รายการนี้ถูกตรวจรับคืนแล้ว');
+        }
+
         $request->validate([
-            'deposit_refund' => 'required|in:full,partial,none',
-            'deduction'      => 'nullable|numeric|min:0',
-            'return_note'    => 'nullable|string|max:500',
+            'condition_status' => 'required|in:good,damaged',
+            'damage_note'      => 'nullable|string|max:1000',
+            'damage_image'     => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'refund_slip'      => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'return_note'      => 'nullable|string|max:500',
+        ], [
+            'condition_status.required' => 'กรุณาระบุผลการตรวจสภาพชุด (สมบูรณ์ หรือ มีความเสียหาย)',
+            'damage_image.image'        => 'รูปภาพหลักฐานความเสียหายต้องเป็นไฟล์รูปภาพเท่านั้น',
+            'damage_image.max'          => 'ขนาดรูปภาพความเสียหายต้องไม่เกิน 5MB',
+            'refund_slip.image'         => 'สลิปหลักฐานการคืนเงินต้องเป็นไฟล์รูปภาพเท่านั้น',
+            'refund_slip.max'           => 'ขนาดรูปภาพสลิปต้องไม่เกิน 5MB',
         ]);
 
-        $note = "รับคืนชุดเรียบร้อย: สภาพชุดสมบูรณ์";
-        if ($request->deposit_refund === 'full') {
-            $note .= " | คืนเงินมัดจำเต็มจำนวน ฿" . number_format($rental->deposit_amount, 2);
-        } elseif ($request->deposit_refund === 'partial') {
-            $note .= " | หักค่าเสียหาย/ปรับ ฿" . number_format($request->deduction, 2) . " คืนมัดจำส่วนที่เหลือ";
+        $condition = $request->condition_status;
+        $damageImagePath = null;
+        $refundSlipPath = null;
+
+        // Directory setup
+        $returnDir = public_path('uploads/returns');
+        if (!is_dir($returnDir)) {
+            mkdir($returnDir, 0755, true);
+        }
+
+        // Handle Damage Image Upload
+        if ($request->hasFile('damage_image')) {
+            $file = $request->file('damage_image');
+            $filename = 'damage_' . time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->move($returnDir, $filename);
+            $damageImagePath = 'uploads/returns/' . $filename;
+        }
+
+        // Handle Refund Slip Upload
+        if ($request->hasFile('refund_slip')) {
+            $file = $request->file('refund_slip');
+            $filename = 'refund_' . time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->move($returnDir, $filename);
+            $refundSlipPath = 'uploads/returns/' . $filename;
+        }
+
+        $depositAmount = (float)($rental->deposit_amount ?: 100);
+
+        if ($condition === 'good') {
+            $depositStatus = 'refunded';
+            $refundAmount = $depositAmount;
+            $note = "รับคืนชุดเรียบร้อย: สภาพชุดสมบูรณ์ ไม่พบความเสียหาย | คืนเงินมัดจำเต็มจำนวน ฿" . number_format($refundAmount, 2);
         } else {
-            $note .= " | ยึดเงินมัดจำเนื่องจากชุดชำรุดเสียหายหนัก";
+            $depositStatus = 'forfeited';
+            $refundAmount = 0.00;
+            $reason = $request->damage_note ? " (สาเหตุ: {$request->damage_note})" : '';
+            $note = "รับคืนชุดเรียบร้อย: ตรวจพบชุดชำรุด/เสียหาย | ยึดเงินมัดจำ ฿" . number_format($depositAmount, 2) . " ไม่คืนเงินมัดจำ{$reason}";
         }
 
         if ($request->return_note) {
-            $note .= " (" . $request->return_note . ")";
+            $note .= " | บันทึกเพิ่มเติม: " . $request->return_note;
         }
 
-        $rental->update([
-            'status' => 'returned',
-            'note'   => $rental->note ? ($rental->note . "\n" . $note) : $note,
-        ]);
+        // Update Rental
+        $updateData = [
+            'status'                => 'returned',
+            'condition_status'      => $condition,
+            'deposit_status'        => $depositStatus,
+            'deposit_refund_amount' => $refundAmount,
+            'damage_note'           => $request->damage_note,
+            'inspected_at'          => now(),
+            'note'                  => $rental->note ? ($rental->note . "\n" . $note) : $note,
+        ];
+
+        if ($damageImagePath) {
+            $updateData['damage_image'] = $damageImagePath;
+        }
+        if ($refundSlipPath) {
+            $updateData['refund_slip'] = $refundSlipPath;
+        }
+
+        $rental->update($updateData);
 
         // Restore stock
         foreach ($rental->details as $detail) {
             if ($detail->product) {
                 $detail->product->increment('stock', $detail->quantity);
+                if ($detail->product->status === 'rented') {
+                    $detail->product->update(['status' => 'available']);
+                }
             }
         }
 
-        return back()->with('success', "บันทึกการรับคืนชุดและจัดการเงินมัดจำสำหรับคำสั่ง {$rental->formatted_code} เรียบร้อยแล้ว");
+        $resultMsg = $condition === 'good'
+            ? "ตรวจรับคืนชุดเรียบร้อย: ชุดสมบูรณ์ คืนเงินมัดจำ ฿" . number_format($depositAmount, 2) . " ทันที"
+            : "ตรวจรับคืนชุดเรียบร้อย: ชุดเสียหาย บันทึกยึดเงินมัดจำ ฿" . number_format($depositAmount, 2) . " (ไม่คืนเงิน)";
+
+        return back()->with('success', "{$resultMsg} สำหรับคำสั่ง #{$rental->formatted_code}");
     }
 }

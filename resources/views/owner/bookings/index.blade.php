@@ -175,18 +175,23 @@
                     @php
                         $statusCode = strtolower($booking->status ?? 'pending');
                         $statusText = match($statusCode) {
-                            'pending'   => 'รอการยืนยัน',
+                            'pending', 'pending_payment' => 'รอชำระเงิน',
+                            'pending_verification' => 'รอตรวจสอบสลิป',
                             'confirmed' => 'ยืนยันแล้ว',
+                            'ready_pickup' => 'รอรับชุด',
                             'renting'   => 'กำลังเช่า',
+                            'pending_return' => 'รอตรวจรับคืน',
                             'returned'  => 'คืนชุดแล้ว',
                             'completed' => 'เสร็จสิ้น',
                             'cancelled' => 'ยกเลิก',
                             default     => ucfirst($booking->status)
                         };
                         $statusClass = match($statusCode) {
-                            'pending'   => 'status-pending',
+                            'pending', 'pending_payment', 'pending_verification' => 'status-pending',
                             'confirmed' => 'status-confirmed',
+                            'ready_pickup' => 'status-confirmed',
                             'renting'   => 'status-renting',
+                            'pending_return' => 'status-pending',
                             'returned'  => 'status-returned',
                             'completed' => 'status-completed',
                             'cancelled' => 'status-cancelled',

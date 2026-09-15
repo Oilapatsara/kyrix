@@ -351,7 +351,7 @@
             <div style="display: flex; flex-direction: column; gap: 16px;">
                 <div class="info-card">
                     <h4><i class="fa-solid fa-truck"></i> ข้อมูลการจัดส่ง / รับชุด</h4>
-                    <div><strong>ผู้รับ:</strong> {{ $rental->customer->user->name ?? 'ลูกค้า' }}</div>
+                    <div><strong>ผู้รับ:</strong> {{ $rental->customer->name ?? 'ลูกค้า' }}</div>
                     <div><strong>เบอร์โทรติดต่อ:</strong> {{ $rental->recipient_phone ?? $rental->customer->phone ?? '-' }}</div>
                     <div><strong>สถานที่รับ/จัดส่ง:</strong> {{ $rental->delivery_address }}</div>
                     @if($rental->tracking_number)
@@ -419,11 +419,78 @@
                     <span>฿{{ number_format($rental->grand_total) }}</span>
                 </div>
 
-                <div style="background: var(--gold-light); padding: 10px; border-radius: 8px; font-size: 12px; color: #855d14; margin-top: 14px;">
-                    <i class="fa-solid fa-shield"></i> เงินมัดจำ <strong>฿{{ number_format($rental->deposit_amount) }}</strong> จะถูกโอนคืนเต็มจำนวนหลังตรวจสภาพชุดเรียบร้อย
+                <div style="background: var(--gold-light); padding: 12px; border-radius: 8px; font-size: 12.5px; color: #855d14; margin-top: 14px; line-height: 1.5; border: 1px solid #f3e5c8;">
+                    <i class="fa-solid fa-shield"></i> เงินมัดจำประกันชุด <strong>฿{{ number_format($rental->deposit_amount) }}</strong> จะได้รับคืนทันทีในวันที่ส่งคืนชุด หากตรวจสภาพแล้วชุดไม่มีการเสียหาย (กรณีชุดมีความเสียหาย ทางร้านขอสงวนสิทธิ์ไม่คืนเงินมัดจำ)
                 </div>
             </div>
         </div>
+
+        <!-- Inspection Result & Deposit Status (When returned/completed) -->
+        @if(in_array($rental->status, ['returned', 'completed']) || $rental->condition_status)
+            <div style="margin-top: 30px; padding: 22px; border-radius: var(--radius-md); border: 2px solid {{ $rental->condition_status === 'damaged' ? '#fca5a5' : '#86efac' }}; background: {{ $rental->condition_status === 'damaged' ? '#fff5f5' : '#f0fdf4' }};">
+                <div style="display: flex; align-items: flex-start; gap: 14px;">
+                    <div style="font-size: 28px; color: {{ $rental->condition_status === 'damaged' ? '#dc2626' : '#16a34a' }};">
+                        @if($rental->condition_status === 'damaged')
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                        @else
+                            <i class="fa-solid fa-shield-halved"></i>
+                        @endif
+                    </div>
+                    <div style="flex: 1;">
+                        <h4 style="font-size: 16px; font-weight: 800; color: {{ $rental->condition_status === 'damaged' ? '#991b1b' : '#166534' }}; margin-bottom: 6px;">
+                            @if($rental->condition_status === 'damaged')
+                                ผลการตรวจสภาพชุด: พบความเสียหาย / ชำรุด (ไม่คืนเงินมัดจำ)
+                            @else
+                                ผลการตรวจสภาพชุด: สมบูรณ์ ไม่มีความเสียหาย (คืนเงินมัดจำแล้ว)
+                            @endif
+                        </h4>
+                        <div style="font-size: 13.5px; color: #374151; margin-bottom: 10px; line-height: 1.6;">
+                            @if($rental->condition_status === 'damaged')
+                                ทางร้านได้ทำการตรวจสอบสภาพชุดแล้ว <strong>ตรวจพบความเสียหาย</strong> จึงขอสงวนสิทธิ์ไม่คืนเงินมัดจำประกันชุดจำนวน <strong>฿{{ number_format($rental->deposit_amount ?: 100, 2) }}</strong> ให้แก่ท่านตามเงื่อนไขของทางร้าน
+                                @if($rental->damage_note)
+                                    <div style="margin-top: 8px; padding: 10px 14px; background: #fee2e2; border-radius: 6px; color: #991b1b; font-size: 13px;">
+                                        <strong>สาเหตุ/รายละเอียดความเสียหาย:</strong> {{ $rental->damage_note }}
+                                    </div>
+                                @endif
+                            @else
+                                ทางร้านได้ทำการตรวจสอบสภาพชุดแล้ว <strong>ชุดอยู่ในสภาพสมบูรณ์ ไม่พบความเสียหายใดๆ</strong> และได้ดำเนินการคืนเงินมัดจำประกันชุดจำนวน <strong>฿{{ number_format($rental->deposit_refund_amount ?: ($rental->deposit_amount ?: 100), 2) }}</strong> ให้แก่ท่านเรียบร้อยแล้ว
+                            @endif
+                        </div>
+
+                        @if($rental->inspected_at)
+                            <div style="font-size: 12px; color: #6b7280; margin-bottom: 10px;">
+                                <i class="fa-regular fa-clock"></i> ตรวจรับและบันทึกข้อมูลเมื่อ: {{ $rental->inspected_at->format('d/m/Y H:i') }} น.
+                            </div>
+                        @endif
+
+                        @if($rental->refund_slip || $rental->damage_image)
+                            <div style="display: flex; gap: 16px; flex-wrap: wrap; margin-top: 10px;">
+                                @if($rental->refund_slip)
+                                    <div>
+                                        <div style="font-size: 12px; font-weight: 700; color: #166534; margin-bottom: 4px;">
+                                            <i class="fa-solid fa-file-invoice-dollar"></i> หลักฐานสลิปโอนคืนเงินมัดจำ:
+                                        </div>
+                                        <a href="{{ $rental->refund_slip_url }}" target="_blank">
+                                            <img src="{{ $rental->refund_slip_url }}" style="max-width: 140px; max-height: 180px; border-radius: 8px; border: 1px solid #86efac; box-shadow: 0 2px 6px rgba(0,0,0,0.08);" alt="สลิปโอนคืนมัดจำ">
+                                        </a>
+                                    </div>
+                                @endif
+                                @if($rental->damage_image)
+                                    <div>
+                                        <div style="font-size: 12px; font-weight: 700; color: #991b1b; margin-bottom: 4px;">
+                                            <i class="fa-solid fa-camera"></i> ภาพถ่ายหลักฐานความเสียหาย:
+                                        </div>
+                                        <a href="{{ $rental->damage_image_url }}" target="_blank">
+                                            <img src="{{ $rental->damage_image_url }}" style="max-width: 140px; max-height: 180px; border-radius: 8px; border: 1px solid #fca5a5; box-shadow: 0 2px 6px rgba(0,0,0,0.08);" alt="รูปหลักฐานความเสียหาย">
+                                        </a>
+                                    </div>
+                                @endif
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        @endif
 
         <!-- Action: Upload Slip Form (if pending_payment) -->
         @if($rental->status === 'pending_payment')
@@ -478,6 +545,13 @@
                         </button>
                     </div>
                 </form>
+            </div>
+        @elseif($rental->status === 'pending_return')
+            <div style="margin-top: 36px; padding: 22px; border: 1px solid #f3d28c; border-radius: var(--radius-md); background: #fff8e8; color: #8a5a0a;">
+                <strong><i class="fa-solid fa-clock"></i> แจ้งส่งคืนแล้ว</strong>
+                <div style="font-size: 13px; margin-top: 6px;">
+                    ทางร้านได้รับคำขอส่งคืนชุดแล้ว กรุณารอเจ้าของร้านตรวจรับชุดและจัดการเงินมัดจำ
+                </div>
             </div>
         @endif
     </div>

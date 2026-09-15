@@ -204,80 +204,6 @@
     }
 
     /* -------------------------------------------------------
-       CATEGORY FILTER
-    ------------------------------------------------------- */
-
-    .category-section {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 12px 16px;
-        border-bottom: 1px solid var(--border);
-        overflow-x: auto;
-    }
-
-    .category-section-label {
-        flex-shrink: 0;
-        color: var(--muted);
-        font-size: 12px;
-        font-weight: 500;
-    }
-
-    .category-list {
-        display: flex;
-        gap: 6px;
-        flex-wrap: nowrap;
-    }
-
-    .category-item {
-        flex-shrink: 0;
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        height: 30px;
-        padding: 0 11px;
-        border-radius: 999px;
-        border: 1px solid var(--border);
-        background: var(--surface);
-        color: var(--muted);
-        text-decoration: none;
-        font-size: 12px;
-        font-weight: 500;
-        transition: border-color .12s ease, color .12s ease;
-        white-space: nowrap;
-    }
-
-    .category-item:hover {
-        border-color: var(--border-strong);
-        color: var(--ink);
-    }
-
-    .category-item.active {
-        background: var(--accent);
-        border-color: var(--accent);
-        color: var(--accent-ink);
-    }
-
-    .category-count {
-        opacity: .75;
-        font-size: 10.5px;
-    }
-
-    .category-reset {
-        flex-shrink: 0;
-        margin-left: auto;
-        padding-left: 10px;
-        color: var(--muted);
-        font-size: 11.5px;
-        text-decoration: none;
-        white-space: nowrap;
-    }
-
-    .category-reset:hover {
-        color: var(--accent);
-    }
-
-    /* -------------------------------------------------------
        TOOLBAR
     ------------------------------------------------------- */
 
@@ -285,47 +211,105 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 15px;
-        padding: 10px 16px;
+        flex-wrap: wrap;
+        gap: 14px;
+        padding: 14px 16px;
+        background: var(--surface-alt);
         border-bottom: 1px solid var(--border);
     }
 
     .result-summary {
         color: var(--muted);
-        font-size: 12px;
+        font-size: 12.5px;
+        white-space: nowrap;
     }
 
     .result-summary strong {
         color: var(--heading);
-        font-weight: 600;
+        font-weight: 700;
     }
 
-    .sort-form {
+    .filter-group {
         display: flex;
         align-items: center;
-        gap: 7px;
+        flex-wrap: wrap;
+        gap: 10px;
     }
 
-    .sort-form label {
-        color: var(--muted);
-        font-size: 12px;
-        white-space: nowrap;
+    .select-wrap {
+        position: relative;
+        display: flex;
+        align-items: center;
     }
 
-    .sort-select {
-        height: 32px;
-        min-width: 140px;
-        padding: 0 9px;
+    .select-wrap i {
+        position: absolute;
+        left: 12px;
+        font-size: 11px;
+        color: var(--faint);
+        pointer-events: none;
+    }
+
+    .toolbar-select {
+        height: 34px;
+        min-width: 150px;
+        padding: 0 30px 0 32px;
         border: 1px solid var(--border);
-        border-radius: 6px;
-        background: var(--surface);
+        border-radius: 999px;
+        background-color: var(--surface);
         color: var(--ink);
-        font-size: 12px;
+        font-family: inherit;
+        font-size: 12.5px;
+        font-weight: 500;
         outline: none;
+        cursor: pointer;
+
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2378706e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 11px center;
+        background-size: 13px 13px;
+
+        transition: border-color .12s ease, box-shadow .12s ease, background-color .12s ease;
     }
 
-    .sort-select:focus {
+    .toolbar-select:hover {
+        border-color: var(--border-strong);
+        background-color: var(--surface-alt);
+    }
+
+    .toolbar-select:focus {
         border-color: var(--accent);
+        box-shadow: 0 0 0 3px var(--accent-soft);
+        background-color: var(--surface);
+    }
+
+    #category_id.toolbar-select {
+        min-width: 210px;
+    }
+
+    .category-reset {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        height: 34px;
+        padding: 0 6px;
+        color: var(--muted);
+        font-size: 11.5px;
+        text-decoration: none;
+        white-space: nowrap;
+        transition: color .12s ease;
+    }
+
+    .category-reset i {
+        font-size: 9px;
+    }
+
+    .category-reset:hover {
+        color: var(--accent);
     }
 
     /* -------------------------------------------------------
@@ -613,15 +597,29 @@
 
         .toolbar {
             flex-direction: column;
-            align-items: flex-start;
+            align-items: stretch;
         }
 
-        .sort-form {
+        .filter-group {
+            width: 100%;
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .select-wrap {
             width: 100%;
         }
 
-        .sort-select {
+        .toolbar-select,
+        #category_id.toolbar-select {
             flex: 1;
+            min-width: 0;
+            width: 100%;
+        }
+
+        .category-reset {
+            justify-content: flex-start;
+            width: fit-content;
         }
     }
 </style>
@@ -731,67 +729,6 @@
     <div class="workspace">
 
         {{-- =================================================
-             CATEGORY FILTER
-        ================================================== --}}
-        <div class="category-section">
-
-            <span class="category-section-label">หมวดหมู่</span>
-
-            <div class="category-list">
-
-                <a
-                    href="{{ route(
-                        'owner.dresses.index',
-                        request()->except(['category_id','page'])
-                    ) }}"
-                    class="category-item {{ !request('category_id') ? 'active' : '' }}"
-                >
-                    ทั้งหมด
-                    <span class="category-count">{{ $summary['total'] ?? $products->total() }}</span>
-                </a>
-
-                @foreach($categories as $category)
-
-                    @php
-                        // ตาราง `categories` ใช้คอลัมน์ category_id / category_name
-                        $categoryId = $category->category_id ?? $category->id;
-                        $categoryName = $category->category_name ?? $category->name;
-                    @endphp
-
-                    <a
-                        href="{{ route(
-                            'owner.dresses.index',
-                            array_merge(
-                                request()->except('page'),
-                                ['category_id' => $categoryId]
-                            )
-                        ) }}"
-                        class="category-item {{ (string) request('category_id') === (string) $categoryId ? 'active' : '' }}"
-                    >
-                        {{ $categoryName }}
-
-                        @if(isset($category->products_count))
-                            <span class="category-count">{{ $category->products_count }}</span>
-                        @endif
-                    </a>
-
-                @endforeach
-
-            </div>
-
-            @if(request('category_id'))
-                <a
-                    href="{{ route('owner.dresses.index', request()->except(['category_id','page'])) }}"
-                    class="category-reset"
-                >
-                    ล้างตัวกรอง
-                </a>
-            @endif
-
-        </div>
-
-
-        {{-- =================================================
              TOOLBAR
         ================================================== --}}
         <div class="toolbar">
@@ -803,30 +740,84 @@
             <form
                 action="{{ route('owner.dresses.index') }}"
                 method="GET"
-                class="sort-form"
+                class="filter-group"
             >
-
-                @if(request('category_id'))
-                    <input type="hidden" name="category_id" value="{{ request('category_id') }}">
-                @endif
 
                 @if(request('status'))
                     <input type="hidden" name="status" value="{{ request('status') }}">
                 @endif
 
-                <label for="sort">เรียงตาม</label>
+                {{-- =================================================
+                     CATEGORY DROPDOWN
+                ================================================== --}}
+                <div class="select-wrap">
 
-                <select
-                    name="sort"
-                    id="sort"
-                    class="sort-select"
-                    onchange="this.form.submit()"
-                >
-                    <option value="latest" {{ request('sort', 'latest') === 'latest' ? 'selected' : '' }}>ล่าสุด</option>
-                    <option value="name_asc" {{ request('sort') === 'name_asc' ? 'selected' : '' }}>ชื่อ A-Z</option>
-                    <option value="price_low" {{ request('sort') === 'price_low' ? 'selected' : '' }}>ราคา ต่ำ → สูง</option>
-                    <option value="price_high" {{ request('sort') === 'price_high' ? 'selected' : '' }}>ราคา สูง → ต่ำ</option>
-                </select>
+                    <i class="fa-solid fa-layer-group"></i>
+
+                    <select
+                        name="category_id"
+                        id="category_id"
+                        class="toolbar-select"
+                        aria-label="กรองตามหมวดหมู่"
+                        onchange="this.form.submit()"
+                    >
+
+                        <option value="">
+                            ทุกหมวดหมู่ ({{ $summary['total'] ?? $products->total() }})
+                        </option>
+
+                        @foreach($categories as $category)
+
+                            @php
+                                // ตาราง `categories` ใช้คอลัมน์ category_id / category_name
+                                $categoryId = $category->category_id ?? $category->id;
+                                $categoryName = $category->category_name ?? $category->name;
+                            @endphp
+
+                            <option
+                                value="{{ $categoryId }}"
+                                {{ (string) request('category_id') === (string) $categoryId ? 'selected' : '' }}
+                            >
+                                {{ $categoryName }}{{ isset($category->products_count) ? ' ('.$category->products_count.')' : '' }}
+                            </option>
+
+                        @endforeach
+
+                    </select>
+
+                </div>
+
+                @if(request('category_id'))
+                    <a
+                        href="{{ route('owner.dresses.index', request()->except(['category_id','page'])) }}"
+                        class="category-reset"
+                    >
+                        <i class="fa-solid fa-xmark"></i>
+                        ล้างตัวกรอง
+                    </a>
+                @endif
+
+                {{-- =================================================
+                     SORT DROPDOWN
+                ================================================== --}}
+                <div class="select-wrap">
+
+                    <i class="fa-solid fa-arrow-down-wide-short"></i>
+
+                    <select
+                        name="sort"
+                        id="sort"
+                        class="toolbar-select"
+                        aria-label="เรียงลำดับ"
+                        onchange="this.form.submit()"
+                    >
+                        <option value="latest" {{ request('sort', 'latest') === 'latest' ? 'selected' : '' }}>ล่าสุด</option>
+                        <option value="name_asc" {{ request('sort') === 'name_asc' ? 'selected' : '' }}>ชื่อ A-Z</option>
+                        <option value="price_low" {{ request('sort') === 'price_low' ? 'selected' : '' }}>ราคา ต่ำ → สูง</option>
+                        <option value="price_high" {{ request('sort') === 'price_high' ? 'selected' : '' }}>ราคา สูง → ต่ำ</option>
+                    </select>
+
+                </div>
 
             </form>
 

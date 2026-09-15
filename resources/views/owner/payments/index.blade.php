@@ -1072,6 +1072,12 @@
 
                             </div>
 
+                            @if($rental)
+                                <div style="font-size: 11px; color: var(--muted); margin-top: 4px; line-height: 1.3;">
+                                    ค่าเช่า ฿{{ number_format($rental->total_amount) }} + มัดจำ ฿{{ number_format($rental->deposit_amount ?: 100) }}
+                                </div>
+                            @endif
+
                         </td>
 
 

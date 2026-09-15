@@ -14,7 +14,140 @@ class Rental extends Model
         'total_amount', 'deposit_amount', 'service_type', 'service_fee',
         'delivery_method', 'delivery_address', 'recipient_phone',
         'tracking_number', 'return_tracking_no', 'status', 'note',
+        'condition_status', 'deposit_status', 'deposit_refund_amount',
+        'damage_note', 'damage_image', 'refund_slip', 'inspected_at',
     ];
+
+    protected $casts = [
+        'total_amount' => 'float',
+        'deposit_amount' => 'float',
+        'service_fee' => 'float',
+        'deposit_refund_amount' => 'float',
+        'inspected_at' => 'datetime',
+    ];
+
+    // Accessor: Grand Total (100% rental + deposit + service fee)
+    public function getGrandTotalAttribute(): float
+    {
+        return (float)($this->total_amount ?? 0)
+            + (float)($this->deposit_amount ?? 0)
+            + (float)($this->service_fee ?? 0);
+    }
+
+    // Accessor: Formatted Rental Code
+    public function getFormattedCodeAttribute(): string
+    {
+        return $this->rental_code ?: ('KR-' . date('Ym', strtotime($this->created_at ?? now())) . '-' . str_pad($this->rental_id, 4, '0', STR_PAD_LEFT));
+    }
+
+    // Accessor: Damage Image URL
+    public function getDamageImageUrlAttribute(): ?string
+    {
+        if (!$this->damage_image) return null;
+        if (str_starts_with($this->damage_image, 'http')) return $this->damage_image;
+        return asset($this->damage_image);
+    }
+
+    // Accessor: Refund Slip URL
+    public function getRefundSlipUrlAttribute(): ?string
+    {
+        if (!$this->refund_slip) return null;
+        if (str_starts_with($this->refund_slip, 'http')) return $this->refund_slip;
+        return asset($this->refund_slip);
+    }
+
+    // Accessor: Step Index for Timeline (1 to 8)
+    public function getStepIndexAttribute(): int
+    {
+        return match($this->status) {
+            'pending', 'pending_payment' => 1,
+            'pending_verification' => 2,
+            'confirmed' => 3,
+            'ready_pickup' => 4,
+            'renting' => 5,
+            'pending_return' => 6,
+            'returned' => 7,
+            'completed' => 8,
+            default => 1,
+        };
+    }
+
+    // Accessor: Status Label Thai
+    public function getStatusLabelAttribute(): string
+    {
+        return match($this->status) {
+            'pending', 'pending_payment' => 'รอชำระเงิน',
+            'pending_verification' => 'รอตรวจสอบสลิป',
+            'confirmed' => 'ยืนยันการเช่า',
+            'ready_pickup' => 'รอรับชุด',
+            'renting' => 'กำลังเช่า',
+            'pending_return' => 'รอตรวจรับคืน',
+            'returned' => 'คืนชุดแล้ว',
+            'completed' => 'เสร็จสิ้นรายการ',
+            'cancelled' => 'ยกเลิกรายการ',
+            default => ucfirst($this->status),
+        };
+    }
+
+    // Accessor: Status Badge Class
+    public function getStatusBadgeClassAttribute(): string
+    {
+        return match($this->status) {
+            'pending', 'pending_payment' => 'badge-pending',
+            'pending_verification' => 'badge-warning',
+            'confirmed', 'ready_pickup' => 'badge-info',
+            'renting' => 'badge-primary',
+            'pending_return' => 'badge-warning',
+            'returned', 'completed' => 'badge-success',
+            'cancelled' => 'badge-danger',
+            default => 'badge-secondary',
+        };
+    }
+
+    // Accessor: Can Review
+    public function getCanReviewAttribute(): bool
+    {
+        return in_array($this->status, ['returned', 'completed']);
+    }
+
+    public function getPaidAmountAttribute(): float
+    {
+        return (float) $this->payments
+            ->where('status', 'approved')
+            ->sum('payment_amount');
+    }
+
+    public function getPaymentStatusLabelAttribute(): string
+    {
+        $payment = $this->latestPayment;
+
+        if (!$payment) {
+            return 'ยังไม่ชำระ';
+        }
+
+        return match($payment->status) {
+            'approved' => 'ชำระแล้ว',
+            'pending' => 'รอตรวจสอบ',
+            'rejected' => 'สลิปถูกปฏิเสธ',
+            default => ucfirst($payment->status),
+        };
+    }
+
+    public function getPaymentBadgeClassAttribute(): string
+    {
+        $payment = $this->latestPayment;
+
+        if (!$payment) {
+            return 'badge-danger';
+        }
+
+        return match($payment->status) {
+            'approved' => 'badge-success',
+            'pending' => 'badge-warning',
+            'rejected' => 'badge-danger',
+            default => 'badge-secondary',
+        };
+    }
 
     // rentals.customer_id -> customers.customer_id
     public function customer()

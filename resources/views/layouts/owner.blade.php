@@ -6,38 +6,49 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'KYRIX | ระบบจัดการร้านเช่าชุด')</title>
 
-    <!-- Google Fonts: Prompt & Playfair Display -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <style>
         :root {
-            --font-prompt: 'Prompt', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            --maroon-950: #4D141B;
-            --maroon-900: #7A1F2B; /* โทนแดงไวน์/มารูน */
-            --maroon-800: #882230;
-            --maroon-700: #9C2A3B;
-            --maroon-dark: #631722;
-            --gold:       #C69C4C; /* โทนทอง */
-            --gold-dark:  #B89047;
-            --gold-light: #fdfbf7;
-            --blush-bg:   #faedef; /* สีชมพูอ่อนสำหรับไอคอนกระเป๋า */
-            --blush-hover:#f7e1e4;
-            --cream:      #faf8f6;
-            --surface:    #ffffff;
-            --ink:        #2b1a1d;
-            --muted:      #8a7c7f;
-            --line:       #ece4e3;
-            --radius-sm:  8px;
-            --radius-md:  12px;
-            --radius-lg:  18px;
-            --shadow-sm:  0 2px 8px rgba(43, 26, 29, 0.04);
-            --shadow-md:  0 8px 24px rgba(43, 26, 29, 0.08);
-            --shadow-lg:  0 14px 35px rgba(122, 31, 43, 0.12);
+            --font-main: 'Prompt', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            --primary: #7a1f2b;
+            --primary-dark: #58141d;
+            --primary-light: #9c2e3d;
+            --primary-soft: #fbf0f2;
+            --gold: #c69c4c;
+            --gold-dark: #a97f45;
+            --gold-light: #f7eedb;
+            --bg: #faf8f5;
+            --surface: #ffffff;
+            --text-main: #2a2421;
+            --text-muted: #736b66;
+            --border: #ede8e3;
+            --radius-sm: 8px;
+            --radius-md: 14px;
+            --radius-lg: 20px;
+            --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.03);
+            --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 20px 50px rgba(122, 31, 43, 0.12);
+
+            /* Legacy owner page aliases */
+            --font-prompt: var(--font-main);
+            --maroon-950: var(--primary-dark);
+            --maroon-900: var(--primary);
+            --maroon-800: var(--primary);
+            --maroon-700: var(--primary-light);
+            --maroon-dark: var(--primary-dark);
+            --blush-bg: var(--primary-soft);
+            --blush-hover: #f6e4e8;
+            --cream: var(--bg);
+            --ink: var(--text-main);
+            --muted: var(--text-muted);
+            --line: var(--border);
         }
 
         *, *::before, *::after {
@@ -47,7 +58,7 @@
         }
 
         body, button, input, select, textarea {
-            font-family: var(--font-prompt);
+            font-family: var(--font-main);
         }
 
         .fa, .fas, .far, .fab, .fa-solid, .fa-regular,
@@ -56,9 +67,9 @@
         }
 
         body {
-            font-family: var(--font-prompt);
-            background-color: var(--cream);
-            color: var(--ink);
+            font-family: var(--font-main);
+            background-color: var(--bg);
+            color: var(--text-main);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -71,25 +82,40 @@
             transition: all .2s ease;
         }
 
-        /* TOP NAVIGATION (ตามแบบสไตล์ในภาพตัวอย่าง) */
+        .admin-top-banner {
+            background: #2a2421;
+            color: #e5dfd8;
+            font-size: 13px;
+            padding: 8px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .admin-top-banner a {
+            color: var(--gold);
+            font-weight: 500;
+        }
+
+        /* TOP NAVIGATION */
         .admin-nav {
-            background: #ffffff;
-            border-bottom: 1px solid #ebe5e4;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
             position: sticky;
             top: 0;
             z-index: 1000;
-            box-shadow: 0 2px 10px rgba(122, 31, 43, 0.02);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
         }
 
         .admin-nav-container {
-            max-width: 1560px;
+            max-width: 1440px;
             margin: 0 auto;
-            padding: 0 32px;
+            padding: 14px 24px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            height: 72px;
-            gap: 24px;
+            min-height: 74px;
+            gap: 20px;
         }
 
         .admin-brand {
@@ -106,19 +132,19 @@
         }
 
         .admin-brand .logo-text {
-            font-family: "Playfair Display", serif !important;
-            font-size: 27px;
-            font-weight: 700;
+            font-family: 'Plus Jakarta Sans', sans-serif !important;
+            font-size: 28px;
+            font-weight: 800;
             letter-spacing: 2px;
-            color: var(--maroon-900);
+            color: var(--primary);
         }
 
         .admin-brand .logo-subtext {
-            font-family: var(--font-prompt) !important;
-            font-size: 9.5px;
+            font-family: var(--font-main) !important;
+            font-size: 10px;
             font-weight: 600;
-            letter-spacing: 3.5px;
-            color: var(--gold-dark);
+            letter-spacing: 3px;
+            color: var(--gold);
             text-transform: uppercase;
             margin-top: 3px;
         }
@@ -127,7 +153,7 @@
         .admin-menu {
             display: flex;
             align-items: center;
-            gap: 30px;
+            gap: 22px;
             list-style: none;
             height: 100%;
             margin: 0;
@@ -138,10 +164,10 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            height: 72px;
+            min-height: 46px;
             font-size: 15px;
             font-weight: 500;
-            color: #3d3537;
+            color: var(--text-main);
             transition: all .2s ease;
             position: relative;
             padding: 0 2px;
@@ -155,11 +181,11 @@
         }
 
         .admin-menu-link:hover {
-            color: var(--maroon-900);
+            color: var(--primary);
         }
 
         .admin-menu-link.active {
-            color: var(--maroon-900);
+            color: var(--primary);
             font-weight: 600;
         }
 
@@ -171,7 +197,7 @@
             left: 0;
             width: 100%;
             height: 2.5px;
-            background: var(--maroon-900);
+            background: var(--primary);
             border-radius: 2px 2px 0 0;
         }
 
@@ -191,16 +217,16 @@
         }
 
         .admin-search-input {
-            background: #f8f5f5;
-            border: 1px solid #ebe4e4;
+            background: var(--bg);
+            border: 1px solid var(--border);
             border-radius: 999px;
             padding: 8px 38px 8px 18px;
             font-size: 13.5px;
-            color: var(--ink);
+            color: var(--text-main);
             width: 195px;
             outline: none;
             transition: all .25s ease;
-            font-family: var(--font-prompt) !important;
+            font-family: var(--font-main) !important;
         }
 
         .admin-search-input::placeholder {
@@ -209,9 +235,9 @@
         }
 
         .admin-search-input:focus {
-            border-color: var(--maroon-900);
+            border-color: var(--primary);
             background: #ffffff;
-            box-shadow: 0 0 0 3px rgba(122, 31, 43, 0.08);
+            box-shadow: 0 0 0 3px rgba(122, 31, 43, 0.10);
             width: 225px;
         }
 
@@ -232,10 +258,10 @@
 
         .admin-search-input:focus ~ .admin-search-btn,
         .admin-search-box:hover .admin-search-btn {
-            color: var(--maroon-900);
+            color: var(--primary);
         }
 
-        /* NOTIFICATION / BAG BUTTON (วงกลมสีชมพูอ่อน ตามภาพตัวอย่าง) */
+        /* NOTIFICATION BELL */
         .notif-dropdown-wrapper {
             position: relative;
         }
@@ -249,7 +275,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--maroon-900);
+            color: var(--primary);
             cursor: pointer;
             position: relative;
             transition: all .2s ease;
@@ -262,7 +288,7 @@
 
         .notif-bell-btn i {
             font-size: 15px;
-            color: var(--maroon-900);
+            color: var(--primary);
         }
 
         .notif-badge-count {
@@ -300,14 +326,14 @@
 
         .notif-header {
             padding: 14px 16px;
-            background: var(--cream);
-            border-bottom: 1px solid var(--line);
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
             justify-content: space-between;
             font-size: 13px;
             font-weight: 700;
-            color: var(--maroon-900);
+            color: var(--primary);
         }
 
         .notif-body {
@@ -363,7 +389,7 @@
 
         .notif-content {
             font-size: 12px;
-            color: var(--ink);
+            color: var(--text-main);
             line-height: 1.4;
         }
 
@@ -387,22 +413,22 @@
             gap: 7px;
             padding: 7px 18px;
             background: transparent;
-            color: var(--maroon-900);
-            border: 1.5px solid var(--maroon-900);
-            border-radius: 8px;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            border-radius: 10px;
             font-size: 14px;
             font-weight: 500;
             cursor: pointer;
             transition: all .2s ease;
             text-decoration: none;
-            font-family: var(--font-prompt) !important;
+            font-family: var(--font-main) !important;
             line-height: 1.3;
             white-space: nowrap;
         }
 
         .btn-nav-outline:hover {
-            background: var(--blush-bg);
-            color: var(--maroon-900);
+            background: var(--primary-soft);
+            color: var(--primary);
         }
 
         .btn-nav-solid {
@@ -410,23 +436,23 @@
             align-items: center;
             gap: 7px;
             padding: 7px 20px;
-            background: var(--maroon-900);
+            background: var(--primary);
             color: #ffffff;
-            border: 1.5px solid var(--maroon-900);
-            border-radius: 8px;
+            border: 1px solid var(--primary);
+            border-radius: 10px;
             font-size: 14px;
             font-weight: 500;
             cursor: pointer;
             transition: all .2s ease;
             text-decoration: none;
-            font-family: var(--font-prompt) !important;
+            font-family: var(--font-main) !important;
             line-height: 1.3;
             white-space: nowrap;
         }
 
         .btn-nav-solid:hover {
-            background: var(--maroon-dark);
-            border-color: var(--maroon-dark);
+            background: var(--primary-dark);
+            border-color: var(--primary-dark);
             color: #ffffff;
             transform: translateY(-1px);
             box-shadow: 0 4px 12px rgba(122, 31, 43, 0.2);
@@ -435,13 +461,13 @@
         /* MAIN CONTENT AREA */
         .admin-main {
             flex: 1;
-            padding: 30px 0 60px;
+            padding: 34px 0 64px;
         }
 
         .admin-container {
-            max-width: 1540px;
+            max-width: 1440px;
             margin: 0 auto;
-            padding: 0 28px;
+            padding: 0 24px;
         }
 
         /* FLASH MESSAGES */
@@ -488,12 +514,12 @@
 
         /* FOOTER */
         .admin-footer {
-            border-top: 1px solid var(--line);
+            border-top: 3px solid var(--primary);
             padding: 20px 0;
-            background: #ffffff;
+            background: #1f1b19;
             text-align: center;
             font-size: 12px;
-            color: var(--muted);
+            color: #807771;
         }
 
         @keyframes fadeIn {
@@ -521,8 +547,235 @@
     </style>
 
     @stack('styles')
+
+    <style>
+        :root {
+            --font-main: 'Prompt', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            --primary: #7a1f2b;
+            --primary-dark: #58141d;
+            --primary-light: #9c2e3d;
+            --primary-soft: #fbf0f2;
+            --gold: #c69c4c;
+            --gold-dark: #a97f45;
+            --gold-light: #f7eedb;
+            --bg: #faf8f5;
+            --surface: #ffffff;
+            --text-main: #2a2421;
+            --text-muted: #736b66;
+            --border: #ede8e3;
+            --radius-sm: 8px;
+            --radius-md: 14px;
+            --radius-lg: 20px;
+            --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.03);
+            --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 20px 50px rgba(122, 31, 43, 0.12);
+            --maroon-950: var(--primary-dark);
+            --maroon-900: var(--primary);
+            --maroon-800: var(--primary);
+            --maroon-700: var(--primary-light);
+            --maroon-dark: var(--primary-dark);
+            --cream: var(--bg);
+            --ink: var(--text-main);
+            --muted: var(--text-muted);
+            --line: var(--border);
+        }
+
+        body,
+        body button,
+        body input,
+        body select,
+        body textarea,
+        .kyrix-admin-container,
+        .admin-heading h1,
+        .admin-heading p,
+        .card-title,
+        .status-badge,
+        .admin-btn,
+        .dashboard-wrapper,
+        .owner-dashboard {
+            font-family: var(--font-main) !important;
+        }
+
+        body {
+            background: var(--bg) !important;
+            color: var(--text-main) !important;
+        }
+
+        .admin-nav {
+            background: var(--surface) !important;
+            border-bottom: 1px solid var(--border) !important;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03) !important;
+        }
+
+        .admin-nav-container {
+            max-width: 1440px !important;
+            min-height: 74px !important;
+            padding: 14px 24px !important;
+        }
+
+        .logo-text {
+            font-family: 'Plus Jakarta Sans', sans-serif !important;
+            color: var(--primary) !important;
+            font-weight: 800 !important;
+        }
+
+        .logo-subtext {
+            color: var(--gold) !important;
+        }
+
+        .admin-menu-link {
+            color: var(--text-main) !important;
+            min-height: 46px !important;
+        }
+
+        .admin-menu-link:hover,
+        .admin-menu-link.active {
+            color: var(--primary) !important;
+        }
+
+        .admin-menu-link.active::after {
+            background: var(--primary) !important;
+        }
+
+        .admin-heading .eyebrow,
+        .breadcrumb span,
+        .section-eyebrow {
+            color: var(--gold-dark) !important;
+        }
+
+        .admin-heading h1,
+        .card-title,
+        .detail-card .card-title,
+        .content-card h1,
+        .content-card h2,
+        .content-card h3 {
+            color: var(--primary-dark) !important;
+        }
+
+        .content-card,
+        .detail-card,
+        .form-card,
+        .stat-card,
+        .report-card,
+        .dashboard-card,
+        .table-card {
+            background: var(--surface) !important;
+            border-color: var(--border) !important;
+            border-radius: var(--radius-md) !important;
+            box-shadow: var(--shadow-sm) !important;
+        }
+
+        .content-card:hover,
+        .detail-card:hover,
+        .stat-card:hover,
+        .dashboard-card:hover {
+            box-shadow: var(--shadow-md) !important;
+        }
+
+        .kyrix-table th,
+        .product-table th,
+        .table thead th {
+            background: var(--bg) !important;
+            color: var(--text-muted) !important;
+            border-bottom-color: var(--border) !important;
+        }
+
+        .kyrix-table td,
+        .product-table td,
+        .table td,
+        .info-row {
+            border-color: var(--border) !important;
+        }
+
+        .admin-btn.primary,
+        .btn-primary,
+        .btn-nav-solid,
+        .btn-add,
+        .btn-modal-submit,
+        .dashboard-btn.primary {
+            background: var(--primary) !important;
+            border-color: var(--primary) !important;
+            color: #fff !important;
+        }
+
+        .admin-btn.primary:hover,
+        .btn-primary:hover,
+        .btn-nav-solid:hover,
+        .btn-add:hover,
+        .btn-modal-submit:hover,
+        .dashboard-btn.primary:hover {
+            background: var(--primary-dark) !important;
+            border-color: var(--primary-dark) !important;
+            box-shadow: 0 8px 20px rgba(122, 31, 43, 0.22) !important;
+        }
+
+        .admin-btn.secondary,
+        .btn-secondary,
+        .btn-outline,
+        .btn-nav-outline,
+        .btn-reset,
+        .dashboard-btn.secondary {
+            background: #fff !important;
+            color: var(--primary) !important;
+            border-color: var(--primary) !important;
+        }
+
+        .admin-btn.secondary:hover,
+        .btn-secondary:hover,
+        .btn-outline:hover,
+        .btn-nav-outline:hover,
+        .btn-reset:hover,
+        .dashboard-btn.secondary:hover {
+            background: var(--primary-soft) !important;
+            color: var(--primary) !important;
+        }
+
+        .action-btn-view,
+        .btn-return {
+            background: var(--gold-light) !important;
+            color: var(--gold-dark) !important;
+            border-color: #f3e6d0 !important;
+        }
+
+        .action-btn-view:hover,
+        .btn-return:hover {
+            background: var(--gold) !important;
+            color: #fff !important;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus,
+        .form-control:focus,
+        .form-input-k:focus,
+        .admin-search-input:focus {
+            border-color: var(--primary) !important;
+            box-shadow: 0 0 0 3px rgba(122, 31, 43, 0.10) !important;
+        }
+
+        .admin-footer p {
+            margin: 0;
+        }
+
+        @media (max-width: 768px) {
+            .admin-top-banner {
+                display: none;
+            }
+
+            .admin-nav-container {
+                padding: 12px 18px !important;
+            }
+        }
+    </style>
 </head>
 <body>
+
+    <div class="admin-top-banner">
+        <span>KYRIX Dress Rental Boutique — ระบบจัดการร้านเช่าชุดออนไลน์</span>
+        <a href="{{ route('home') }}" target="_blank" rel="noopener">
+            <i class="fa-solid fa-store"></i> ดูหน้าเว็บไซต์ลูกค้า
+        </a>
+    </div>
 
     <!-- TOP NAVIGATION -->
     <header class="admin-nav">
@@ -580,7 +833,7 @@
                 </li>
             </ul>
 
-            <!-- RIGHT ACTIONS (ค้นหา, ไอคอนกระเป๋าชมพู, ปุ่มเส้นขอบ, ปุ่มทึบมารูน) -->
+                <!-- RIGHT ACTIONS (ค้นหา, แจ้งเตือน, โปรไฟล์, ออกจากระบบ) -->
             <div class="admin-nav-actions">
                 
                 <!-- SEARCH INPUT BOX -->
@@ -603,7 +856,7 @@
 
                 <div class="notif-dropdown-wrapper">
                     <button type="button" class="notif-bell-btn" id="notifBellBtn" onclick="toggleNotifDropdown(event)" title="แจ้งเตือนชุดเกินกำหนด">
-                        <i class="fa-solid fa-bag-shopping"></i>
+                        <i class="fa-regular fa-bell"></i>
                         @if($overdueRentals->count() > 0)
                             <span class="notif-badge-count" id="notifBadgeCount">{{ $overdueRentals->count() }}</span>
                         @endif

@@ -79,10 +79,10 @@ class OwnerPaymentController extends Controller
                 'status' => 'approved',
             ]);
 
-            // 2. อัปเดตสถานะใบเช่า (Rental) เป็น renting
+            // 2. อัปเดตสถานะใบเช่า (Rental) เป็น confirmed (ยืนยันการเช่าเรียบร้อย)
             if ($payment->rental) {
                 $payment->rental->update([
-                    'status' => 'renting',
+                    'status' => 'confirmed',
                 ]);
             }
         });
@@ -103,10 +103,18 @@ class OwnerPaymentController extends Controller
 
         $payment = Payment::findOrFail($id);
 
-        $payment->update([
-            'status' => 'rejected',
-            'note'   => $request->input('note', $payment->note),
-        ]);
+        DB::transaction(function () use ($payment, $request) {
+            $payment->update([
+                'status' => 'rejected',
+                'note'   => $request->input('note', $payment->note),
+            ]);
+
+            if ($payment->rental) {
+                $payment->rental->update([
+                    'status' => 'pending_payment',
+                ]);
+            }
+        });
 
         return redirect()->back()->with('success', 'ปฏิเสธรายการชำระเงินเรียบร้อยแล้ว');
     }

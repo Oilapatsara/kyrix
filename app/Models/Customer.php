@@ -16,6 +16,7 @@ class Customer extends Model
      * ค่อยเติม 'user_id' กลับเข้ามาในลิสต์นี้)
      */
     protected $fillable = [
+        'user_id',
         'first_name',
         'last_name',
         'email',
@@ -38,6 +39,11 @@ class Customer extends Model
         return $this->hasMany(Rental::class, 'customer_id', 'customer_id');
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'user_id');
+    }
+
     public function reviews()
     {
         return $this->hasMany(Review::class, 'customer_id', 'customer_id');
@@ -48,5 +54,10 @@ class Customer extends Model
         $name = trim(($this->first_name ?? '') . ' ' . ($this->last_name ?? ''));
 
         return $name !== '' ? $name : 'ลูกค้าไม่ระบุชื่อ';
+    }
+
+    public function getFullNameAttribute(): string
+    {
+        return $this->name;
     }
 }

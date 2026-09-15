@@ -9,7 +9,6 @@ use App\Models\Rental;
 use App\Models\RentalDetail;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class CheckoutController extends Controller
@@ -21,8 +20,8 @@ class CheckoutController extends Controller
             return redirect()->route('products.index')->with('warning', 'กรุณาเลือกชุดลงตะกร้าก่อนดำเนินการชำระเงิน');
         }
 
-        $user = Auth::user();
-        $customer = $user->customer ?? Customer::firstOrCreate(['user_id' => $user->user_id]);
+        $customer = $this->getCustomer();
+        $user = $customer->user;
 
         $rentalTotal = 0;
         $depositTotal = 0;
@@ -69,8 +68,7 @@ class CheckoutController extends Controller
             'slip_image.max' => 'ขนาดไฟล์รูปสลิปต้องไม่เกิน 5MB',
         ]);
 
-        $user = Auth::user();
-        $customer = $user->customer ?? Customer::firstOrCreate(['user_id' => $user->user_id]);
+        $customer = $this->getCustomer();
 
         // Update customer profile phone & address if changed
         if ($request->filled('recipient_phone') && empty($customer->phone)) {
@@ -132,6 +130,14 @@ class CheckoutController extends Controller
             ]);
 
             foreach ($cart as $item) {
+                $product = Product::where('product_id', $item['product_id'])
+                    ->lockForUpdate()
+                    ->firstOrFail();
+
+                if ($product->stock < 1 || $product->status !== 'available') {
+                    throw new \RuntimeException("ชุด {$product->product_name} ไม่พร้อมให้เช่าในขณะนี้");
+                }
+
                 RentalDetail::create([
                     'rental_id' => $rental->rental_id,
                     'product_id' => $item['product_id'],
@@ -144,15 +150,24 @@ class CheckoutController extends Controller
                     'created_at' => now(),
                 ]);
 
-                // Increment product rental counter
-                Product::where('product_id', $item['product_id'])->increment('rental_count');
+                $product->decrement('stock');
+                $product->increment('rental_count');
+
+                if ($product->fresh()->stock <= 0) {
+                    $product->update(['status' => 'rented']);
+                }
             }
 
             // Save Payment & Slip if uploaded
             if ($hasSlip) {
+                $uploadDir = public_path('uploads/slips');
+                if (!is_dir($uploadDir)) {
+                    mkdir($uploadDir, 0755, true);
+                }
+
                 $file = $request->file('slip_image');
                 $filename = 'slip_' . time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-                $file->move(public_path('uploads/slips'), $filename);
+                $file->move($uploadDir, $filename);
                 $slipPath = 'uploads/slips/' . $filename;
 
                 Payment::create([
@@ -178,5 +193,29 @@ class CheckoutController extends Controller
             DB::rollBack();
             return back()->with('error', 'เกิดข้อผิดพลาดในการบันทึกข้อมูล: ' . $e->getMessage())->withInput();
         }
+    }
+
+    private function getCustomer(): Customer
+    {
+        $customerId = session('customer_id');
+
+        if (!$customerId) {
+            abort(403, 'ไม่พบข้อมูลลูกค้า กรุณาเข้าสู่ระบบใหม่');
+        }
+
+        $customer = Customer::find($customerId);
+
+        if (!$customer) {
+            session()->forget([
+                'customer_logged_in',
+                'customer_id',
+                'customer_name',
+                'customer_email',
+            ]);
+
+            abort(403, 'ไม่พบข้อมูลลูกค้า กรุณาเข้าสู่ระบบใหม่');
+        }
+
+        return $customer;
     }
 }

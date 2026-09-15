@@ -464,7 +464,8 @@
                 <!-- เงินมัดจำ -->
                 <div class="form-group">
                     <label class="form-label">เงินมัดจำ (บาท) <span style="color: #991b1b;">*</span></label>
-                    <input type="number" step="0.01" name="deposit" value="{{ old('deposit', $dress->deposit ?? 0) }}" required class="form-control" placeholder="0.00">
+                    <input type="number" step="0.01" name="deposit" value="{{ old('deposit', $dress->deposit ?? 100.00) }}" required class="form-control" placeholder="100.00">
+                    <small style="color: var(--muted); font-size: 11px;">ค่ามัดจำมาตรฐาน 100 บาท (คืนให้ลูกค้าเมื่อคืนชุดและไม่มีความเสียหาย)</small>
                     @error('deposit')
                         <div class="error-feedback">{{ $message }}</div>
                     @enderror
