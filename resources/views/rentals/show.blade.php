@@ -246,9 +246,8 @@
                 3 => ['num' => '3', 'label' => 'ยืนยันการเช่า', 'icon' => 'fa-check'],
                 4 => ['num' => '4', 'label' => 'รอรับชุด', 'icon' => 'fa-box'],
                 5 => ['num' => '5', 'label' => 'กำลังเช่า', 'icon' => 'fa-person-dress'],
-                6 => ['num' => '6', 'label' => 'รอคืน', 'icon' => 'fa-arrow-rotate-left'],
-                7 => ['num' => '7', 'label' => 'คืนแล้ว', 'icon' => 'fa-shield-heart'],
-                8 => ['num' => '8', 'label' => 'เสร็จสิ้น', 'icon' => 'fa-circle-check'],
+                6 => ['num' => '6', 'label' => 'คืนแล้ว', 'icon' => 'fa-shield-heart'],
+                7 => ['num' => '7', 'label' => 'เสร็จสิ้น', 'icon' => 'fa-circle-check'],
             ];
         @endphp
         <div class="timeline-wrap">

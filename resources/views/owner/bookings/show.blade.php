@@ -256,7 +256,6 @@
             'confirmed' => 'ยืนยันแล้ว',
             'ready_pickup' => 'รอรับชุด',
             'renting'   => 'กำลังเช่า',
-            'pending_return' => 'รอตรวจรับคืน',
             'returned'  => 'คืนชุดแล้ว',
             'completed' => 'เสร็จสิ้น',
             'cancelled' => 'ยกเลิก',
