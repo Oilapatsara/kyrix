@@ -1169,7 +1169,10 @@
 
                 <!-- User -->
 
-                @auth
+                @if (session('customer_logged_in') || auth()->check())
+                    @php
+                        $displayName = session('customer_name') ?: (auth()->check() ? auth()->user()->name : 'ลูกค้า');
+                    @endphp
 
                     <div class="user-menu">
 
@@ -1179,13 +1182,13 @@
 
                             <div class="user-avatar">
 
-                                {{ mb_substr(auth()->user()->name, 0, 1) }}
+                                {{ mb_substr($displayName, 0, 1) }}
 
                             </div>
 
 
                             <span>
-                                {{ auth()->user()->name }}
+                                {{ $displayName }}
                             </span>
 
 
@@ -1286,7 +1289,7 @@
                     </div>
 
 
-                @endauth
+                @endif
 
 
             </div>
