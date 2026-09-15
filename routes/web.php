@@ -31,6 +31,7 @@ use App\Http\Controllers\Owner\OwnerReportController;
    PUBLIC
 ========================= */
 
+// แก้ไข: ลบ <<<<<<< HEAD, ======= และ >>>>>>> ที่เป็น Git Merge Conflict ออก
 Route::get('/', [HomeController::class, 'index'])
     ->name('home');
 
@@ -45,6 +46,7 @@ Route::get('/dresses/{id}', [ProductController::class, 'show'])
    CART
 ========================= */
 
+// แก้ไข: ลบส่วน Git Merge Conflict ออก และคง route เดิมไว้เพียงชุดเดียว
 Route::prefix('cart')->name('cart.')->group(function () {
 
     Route::get('/', [CartController::class, 'index'])
@@ -61,7 +63,6 @@ Route::prefix('cart')->name('cart.')->group(function () {
 
     Route::post('/clear', [CartController::class, 'clear'])
         ->name('clear');
-
 });
 
 
@@ -69,6 +70,7 @@ Route::prefix('cart')->name('cart.')->group(function () {
    AUTH
 ========================= */
 
+// แก้ไข: ลบส่วน Git Merge Conflict ออก
 Route::get('/login', [AuthController::class, 'showLogin'])
     ->name('login');
 
@@ -93,9 +95,9 @@ Route::post('/logout', [AuthController::class, 'logout'])
 
 /* =========================
    CUSTOMER
-   ใช้ CustomerMiddleware
 ========================= */
 
+// แก้ไข: ลบ Git Merge Conflict ที่ซ้ำกันออก
 Route::middleware('customer')->group(function () {
 
     Route::get('/customer/dashboard', function () {
@@ -162,7 +164,6 @@ Route::middleware('customer')->group(function () {
         '/reviews/store',
         [ReviewController::class, 'store']
     )->name('reviews.store');
-
 });
 
 
@@ -171,6 +172,7 @@ Route::middleware('customer')->group(function () {
    ใช้ Laravel Auth + OwnerMiddleware
 ========================= */
 
+// แก้ไข: รวม Route middleware ของ Owner ที่ซ้ำกันให้เหลือเพียงชุดเดียว
 Route::middleware(['auth', 'owner'])
     ->prefix('owner')
     ->name('owner.')
@@ -224,7 +226,6 @@ Route::middleware(['auth', 'owner'])
                     '/{id}/toggle-status',
                     [OwnerDressController::class, 'toggleStatus']
                 )->name('toggle-status');
-
             });
 
 
@@ -248,7 +249,6 @@ Route::middleware(['auth', 'owner'])
                     '/{id}/status',
                     [OwnerBookingController::class, 'updateStatus']
                 )->name('updateStatus');
-
             });
 
 
@@ -272,7 +272,6 @@ Route::middleware(['auth', 'owner'])
                     '/{id}/reject',
                     [OwnerPaymentController::class, 'reject']
                 )->name('reject');
-
             });
 
 
@@ -291,7 +290,6 @@ Route::middleware(['auth', 'owner'])
                     '/{id}/confirm',
                     [OwnerReturnController::class, 'confirmReturn']
                 )->name('confirm');
-
             });
 
 
@@ -306,11 +304,36 @@ Route::middleware(['auth', 'owner'])
                     [OwnerCustomerController::class, 'index']
                 )->name('index');
 
+                // แก้ไข: เก็บ CRUD ลูกค้าไว้ตามโค้ดเดิมส่วนล่าง เพราะมี create/edit/update/delete ครบกว่า
+                Route::get(
+                    '/create',
+                    [OwnerCustomerController::class, 'create']
+                )->name('create');
+
+                Route::post(
+                    '/store',
+                    [OwnerCustomerController::class, 'store']
+                )->name('store');
+
                 Route::get(
                     '/{id}',
                     [OwnerCustomerController::class, 'show']
                 )->name('show');
 
+                Route::get(
+                    '/{id}/edit',
+                    [OwnerCustomerController::class, 'edit']
+                )->name('edit');
+
+                Route::put(
+                    '/{id}',
+                    [OwnerCustomerController::class, 'update']
+                )->name('update');
+
+                Route::delete(
+                    '/{id}',
+                    [OwnerCustomerController::class, 'destroy']
+                )->name('destroy');
             });
 
 
@@ -324,7 +347,5 @@ Route::middleware(['auth', 'owner'])
                     '/',
                     [OwnerReportController::class, 'index']
                 )->name('index');
-
             });
-
     });

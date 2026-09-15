@@ -1,10 +1,12 @@
 @extends('layouts.owner')
 
-@section('title', 'รายชื่อลูกค้า | KYRIX Admin')
+@section('title', 'จัดการรายชื่อลูกค้า | KYRIX Admin')
 
 @push('styles')
 <!-- ใช้ฟอนต์ Noto Sans Thai ทั้งหน้า -->
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<!-- โหลด SweetAlert2 สำหรับป๊อปอัปยืนยันการลบ -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <style>
     :root {
@@ -64,6 +66,28 @@
         font-size: 13px;
     }
 
+    /* PRIMARY BUTTON (ADD NEW) */
+    .btn-add {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        height: 44px;
+        padding: 0 20px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, var(--maroon-700), var(--maroon-900));
+        color: #fff;
+        font-size: 13.5px;
+        font-weight: 650;
+        text-decoration: none;
+        box-shadow: 0 4px 15px rgba(111, 26, 43, .25);
+        transition: .2s;
+    }
+    .btn-add:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(111, 26, 43, .35);
+        color: #fff;
+    }
+
     /* SEARCH BAR CARD */
     .search-card {
         background: #fff;
@@ -97,19 +121,15 @@
         height: 42px;
         padding: 0 20px;
         border-radius: 9px;
-        background: linear-gradient(135deg, var(--maroon-700), var(--maroon-900));
+        background: var(--maroon-900);
         color: #fff;
         font-size: 13px;
         font-weight: 650;
         border: none;
         cursor: pointer;
-        box-shadow: 0 4px 12px rgba(111, 26, 43, .2);
         transition: .2s;
     }
-    .btn-search:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 6px 16px rgba(111, 26, 43, .3);
-    }
+    .btn-search:hover { background: var(--maroon-800); }
 
     .btn-reset {
         display: inline-flex;
@@ -126,10 +146,7 @@
         text-decoration: none;
         transition: .2s;
     }
-    .btn-reset:hover {
-        background: var(--cream);
-        color: var(--ink);
-    }
+    .btn-reset:hover { background: var(--cream); color: var(--ink); }
 
     /* CONTENT CARD & TABLE */
     .content-card {
@@ -147,7 +164,7 @@
     .kyrix-table {
         width: 100%;
         border-collapse: collapse;
-        min-width: 800px;
+        min-width: 850px;
     }
 
     .kyrix-table th {
@@ -174,25 +191,41 @@
         background-color: #fdfbfb;
     }
 
-    /* ACTION BUTTON VIEW */
-    .action-btn-view {
+    /* ACTION BUTTONS GROUP */
+    .action-buttons {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .btn-action {
         display: inline-flex;
         align-items: center;
-        gap: 6px;
-        padding: 6px 14px;
+        gap: 4px;
+        padding: 6px 12px;
         border-radius: 8px;
         font-size: 12px;
         font-weight: 650;
         text-decoration: none;
-        background: #fdf8ef;
-        color: var(--gold-dark);
-        border: 1px solid #f3e6d0;
-        transition: .2s ease;
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition: .2s;
     }
-    .action-btn-view:hover {
-        background: var(--gold);
-        color: #fff;
+
+    .btn-edit {
+        background: #edf5ff;
+        color: #2563eb;
+        border-color: #dbeafe;
     }
+    .btn-edit:hover { background: #2563eb; color: #fff; }
+
+    .btn-delete {
+        background: #fdf2f2;
+        color: #dc2626;
+        border-color: #fee2e2;
+    }
+    .btn-delete:hover { background: #dc2626; color: #fff; }
 
     .empty-state {
         padding: 50px 20px;
@@ -216,7 +249,14 @@
         <div class="admin-heading">
             <span class="eyebrow">KYRIX RENTAL · CUSTOMERS</span>
             <h1>จัดการรายชื่อลูกค้า</h1>
-            <p>ตรวจสอบข้อมูลสมาชิก ประวัติการติดต่อ และประวัติการเช่าชุดทั้งหมดในระบบ</p>
+            <p>เพิ่ม แก้ไข ลบ และตรวจสอบประวัติการเช่าชุดของลูกค้าทั้งหมดในระบบ</p>
+        </div>
+        <div>
+            @if(Route::has('owner.customers.create'))
+                <a href="{{ route('owner.customers.create') }}" class="btn-add">
+                    <i class="fa-solid fa-user-plus"></i> เพิ่มลูกค้าใหม่
+                </a>
+            @endif
         </div>
     </div>
 
@@ -245,11 +285,11 @@
             <table class="kyrix-table">
                 <thead>
                     <tr>
-                        <th style="width: 15%;">รหัสลูกค้า</th>
-                        <th style="width: 28%;">ชื่อ-นามสกุล</th>
-                        <th style="width: 32%;">ข้อมูลติดต่อ</th>
+                        <th style="width: 12%;">รหัสลูกค้า</th>
+                        <th style="width: 25%;">ชื่อ-นามสกุล</th>
+                        <th style="width: 28%;">ข้อมูลติดต่อ</th>
                         <th style="width: 12%; text-align: center;">วันที่สมัคร</th>
-                        <th style="width: 13%; text-align: center;">จัดการ</th>
+                        <th style="width: 23%; text-align: center;">จัดการ</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -277,9 +317,25 @@
                             {{ $customer->created_at ? $customer->created_at->format('d/m/Y') : '-' }}
                         </td>
                         <td style="text-align: center;">
-                            <a href="{{ route('owner.customers.show', $custId) }}" class="action-btn-view">
-                                <i class="fa-regular fa-eye"></i> ดูรายละเอียด
-                            </a>
+                            <div class="action-buttons">
+                                <!-- ปุ่มแก้ไข -->
+                                @if(Route::has('owner.customers.edit'))
+                                    <a href="{{ route('owner.customers.edit', $custId) }}" class="btn-action btn-edit" title="แก้ไข">
+                                        <i class="fa-regular fa-pen-to-square"></i> แก้ไข
+                                    </a>
+                                @endif
+
+                                <!-- ปุ่มลบ -->
+                                @if(Route::has('owner.customers.destroy'))
+                                    <form id="delete-form-{{ $custId }}" action="{{ route('owner.customers.destroy', $custId) }}" method="POST" style="margin: 0;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="button" onclick="confirmDelete('{{ $custId }}', '{{ $custName }}')" class="btn-action btn-delete" title="ลบข้อมูล">
+                                            <i class="fa-regular fa-trash-can"></i> ลบ
+                                        </button>
+                                    </form>
+                                @endif
+                            </div>
                         </td>
                     </tr>
                     @empty
@@ -288,7 +344,7 @@
                             <div class="empty-state">
                                 <div class="empty-icon"><i class="fa-solid fa-users-slash"></i></div>
                                 <div style="font-weight: 600; font-size: 14px; color: var(--maroon-900);">ไม่พบข้อมูลลูกค้าในระบบ</div>
-                                <div style="font-size: 12.5px; margin-top: 4px;">ลองเปลี่ยนคำค้นหาใหม่อีกครั้ง หรือตรวจสอบรายชื่อสมาชิกทั้งหมด</div>
+                                <div style="font-size: 12.5px; margin-top: 4px;">ลองเปลี่ยนคำค้นหาใหม่อีกครั้ง หรือเพิ่มลูกค้าใหม่เข้าสู่ระบบ</div>
                             </div>
                         </td>
                     </tr>
@@ -305,4 +361,24 @@
         @endif
     </div>
 </div>
+
+<!-- SWEETALERT CONFIRM DELETE SCRIPT -->
+<script>
+    function confirmDelete(id, name) {
+        Swal.fire({
+            title: 'ยืนยันการลบลูกค้า?',
+            html: `คุณต้องการลบข้อมูลของ <strong>${name}</strong> ออกจากระบบใช่หรือไม่?<br><span style="color: #dc2626; font-size: 12px;">การกระทำนี้ไม่สามารถย้อนกลับได้</span>`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc2626',
+            cancelButtonColor: '#8a7a7d',
+            confirmButtonText: 'ใช่, ลบข้อมูล',
+            cancelButtonText: 'ยกเลิก'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('delete-form-' + id).submit();
+            }
+        });
+    }
+</script>
 @endsection
