@@ -44,11 +44,19 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: var(--font-prompt) !important;
+        }
+
+        body, button, input, select, textarea {
+            font-family: var(--font-prompt);
+        }
+
+        .fa, .fas, .far, .fab, .fa-solid, .fa-regular,
+        .fa::before, .fas::before, .far::before, .fab::before, .fa-solid::before, .fa-regular::before {
+            font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands" !important;
         }
 
         body {
-            font-family: var(--font-prompt) !important;
+            font-family: var(--font-prompt);
             background-color: var(--cream);
             color: var(--ink);
             min-height: 100vh;
@@ -129,6 +137,7 @@
         .admin-menu-link {
             display: inline-flex;
             align-items: center;
+            gap: 8px;
             height: 72px;
             font-size: 15px;
             font-weight: 500;
@@ -138,6 +147,11 @@
             padding: 0 2px;
             white-space: nowrap;
             text-decoration: none;
+        }
+
+        .admin-menu-link i {
+            font-size: 14px;
+            color: inherit;
         }
 
         .admin-menu-link:hover {
@@ -520,40 +534,47 @@
                 </a>
             </div>
 
-            <!-- MAIN MENU (สไตล์คลีนตามแบบในรูปภาพ) -->
+            <!-- MAIN MENU -->
             <ul class="admin-menu">
                 <li>
                     <a href="{{ route('owner.dashboard') }}" class="admin-menu-link {{ request()->routeIs('owner.dashboard') ? 'active' : '' }}">
+                        <i class="fa-solid fa-chart-pie"></i>
                         <span>ภาพรวม</span>
                     </a>
                 </li>
                 <li>
                     <a href="{{ route('owner.dresses.index') }}" class="admin-menu-link {{ request()->routeIs('owner.dresses.*') ? 'active' : '' }}">
+                        <i class="fa-solid fa-shirt"></i>
                         <span>จัดการชุด</span>
                     </a>
                 </li>
                 <li>
                     <a href="{{ route('owner.bookings.index') }}" class="admin-menu-link {{ request()->routeIs('owner.bookings.*') ? 'active' : '' }}">
+                        <i class="fa-regular fa-calendar-check"></i>
                         <span>รายการเช่า</span>
                     </a>
                 </li>
                 <li>
                     <a href="{{ route('owner.payments.index') }}" class="admin-menu-link {{ request()->routeIs('owner.payments.*') ? 'active' : '' }}">
+                        <i class="fa-solid fa-receipt"></i>
                         <span>ตรวจสลิป</span>
                     </a>
                 </li>
                 <li>
                     <a href="{{ route('owner.returns.index') }}" class="admin-menu-link {{ request()->routeIs('owner.returns.*') ? 'active' : '' }}">
+                        <i class="fa-solid fa-rotate-left"></i>
                         <span>รับคืนชุด</span>
                     </a>
                 </li>
                 <li>
                     <a href="{{ route('owner.customers.index') }}" class="admin-menu-link {{ request()->routeIs('owner.customers.*') ? 'active' : '' }}">
+                        <i class="fa-solid fa-users"></i>
                         <span>ลูกค้า</span>
                     </a>
                 </li>
                 <li>
                     <a href="{{ route('owner.reports.index') }}" class="admin-menu-link {{ request()->routeIs('owner.reports.*') ? 'active' : '' }}">
+                        <i class="fa-solid fa-chart-column"></i>
                         <span>รายงาน</span>
                     </a>
                 </li>

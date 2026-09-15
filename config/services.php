@@ -37,7 +37,7 @@ return [
     'google' => [
         'client_id' => trim(env('GOOGLE_CLIENT_ID', '')),
         'client_secret' => trim(env('GOOGLE_CLIENT_SECRET', '')),
-        'redirect' => env('GOOGLE_REDIRECT_URI') ?: url('/auth/google/callback'),
+        'redirect' => env('GOOGLE_REDIRECT_URI', rtrim((string) env('APP_URL', 'http://localhost:8000'), '/') . '/auth/google/callback'),
     ],
 
 ];
