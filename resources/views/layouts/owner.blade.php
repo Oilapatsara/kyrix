@@ -6,46 +6,49 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'KYRIX | ระบบจัดการร้านเช่าชุด')</title>
 
-    <!-- Google Fonts -->
+    <!-- Google Fonts: Prompt & Playfair Display -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
 
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <style>
         :root {
-            --maroon-950: #4a0f19;
-            --maroon-900: #751B2A; /* สีแดงเข้มไวน์แดงตามรูปโลโก้ */
-            --maroon-800: #7A2031;
-            --maroon-700: #8c2539;
-            --gold:       #C5A059; /* สีทองพรีเมียมละมุนตา */
-            --gold-dark:  #A88349;
-            --gold-light: #f9f6f0;
-            --rose-bg:    #fcf3f4;
-            --rose-text:  #751B2A;
+            --font-prompt: 'Prompt', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            --maroon-950: #4D141B;
+            --maroon-900: #7A1F2B; /* โทนแดงไวน์/มารูน */
+            --maroon-800: #882230;
+            --maroon-700: #9C2A3B;
+            --maroon-dark: #631722;
+            --gold:       #C69C4C; /* โทนทอง */
+            --gold-dark:  #B89047;
+            --gold-light: #fdfbf7;
+            --blush-bg:   #faedef; /* สีชมพูอ่อนสำหรับไอคอนกระเป๋า */
+            --blush-hover:#f7e1e4;
             --cream:      #faf8f6;
             --surface:    #ffffff;
             --ink:        #2b1a1d;
             --muted:      #8a7c7f;
-            --line:       #f0e8e6;
+            --line:       #ece4e3;
             --radius-sm:  8px;
             --radius-md:  12px;
             --radius-lg:  18px;
             --shadow-sm:  0 2px 8px rgba(43, 26, 29, 0.04);
             --shadow-md:  0 8px 24px rgba(43, 26, 29, 0.08);
-            --shadow-lg:  0 14px 35px rgba(117, 27, 42, 0.12);
+            --shadow-lg:  0 14px 35px rgba(122, 31, 43, 0.12);
         }
 
-        * {
+        *, *::before, *::after {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            font-family: var(--font-prompt) !important;
         }
 
         body {
-            font-family: "Noto Sans Thai", "Plus Jakarta Sans", sans-serif;
+            font-family: var(--font-prompt) !important;
             background-color: var(--cream);
             color: var(--ink);
             min-height: 100vh;
@@ -60,110 +63,102 @@
             transition: all .2s ease;
         }
 
-        /* TOP NAVIGATION */
+        /* TOP NAVIGATION (ตามแบบสไตล์ในภาพตัวอย่าง) */
         .admin-nav {
             background: #ffffff;
-            border-bottom: 1px solid var(--line);
+            border-bottom: 1px solid #ebe5e4;
             position: sticky;
             top: 0;
             z-index: 1000;
-            box-shadow: 0 4px 20px rgba(117, 27, 42, 0.03);
+            box-shadow: 0 2px 10px rgba(122, 31, 43, 0.02);
         }
 
         .admin-nav-container {
-            max-width: 1540px;
+            max-width: 1560px;
             margin: 0 auto;
-            padding: 0 28px;
+            padding: 0 32px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            height: 76px;
+            height: 72px;
+            gap: 24px;
         }
 
         .admin-brand {
             display: flex;
             align-items: center;
-            gap: 14px;
+            flex-shrink: 0;
         }
 
         .admin-brand .logo-container {
             display: flex;
             flex-direction: column;
-            line-height: 1.1;
+            line-height: 1.05;
+            text-decoration: none;
         }
 
         .admin-brand .logo-text {
-            font-family: "Playfair Display", serif;
-            font-size: 26px;
+            font-family: "Playfair Display", serif !important;
+            font-size: 27px;
             font-weight: 700;
-            letter-spacing: 2.5px;
+            letter-spacing: 2px;
             color: var(--maroon-900);
         }
 
         .admin-brand .logo-subtext {
+            font-family: var(--font-prompt) !important;
             font-size: 9.5px;
-            font-weight: 700;
-            letter-spacing: 2.8px;
+            font-weight: 600;
+            letter-spacing: 3.5px;
             color: var(--gold-dark);
             text-transform: uppercase;
             margin-top: 3px;
         }
 
-        /* MENU LINKS */
+        /* MENU LINKS (คลีน ไม่มีไอคอน มีขีดเส้นใต้สีมารูนสำหรับเมนูที่แอคทีฟ) */
         .admin-menu {
             display: flex;
             align-items: center;
-            gap: 24px;
+            gap: 30px;
             list-style: none;
             height: 100%;
+            margin: 0;
+            padding: 0;
         }
 
         .admin-menu-link {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            padding: 0 2px;
-            height: 100%;
-            font-size: 14px;
+            height: 72px;
+            font-size: 15px;
             font-weight: 500;
-            color: #4a3b3e;
+            color: #3d3537;
             transition: all .2s ease;
             position: relative;
-        }
-
-        .admin-menu-link i {
-            font-size: 13.5px;
-            color: var(--muted);
-            transition: color .2s;
+            padding: 0 2px;
+            white-space: nowrap;
+            text-decoration: none;
         }
 
         .admin-menu-link:hover {
             color: var(--maroon-900);
         }
 
-        .admin-menu-link:hover i {
-            color: var(--maroon-900);
-        }
-
         .admin-menu-link.active {
             color: var(--maroon-900);
-            font-weight: 700;
+            font-weight: 600;
         }
 
-        .admin-menu-link.active i {
-            color: var(--maroon-900);
-        }
-
-        /* Active bottom border indicator style */
+        /* ขีดเส้นใต้สีแดงไวน์/มารูนใต้เมนูที่เลือก ตรงตามรูปตัวอย่าง */
         .admin-menu-link.active::after {
             content: '';
             position: absolute;
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 3px;
+            height: 2.5px;
             background: var(--maroon-900);
-            border-radius: 3px 3px 0 0;
+            border-radius: 2px 2px 0 0;
         }
 
         /* RIGHT ACTIONS */
@@ -171,9 +166,10 @@
             display: flex;
             align-items: center;
             gap: 14px;
+            flex-shrink: 0;
         }
 
-        /* SEARCH BOX */
+        /* SEARCH PILL */
         .admin-search-box {
             position: relative;
             display: flex;
@@ -181,27 +177,28 @@
         }
 
         .admin-search-input {
-            background: #faf8f7;
-            border: 1px solid var(--line);
-            border-radius: 99px;
-            padding: 9px 38px 9px 16px;
-            font-size: 13px;
+            background: #f8f5f5;
+            border: 1px solid #ebe4e4;
+            border-radius: 999px;
+            padding: 8px 38px 8px 18px;
+            font-size: 13.5px;
             color: var(--ink);
-            width: 220px;
+            width: 195px;
             outline: none;
-            transition: all .2s;
-            font-family: inherit;
+            transition: all .25s ease;
+            font-family: var(--font-prompt) !important;
         }
 
         .admin-search-input::placeholder {
-            color: #b5a4a7;
+            color: #9e8f92;
+            font-size: 13px;
         }
 
         .admin-search-input:focus {
-            border-color: var(--gold);
-            background: #fff;
-            box-shadow: 0 0 0 3px rgba(197, 160, 89, 0.15);
-            width: 240px;
+            border-color: var(--maroon-900);
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(122, 31, 43, 0.08);
+            width: 225px;
         }
 
         .admin-search-btn {
@@ -209,9 +206,13 @@
             right: 14px;
             background: none;
             border: none;
-            color: var(--muted);
+            color: #8b7c7f;
             cursor: pointer;
             font-size: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
             transition: color .2s;
         }
 
@@ -220,39 +221,44 @@
             color: var(--maroon-900);
         }
 
-        /* NOTIFICATION BELL */
+        /* NOTIFICATION / BAG BUTTON (วงกลมสีชมพูอ่อน ตามภาพตัวอย่าง) */
         .notif-dropdown-wrapper {
             position: relative;
         }
 
         .notif-bell-btn {
-            width: 40px;
-            height: 40px;
+            width: 42px;
+            height: 42px;
             border-radius: 50%;
-            background: var(--rose-bg);
-            border: 1px solid rgba(117, 27, 42, 0.1);
+            background: var(--blush-bg);
+            border: 1px solid rgba(122, 31, 43, 0.06);
             display: flex;
             align-items: center;
             justify-content: center;
             color: var(--maroon-900);
             cursor: pointer;
             position: relative;
-            transition: all .2s;
+            transition: all .2s ease;
         }
 
         .notif-bell-btn:hover {
-            background: #f7e6e8;
-            border-color: var(--gold);
+            background: var(--blush-hover);
+            transform: scale(1.04);
+        }
+
+        .notif-bell-btn i {
+            font-size: 15px;
+            color: var(--maroon-900);
         }
 
         .notif-badge-count {
             position: absolute;
-            top: -5px;
-            right: -5px;
+            top: -4px;
+            right: -4px;
             background: #dc2626;
             color: #fff;
             font-size: 10px;
-            font-weight: 750;
+            font-weight: 700;
             padding: 2px 6px;
             border-radius: 99px;
             border: 2px solid #fff;
@@ -286,7 +292,7 @@
             align-items: center;
             justify-content: space-between;
             font-size: 13px;
-            font-weight: 750;
+            font-weight: 700;
             color: var(--maroon-900);
         }
 
@@ -307,6 +313,25 @@
 
         .notif-item:hover {
             background: #fdfbfb;
+        }
+
+        .notif-item.is-read {
+            opacity: .55;
+        }
+
+        .notif-item.is-read .notif-icon-box {
+            background: #f2efec;
+            color: var(--muted);
+        }
+
+        .notif-read-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--muted);
+            margin-left: 8px;
         }
 
         .notif-icon-box {
@@ -341,66 +366,56 @@
             font-size: 12.5px;
         }
 
-        .admin-user-pill {
-            display: flex;
+        /* RIGHT BUTTONS (สไตล์ปุ่มเส้นขอบ และ ปุ่มทึบสีมารูน ตามแบบในรูปภาพ) */
+        .btn-nav-outline {
+            display: inline-flex;
             align-items: center;
-            gap: 10px;
-            padding: 5px 16px 5px 6px;
-            background: #fff;
-            border: 1px solid var(--line);
-            border-radius: 30px;
-            box-shadow: var(--shadow-sm);
+            gap: 7px;
+            padding: 7px 18px;
+            background: transparent;
+            color: var(--maroon-900);
+            border: 1.5px solid var(--maroon-900);
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all .2s ease;
+            text-decoration: none;
+            font-family: var(--font-prompt) !important;
+            line-height: 1.3;
+            white-space: nowrap;
         }
 
-        .admin-avatar {
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
+        .btn-nav-outline:hover {
+            background: var(--blush-bg);
+            color: var(--maroon-900);
+        }
+
+        .btn-nav-solid {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 7px 20px;
             background: var(--maroon-900);
             color: #ffffff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 13px;
-            font-weight: 700;
-        }
-
-        .admin-user-info {
-            line-height: 1.2;
-        }
-
-        .admin-user-name {
-            font-size: 12.5px;
-            font-weight: 700;
-            color: var(--maroon-900);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .admin-user-role {
-            font-size: 10px;
-            color: var(--muted);
-        }
-
-        .btn-logout {
-            background: none;
-            border: none;
-            cursor: pointer;
-            width: 32px;
-            height: 32px;
+            border: 1.5px solid var(--maroon-900);
             border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #937d81;
-            transition: all .2s;
-            margin-left: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all .2s ease;
+            text-decoration: none;
+            font-family: var(--font-prompt) !important;
+            line-height: 1.3;
+            white-space: nowrap;
         }
 
-        .btn-logout:hover {
-            background: #ffebee;
-            color: #c62828;
+        .btn-nav-solid:hover {
+            background: var(--maroon-dark);
+            border-color: var(--maroon-dark);
+            color: #ffffff;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(122, 31, 43, 0.2);
         }
 
         /* MAIN CONTENT AREA */
@@ -505,59 +520,52 @@
                 </a>
             </div>
 
-            <!-- MAIN MENU -->
+            <!-- MAIN MENU (สไตล์คลีนตามแบบในรูปภาพ) -->
             <ul class="admin-menu">
                 <li>
                     <a href="{{ route('owner.dashboard') }}" class="admin-menu-link {{ request()->routeIs('owner.dashboard') ? 'active' : '' }}">
-                        <i class="fa-solid fa-chart-pie"></i>
                         <span>ภาพรวม</span>
                     </a>
                 </li>
                 <li>
                     <a href="{{ route('owner.dresses.index') }}" class="admin-menu-link {{ request()->routeIs('owner.dresses.*') ? 'active' : '' }}">
-                        <i class="fa-solid fa-shirt"></i>
                         <span>จัดการชุด</span>
                     </a>
                 </li>
                 <li>
                     <a href="{{ route('owner.bookings.index') }}" class="admin-menu-link {{ request()->routeIs('owner.bookings.*') ? 'active' : '' }}">
-                        <i class="fa-regular fa-calendar-check"></i>
                         <span>รายการเช่า</span>
                     </a>
                 </li>
                 <li>
                     <a href="{{ route('owner.payments.index') }}" class="admin-menu-link {{ request()->routeIs('owner.payments.*') ? 'active' : '' }}">
-                        <i class="fa-solid fa-receipt"></i>
                         <span>ตรวจสลิป</span>
                     </a>
                 </li>
                 <li>
                     <a href="{{ route('owner.returns.index') }}" class="admin-menu-link {{ request()->routeIs('owner.returns.*') ? 'active' : '' }}">
-                        <i class="fa-solid fa-rotate-left"></i>
                         <span>รับคืนชุด</span>
                     </a>
                 </li>
                 <li>
                     <a href="{{ route('owner.customers.index') }}" class="admin-menu-link {{ request()->routeIs('owner.customers.*') ? 'active' : '' }}">
-                        <i class="fa-solid fa-users"></i>
                         <span>ลูกค้า</span>
                     </a>
                 </li>
                 <li>
                     <a href="{{ route('owner.reports.index') }}" class="admin-menu-link {{ request()->routeIs('owner.reports.*') ? 'active' : '' }}">
-                        <i class="fa-solid fa-chart-column"></i>
                         <span>รายงาน</span>
                     </a>
                 </li>
             </ul>
 
-            <!-- RIGHT ACTIONS -->
+            <!-- RIGHT ACTIONS (ค้นหา, ไอคอนกระเป๋าชมพู, ปุ่มเส้นขอบ, ปุ่มทึบมารูน) -->
             <div class="admin-nav-actions">
                 
                 <!-- SEARCH INPUT BOX -->
                 <form action="{{ route('owner.dresses.index') }}" method="GET" class="admin-search-box">
                     <input type="text" name="search" class="admin-search-input" placeholder="ค้นหาชุดสวย..." value="{{ request('search') }}">
-                    <button type="submit" class="admin-search-btn">
+                    <button type="submit" class="admin-search-btn" title="ค้นหา">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </button>
                 </form>
@@ -574,7 +582,7 @@
 
                 <div class="notif-dropdown-wrapper">
                     <button type="button" class="notif-bell-btn" id="notifBellBtn" onclick="toggleNotifDropdown(event)" title="แจ้งเตือนชุดเกินกำหนด">
-                        <i class="fa-solid fa-bag-shopping" style="font-size: 14px;"></i>
+                        <i class="fa-solid fa-bag-shopping"></i>
                         @if($overdueRentals->count() > 0)
                             <span class="notif-badge-count" id="notifBadgeCount">{{ $overdueRentals->count() }}</span>
                         @endif
@@ -589,16 +597,19 @@
                             @forelse($overdueRentals as $item)
                                 @php
                                     $rId = $item->rental_id ?? $item->id;
-                                    $custName = $item->customer->name ?? $item->customer_name ?? 'ลูกค้า';
+                                    $custName = $item->customer ? ($item->customer->name ?? $item->customer->first_name . ' ' . $item->customer->last_name) : 'ลูกค้า (ไม่พบข้อมูล)';
                                     $daysLate = \Carbon\Carbon::parse($item->end_date)->diffInDays($today);
                                 @endphp
-                                <a href="{{ route('owner.returns.index', ['tab' => 'overdue']) }}" class="notif-item" onclick="markNotifRead('{{ $rId }}')">
+                                <a href="{{ route('owner.returns.index', ['tab' => 'overdue']) }}" class="notif-item" data-rental-id="{{ $rId }}" onclick="markNotifRead('{{ $rId }}', this)">
                                     <div class="notif-icon-box">
                                         <i class="fa-solid fa-triangle-exclamation"></i>
                                     </div>
                                     <div class="notif-content">
                                         <div><strong>#RENT-{{ $rId }}</strong> คุณ <strong>{{ $custName }}</strong> เลยกำหนดคืนแล้ว {{ $daysLate }} วัน</div>
-                                        <div class="notif-time">กำหนดคืน: {{ \Carbon\Carbon::parse($item->end_date)->format('d/m/Y') }}</div>
+                                        <div class="notif-time">
+                                            กำหนดคืน: {{ \Carbon\Carbon::parse($item->end_date)->format('d/m/Y') }}
+                                            <span class="notif-read-tag" style="display:none;"><i class="fa-solid fa-check"></i> อ่านแล้ว</span>
+                                        </div>
                                     </div>
                                 </a>
                             @empty
@@ -611,25 +622,19 @@
                     </div>
                 </div>
 
-                <!-- USER PROFILE PILL -->
-                <div class="admin-user-pill">
-                    <div class="admin-avatar">
-                        {{ mb_substr(auth()->user()->name ?? 'อ', 0, 1) }}
-                    </div>
-                    <div class="admin-user-info">
-                        <div class="admin-user-name">
-                            {{ auth()->user()->name ?? 'เจ้าของร้าน' }}
-                            <i class="fa-solid fa-chevron-down" style="font-size: 10px; color: var(--muted);"></i>
-                        </div>
-                        <div class="admin-user-role">ผู้ดูแลร้าน KYRIX</div>
-                    </div>
-                    <form action="{{ route('logout') }}" method="POST" style="display:inline;">
-                        @csrf
-                        <button type="submit" class="btn-logout" title="ออกจากระบบ" onclick="return confirm('ต้องการออกจากระบบหรือไม่?')">
-                            <i class="fa-solid fa-arrow-right-from-bracket"></i>
-                        </button>
-                    </form>
+                <!-- USER PROFILE BUTTON (OUTLINE STYLE) -->
+                <div class="btn-nav-outline" title="บัญชีผู้ดูแลร้าน KYRIX">
+                    <i class="fa-regular fa-user" style="font-size: 13px;"></i>
+                    <span>{{ auth()->user()->name ?? 'เจ้าของร้าน' }}</span>
                 </div>
+
+                <!-- LOGOUT BUTTON (SOLID MAROON STYLE) -->
+                <form action="{{ route('logout') }}" method="POST" style="display:inline; margin:0;">
+                    @csrf
+                    <button type="submit" class="btn-nav-solid" title="ออกจากระบบ" onclick="return confirm('ต้องการออกจากระบบหรือไม่?')">
+                        <span>ออกจากระบบ</span>
+                    </button>
+                </form>
 
             </div>
         </div>
@@ -707,15 +712,53 @@
             }
         });
 
-        function markNotifRead(rentalId) {
-            let readNotifs = JSON.parse(localStorage.getItem('kyrix_read_notifs') || '{}');
+        function getReadNotifs() {
+            return JSON.parse(localStorage.getItem('kyrix_read_notifs') || '{}');
+        }
+
+        // อัปเดตหน้าตารายการ + ตัวเลขแจ้งเตือนที่หัวกระดิ่ง ให้ตรงกับสถานะอ่านแล้วใน localStorage
+        function refreshNotifUI() {
+            const readNotifs = getReadNotifs();
+            const items = document.querySelectorAll('.notif-item[data-rental-id]');
+            let unreadCount = 0;
+
+            items.forEach(function(item) {
+                const id = item.getAttribute('data-rental-id');
+                const isRead = Object.prototype.hasOwnProperty.call(readNotifs, id);
+                const readTag = item.querySelector('.notif-read-tag');
+
+                item.classList.toggle('is-read', isRead);
+                if (readTag) {
+                    readTag.style.display = isRead ? 'inline-flex' : 'none';
+                }
+                if (!isRead) {
+                    unreadCount++;
+                }
+            });
+
+            const badge = document.getElementById('notifBadgeCount');
+            if (badge) {
+                if (unreadCount > 0) {
+                    badge.textContent = unreadCount;
+                    badge.style.display = '';
+                } else {
+                    badge.style.display = 'none';
+                }
+            }
+        }
+
+        function markNotifRead(rentalId, el) {
+            let readNotifs = getReadNotifs();
             const now = new Date().getTime();
             readNotifs[rentalId] = now;
             localStorage.setItem('kyrix_read_notifs', JSON.stringify(readNotifs));
+
+            // อัปเดตทันทีให้เห็นผลก่อนเปลี่ยนหน้า
+            refreshNotifUI();
         }
 
         document.addEventListener("DOMContentLoaded", function() {
-            let readNotifs = JSON.parse(localStorage.getItem('kyrix_read_notifs') || '{}');
+            let readNotifs = getReadNotifs();
             const now = new Date().getTime();
             const twelveHours = 12 * 60 * 60 * 1000;
             let updated = false;
@@ -730,6 +773,8 @@
             if (updated) {
                 localStorage.setItem('kyrix_read_notifs', JSON.stringify(readNotifs));
             }
+
+            refreshNotifUI();
         });
     </script>
 

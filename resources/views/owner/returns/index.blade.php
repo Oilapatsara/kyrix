@@ -24,14 +24,13 @@
     }
 
     body, h1, h2, h3, h4, h5, h6, p, span, a, button, input, table, div {
-        font-family: 'Noto Sans Thai', sans-serif !important;
+        font-family: 'Prompt', sans-serif !important;
     }
 
     .kyrix-admin-container {
         padding: 0;
         color: var(--ink);
-        max-width: 1200px;
-        margin: 0 auto;
+        width: 100%;
     }
 
     /* HEADER */
@@ -175,7 +174,7 @@
     .kyrix-table {
         width: 100%;
         border-collapse: collapse;
-        min-width: 800px;
+        min-width: 920px;
     }
 
     .kyrix-table th {
@@ -198,14 +197,41 @@
         vertical-align: middle;
     }
 
+    .cell-truncate {
+        max-width: 220px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .dress-thumb-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .dress-thumb-row + .dress-thumb-row {
+        margin-top: 4px;
+    }
+
     .kyrix-table tr:hover {
         background-color: #fdfbfb;
+    }
+
+    /* แถวที่เกินกำหนดคืน ให้เด่นขึ้นเล็กน้อย */
+    .kyrix-table tr.row-overdue {
+        background-color: rgba(220, 38, 38, 0.035);
+    }
+
+    .kyrix-table tr.row-overdue:hover {
+        background-color: rgba(220, 38, 38, 0.06);
     }
 
     /* STATUS BADGES */
     .status-badge {
         display: inline-flex;
         align-items: center;
+        gap: 5px;
         padding: 5px 12px;
         border-radius: 999px;
         font-size: 11px;
@@ -217,10 +243,30 @@
     .status-returned { background: #eef7ef; color: #16a34a; }
     .status-default { background: #f5f5f5; color: #666; }
 
-    /* ACTION BUTTON */
+    /* คำเตือนวันที่เกินกำหนดใต้วันครบกำหนดคืน */
+    .overdue-hint {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        margin-top: 5px;
+        font-size: 10.5px;
+        font-weight: 700;
+        color: #dc2626;
+    }
+
+    /* ACTION BUTTONS */
+    .action-stack {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+    }
+
     .btn-return {
         display: inline-flex;
         align-items: center;
+        justify-content: center;
         gap: 6px;
         padding: 7px 14px;
         border-radius: 8px;
@@ -232,10 +278,45 @@
         cursor: pointer;
         transition: .2s;
         text-decoration: none;
+        width: 100%;
     }
     .btn-return:hover {
         background: var(--gold);
         color: #fff;
+    }
+
+    /* ปุ่มบันทึกรับคืน เมื่อเกินกำหนด ให้เด่นขึ้นเป็นสีแดง/เร่งด่วน */
+    .btn-return.is-urgent {
+        background: #dc2626;
+        color: #fff;
+        border-color: #dc2626;
+        box-shadow: 0 4px 12px rgba(220, 38, 38, .25);
+    }
+    .btn-return.is-urgent:hover {
+        background: #b91c1c;
+    }
+
+    .btn-call {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 6px 14px;
+        border-radius: 8px;
+        font-size: 11.5px;
+        font-weight: 650;
+        background: #fff;
+        color: var(--maroon-800);
+        border: 1px solid var(--line);
+        cursor: pointer;
+        transition: .2s;
+        text-decoration: none;
+        width: 100%;
+    }
+    .btn-call:hover {
+        background: var(--rose-bg);
+        border-color: var(--rose-text);
+        color: var(--rose-text);
     }
 
     .empty-state {
@@ -307,21 +388,44 @@
             <table class="kyrix-table">
                 <thead>
                     <tr>
-                        <th style="width: 15%;">เลขที่เช่า</th>
-                        <th style="width: 30%;">ลูกค้า</th>
-                        <th style="width: 20%; text-align: center;">กำหนดคืน</th>
-                        <th style="width: 17%; text-align: center;">สถานะ</th>
-                        <th style="width: 18%; text-align: center;">จัดการ</th>
+                        <th style="width: 12%;">เลขที่เช่า</th>
+                        <th style="width: 22%;">ลูกค้า</th>
+                        <th style="width: 22%;">ชุดที่เช่า</th>
+                        <th style="width: 16%; text-align: center;">กำหนดคืน</th>
+                        <th style="width: 14%; text-align: center;">สถานะ</th>
+                        <th style="width: 14%; text-align: center;">จัดการ</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($rentals as $rental)
                     @php
                         $rentalId = $rental->rental_id ?? $rental->id;
-                        $status = strtolower($rental->status ?? 'renting');
+                        $status = strtolower($rental->display_status ?? $rental->status ?? 'renting');
+
+                        // ---- ข้อมูลลูกค้า: join กับตาราง customers (first_name + last_name) ----
+                        $customer = $rental->customer;
+                        $customerName = 'ไม่ระบุชื่อ';
+
+                        if ($customer) {
+                            $customerName = trim(($customer->first_name ?? '') . ' ' . ($customer->last_name ?? ''));
+                            $customerName = $customerName !== '' ? $customerName : 'ไม่ระบุชื่อ';
+                        }
+
+                        // เบอร์ติดต่อ: ใช้เบอร์ผู้รับของออเดอร์นี้ก่อน ถ้าไม่มีค่อย fallback ไปเบอร์ลูกค้า
+                        $contactPhone = $rental->recipient_phone ?: ($customer->phone ?? null);
+
+                        // ---- ชุดที่เช่า: join rentals -> rental_details -> products ----
+                        $rentalItems = $rental->rentalDetails ?? collect();
+
+                        // ---- จำนวนวันที่เกินกำหนด (ใช้กับสถานะ overdue เท่านั้น) ----
+                        $daysLate = null;
+                        if ($status === 'overdue' && $rental->end_date) {
+                            $daysLate = \Carbon\Carbon::parse($rental->end_date)->diffInDays(\Carbon\Carbon::today());
+                        }
+
                         $statusText = match($status) {
                             'renting', 'active' => 'กำลังเช่า',
-                            'overdue' => 'เกินกำหนด',
+                            'overdue' => $daysLate ? 'เกินกำหนด ' . $daysLate . ' วัน' : 'เกินกำหนด',
                             'returned' => 'คืนแล้ว',
                             default => ucfirst($rental->status)
                         };
@@ -332,36 +436,69 @@
                             default => 'status-default'
                         };
                     @endphp
-                    <tr>
+                    <tr class="{{ $status === 'overdue' ? 'row-overdue' : '' }}">
                         <td>
                             <strong style="color: var(--maroon-900);">#RENT-{{ $rentalId }}</strong>
                         </td>
                         <td>
                             <div style="font-weight: 650; color: #2d1e21;">
-                                {{ $rental->customer->name ?? $rental->customer_name ?? 'ไม่ระบุชื่อ' }}
+                                {{ $customerName }}
                             </div>
-                            @if(!empty($rental->customer->phone))
+                            @if(!empty($contactPhone))
                                 <div style="font-size: 11px; color: var(--muted); margin-top: 2px;">
-                                    <i class="fa-solid fa-phone mr-1"></i> {{ $rental->customer->phone }}
+                                    <i class="fa-solid fa-phone mr-1"></i> {{ $contactPhone }}
                                 </div>
                             @endif
                         </td>
+                        <td>
+                            @forelse($rentalItems as $detail)
+                                <div class="dress-thumb-row">
+                                    <span class="cell-truncate" title="{{ $detail->product->product_name ?? 'ไม่พบข้อมูลชุด' }}" style="font-weight: 600; color: #2d1e21;">
+                                        {{ $detail->product->product_name ?? 'ไม่พบข้อมูลชุด' }}
+                                    </span>
+                                </div>
+                                @if($detail->selected_size || $detail->selected_color)
+                                    <div style="font-size: 11px; color: var(--muted);">
+                                        {{ $detail->selected_size }}{{ $detail->selected_size && $detail->selected_color ? ' · ' : '' }}{{ $detail->selected_color }}
+                                        @if($detail->quantity > 1) · x{{ $detail->quantity }} @endif
+                                    </div>
+                                @endif
+                            @empty
+                                <span style="color: var(--muted); font-size: 12px;">-</span>
+                            @endforelse
+                        </td>
                         <td style="text-align: center; font-weight: 600; color: #444;">
                             {{ $rental->end_date ? \Carbon\Carbon::parse($rental->end_date)->format('d/m/Y') : '-' }}
+                            @if($status === 'overdue' && $daysLate !== null)
+                                <div class="overdue-hint">
+                                    <i class="fa-solid fa-triangle-exclamation"></i> เลยกำหนด {{ $daysLate }} วัน
+                                </div>
+                            @endif
                         </td>
                         <td style="text-align: center;">
                             <span class="status-badge {{ $statusClass }}">
+                                @if($status === 'overdue')
+                                    <i class="fa-solid fa-triangle-exclamation"></i>
+                                @endif
                                 {{ $statusText }}
                             </span>
                         </td>
                         <td style="text-align: center;">
                             @if($status != 'returned')
-                                <form action="{{ route('owner.returns.confirm', $rentalId) }}" method="POST" style="margin: 0;" onsubmit="return confirm('ยืนยันการบันทึกรับคืนชุดสำหรับรายการ #RENT-{{ $rentalId }} ใช่หรือไม่?')">
-                                    @csrf
-                                    <button type="submit" class="btn-return">
-                                        <i class="fa-solid fa-box-archive"></i> บันทึกรับคืน
-                                    </button>
-                                </form>
+                                <div class="action-stack">
+                                    <form action="{{ route('owner.returns.confirm', $rentalId) }}" method="POST" style="margin: 0; width: 100%;" onsubmit="return confirm('ยืนยันการบันทึกรับคืนชุดสำหรับรายการ #RENT-{{ $rentalId }} ใช่หรือไม่?')">
+                                        @csrf
+                                        <button type="submit" class="btn-return {{ $status === 'overdue' ? 'is-urgent' : '' }}">
+                                            <i class="fa-solid fa-box-archive"></i> บันทึกรับคืน
+                                        </button>
+                                    </form>
+
+                                    @if($status === 'overdue' && !empty($contactPhone))
+                                        <a href="tel:{{ $contactPhone }}" class="btn-call">
+                                            <i class="fa-solid fa-phone"></i> โทรหาลูกค้า
+                                        </a>
+                                    @endif
+                                </div>
                             @else
                                 <span style="font-size: 12px; color: var(--muted); font-weight: 600;">รับคืนสำเร็จแล้ว</span>
                             @endif
@@ -369,7 +506,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="5">
+                        <td colspan="6">
                             <div class="empty-state">
                                 <div class="empty-icon"><i class="fa-solid fa-rotate-left"></i></div>
                                 <div style="font-weight: 600; font-size: 14px; color: var(--maroon-900);">ไม่พบรายการในหมวดหมู่นี้</div>

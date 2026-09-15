@@ -43,7 +43,7 @@
 
     .admin-heading h1 {
         margin: 0;
-        font-family: "Playfair Display", "Noto Sans Thai", serif;
+        font-family: 'Prompt', sans-serif;
         font-size: 28px;
         font-weight: 700;
         color: var(--maroon-900);

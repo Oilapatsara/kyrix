@@ -9,16 +9,10 @@ class RentalDetail extends Model
     protected $table = 'rental_details';
     protected $primaryKey = 'rental_detail_id';
     public $timestamps = false;
+
     protected $fillable = [
-        'rental_id',
-        'product_id',
-        'quantity',
-        'selected_size',
-        'selected_color',
-        'rental_days',
-        'price',
-        'subtotal',
-        'created_at',
+        'rental_id', 'product_id', 'quantity', 'selected_size',
+        'selected_color', 'rental_days', 'price', 'subtotal',
     ];
 
     public function rental()
@@ -26,6 +20,7 @@ class RentalDetail extends Model
         return $this->belongsTo(Rental::class, 'rental_id', 'rental_id');
     }
 
+    // rental_details.product_id -> products.product_id
     public function product()
     {
         return $this->belongsTo(Product::class, 'product_id', 'product_id');
