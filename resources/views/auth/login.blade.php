@@ -276,12 +276,12 @@
 
             {{-- Google --}}
 
-           <a href="{{ route('social.redirect', 'google') }}" class="social-btn">
-    <span class="social-icon google-icon">G</span>
-    <span>เข้าสู่ระบบด้วย Google</span>
+            <a href="{{ route('social.redirect', 'google') }}" class="social-btn">
+                <span class="social-icon google-icon">G</span>
+                <span>เข้าสู่ระบบด้วย Google</span>
             </a>
 
-<<<<<<< HEAD
+
             {{-- Facebook --}}
 
             <a href="{{ route('social.redirect', ['provider' => 'facebook']) }}" class="social-btn">
@@ -289,8 +289,6 @@
                 <span>เข้าสู่ระบบด้วย Facebook</span>
             </a>
 
-=======
->>>>>>> 7b43cc16f3185f917529f62a54c47fea551af7e3
         </div>
 
         {{-- Links --}}

@@ -1007,7 +1007,6 @@
                      User / Guest
                 ============================== -->
 
-<<<<<<< HEAD
                 @php
                     $customerId = session('customer_id');
                     $customerName = session('customer_name', 'ผู้ใช้งาน');
@@ -1023,12 +1022,6 @@
                     <!-- ==============================
                          Logged In Profile
                     ============================== -->
-=======
-                @if (session('customer_logged_in') || auth()->check())
-                    @php
-                        $displayName = session('customer_name') ?: (auth()->check() ? auth()->user()->name : 'ลูกค้า');
-                    @endphp
->>>>>>> 7b43cc16f3185f917529f62a54c47fea551af7e3
 
                     <div class="user-menu">
 
@@ -1038,23 +1031,12 @@
                         <button type="button" class="user-trigger" aria-label="เมนูผู้ใช้งาน">
 
                             <div class="user-avatar">
-<<<<<<< HEAD
                                 {{ mb_substr($customerName, 0, 1) }}
                             </div>
 
 
                             <span class="profile-name">
                                 {{ $customerName }}
-=======
-
-                                {{ mb_substr($displayName, 0, 1) }}
-
-                            </div>
-
-
-                            <span>
-                                {{ $displayName }}
->>>>>>> 7b43cc16f3185f917529f62a54c47fea551af7e3
                             </span>
 
 
@@ -1185,11 +1167,6 @@
                         </a>
 
                     </div>
-<<<<<<< HEAD
-=======
-
-
->>>>>>> 7b43cc16f3185f917529f62a54c47fea551af7e3
                 @endif
 
 
