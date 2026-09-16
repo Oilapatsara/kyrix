@@ -666,11 +666,9 @@
                     <div class="product-meta">
                         <span><i class="fa-solid fa-ruler-combined"></i> {{ $product->size ?? 'M' }}</span>
                         <span title="{{ $product->colors_text }}"><i class="fa-solid fa-palette"></i> {{ Str::limit($product->colors_text, 30) }}</span>
-                        <span><i class="fa-solid fa-eye"></i> {{ $product->views_count }}</span>
                     </div>
                     <div class="product-footer">
                         <div class="price-wrap">
-                            <span class="price-label">ค่าเช่าเริ่มต้น</span>
                             <span class="price-value">฿{{ number_format($product->rental_price) }} <small style="font-size: 12px; font-weight: normal; color: #888;">/ วัน</small></span>
                             <span class="price-deposit">มัดจำ ฿{{ number_format($product->deposit) }}</span>
                         </div>
@@ -746,7 +744,6 @@
                     </div>
                     <div class="product-footer">
                         <div class="price-wrap">
-                            <span class="price-label">ค่าเช่าเริ่มต้น</span>
                             <span class="price-value">฿{{ number_format($product->rental_price) }} <small style="font-size: 12px; font-weight: normal; color: #888;">/ วัน</small></span>
                             <span class="price-deposit">มัดจำ ฿{{ number_format($product->deposit) }}</span>
                         </div>

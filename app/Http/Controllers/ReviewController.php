@@ -11,10 +11,34 @@ use Illuminate\Support\Facades\Auth;
 
 class ReviewController extends Controller
 {
+    /**
+     * ดึงข้อมูลลูกค้าปัจจุบันที่ล็อกอินผ่าน Session หรือ Auth
+     */
+    private function getCustomer(): Customer
+    {
+        $customerId = session('customer_id');
+
+        if ($customerId) {
+            $customer = Customer::find($customerId);
+            if ($customer) {
+                return $customer;
+            }
+        }
+
+        if (Auth::check()) {
+            $user = Auth::user();
+            $customer = $user->customer ?? Customer::where('user_id', $user->user_id)->first();
+            if ($customer) {
+                return $customer;
+            }
+        }
+
+        abort(403, 'ไม่พบข้อมูลลูกค้า กรุณาเข้าสู่ระบบใหม่');
+    }
+
     public function create($rentalId, $productId)
     {
-        $user = Auth::user();
-        $customer = $user->customer ?? Customer::firstOrCreate(['user_id' => $user->user_id]);
+        $customer = $this->getCustomer();
 
         $rental = Rental::where('customer_id', $customer->customer_id)->findOrFail($rentalId);
 
@@ -48,10 +72,12 @@ class ReviewController extends Controller
             'image.image'      => 'ไฟล์แนบต้องเป็นรูปภาพเท่านั้น',
         ]);
 
-        $user     = Auth::user();
-        $customer = $user->customer ?? Customer::firstOrCreate(['user_id' => $user->user_id]);
+        $customer = $this->getCustomer();
 
-        // Look up existing review to preserve old image if no new one uploaded
+        // ตรวจสอบว่ารายการเช่านี้เป็นของลูกค้าท่านนี้จริง
+        $rental = Rental::where('customer_id', $customer->customer_id)->findOrFail($request->rental_id);
+
+        // ดึงรีวิวเดิม (ถ้ามี) เพื่อเก็บ path รูปเก่ากรณีไม่ได้อัปโหลดรูปใหม่
         $existingReview = Review::where('rental_id', $request->rental_id)
             ->where('product_id', $request->product_id)
             ->where('customer_id', $customer->customer_id)
@@ -60,7 +86,7 @@ class ReviewController extends Controller
         $imagePath = $existingReview?->image_path;
 
         if ($request->hasFile('image')) {
-            // Delete old image if exists
+            // ลบรูปเก่าออกหากมี
             if ($imagePath && file_exists(public_path($imagePath))) {
                 @unlink(public_path($imagePath));
             }

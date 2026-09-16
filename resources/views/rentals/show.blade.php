@@ -50,7 +50,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            min-width: 760px;
+            min-width: 680px;
             position: relative;
         }
 
@@ -245,18 +245,17 @@
                 </div>
             </div>
 
-            <!-- 8-Stage Tracker Timeline -->
+            <!-- 7-Stage Tracker Timeline -->
             @php
                 $step = $rental->step_index;
                 $progressPercent = match ($step) {
                     1 => 0,
-                    2 => 14,
-                    3 => 28,
-                    4 => 42,
-                    5 => 57,
-                    6 => 71,
-                    7 => 85,
-                    8 => 100,
+                    2 => 17,
+                    3 => 34,
+                    4 => 50,
+                    5 => 67,
+                    6 => 84,
+                    7 => 100,
                     default => 0,
                 };
                 $stages = [
@@ -265,9 +264,8 @@
                     3 => ['num' => '3', 'label' => 'ยืนยันการเช่า', 'icon' => 'fa-check'],
                     4 => ['num' => '4', 'label' => 'รอรับชุด', 'icon' => 'fa-box'],
                     5 => ['num' => '5', 'label' => 'กำลังเช่า', 'icon' => 'fa-person-dress'],
-                    6 => ['num' => '6', 'label' => 'รอคืน', 'icon' => 'fa-arrow-rotate-left'],
-                    7 => ['num' => '7', 'label' => 'คืนแล้ว', 'icon' => 'fa-shield-heart'],
-                    8 => ['num' => '8', 'label' => 'เสร็จสิ้น', 'icon' => 'fa-circle-check'],
+                    6 => ['num' => '6', 'label' => 'คืนแล้ว', 'icon' => 'fa-shield-heart'],
+                    7 => ['num' => '7', 'label' => 'เสร็จสิ้น', 'icon' => 'fa-circle-check'],
                 ];
             @endphp
             <div class="timeline-wrap">

@@ -14,6 +14,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'customer' => \App\Http\Middleware\CustomerMiddleware::class,
             'owner'    => \App\Http\Middleware\OwnerMiddleware::class,
         ]);
+        
+        $middleware->validateCsrfTokens(except: [
+            '/logout',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
