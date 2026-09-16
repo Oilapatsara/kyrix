@@ -76,6 +76,20 @@
             line-height: 1.5;
         }
 
+        /* Prevent unstyled giant Laravel pagination SVGs */
+        nav svg,
+        .pagination svg,
+        .pagination-wrap svg,
+        .payment-pagination svg {
+            width: 1.25rem !important;
+            height: 1.25rem !important;
+            max-width: 1.25rem !important;
+            max-height: 1.25rem !important;
+            display: inline-block !important;
+            vertical-align: middle !important;
+            flex-shrink: 0 !important;
+        }
+
         a {
             text-decoration: none;
             color: inherit;

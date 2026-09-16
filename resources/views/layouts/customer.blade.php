@@ -58,6 +58,19 @@
             box-sizing: border-box;
         }
 
+        /* Prevent unstyled giant Laravel pagination SVGs */
+        nav svg,
+        .pagination svg,
+        .pagination-wrap svg {
+            width: 1.25rem !important;
+            height: 1.25rem !important;
+            max-width: 1.25rem !important;
+            max-height: 1.25rem !important;
+            display: inline-block !important;
+            vertical-align: middle !important;
+            flex-shrink: 0 !important;
+        }
+
 
         html {
             scroll-behavior: smooth;

@@ -251,4 +251,76 @@ class OwnerDressController extends Controller
         $statusText = $newStatus === 'available' ? 'พร้อมให้เช่า' : 'ปิดใช้งาน';
         return back()->with('success', "เปลี่ยนสถานะชุด {$product->product_name} เป็น \"{$statusText}\" แล้ว");
     }
+
+    /**
+     * บันทึกหมวดหมู่ใหม่ลงฐานข้อมูล
+     */
+    public function storeCategory(Request $request)
+    {
+        $validated = $request->validate([
+            'category_name' => 'required|string|max:100|unique:categories,category_name',
+            'description'   => 'nullable|string|max:500',
+        ], [
+            'category_name.required' => 'กรุณากรอกชื่อหมวดหมู่',
+            'category_name.max'      => 'ชื่อหมวดหมู่ต้องไม่เกิน 100 ตัวอักษร',
+            'category_name.unique'   => 'มีชื่อหมวดหมู่นี้อยู่ในระบบแล้ว',
+        ]);
+
+        Category::create([
+            'category_name' => trim($validated['category_name']),
+            'description'   => !empty($validated['description']) ? trim($validated['description']) : null,
+            'status'        => 'active',
+        ]);
+
+        return redirect()
+            ->back()
+            ->with('success', 'เพิ่มหมวดหมู่ใหม่ "' . trim($validated['category_name']) . '" เรียบร้อยแล้ว');
+    }
+
+    /**
+     * อัปเดตข้อมูลหมวดหมู่
+     */
+    public function updateCategory(Request $request, $id)
+    {
+        $category = Category::findOrFail($id);
+
+        $validated = $request->validate([
+            'category_name' => 'required|string|max:100|unique:categories,category_name,' . $category->category_id . ',category_id',
+            'description'   => 'nullable|string|max:500',
+        ], [
+            'category_name.required' => 'กรุณากรอกชื่อหมวดหมู่',
+            'category_name.max'      => 'ชื่อหมวดหมู่ต้องไม่เกิน 100 ตัวอักษร',
+            'category_name.unique'   => 'มีชื่อหมวดหมู่นี้อยู่ในระบบแล้ว',
+        ]);
+
+        $category->update([
+            'category_name' => trim($validated['category_name']),
+            'description'   => !empty($validated['description']) ? trim($validated['description']) : null,
+        ]);
+
+        return redirect()
+            ->back()
+            ->with('success', 'แก้ไขชื่อหมวดหมู่เป็น "' . trim($validated['category_name']) . '" เรียบร้อยแล้ว');
+    }
+
+    /**
+     * ลบหมวดหมู่
+     */
+    public function destroyCategory($id)
+    {
+        $category = Category::findOrFail($id);
+
+        if ($category->products()->exists()) {
+            return redirect()
+                ->back()
+                ->with('error', 'ไม่สามารถลบหมวดหมู่ "' . $category->category_name . '" ได้ เนื่องจากยังมีชุดผูกอยู่');
+        }
+
+        $categoryName = $category->category_name;
+        $category->delete();
+
+        return redirect()
+            ->back()
+            ->with('success', 'ลบหมวดหมู่ "' . $categoryName . '" เรียบร้อยแล้ว');
+    }
 }

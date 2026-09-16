@@ -153,45 +153,60 @@
     /* Category Cards */
     .categories-grid {
         display: grid;
-        grid-template-columns: repeat(6, 1fr);
-        gap: 16px;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
     }
     .category-card {
         background: #fff;
         border: 1px solid var(--border);
         border-radius: var(--radius-md);
-        padding: 24px 16px;
+        padding: 28px 20px;
         text-align: center;
-        transition: all 0.3s ease;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 12px;
+        justify-content: center;
+        gap: 14px;
+        height: 100%;
+        min-height: 180px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
     }
     .category-card:hover {
         border-color: var(--primary);
-        transform: translateY(-4px);
-        box-shadow: var(--shadow-md);
+        transform: translateY(-6px);
+        box-shadow: 0 12px 24px rgba(122, 46, 61, 0.08);
     }
     .category-icon {
-        width: 56px;
-        height: 56px;
+        width: 60px;
+        height: 60px;
         border-radius: 50%;
         background: var(--primary-soft);
         color: var(--primary);
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 22px;
+        font-size: 24px;
+        transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+    }
+    .category-card:hover .category-icon {
+        transform: scale(1.1);
+        background: var(--primary);
+        color: #fff;
     }
     .category-name {
-        font-size: 14px;
-        font-weight: 600;
-        color: var(--text-main);
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--text-heading);
+        line-height: 1.4;
+        word-break: keep-all;
+        overflow-wrap: break-word;
+        max-width: 100%;
     }
     .category-count {
-        font-size: 12px;
+        font-size: 13px;
         color: var(--text-muted);
+        font-weight: 500;
     }
 
     /* Product Grid & Card */
@@ -594,18 +609,20 @@
     <div class="categories-grid">
         @php
             $catIcons = [
-                1 => 'fa-person-dress',
-                2 => 'fa-champagne-glasses',
-                3 => 'fa-fan',
-                4 => 'fa-heart',
-                5 => 'fa-gem',
-                6 => 'fa-user-tie',
+                1 => 'fa-fire-flame-curved',   // Western Muse — เดรสสายฝอ
+                2 => 'fa-heart',               // Sweet Romance — เดรสหวาน
+                3 => 'fa-wand-magic-sparkles', // Mini Chic — มินิเดรส
+                4 => 'fa-shirt',               // Elegant Tops — เสื้อ & ท็อปส์
+                5 => 'fa-layer-group',         // Feminine Skirts — กระโปรง
+                6 => 'fa-user-tie',            // Modern Pants — กางเกง
+                7 => 'fa-shoe-prints',         // Elegant Shoes — รองเท้า
+                8 => 'fa-bag-shopping',        // Luxury Bags — กระเป๋า
             ];
         @endphp
         @foreach($categories as $category)
             <a href="{{ route('products.index', ['category_id' => $category->category_id]) }}" class="category-card">
                 <div class="category-icon">
-                    <i class="fa-solid {{ $catIcons[$category->category_id] ?? 'fa-sparkles' }}"></i>
+                    <i class="fa-solid {{ $catIcons[$category->category_id] ?? 'fa-gem' }}"></i>
                 </div>
                 <div class="category-name">{{ $category->category_name }}</div>
                 <div class="category-count">{{ $category->products_count }} รายการ</div>
