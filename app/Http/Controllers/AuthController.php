@@ -104,42 +104,60 @@ class AuthController extends Controller
         |--------------------------------------------------------------------------
         */
 
+        $user = User::where('email', $data['email'])->first();
         $customer = Customer::where('email', $data['email'])->first();
 
-        if (
-            $customer &&
-            $customer->password &&
-            Hash::check($data['password'], $customer->password)
-        ) {
+        $passwordMatches = false;
+        if ($user && Hash::check($data['password'], $user->password)) {
+            $passwordMatches = true;
+        } elseif ($customer && $customer->password && Hash::check($data['password'], $customer->password)) {
+            $passwordMatches = true;
+        }
 
-            /*
-            |--------------------------------------------------------------------------
-            | สร้าง Session ใหม่
-            |--------------------------------------------------------------------------
-            */
+        if ($passwordMatches) {
+            DB::beginTransaction();
+            try {
+                if (!$user && $customer) {
+                    $rawName = trim(($customer->first_name ?? '') . ' ' . ($customer->last_name ?? ''));
+                    $user = User::create([
+                        'name' => $rawName !== '' ? $rawName : 'ลูกค้า',
+                        'email' => $customer->email,
+                        'password' => $customer->password ?? Hash::make(Str::random(16)),
+                        'role' => 'customer',
+                        'status' => 'active',
+                    ]);
+                }
 
-            $request->session()->regenerate();
+                if (!$customer && $user) {
+                    $rawName = trim($user->name);
+                    $parts = preg_split('/\s+/u', $rawName, 2);
+                    $customer = Customer::create([
+                        'user_id' => $user->user_id,
+                        'first_name' => $parts[0] ?? $rawName,
+                        'last_name' => $parts[1] ?? '-',
+                        'email' => $user->email,
+                        'password' => $user->password,
+                    ]);
+                } else if ($customer && $user && !$customer->user_id) {
+                    $customer->update(['user_id' => $user->user_id]);
+                }
 
+                DB::commit();
 
-            /*
-            |--------------------------------------------------------------------------
-            | เก็บข้อมูล Customer ลง Session
-            |--------------------------------------------------------------------------
-            */
+                Auth::login($user, $remember);
 
-            $request->session()->put([
-                'customer_logged_in' => true,
-                'customer_id' => $customer->customer_id,
-                'customer_name' => trim(
-                    $customer->first_name . ' ' . $customer->last_name
-                ),
-                'customer_email' => $customer->email,
-            ]);
+                $request->session()->regenerate();
+                $request->session()->put([
+                    'customer_logged_in' => true,
+                    'customer_id' => $customer->customer_id,
+                    'customer_name' => trim(($customer->first_name ?? '') . ' ' . ($customer->last_name ?? '')),
+                    'customer_email' => $customer->email,
+                ]);
 
-
-            return redirect()->intended(
-                route('customer.dashboard')
-            );
+                return redirect()->intended(route('customer.dashboard'));
+            } catch (\Throwable $e) {
+                DB::rollBack();
+            }
         }
 
 
@@ -242,11 +260,20 @@ class AuthController extends Controller
 
             /*
             |--------------------------------------------------------------------------
-            | สร้าง Customer
+            | สร้าง User & Customer เชื่อมต่อ user_id
             |--------------------------------------------------------------------------
             */
 
+            $user = User::create([
+                'name' => $rawName,
+                'email' => $data['email'],
+                'password' => Hash::make($data['password']),
+                'role' => 'customer',
+                'status' => 'active',
+            ]);
+
             $customer = Customer::create([
+                'user_id' => $user->user_id,
                 'first_name' => $firstName,
                 'last_name' => $lastName,
                 'email' => $data['email'],
@@ -257,6 +284,8 @@ class AuthController extends Controller
 
 
             DB::commit();
+
+            Auth::login($user, true);
 
 
             /*
