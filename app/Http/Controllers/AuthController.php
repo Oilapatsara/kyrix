@@ -106,40 +106,16 @@ class AuthController extends Controller
 
         $customer = Customer::where('email', $data['email'])->first();
 
-        if (
-            $customer &&
-            $customer->password &&
-            Hash::check($data['password'], $customer->password)
-        ) {
-
-            /*
-            |--------------------------------------------------------------------------
-            | สร้าง Session ใหม่
-            |--------------------------------------------------------------------------
-            */
-
+        if ($customer && $customer->password && Hash::check($data['password'], $customer->password)) {
             $request->session()->regenerate();
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | เก็บข้อมูล Customer ลง Session
-            |--------------------------------------------------------------------------
-            */
-
             $request->session()->put([
                 'customer_logged_in' => true,
                 'customer_id' => $customer->customer_id,
-                'customer_name' => trim(
-                    $customer->first_name . ' ' . $customer->last_name
-                ),
+                'customer_name' => trim(($customer->first_name ?? '') . ' ' . ($customer->last_name ?? '')),
                 'customer_email' => $customer->email,
             ]);
 
-
-            return redirect()->intended(
-                route('customer.dashboard')
-            );
+            return redirect()->intended(route('customer.dashboard'));
         }
 
 
