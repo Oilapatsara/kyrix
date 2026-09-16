@@ -57,10 +57,13 @@ class SocialAuthController extends Controller
                     'password' => Str::random(32),
 
                     'provider' => $provider,
+
                     'provider_id' => $socialUser->getId(),
+
                     'avatar' => $socialUser->getAvatar(),
 
                     'role' => 'customer',
+
                     'status' => 1,
                 ]);
             } else {
@@ -107,12 +110,13 @@ class SocialAuthController extends Controller
             $request->session()->regenerate();
             $request->session()->put([
                 'customer_logged_in' => true,
-                'customer_id' => $customer->customer_id,
-                'customer_name' => trim(($customer->first_name ?? '') . ' ' . ($customer->last_name ?? '')),
-                'customer_email' => $customer->email,
+                'customer_id'        => $customer->customer_id,
+                'customer_name'      => trim(($customer->first_name ?? '') . ' ' . ($customer->last_name ?? '')),
+                'customer_email'     => $customer->email,
             ]);
 
             return redirect()->intended(route('customer.dashboard'))->with('success', 'เข้าสู่ระบบด้วย Google สำเร็จแล้ว!');
+
 
         } catch (\Exception $e) {
             DB::rollBack();

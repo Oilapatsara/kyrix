@@ -20,19 +20,15 @@ use App\Http\Controllers\Owner\OwnerReturnController;
 use App\Http\Controllers\Owner\OwnerCustomerController;
 use App\Http\Controllers\Owner\OwnerReportController;
 
-
 /*
 |--------------------------------------------------------------------------
 | KYRIX Dress Rental
 |--------------------------------------------------------------------------
 */
 
-
-/*
-|--------------------------------------------------------------------------
-| PUBLIC
-|--------------------------------------------------------------------------
-*/
+/* =========================
+   PUBLIC
+========================= */
 
 Route::get('/', [HomeController::class, 'index'])
     ->name('home');
@@ -44,11 +40,9 @@ Route::get('/dresses/{id}', [ProductController::class, 'show'])
     ->name('products.show');
 
 
-/*
-|--------------------------------------------------------------------------
-| CART
-|--------------------------------------------------------------------------
-*/
+/* =========================
+   CART
+========================= */
 
 Route::prefix('cart')->name('cart.')->group(function () {
 
@@ -66,15 +60,12 @@ Route::prefix('cart')->name('cart.')->group(function () {
 
     Route::post('/clear', [CartController::class, 'clear'])
         ->name('clear');
-
 });
 
 
-/*
-|--------------------------------------------------------------------------
-| AUTH
-|--------------------------------------------------------------------------
-*/
+/* =========================
+   AUTH
+========================= */
 
 Route::get('/login', [AuthController::class, 'showLogin'])
     ->name('login');
@@ -98,26 +89,17 @@ Route::post('/logout', [AuthController::class, 'logout'])
     ->name('logout');
 
 
-/*
-|--------------------------------------------------------------------------
-| SOCIAL LOGIN
-|--------------------------------------------------------------------------
-| Google
-|--------------------------------------------------------------------------
-*/
+/* =========================
+   SOCIAL LOGIN
+========================= */
 
-Route::get('/auth/{provider}/redirect', [SocialAuthController::class, 'redirect'])
+Route::get('/auth/{provider}', [SocialAuthController::class, 'redirect'])
     ->name('social.redirect');
 
-Route::get('/auth/{provider}/callback', [SocialAuthController::class, 'callback'])
-    ->name('social.callback');
 
-
-/*
-|--------------------------------------------------------------------------
-| CUSTOMER
-|--------------------------------------------------------------------------
-*/
+/* =========================
+   CUSTOMER
+========================= */
 
 Route::middleware('customer')->group(function () {
 
@@ -126,11 +108,7 @@ Route::middleware('customer')->group(function () {
     })->name('customer.dashboard');
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | Booking
-    |--------------------------------------------------------------------------
-    */
+    /* ===== RENTAL ===== */
 
     Route::post('/dresses/{id}/book', [RentalController::class, 'book'])
         ->name('rentals.book');
@@ -140,26 +118,6 @@ Route::middleware('customer')->group(function () {
 
     Route::post('/rentals/{id}/payment', [RentalController::class, 'submitPayment'])
         ->name('rentals.payment.submit');
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | Checkout
-    |--------------------------------------------------------------------------
-    */
-
-    Route::get('/checkout', [CheckoutController::class, 'index'])
-        ->name('checkout.index');
-
-    Route::post('/checkout/process', [CheckoutController::class, 'process'])
-        ->name('checkout.process');
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | Rentals
-    |--------------------------------------------------------------------------
-    */
 
     Route::get('/my-rentals', [RentalController::class, 'index'])
         ->name('rentals.index');
@@ -177,11 +135,16 @@ Route::middleware('customer')->group(function () {
         ->name('rentals.history');
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | Profile
-    |--------------------------------------------------------------------------
-    */
+    /* ===== CHECKOUT ===== */
+
+    Route::get('/checkout', [CheckoutController::class, 'index'])
+        ->name('checkout.index');
+
+    Route::post('/checkout/process', [CheckoutController::class, 'process'])
+        ->name('checkout.process');
+
+
+    /* ===== PROFILE ===== */
 
     Route::get('/profile', [ProfileController::class, 'index'])
         ->name('profile.index');
@@ -193,185 +156,215 @@ Route::middleware('customer')->group(function () {
         ->name('profile.password');
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | Reviews
-    |--------------------------------------------------------------------------
-    */
+    /* ===== REVIEW ===== */
 
     Route::get(
         '/rentals/{rental}/products/{product}/review',
         [ReviewController::class, 'create']
     )->name('reviews.create');
 
-    Route::post('/reviews/store', [ReviewController::class, 'store'])
-        ->name('reviews.store');
-
+    Route::post(
+        '/reviews/store',
+        [ReviewController::class, 'store']
+    )->name('reviews.store');
 });
 
 
-/*
-|--------------------------------------------------------------------------
-| OWNER / ADMIN PANEL
-|--------------------------------------------------------------------------
-*/
+/* =========================
+   OWNER / ADMIN PANEL
+   ใช้ Laravel Auth + OwnerMiddleware
+========================= */
 
 Route::middleware(['auth', 'owner'])
     ->prefix('owner')
     ->name('owner.')
     ->group(function () {
 
-        /*
-        |--------------------------------------------------------------------------
-        | Dashboard
-        |--------------------------------------------------------------------------
-        */
 
-        Route::get('/dashboard', [OwnerDashboardController::class, 'index'])
-            ->name('dashboard');
+        /* ===== DASHBOARD ===== */
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | Dresses Management
-        |--------------------------------------------------------------------------
-        */
-
-        Route::prefix('dresses')->name('dresses.')->group(function () {
-
-            Route::get('/', [OwnerDressController::class, 'index'])
-                ->name('index');
-
-            Route::get('/create', [OwnerDressController::class, 'create'])
-                ->name('create');
-
-            Route::post('/store', [OwnerDressController::class, 'store'])
-                ->name('store');
-
-            Route::get('/{id}/edit', [OwnerDressController::class, 'edit'])
-                ->name('edit');
-
-            Route::post('/{id}/update', [OwnerDressController::class, 'update'])
-                ->name('update');
-
-            Route::delete('/{id}/delete', [OwnerDressController::class, 'destroy'])
-                ->name('destroy');
-
-            Route::post('/{id}/toggle-status', [OwnerDressController::class, 'toggleStatus'])
-                ->name('toggle-status');
-
-            Route::post('/categories/store', [OwnerDressController::class, 'storeCategory'])
-                ->name('categories.store');
-
-            Route::post('/categories/{id}/update', [OwnerDressController::class, 'updateCategory'])
-                ->name('categories.update');
-
-            Route::delete('/categories/{id}/delete', [OwnerDressController::class, 'destroyCategory'])
-                ->name('categories.destroy');
-
-        });
+        Route::get(
+            '/dashboard',
+            [OwnerDashboardController::class, 'index']
+        )->name('dashboard');
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | Bookings / Rentals Management
-        |--------------------------------------------------------------------------
-        */
+        /* ===== DRESSES MANAGEMENT ===== */
 
-        Route::prefix('bookings')->name('bookings.')->group(function () {
+        Route::prefix('dresses')
+            ->name('dresses.')
+            ->group(function () {
 
-            Route::get('/', [OwnerBookingController::class, 'index'])
-                ->name('index');
+                Route::get(
+                    '/',
+                    [OwnerDressController::class, 'index']
+                )->name('index');
 
-            Route::get('/{id}', [OwnerBookingController::class, 'show'])
-                ->name('show');
+                Route::get(
+                    '/create',
+                    [OwnerDressController::class, 'create']
+                )->name('create');
 
-            Route::post('/{id}/status', [OwnerBookingController::class, 'updateStatus'])
-                ->name('updateStatus');
+                Route::post(
+                    '/store',
+                    [OwnerDressController::class, 'store']
+                )->name('store');
 
-        });
+                Route::get(
+                    '/{id}/edit',
+                    [OwnerDressController::class, 'edit']
+                )->name('edit');
 
+                Route::post(
+                    '/{id}/update',
+                    [OwnerDressController::class, 'update']
+                )->name('update');
 
-        /*
-        |--------------------------------------------------------------------------
-        | Payments Verification
-        |--------------------------------------------------------------------------
-        */
+                Route::delete(
+                    '/{id}/delete',
+                    [OwnerDressController::class, 'destroy']
+                )->name('destroy');
 
-        Route::prefix('payments')->name('payments.')->group(function () {
+                Route::post(
+                    '/{id}/toggle-status',
+                    [OwnerDressController::class, 'toggleStatus']
+                )->name('toggle-status');
 
-            Route::get('/', [OwnerPaymentController::class, 'index'])
-                ->name('index');
+                Route::post(
+                    '/categories/store',
+                    [OwnerDressController::class, 'storeCategory']
+                )->name('categories.store');
 
-            Route::post('/{id}/approve', [OwnerPaymentController::class, 'approve'])
-                ->name('approve');
+                Route::post(
+                    '/categories/{id}/update',
+                    [OwnerDressController::class, 'updateCategory']
+                )->name('categories.update');
 
-            Route::post('/{id}/reject', [OwnerPaymentController::class, 'reject'])
-                ->name('reject');
+                Route::delete(
+                    '/categories/{id}/delete',
+                    [OwnerDressController::class, 'destroyCategory']
+                )->name('categories.destroy');
 
-        });
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Returns Management
-        |--------------------------------------------------------------------------
-        */
-
-        Route::prefix('returns')->name('returns.')->group(function () {
-
-            Route::get('/', [OwnerReturnController::class, 'index'])
-                ->name('index');
-
-            Route::post('/{id}/confirm', [OwnerReturnController::class, 'confirmReturn'])
-                ->name('confirm');
-
-        });
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Customers Management
-        |--------------------------------------------------------------------------
-        */
-
-        Route::prefix('customers')->name('customers.')->group(function () {
-
-            Route::get('/', [OwnerCustomerController::class, 'index'])
-                ->name('index');
-
-            Route::get('/create', [OwnerCustomerController::class, 'create'])
-                ->name('create');
-
-            Route::post('/store', [OwnerCustomerController::class, 'store'])
-                ->name('store');
-
-            Route::get('/{id}', [OwnerCustomerController::class, 'show'])
-                ->name('show');
-
-            Route::get('/{id}/edit', [OwnerCustomerController::class, 'edit'])
-                ->name('edit');
-
-            Route::put('/{id}', [OwnerCustomerController::class, 'update'])
-                ->name('update');
-
-            Route::delete('/{id}', [OwnerCustomerController::class, 'destroy'])
-                ->name('destroy');
-
-        });
+            });
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | Reports & Analytics
-        |--------------------------------------------------------------------------
-        */
 
-        Route::prefix('reports')->name('reports.')->group(function () {
+        /* ===== BOOKINGS / RENTALS ===== */
 
-            Route::get('/', [OwnerReportController::class, 'index'])
-                ->name('index');
+        Route::prefix('bookings')
+            ->name('bookings.')
+            ->group(function () {
 
-        });
+                Route::get(
+                    '/',
+                    [OwnerBookingController::class, 'index']
+                )->name('index');
 
+                Route::get(
+                    '/{id}',
+                    [OwnerBookingController::class, 'show']
+                )->name('show');
+
+                Route::post(
+                    '/{id}/status',
+                    [OwnerBookingController::class, 'updateStatus']
+                )->name('updateStatus');
+            });
+
+
+        /* ===== PAYMENTS ===== */
+
+        Route::prefix('payments')
+            ->name('payments.')
+            ->group(function () {
+
+                Route::get(
+                    '/',
+                    [OwnerPaymentController::class, 'index']
+                )->name('index');
+
+                Route::post(
+                    '/{id}/approve',
+                    [OwnerPaymentController::class, 'approve']
+                )->name('approve');
+
+                Route::post(
+                    '/{id}/reject',
+                    [OwnerPaymentController::class, 'reject']
+                )->name('reject');
+            });
+
+
+        /* ===== RETURNS ===== */
+
+        Route::prefix('returns')
+            ->name('returns.')
+            ->group(function () {
+
+                Route::get(
+                    '/',
+                    [OwnerReturnController::class, 'index']
+                )->name('index');
+
+                Route::post(
+                    '/{id}/confirm',
+                    [OwnerReturnController::class, 'confirmReturn']
+                )->name('confirm');
+            });
+
+
+        /* ===== CUSTOMERS ===== */
+
+        Route::prefix('customers')
+            ->name('customers.')
+            ->group(function () {
+
+                Route::get(
+                    '/',
+                    [OwnerCustomerController::class, 'index']
+                )->name('index');
+
+                Route::get(
+                    '/create',
+                    [OwnerCustomerController::class, 'create']
+                )->name('create');
+
+                Route::post(
+                    '/store',
+                    [OwnerCustomerController::class, 'store']
+                )->name('store');
+
+                Route::get(
+                    '/{id}',
+                    [OwnerCustomerController::class, 'show']
+                )->name('show');
+
+                Route::get(
+                    '/{id}/edit',
+                    [OwnerCustomerController::class, 'edit']
+                )->name('edit');
+
+                Route::put(
+                    '/{id}',
+                    [OwnerCustomerController::class, 'update']
+                )->name('update');
+
+                Route::delete(
+                    '/{id}',
+                    [OwnerCustomerController::class, 'destroy']
+                )->name('destroy');
+            });
+
+
+        /* ===== REPORTS ===== */
+
+        Route::prefix('reports')
+            ->name('reports.')
+            ->group(function () {
+
+                Route::get(
+                    '/',
+                    [OwnerReportController::class, 'index']
+                )->name('index');
+            });
     });
