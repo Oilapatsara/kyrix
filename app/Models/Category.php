@@ -18,6 +18,7 @@ class Category extends Model
     protected $keyType = 'int';
 
     protected $fillable = [
+        'category_id',
         'category_name',
         'description',
         'status',

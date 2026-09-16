@@ -1,8 +1,11 @@
 <!DOCTYPE html>
+
 <html lang="th">
 
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>เข้าสู่ระบบ | KYRIX</title>
@@ -192,6 +195,7 @@
             }
         }
     </style>
+
 </head>
 
 <body>
@@ -211,33 +215,23 @@
         @endif
 
         {{-- Login ด้วยอีเมลและรหัสผ่าน --}}
+
         <form method="POST" action="{{ route('login.submit') }}">
+
             @csrf
 
             <label for="email">อีเมล</label>
 
-            <input
-                type="email"
-                id="email"
-                name="email"
-                value="{{ old('email') }}"
-                placeholder="กรอกอีเมล"
-                required
-                autocomplete="email"
-            >
+            <input type="email" id="email" name="email" value="{{ old('email') }}" placeholder="กรอกอีเมล"
+                required autocomplete="email">
 
             <label for="password">รหัสผ่าน</label>
 
-            <input
-                type="password"
-                id="password"
-                name="password"
-                placeholder="กรอกรหัสผ่าน"
-                required
-                autocomplete="current-password"
-            >
+            <input type="password" id="password" name="password" placeholder="กรอกรหัสผ่าน" required
+                autocomplete="current-password">
 
-            <div style="
+            <div
+                style="
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
@@ -247,23 +241,20 @@
             ">
 
                 <label class="remember">
-                    <input
-                        type="checkbox"
-                        name="remember"
-                        value="1"
-                    >
+
+                    <input type="checkbox" name="remember" value="1">
+
                     <span>จดจำการเข้าสู่ระบบ</span>
+
                 </label>
 
-                <a
-                    href="{{ route('password.request') }}"
+                <a href="{{ route('password.request') }}"
                     style="
                         color: #7a1f2b;
                         text-decoration: none;
                         font-weight: 600;
                         white-space: nowrap;
-                    "
-                >
+                    ">
                     ลืมรหัสผ่าน?
                 </a>
 
@@ -272,10 +263,11 @@
             <button type="submit" class="btn">
                 เข้าสู่ระบบ
             </button>
+
         </form>
 
-
         {{-- Social Login --}}
+
         <div class="social-login">
 
             <div class="social-divider">
@@ -283,23 +275,34 @@
             </div>
 
             {{-- Google --}}
-            <a
-                href="{{ route('social.redirect', ['provider' => 'google']) }}"
-                class="social-btn"
-            >
+
+            <a href="{{ route('social.redirect', 'google') }}" class="social-btn">
                 <span class="social-icon google-icon">G</span>
                 <span>เข้าสู่ระบบด้วย Google</span>
             </a>
 
+
+            {{-- Facebook --}}
+
+            <a href="{{ route('social.redirect', ['provider' => 'facebook']) }}" class="social-btn">
+                <span class="social-icon facebook-icon">f</span>
+                <span>เข้าสู่ระบบด้วย Facebook</span>
+            </a>
+
         </div>
 
-
         {{-- Links --}}
+
         <div class="link">
+
             ยังไม่มีบัญชี?
+
             <a href="{{ route('register') }}">สมัครสมาชิก</a>
+
             |
+
             <a href="{{ route('home') }}">กลับหน้าหลัก</a>
+
         </div>
 
     </div>
