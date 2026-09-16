@@ -813,9 +813,14 @@
                 </div>
                 <p class="review-text">“{{ Str::limit($review->comment, 120) }}”</p>
                 <div class="review-author">
-                    <div class="author-avatar">{{ mb_substr($review->customer->user->name ?? 'C', 0, 1) }}</div>
+                    @php
+                        $custName = trim(($review->customer->first_name ?? '') . ' ' . ($review->customer->last_name ?? ''));
+                        if (!$custName) $custName = 'ลูกค้าท่านหนึ่ง';
+                        $custInitial = mb_strtoupper(mb_substr($custName, 0, 1, 'UTF-8'), 'UTF-8');
+                    @endphp
+                    <div class="author-avatar">{{ $custInitial }}</div>
                     <div>
-                        <div class="author-name">{{ $review->customer->user->name ?? 'ลูกค้าท่านหนึ่ง' }}</div>
+                        <div class="author-name">{{ $custName }}</div>
                         <div class="author-dress">{{ Str::limit($review->product->product_name ?? 'ชุดเช่า', 22) }}</div>
                     </div>
                 </div>

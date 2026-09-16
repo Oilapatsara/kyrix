@@ -267,6 +267,44 @@
         display: flex;
         justify-content: center;
     }
+    .pagination {
+        display: flex;
+        padding-left: 0;
+        list-style: none;
+        gap: 6px;
+        align-items: center;
+    }
+    .page-item .page-link, .page-item span.page-link {
+        position: relative;
+        display: block;
+        padding: 8px 16px;
+        color: var(--primary);
+        text-decoration: none;
+        background-color: #fff;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        transition: all 0.2s;
+    }
+    .page-item.active .page-link {
+        z-index: 3;
+        color: #fff;
+        background-color: var(--primary);
+        border-color: var(--primary);
+    }
+    .page-item.disabled .page-link {
+        color: #999;
+        pointer-events: none;
+        background-color: #f9f9f9;
+        border-color: var(--border);
+    }
+    .page-link:hover {
+        z-index: 2;
+        color: #fff;
+        background-color: #a02a3a;
+        border-color: #a02a3a;
+    }
 
     @media (max-width: 1024px) {
         .catalog-layout {
@@ -485,7 +523,7 @@
 
         <!-- Pagination -->
         <div class="pagination-wrap">
-            {{ $products->links() }}
+            {{ $products->links('pagination::bootstrap-5') }}
         </div>
     </main>
 </div>
