@@ -105,6 +105,67 @@
             margin-bottom: 18px;
             font-size: 14px
         }
+
+        .social-login {
+            margin-top: 24px;
+        }
+
+        .social-divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            color: #888;
+            font-size: 13px;
+            margin: 20px 0;
+        }
+
+        .social-divider::before,
+        .social-divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #e5e5e5;
+        }
+
+        .social-divider span {
+            padding: 0 10px;
+        }
+
+        .social-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background: #fff;
+            color: #302a27;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: .2s;
+        }
+
+        .social-btn:hover {
+            background: #fafafa;
+            border-color: #bbb;
+        }
+
+        .social-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 22px;
+            height: 22px;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .google-icon {
+            color: #4285F4;
+        }
     </style>
 </head>
 
@@ -135,6 +196,22 @@
             <input type="password" name="password_confirmation" placeholder="กรอกรหัสผ่านอีกครั้ง" required>
             <button type="submit" class="btn">สมัครสมาชิก</button>
         </form>
+
+        {{-- Social Register --}}
+        <div class="social-login">
+            <div class="social-divider">
+                <span>หรือสมัครสมาชิกด้วย</span>
+            </div>
+
+            <a
+                href="{{ route('social.redirect', ['provider' => 'google']) }}"
+                class="social-btn"
+            >
+                <span class="social-icon google-icon">G</span>
+                <span>สมัครสมาชิกด้วย Google</span>
+            </a>
+        </div>
+
         <div class="link">มีบัญชีแล้ว? <a href="{{ route('login') }}">เข้าสู่ระบบ</a></div>
     </div>
 </body>

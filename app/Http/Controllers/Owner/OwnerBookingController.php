@@ -81,7 +81,7 @@ class OwnerBookingController extends Controller
         $rental = Rental::findOrFail($id);
 
         $data = $request->validate([
-            'status'             => 'required|in:pending,confirmed,renting,returned,completed,cancelled',
+            'status'             => 'required|in:pending,pending_payment,pending_verification,confirmed,renting,returned,completed,cancelled',
             'tracking_number'    => 'nullable|string|max:100',
             'return_tracking_no' => 'nullable|string|max:100',
             'note'               => 'nullable|string',
@@ -95,9 +95,32 @@ class OwnerBookingController extends Controller
         $wasPreviouslyReturned = in_array($oldStatus, ['returned', 'completed']);
 
         if ($isNowReturned && !$wasPreviouslyReturned) {
+            if (!$rental->inspected_at) {
+                $rental->update([
+                    'inspected_at'          => now(),
+                    'condition_status'      => $rental->condition_status ?? 'good',
+                    'deposit_status'        => ($rental->deposit_status === 'pending' || empty($rental->deposit_status)) ? 'refunded' : $rental->deposit_status,
+                    'deposit_refund_amount' => $rental->deposit_refund_amount ?: ($rental->deposit_amount ?: 100),
+                ]);
+            }
+
             foreach ($rental->details as $detail) {
                 if ($detail->product) {
                     $detail->product->increment('stock', $detail->quantity);
+                    if ($detail->product->stock > 0 && $detail->product->status === 'rented') {
+                        $detail->product->update(['status' => 'available']);
+                    }
+                }
+            }
+        }
+
+        if ($data['status'] === 'cancelled' && !in_array($oldStatus, ['cancelled', 'returned', 'completed'])) {
+            foreach ($rental->details as $detail) {
+                if ($detail->product) {
+                    $detail->product->increment('stock', $detail->quantity);
+                    if ($detail->product->status === 'rented') {
+                        $detail->product->update(['status' => 'available']);
+                    }
                 }
             }
         }

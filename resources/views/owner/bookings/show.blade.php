@@ -46,7 +46,7 @@
 
     .admin-heading h1 {
         margin: 0;
-        font-family: "Playfair Display", "Noto Sans Thai", serif;
+        font-family: 'Prompt', sans-serif;
         font-size: 28px;
         font-weight: 700;
         color: var(--maroon-900);
@@ -251,7 +251,8 @@
         $rentalId = $rental->rental_id ?? $rental->id;
         $statusCode = strtolower($rental->status ?? 'pending');
         $statusText = match($statusCode) {
-            'pending'   => 'รอการยืนยัน',
+            'pending', 'pending_payment' => 'รอชำระเงิน',
+            'pending_verification' => 'รอตรวจสอบสลิป',
             'confirmed' => 'ยืนยันแล้ว',
             'renting'   => 'กำลังเช่า',
             'returned'  => 'คืนชุดแล้ว',
@@ -260,9 +261,10 @@
             default     => ucfirst($rental->status)
         };
         $statusClass = match($statusCode) {
-            'pending'   => 'status-pending',
+            'pending', 'pending_payment', 'pending_verification' => 'status-pending',
             'confirmed' => 'status-confirmed',
             'renting'   => 'status-renting',
+            'pending_return' => 'status-pending',
             'returned'  => 'status-returned',
             'completed' => 'status-completed',
             'cancelled' => 'status-cancelled',
@@ -345,25 +347,41 @@
                 </div>
             </div>
 
-            <!-- ประวัติการชำระเงิน -->
+            <!-- ประวัติการชำระเงิน & ยอดเงินรวม -->
             <div class="detail-card">
                 <div class="card-title">
                     <i class="fa-solid fa-receipt"></i> ข้อมูลการชำระเงิน
                 </div>
-                @forelse($rental->payments ?? [] as $payment)
                 <div class="info-row">
-                    <span class="info-label">ยอดแจ้งโอนชำระ</span>
-                    <span class="info-value" style="font-size: 15px; color: var(--maroon-900);">฿{{ number_format($payment->amount, 2) }}</span>
+                    <span class="info-label" style="font-weight: 750; color: var(--maroon-900);">ยอดรวมสุทธิ</span>
+                    <span class="info-value" style="font-size: 18px; font-weight: 800; color: var(--maroon-900);">฿{{ number_format($rental->grand_total, 2) }}</span>
                 </div>
-                <div class="info-row">
-                    <span class="info-label">สถานะการชำระ</span>
-                    <span class="info-value">
-                        <span style="color: #4f7e53; font-weight: 700;">{{ ucfirst($payment->status) }}</span>
-                    </span>
+
+                <div style="margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--line);">
+                    <div style="font-size: 12px; font-weight: 700; color: var(--muted); margin-bottom: 8px;">ประวัติสลิปการชำระเงิน:</div>
+                    @forelse($rental->payments ?? [] as $payment)
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; font-size: 12.5px;">
+                        <div>
+                            <span>ยอดตามสลิป: <strong>฿{{ number_format($payment->payment_amount ?? $payment->amount ?? 0, 2) }}</strong></span>
+                            <span style="font-size: 11px; color: #888;">({{ $payment->created_at ? $payment->created_at->format('d/m/Y H:i') : '-' }})</span>
+                        </div>
+                        <div>
+                            @if($payment->status === 'approved')
+                                <span style="color: #16a34a; font-weight: 700;"><i class="fa-solid fa-check"></i> อนุมัติแล้ว</span>
+                            @else
+                                <span style="color: #d97706; font-weight: 700;">รอตรวจสอบ</span>
+                            @endif
+                            @if($payment->slip_url)
+                                <a href="{{ $payment->slip_url }}" target="_blank" style="margin-left: 8px; color: var(--maroon-900); text-decoration: underline;">
+                                    <i class="fa-solid fa-image"></i> สลิป
+                                </a>
+                            @endif
+                        </div>
+                    </div>
+                    @empty
+                    <div style="color: var(--muted); font-size: 12px; text-align: center; padding: 10px 0;">ยังไม่มีประวัติการแจ้งชำระเงินในระบบ</div>
+                    @endforelse
                 </div>
-                @empty
-                <div style="color: var(--muted); font-size: 13px; text-align: center; padding: 15px 0;">ยังไม่มีประวัติการแจ้งชำระเงินในระบบ</div>
-                @endforelse
             </div>
         </div>
 
@@ -404,24 +422,25 @@
                 </div>
                 <div class="info-row" style="margin-top: 6px; padding-top: 12px; border-top: 1px solid var(--line);">
                     <span class="info-label" style="font-weight: 750; color: var(--maroon-900);">ยอดรวมทั้งสิ้น</span>
-                    <span class="info-value" style="font-size: 18px; font-weight: 800; color: var(--maroon-900);">฿{{ number_format($rental->grand_total ?? $rental->total_amount ?? 0, 2) }}</span>
+                    <span class="info-value" style="font-size: 18px; font-weight: 800; color: var(--maroon-900);">฿{{ number_format($rental->grand_total, 2) }}</span>
                 </div>
 
-                <!-- ฟอร์มเปลี่ยนสถานะ -->
-                <div style="margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--line);">
-                    <form action="{{ route('owner.bookings.updateStatus', $rentalId) }}" method="POST">
-                        @csrf
-                        <div class="form-group">
-                            <label class="form-label">อัปเดตสถานะการเช่า</label>
-                            <select name="status" class="form-control" required>
-                                <option value="pending" {{ $statusCode == 'pending' ? 'selected' : '' }}>รอการยืนยัน</option>
-                                <option value="confirmed" {{ $statusCode == 'confirmed' ? 'selected' : '' }}>ยืนยันแล้ว</option>
-                                <option value="renting" {{ $statusCode == 'renting' ? 'selected' : '' }}>กำลังเช่า</option>
-                                <option value="returned" {{ $statusCode == 'returned' ? 'selected' : '' }}>คืนชุดแล้ว</option>
-                                <option value="completed" {{ $statusCode == 'completed' ? 'selected' : '' }}>เสร็จสิ้น</option>
-                                <option value="cancelled" {{ $statusCode == 'cancelled' ? 'selected' : '' }}>ยกเลิก</option>
-                            </select>
-                        </div>
+                    <!-- ฟอร์มเปลี่ยนสถานะ -->
+                    <div style="margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--line);">
+                        <form action="{{ route('owner.bookings.updateStatus', $rentalId) }}" method="POST">
+                            @csrf
+                            <div class="form-group">
+                                <label class="form-label">อัปเดตสถานะการเช่า</label>
+                                <select name="status" class="form-control" required>
+                                    <option value="pending_payment" {{ in_array($statusCode, ['pending', 'pending_payment']) ? 'selected' : '' }}>รอชำระเงิน</option>
+                                    <option value="pending_verification" {{ $statusCode == 'pending_verification' ? 'selected' : '' }}>รอตรวจสอบสลิป</option>
+                                    <option value="confirmed" {{ $statusCode == 'confirmed' ? 'selected' : '' }}>ยืนยันแล้ว</option>
+                                    <option value="renting" {{ $statusCode == 'renting' ? 'selected' : '' }}>กำลังเช่า</option>
+                                    <option value="returned" {{ $statusCode == 'returned' ? 'selected' : '' }}>คืนชุดแล้ว</option>
+                                    <option value="completed" {{ $statusCode == 'completed' ? 'selected' : '' }}>เสร็จสิ้น</option>
+                                    <option value="cancelled" {{ $statusCode == 'cancelled' ? 'selected' : '' }}>ยกเลิก</option>
+                                </select>
+                            </div>
                         <div class="form-group">
                             <label class="form-label">หมายเหตุ / Tracking Number</label>
                             <input type="text" name="tracking_number" value="{{ $rental->tracking_number ?? '' }}" class="form-control" placeholder="กรอกเลขพัสดุขนส่ง (ถ้ามี)">

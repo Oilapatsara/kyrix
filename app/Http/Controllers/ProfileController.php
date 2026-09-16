@@ -74,25 +74,47 @@ class ProfileController extends Controller
 
     public function updatePassword(Request $request)
     {
-        $request->validate([
-            'current_password' => 'required|string',
-            'password'         => 'required|string|min:6|confirmed',
-        ], [
-            'current_password.required' => 'กรุณากรอกรหัสผ่านปัจจุบัน',
-            'password.required'         => 'กรุณากรอกรหัสผ่านใหม่',
-            'password.min'              => 'รหัสผ่านใหม่ต้องมีอย่างน้อย 6 ตัวอักษร',
-            'password.confirmed'        => 'การยืนยันรหัสผ่านใหม่ไม่ตรงกัน',
-        ]);
-
         $customer = $this->getCustomer();
+        $user = \App\Models\User::where('user_id', $customer->user_id)
+            ->orWhere('email', $customer->email)
+            ->first();
 
-        if (!Hash::check($request->current_password, $customer->password)) {
-            return back()->withErrors(['current_password' => 'รหัสผ่านปัจจุบันไม่ถูกต้อง']);
+        // หากเป็นบัญชี Google Social Login และยังไม่ได้ตั้งรหัสผ่านเดิม
+        if ($user && $user->provider === 'google' && empty($customer->password)) {
+            $request->validate([
+                'password' => 'required|string|min:6|confirmed',
+            ], [
+                'password.required'  => 'กรุณากรอกรหัสผ่านใหม่',
+                'password.min'       => 'รหัสผ่านใหม่ต้องมีอย่างน้อย 6 ตัวอักษร',
+                'password.confirmed' => 'การยืนยันรหัสผ่านใหม่ไม่ตรงกัน',
+            ]);
+        } else {
+            $request->validate([
+                'current_password' => 'required|string',
+                'password'         => 'required|string|min:6|confirmed',
+            ], [
+                'current_password.required' => 'กรุณากรอกรหัสผ่านปัจจุบัน',
+                'password.required'         => 'กรุณากรอกรหัสผ่านใหม่',
+                'password.min'              => 'รหัสผ่านใหม่ต้องมีอย่างน้อย 6 ตัวอักษร',
+                'password.confirmed'        => 'การยืนยันรหัสผ่านใหม่ไม่ตรงกัน',
+            ]);
+
+            if ($customer->password && !Hash::check($request->current_password, $customer->password)) {
+                return back()->withErrors(['current_password' => 'รหัสผ่านปัจจุบันไม่ถูกต้อง']);
+            }
         }
 
+        $newHashedPassword = Hash::make($request->password);
+
         $customer->update([
-            'password' => Hash::make($request->password),
+            'password' => $newHashedPassword,
         ]);
+
+        if ($user) {
+            $user->update([
+                'password' => $newHashedPassword,
+            ]);
+        }
 
         return back()->with('success', 'เปลี่ยนรหัสผ่านสำเร็จเรียบร้อย');
     }

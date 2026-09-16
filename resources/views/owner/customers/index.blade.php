@@ -24,7 +24,7 @@
     }
 
     body, h1, h2, h3, h4, h5, h6, p, span, a, button, input, table, div {
-        font-family: 'Noto Sans Thai', sans-serif !important;
+        font-family: 'Prompt', sans-serif !important;
     }
 
     .kyrix-admin-container {

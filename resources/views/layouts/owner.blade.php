@@ -9,45 +9,67 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <style>
         :root {
-            --maroon-950: #4a0f19;
-            --maroon-900: #751B2A; /* สีแดงเข้มไวน์แดงตามรูปโลโก้ */
-            --maroon-800: #7A2031;
-            --maroon-700: #8c2539;
-            --gold:       #C5A059; /* สีทองพรีเมียมละมุนตา */
-            --gold-dark:  #A88349;
-            --gold-light: #f9f6f0;
-            --rose-bg:    #fcf3f4;
-            --rose-text:  #751B2A;
-            --cream:      #faf8f6;
-            --surface:    #ffffff;
-            --ink:        #2b1a1d;
-            --muted:      #8a7c7f;
-            --line:       #f0e8e6;
-            --radius-sm:  8px;
-            --radius-md:  12px;
-            --radius-lg:  18px;
-            --shadow-sm:  0 2px 8px rgba(43, 26, 29, 0.04);
-            --shadow-md:  0 8px 24px rgba(43, 26, 29, 0.08);
-            --shadow-lg:  0 14px 35px rgba(117, 27, 42, 0.12);
+            --font-main: 'Prompt', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            --primary: #7a1f2b;
+            --primary-dark: #58141d;
+            --primary-light: #9c2e3d;
+            --primary-soft: #fbf0f2;
+            --gold: #c69c4c;
+            --gold-dark: #a97f45;
+            --gold-light: #f7eedb;
+            --bg: #faf8f5;
+            --surface: #ffffff;
+            --text-main: #2a2421;
+            --text-muted: #736b66;
+            --border: #ede8e3;
+            --radius-sm: 8px;
+            --radius-md: 14px;
+            --radius-lg: 20px;
+            --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.03);
+            --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 20px 50px rgba(122, 31, 43, 0.12);
+
+            /* Legacy owner page aliases */
+            --font-prompt: var(--font-main);
+            --maroon-950: var(--primary-dark);
+            --maroon-900: var(--primary);
+            --maroon-800: var(--primary);
+            --maroon-700: var(--primary-light);
+            --maroon-dark: var(--primary-dark);
+            --blush-bg: var(--primary-soft);
+            --blush-hover: #f6e4e8;
+            --cream: var(--bg);
+            --ink: var(--text-main);
+            --muted: var(--text-muted);
+            --line: var(--border);
         }
 
-        * {
+        *, *::before, *::after {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
 
+        body, button, input, select, textarea {
+            font-family: var(--font-main);
+        }
+
+        .fa, .fas, .far, .fab, .fa-solid, .fa-regular,
+        .fa::before, .fas::before, .far::before, .fab::before, .fa-solid::before, .fa-regular::before {
+            font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands" !important;
+        }
+
         body {
-            font-family: "Noto Sans Thai", "Plus Jakarta Sans", sans-serif;
-            background-color: var(--cream);
-            color: var(--ink);
+            font-family: var(--font-main);
+            background-color: var(--bg);
+            color: var(--text-main);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -60,110 +82,123 @@
             transition: all .2s ease;
         }
 
+        .admin-top-banner {
+            background: #2a2421;
+            color: #e5dfd8;
+            font-size: 13px;
+            padding: 8px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .admin-top-banner a {
+            color: var(--gold);
+            font-weight: 500;
+        }
+
         /* TOP NAVIGATION */
         .admin-nav {
-            background: #ffffff;
-            border-bottom: 1px solid var(--line);
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
             position: sticky;
             top: 0;
             z-index: 1000;
-            box-shadow: 0 4px 20px rgba(117, 27, 42, 0.03);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
         }
 
         .admin-nav-container {
-            max-width: 1540px;
+            max-width: 1440px;
             margin: 0 auto;
-            padding: 0 28px;
+            padding: 14px 24px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            height: 76px;
+            min-height: 74px;
+            gap: 20px;
         }
 
         .admin-brand {
             display: flex;
             align-items: center;
-            gap: 14px;
+            flex-shrink: 0;
         }
 
         .admin-brand .logo-container {
             display: flex;
             flex-direction: column;
-            line-height: 1.1;
+            line-height: 1.05;
+            text-decoration: none;
         }
 
         .admin-brand .logo-text {
-            font-family: "Playfair Display", serif;
-            font-size: 26px;
-            font-weight: 700;
-            letter-spacing: 2.5px;
-            color: var(--maroon-900);
+            font-family: 'Plus Jakarta Sans', sans-serif !important;
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: var(--primary);
         }
 
         .admin-brand .logo-subtext {
-            font-size: 9.5px;
-            font-weight: 700;
-            letter-spacing: 2.8px;
-            color: var(--gold-dark);
+            font-family: var(--font-main) !important;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 3px;
+            color: var(--gold);
             text-transform: uppercase;
             margin-top: 3px;
         }
 
-        /* MENU LINKS */
+        /* MENU LINKS (คลีน ไม่มีไอคอน มีขีดเส้นใต้สีมารูนสำหรับเมนูที่แอคทีฟ) */
         .admin-menu {
             display: flex;
             align-items: center;
-            gap: 24px;
+            gap: 22px;
             list-style: none;
             height: 100%;
+            margin: 0;
+            padding: 0;
         }
 
         .admin-menu-link {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 0 2px;
-            height: 100%;
-            font-size: 14px;
+            min-height: 46px;
+            font-size: 15px;
             font-weight: 500;
-            color: #4a3b3e;
+            color: var(--text-main);
             transition: all .2s ease;
             position: relative;
+            padding: 0 2px;
+            white-space: nowrap;
+            text-decoration: none;
         }
 
         .admin-menu-link i {
-            font-size: 13.5px;
-            color: var(--muted);
-            transition: color .2s;
+            font-size: 14px;
+            color: inherit;
         }
 
         .admin-menu-link:hover {
-            color: var(--maroon-900);
-        }
-
-        .admin-menu-link:hover i {
-            color: var(--maroon-900);
+            color: var(--primary);
         }
 
         .admin-menu-link.active {
-            color: var(--maroon-900);
-            font-weight: 700;
+            color: var(--primary);
+            font-weight: 600;
         }
 
-        .admin-menu-link.active i {
-            color: var(--maroon-900);
-        }
-
-        /* Active bottom border indicator style */
+        /* ขีดเส้นใต้สีแดงไวน์/มารูนใต้เมนูที่เลือก ตรงตามรูปตัวอย่าง */
         .admin-menu-link.active::after {
             content: '';
             position: absolute;
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 3px;
-            background: var(--maroon-900);
-            border-radius: 3px 3px 0 0;
+            height: 2.5px;
+            background: var(--primary);
+            border-radius: 2px 2px 0 0;
         }
 
         /* RIGHT ACTIONS */
@@ -171,9 +206,10 @@
             display: flex;
             align-items: center;
             gap: 14px;
+            flex-shrink: 0;
         }
 
-        /* SEARCH BOX */
+        /* SEARCH PILL */
         .admin-search-box {
             position: relative;
             display: flex;
@@ -181,27 +217,28 @@
         }
 
         .admin-search-input {
-            background: #faf8f7;
-            border: 1px solid var(--line);
-            border-radius: 99px;
-            padding: 9px 38px 9px 16px;
-            font-size: 13px;
-            color: var(--ink);
-            width: 220px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            padding: 8px 38px 8px 18px;
+            font-size: 13.5px;
+            color: var(--text-main);
+            width: 195px;
             outline: none;
-            transition: all .2s;
-            font-family: inherit;
+            transition: all .25s ease;
+            font-family: var(--font-main) !important;
         }
 
         .admin-search-input::placeholder {
-            color: #b5a4a7;
+            color: #9e8f92;
+            font-size: 13px;
         }
 
         .admin-search-input:focus {
-            border-color: var(--gold);
-            background: #fff;
-            box-shadow: 0 0 0 3px rgba(197, 160, 89, 0.15);
-            width: 240px;
+            border-color: var(--primary);
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(122, 31, 43, 0.10);
+            width: 225px;
         }
 
         .admin-search-btn {
@@ -209,15 +246,19 @@
             right: 14px;
             background: none;
             border: none;
-            color: var(--muted);
+            color: #8b7c7f;
             cursor: pointer;
             font-size: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
             transition: color .2s;
         }
 
         .admin-search-input:focus ~ .admin-search-btn,
         .admin-search-box:hover .admin-search-btn {
-            color: var(--maroon-900);
+            color: var(--primary);
         }
 
         /* NOTIFICATION BELL */
@@ -226,33 +267,38 @@
         }
 
         .notif-bell-btn {
-            width: 40px;
-            height: 40px;
+            width: 42px;
+            height: 42px;
             border-radius: 50%;
-            background: var(--rose-bg);
-            border: 1px solid rgba(117, 27, 42, 0.1);
+            background: var(--blush-bg);
+            border: 1px solid rgba(122, 31, 43, 0.06);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--maroon-900);
+            color: var(--primary);
             cursor: pointer;
             position: relative;
-            transition: all .2s;
+            transition: all .2s ease;
         }
 
         .notif-bell-btn:hover {
-            background: #f7e6e8;
-            border-color: var(--gold);
+            background: var(--blush-hover);
+            transform: scale(1.04);
+        }
+
+        .notif-bell-btn i {
+            font-size: 15px;
+            color: var(--primary);
         }
 
         .notif-badge-count {
             position: absolute;
-            top: -5px;
-            right: -5px;
+            top: -4px;
+            right: -4px;
             background: #dc2626;
             color: #fff;
             font-size: 10px;
-            font-weight: 750;
+            font-weight: 700;
             padding: 2px 6px;
             border-radius: 99px;
             border: 2px solid #fff;
@@ -280,14 +326,14 @@
 
         .notif-header {
             padding: 14px 16px;
-            background: var(--cream);
-            border-bottom: 1px solid var(--line);
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
             justify-content: space-between;
             font-size: 13px;
-            font-weight: 750;
-            color: var(--maroon-900);
+            font-weight: 700;
+            color: var(--primary);
         }
 
         .notif-body {
@@ -309,6 +355,25 @@
             background: #fdfbfb;
         }
 
+        .notif-item.is-read {
+            opacity: .55;
+        }
+
+        .notif-item.is-read .notif-icon-box {
+            background: #f2efec;
+            color: var(--muted);
+        }
+
+        .notif-read-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--muted);
+            margin-left: 8px;
+        }
+
         .notif-icon-box {
             width: 32px;
             height: 32px;
@@ -324,7 +389,7 @@
 
         .notif-content {
             font-size: 12px;
-            color: var(--ink);
+            color: var(--text-main);
             line-height: 1.4;
         }
 
@@ -341,78 +406,68 @@
             font-size: 12.5px;
         }
 
-        .admin-user-pill {
-            display: flex;
+        /* RIGHT BUTTONS (สไตล์ปุ่มเส้นขอบ และ ปุ่มทึบสีมารูน ตามแบบในรูปภาพ) */
+        .btn-nav-outline {
+            display: inline-flex;
             align-items: center;
-            gap: 10px;
-            padding: 5px 16px 5px 6px;
-            background: #fff;
-            border: 1px solid var(--line);
-            border-radius: 30px;
-            box-shadow: var(--shadow-sm);
-        }
-
-        .admin-avatar {
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
-            background: var(--maroon-900);
-            color: #ffffff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 13px;
-            font-weight: 700;
-        }
-
-        .admin-user-info {
-            line-height: 1.2;
-        }
-
-        .admin-user-name {
-            font-size: 12.5px;
-            font-weight: 700;
-            color: var(--maroon-900);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .admin-user-role {
-            font-size: 10px;
-            color: var(--muted);
-        }
-
-        .btn-logout {
-            background: none;
-            border: none;
+            gap: 7px;
+            padding: 7px 18px;
+            background: transparent;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
             cursor: pointer;
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #937d81;
-            transition: all .2s;
-            margin-left: 4px;
+            transition: all .2s ease;
+            text-decoration: none;
+            font-family: var(--font-main) !important;
+            line-height: 1.3;
+            white-space: nowrap;
         }
 
-        .btn-logout:hover {
-            background: #ffebee;
-            color: #c62828;
+        .btn-nav-outline:hover {
+            background: var(--primary-soft);
+            color: var(--primary);
+        }
+
+        .btn-nav-solid {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 7px 20px;
+            background: var(--primary);
+            color: #ffffff;
+            border: 1px solid var(--primary);
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all .2s ease;
+            text-decoration: none;
+            font-family: var(--font-main) !important;
+            line-height: 1.3;
+            white-space: nowrap;
+        }
+
+        .btn-nav-solid:hover {
+            background: var(--primary-dark);
+            border-color: var(--primary-dark);
+            color: #ffffff;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(122, 31, 43, 0.2);
         }
 
         /* MAIN CONTENT AREA */
         .admin-main {
             flex: 1;
-            padding: 30px 0 60px;
+            padding: 34px 0 64px;
         }
 
         .admin-container {
-            max-width: 1540px;
+            max-width: 1440px;
             margin: 0 auto;
-            padding: 0 28px;
+            padding: 0 24px;
         }
 
         /* FLASH MESSAGES */
@@ -459,12 +514,12 @@
 
         /* FOOTER */
         .admin-footer {
-            border-top: 1px solid var(--line);
+            border-top: 3px solid var(--primary);
             padding: 20px 0;
-            background: #ffffff;
+            background: #1f1b19;
             text-align: center;
             font-size: 12px;
-            color: var(--muted);
+            color: #807771;
         }
 
         @keyframes fadeIn {
@@ -492,8 +547,235 @@
     </style>
 
     @stack('styles')
+
+    <style>
+        :root {
+            --font-main: 'Prompt', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            --primary: #7a1f2b;
+            --primary-dark: #58141d;
+            --primary-light: #9c2e3d;
+            --primary-soft: #fbf0f2;
+            --gold: #c69c4c;
+            --gold-dark: #a97f45;
+            --gold-light: #f7eedb;
+            --bg: #faf8f5;
+            --surface: #ffffff;
+            --text-main: #2a2421;
+            --text-muted: #736b66;
+            --border: #ede8e3;
+            --radius-sm: 8px;
+            --radius-md: 14px;
+            --radius-lg: 20px;
+            --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.03);
+            --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 20px 50px rgba(122, 31, 43, 0.12);
+            --maroon-950: var(--primary-dark);
+            --maroon-900: var(--primary);
+            --maroon-800: var(--primary);
+            --maroon-700: var(--primary-light);
+            --maroon-dark: var(--primary-dark);
+            --cream: var(--bg);
+            --ink: var(--text-main);
+            --muted: var(--text-muted);
+            --line: var(--border);
+        }
+
+        body,
+        body button,
+        body input,
+        body select,
+        body textarea,
+        .kyrix-admin-container,
+        .admin-heading h1,
+        .admin-heading p,
+        .card-title,
+        .status-badge,
+        .admin-btn,
+        .dashboard-wrapper,
+        .owner-dashboard {
+            font-family: var(--font-main) !important;
+        }
+
+        body {
+            background: var(--bg) !important;
+            color: var(--text-main) !important;
+        }
+
+        .admin-nav {
+            background: var(--surface) !important;
+            border-bottom: 1px solid var(--border) !important;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03) !important;
+        }
+
+        .admin-nav-container {
+            max-width: 1440px !important;
+            min-height: 74px !important;
+            padding: 14px 24px !important;
+        }
+
+        .logo-text {
+            font-family: 'Plus Jakarta Sans', sans-serif !important;
+            color: var(--primary) !important;
+            font-weight: 800 !important;
+        }
+
+        .logo-subtext {
+            color: var(--gold) !important;
+        }
+
+        .admin-menu-link {
+            color: var(--text-main) !important;
+            min-height: 46px !important;
+        }
+
+        .admin-menu-link:hover,
+        .admin-menu-link.active {
+            color: var(--primary) !important;
+        }
+
+        .admin-menu-link.active::after {
+            background: var(--primary) !important;
+        }
+
+        .admin-heading .eyebrow,
+        .breadcrumb span,
+        .section-eyebrow {
+            color: var(--gold-dark) !important;
+        }
+
+        .admin-heading h1,
+        .card-title,
+        .detail-card .card-title,
+        .content-card h1,
+        .content-card h2,
+        .content-card h3 {
+            color: var(--primary-dark) !important;
+        }
+
+        .content-card,
+        .detail-card,
+        .form-card,
+        .stat-card,
+        .report-card,
+        .dashboard-card,
+        .table-card {
+            background: var(--surface) !important;
+            border-color: var(--border) !important;
+            border-radius: var(--radius-md) !important;
+            box-shadow: var(--shadow-sm) !important;
+        }
+
+        .content-card:hover,
+        .detail-card:hover,
+        .stat-card:hover,
+        .dashboard-card:hover {
+            box-shadow: var(--shadow-md) !important;
+        }
+
+        .kyrix-table th,
+        .product-table th,
+        .table thead th {
+            background: var(--bg) !important;
+            color: var(--text-muted) !important;
+            border-bottom-color: var(--border) !important;
+        }
+
+        .kyrix-table td,
+        .product-table td,
+        .table td,
+        .info-row {
+            border-color: var(--border) !important;
+        }
+
+        .admin-btn.primary,
+        .btn-primary,
+        .btn-nav-solid,
+        .btn-add,
+        .btn-modal-submit,
+        .dashboard-btn.primary {
+            background: var(--primary) !important;
+            border-color: var(--primary) !important;
+            color: #fff !important;
+        }
+
+        .admin-btn.primary:hover,
+        .btn-primary:hover,
+        .btn-nav-solid:hover,
+        .btn-add:hover,
+        .btn-modal-submit:hover,
+        .dashboard-btn.primary:hover {
+            background: var(--primary-dark) !important;
+            border-color: var(--primary-dark) !important;
+            box-shadow: 0 8px 20px rgba(122, 31, 43, 0.22) !important;
+        }
+
+        .admin-btn.secondary,
+        .btn-secondary,
+        .btn-outline,
+        .btn-nav-outline,
+        .btn-reset,
+        .dashboard-btn.secondary {
+            background: #fff !important;
+            color: var(--primary) !important;
+            border-color: var(--primary) !important;
+        }
+
+        .admin-btn.secondary:hover,
+        .btn-secondary:hover,
+        .btn-outline:hover,
+        .btn-nav-outline:hover,
+        .btn-reset:hover,
+        .dashboard-btn.secondary:hover {
+            background: var(--primary-soft) !important;
+            color: var(--primary) !important;
+        }
+
+        .action-btn-view,
+        .btn-return {
+            background: var(--gold-light) !important;
+            color: var(--gold-dark) !important;
+            border-color: #f3e6d0 !important;
+        }
+
+        .action-btn-view:hover,
+        .btn-return:hover {
+            background: var(--gold) !important;
+            color: #fff !important;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus,
+        .form-control:focus,
+        .form-input-k:focus,
+        .admin-search-input:focus {
+            border-color: var(--primary) !important;
+            box-shadow: 0 0 0 3px rgba(122, 31, 43, 0.10) !important;
+        }
+
+        .admin-footer p {
+            margin: 0;
+        }
+
+        @media (max-width: 768px) {
+            .admin-top-banner {
+                display: none;
+            }
+
+            .admin-nav-container {
+                padding: 12px 18px !important;
+            }
+        }
+    </style>
 </head>
 <body>
+
+    <div class="admin-top-banner">
+        <span>KYRIX Dress Rental Boutique — ระบบจัดการร้านเช่าชุดออนไลน์</span>
+        <a href="{{ route('home') }}" target="_blank" rel="noopener">
+            <i class="fa-solid fa-store"></i> ดูหน้าเว็บไซต์ลูกค้า
+        </a>
+    </div>
 
     <!-- TOP NAVIGATION -->
     <header class="admin-nav">
@@ -551,13 +833,13 @@
                 </li>
             </ul>
 
-            <!-- RIGHT ACTIONS -->
+                <!-- RIGHT ACTIONS (ค้นหา, แจ้งเตือน, โปรไฟล์, ออกจากระบบ) -->
             <div class="admin-nav-actions">
                 
                 <!-- SEARCH INPUT BOX -->
                 <form action="{{ route('owner.dresses.index') }}" method="GET" class="admin-search-box">
                     <input type="text" name="search" class="admin-search-input" placeholder="ค้นหาชุดสวย..." value="{{ request('search') }}">
-                    <button type="submit" class="admin-search-btn">
+                    <button type="submit" class="admin-search-btn" title="ค้นหา">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </button>
                 </form>
@@ -574,7 +856,7 @@
 
                 <div class="notif-dropdown-wrapper">
                     <button type="button" class="notif-bell-btn" id="notifBellBtn" onclick="toggleNotifDropdown(event)" title="แจ้งเตือนชุดเกินกำหนด">
-                        <i class="fa-solid fa-bag-shopping" style="font-size: 14px;"></i>
+                        <i class="fa-regular fa-bell"></i>
                         @if($overdueRentals->count() > 0)
                             <span class="notif-badge-count" id="notifBadgeCount">{{ $overdueRentals->count() }}</span>
                         @endif
@@ -589,16 +871,19 @@
                             @forelse($overdueRentals as $item)
                                 @php
                                     $rId = $item->rental_id ?? $item->id;
-                                    $custName = $item->customer->name ?? $item->customer_name ?? 'ลูกค้า';
+                                    $custName = $item->customer ? ($item->customer->name ?? $item->customer->first_name . ' ' . $item->customer->last_name) : 'ลูกค้า (ไม่พบข้อมูล)';
                                     $daysLate = \Carbon\Carbon::parse($item->end_date)->diffInDays($today);
                                 @endphp
-                                <a href="{{ route('owner.returns.index', ['tab' => 'overdue']) }}" class="notif-item" onclick="markNotifRead('{{ $rId }}')">
+                                <a href="{{ route('owner.returns.index', ['tab' => 'overdue']) }}" class="notif-item" data-rental-id="{{ $rId }}" onclick="markNotifRead('{{ $rId }}', this)">
                                     <div class="notif-icon-box">
                                         <i class="fa-solid fa-triangle-exclamation"></i>
                                     </div>
                                     <div class="notif-content">
                                         <div><strong>#RENT-{{ $rId }}</strong> คุณ <strong>{{ $custName }}</strong> เลยกำหนดคืนแล้ว {{ $daysLate }} วัน</div>
-                                        <div class="notif-time">กำหนดคืน: {{ \Carbon\Carbon::parse($item->end_date)->format('d/m/Y') }}</div>
+                                        <div class="notif-time">
+                                            กำหนดคืน: {{ \Carbon\Carbon::parse($item->end_date)->format('d/m/Y') }}
+                                            <span class="notif-read-tag" style="display:none;"><i class="fa-solid fa-check"></i> อ่านแล้ว</span>
+                                        </div>
                                     </div>
                                 </a>
                             @empty
@@ -611,25 +896,19 @@
                     </div>
                 </div>
 
-                <!-- USER PROFILE PILL -->
-                <div class="admin-user-pill">
-                    <div class="admin-avatar">
-                        {{ mb_substr(auth()->user()->name ?? 'อ', 0, 1) }}
-                    </div>
-                    <div class="admin-user-info">
-                        <div class="admin-user-name">
-                            {{ auth()->user()->name ?? 'เจ้าของร้าน' }}
-                            <i class="fa-solid fa-chevron-down" style="font-size: 10px; color: var(--muted);"></i>
-                        </div>
-                        <div class="admin-user-role">ผู้ดูแลร้าน KYRIX</div>
-                    </div>
-                    <form action="{{ route('logout') }}" method="POST" style="display:inline;">
-                        @csrf
-                        <button type="submit" class="btn-logout" title="ออกจากระบบ" onclick="return confirm('ต้องการออกจากระบบหรือไม่?')">
-                            <i class="fa-solid fa-arrow-right-from-bracket"></i>
-                        </button>
-                    </form>
+                <!-- USER PROFILE BUTTON (OUTLINE STYLE) -->
+                <div class="btn-nav-outline" title="บัญชีผู้ดูแลร้าน KYRIX">
+                    <i class="fa-regular fa-user" style="font-size: 13px;"></i>
+                    <span>{{ auth()->user()->name ?? 'เจ้าของร้าน' }}</span>
                 </div>
+
+                <!-- LOGOUT BUTTON (SOLID MAROON STYLE) -->
+                <form action="{{ route('logout') }}" method="POST" style="display:inline; margin:0;">
+                    @csrf
+                    <button type="submit" class="btn-nav-solid" title="ออกจากระบบ" onclick="return confirm('ต้องการออกจากระบบหรือไม่?')">
+                        <span>ออกจากระบบ</span>
+                    </button>
+                </form>
 
             </div>
         </div>
@@ -707,15 +986,53 @@
             }
         });
 
-        function markNotifRead(rentalId) {
-            let readNotifs = JSON.parse(localStorage.getItem('kyrix_read_notifs') || '{}');
+        function getReadNotifs() {
+            return JSON.parse(localStorage.getItem('kyrix_read_notifs') || '{}');
+        }
+
+        // อัปเดตหน้าตารายการ + ตัวเลขแจ้งเตือนที่หัวกระดิ่ง ให้ตรงกับสถานะอ่านแล้วใน localStorage
+        function refreshNotifUI() {
+            const readNotifs = getReadNotifs();
+            const items = document.querySelectorAll('.notif-item[data-rental-id]');
+            let unreadCount = 0;
+
+            items.forEach(function(item) {
+                const id = item.getAttribute('data-rental-id');
+                const isRead = Object.prototype.hasOwnProperty.call(readNotifs, id);
+                const readTag = item.querySelector('.notif-read-tag');
+
+                item.classList.toggle('is-read', isRead);
+                if (readTag) {
+                    readTag.style.display = isRead ? 'inline-flex' : 'none';
+                }
+                if (!isRead) {
+                    unreadCount++;
+                }
+            });
+
+            const badge = document.getElementById('notifBadgeCount');
+            if (badge) {
+                if (unreadCount > 0) {
+                    badge.textContent = unreadCount;
+                    badge.style.display = '';
+                } else {
+                    badge.style.display = 'none';
+                }
+            }
+        }
+
+        function markNotifRead(rentalId, el) {
+            let readNotifs = getReadNotifs();
             const now = new Date().getTime();
             readNotifs[rentalId] = now;
             localStorage.setItem('kyrix_read_notifs', JSON.stringify(readNotifs));
+
+            // อัปเดตทันทีให้เห็นผลก่อนเปลี่ยนหน้า
+            refreshNotifUI();
         }
 
         document.addEventListener("DOMContentLoaded", function() {
-            let readNotifs = JSON.parse(localStorage.getItem('kyrix_read_notifs') || '{}');
+            let readNotifs = getReadNotifs();
             const now = new Date().getTime();
             const twelveHours = 12 * 60 * 60 * 1000;
             let updated = false;
@@ -730,6 +1047,8 @@
             if (updated) {
                 localStorage.setItem('kyrix_read_notifs', JSON.stringify(readNotifs));
             }
+
+            refreshNotifUI();
         });
     </script>
 

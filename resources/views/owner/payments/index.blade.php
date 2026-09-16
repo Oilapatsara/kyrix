@@ -54,7 +54,7 @@
     th,
     td,
     div {
-        font-family: 'Noto Sans Thai', sans-serif !important;
+        font-family: 'Prompt', sans-serif !important;
     }
 
     .kyrix-payment-page {
@@ -907,7 +907,7 @@
                             2
                         );
 
-                        // ปรับแก้ระบบ URL รูปภาพให้ชี้ไปที่ uploads/slips
+                        // ชี้ไปที่ uploads/slips
                         $slipImage = trim(
                             (string) ($payment->slip_image ?? '')
                         );
@@ -1072,6 +1072,12 @@
 
                             </div>
 
+                            @if($rental)
+                                <div style="font-size: 11px; color: var(--muted); margin-top: 4px; line-height: 1.3;">
+                                    ค่าเช่า ฿{{ number_format($rental->total_amount) }} + มัดจำ ฿{{ number_format($rental->deposit_amount ?: 100) }}
+                                </div>
+                            @endif
+
                         </td>
 
 
@@ -1205,19 +1211,25 @@
 @push('scripts')
 <script>
     /**
-     * แสดง Modal รูปสลิปด้วย SweetAlert2
+     * แสดง Modal รูปสลิปแบบขยายใหญ่ (800px + รูปเต็มความสูง 75vh)
      */
     function showSlipModal(url, code, customer, amount) {
         Swal.fire({
             title: `หลักฐานการโอนเงิน #${code}`,
             html: `
-                <div style="font-size: 13px; margin-bottom: 12px; color: #5c1522;">
-                    <strong>ลูกค้า:</strong> ${customer} | <strong>ยอดเงิน:</strong> ฿${amount}
+                <div style="font-size: 14px; margin-bottom: 14px; color: #5c1522;">
+                    <strong>ลูกค้า:</strong> ${customer} &nbsp;|&nbsp; <strong>ยอดเงิน:</strong> ฿${amount}
                 </div>
-                <div style="max-height: 450px; overflow-y: auto; border-radius: 8px;">
-                    <img src="${url}" style="max-width: 100%; height: auto; border-radius: 8px;" alt="Slip Image">
+                <div style="max-height: 75vh; overflow-y: auto; border-radius: 10px; background: #faf7f4; padding: 12px; display: flex; justify-content: center; align-items: center;">
+                    <img src="${url}" style="max-width: 100%; height: auto; object-fit: contain; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.12);" alt="Slip Image">
+                </div>
+                <div style="margin-top: 14px; text-align: center;">
+                    <a href="${url}" target="_blank" style="display: inline-flex; align-items: center; gap: 6px; color: #6f1a2b; font-size: 12.5px; font-weight: 700; text-decoration: underline;">
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i> เปิดรูปขนาดเต็มในแท็บใหม่
+                    </a>
                 </div>
             `,
+            width: '800px',
             showCloseButton: true,
             showConfirmButton: false,
             customClass: {

@@ -18,7 +18,7 @@
         --line:       #e8e0df;
     }
     .edit-container, .edit-container * {
-        font-family: 'Noto Sans Thai', sans-serif !important;
+        font-family: 'Prompt', sans-serif !important;
         box-sizing: border-box;
     }
     .edit-container {

@@ -3,16 +3,20 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Customer extends Model
 {
-    use HasFactory;
-
     protected $table = 'customers';
+
     protected $primaryKey = 'customer_id';
 
+    /**
+     * ตรงกับคอลัมน์จริงในตาราง `customers` ปัจจุบัน
+     * (ไม่มี user_id ในฐานข้อมูลจริงตอนนี้ — ถ้ามีการ migrate เพิ่มคอลัมน์นี้แล้ว
+     * ค่อยเติม 'user_id' กลับเข้ามาในลิสต์นี้)
+     */
     protected $fillable = [
+        'user_id',
         'first_name',
         'last_name',
         'email',
@@ -21,46 +25,39 @@ class Customer extends Model
         'address',
     ];
 
-    /**
-     * ซ่อนฟิลด์รหัสผ่านไม่ให้แสดงผลออกมาเมื่อถูกแปลงเป็น Array หรือ JSON
-     */
     protected $hidden = [
         'password',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
-        ];
-    }
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
 
-    /**
-     * Accessor สำหรับดึงชื่อ-นามสกุลรวมกัน (First Name + Last Name)
-     */
-    public function getFullNameAttribute()
-    {
-        $firstName = trim($this->first_name ?? '');
-        $lastName = trim($this->last_name ?? '');
-        $fullName = trim($firstName . ' ' . $lastName);
-
-        return $fullName !== '' ? $fullName : 'ไม่ระบุชื่อ';
-    }
-
-    /**
-     * ความสัมพันธ์: ประวัติการเช่าทั้งหมดของลูกค้า
-     */
     public function rentals()
     {
-        return $this->hasMany(Rental::class, 'customer_id', 'customer_id')->latest();
+        return $this->hasMany(Rental::class, 'customer_id', 'customer_id');
     }
 
-    /**
-     * ความสัมพันธ์: รีวิวทั้งหมดของลูกค้า
-     */
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'user_id');
+    }
+
     public function reviews()
     {
-        return $this->hasMany(Review::class, 'customer_id', 'customer_id')->latest();
+        return $this->hasMany(Review::class, 'customer_id', 'customer_id');
+    }
+
+    public function getNameAttribute(): string
+    {
+        $name = trim(($this->first_name ?? '') . ' ' . ($this->last_name ?? ''));
+
+        return $name !== '' ? $name : 'ลูกค้าไม่ระบุชื่อ';
+    }
+
+    public function getFullNameAttribute(): string
+    {
+        return $this->name;
     }
 }

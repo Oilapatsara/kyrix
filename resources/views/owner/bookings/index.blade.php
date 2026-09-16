@@ -43,7 +43,7 @@
 
     .admin-heading h1 {
         margin: 0;
-        font-family: "Playfair Display", "Noto Sans Thai", serif;
+        font-family: 'Prompt', sans-serif;
         font-size: 28px;
         font-weight: 700;
         color: var(--maroon-900);
@@ -175,18 +175,21 @@
                     @php
                         $statusCode = strtolower($booking->status ?? 'pending');
                         $statusText = match($statusCode) {
-                            'pending'   => 'รอการยืนยัน',
+                            'pending', 'pending_payment' => 'รอชำระเงิน',
+                            'pending_verification' => 'รอตรวจสอบสลิป',
                             'confirmed' => 'ยืนยันแล้ว',
                             'renting'   => 'กำลังเช่า',
+                            'pending_return' => 'รอตรวจรับคืน',
                             'returned'  => 'คืนชุดแล้ว',
                             'completed' => 'เสร็จสิ้น',
                             'cancelled' => 'ยกเลิก',
                             default     => ucfirst($booking->status)
                         };
                         $statusClass = match($statusCode) {
-                            'pending'   => 'status-pending',
+                            'pending', 'pending_payment', 'pending_verification' => 'status-pending',
                             'confirmed' => 'status-confirmed',
                             'renting'   => 'status-renting',
+                            'pending_return' => 'status-pending',
                             'returned'  => 'status-returned',
                             'completed' => 'status-completed',
                             'cancelled' => 'status-cancelled',

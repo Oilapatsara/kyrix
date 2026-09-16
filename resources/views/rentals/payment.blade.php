@@ -185,12 +185,12 @@
             </div>
 
             <div class="amount-row">
-                <span>ยอดค่าเช่าชุด:</span>
+                <span>ค่าเช่าชุดเต็มจำนวน (100%):</span>
                 <strong>฿{{ number_format($rental->total_amount) }}</strong>
             </div>
 
             <div class="amount-row">
-                <span>เงินมัดจำประกันชุด (ได้รับคืนเมื่อคืนชุด):</span>
+                <span>เงินมัดจำประกันชุด:</span>
                 <strong style="color: #b45309;">฿{{ number_format($rental->deposit_amount) }}</strong>
             </div>
 
@@ -198,6 +198,11 @@
                 <span>ยอดที่ต้องชำระสุทธิ:</span>
                 <span>฿{{ number_format($rental->grand_total) }}</span>
             </div>
+
+            <div style="background: #edfbf3; border: 1px solid #b7ecd0; padding: 10px 14px; border-radius: 8px; font-size: 12.5px; color: #166534; margin-top: 14px; line-height: 1.5;">
+    <i class="fa-solid fa-shield-check"></i> <strong>เฉพาะเงินมัดจำประกันชุด ฿{{ number_format($rental->deposit_amount) }}</strong> เท่านั้นที่จะได้รับคืน 100% ทันทีในวันที่ส่งคืนชุด หากเจ้าหน้าที่ตรวจสภาพแล้วชุดไม่มีการเสียหาย
+    (ค่าเช่าชุด ฿{{ number_format($rental->total_amount) }} เป็นค่าใช้จ่ายในการเช่าและ<strong>จะไม่ได้รับคืน</strong>ไม่ว่ากรณีใด &nbsp;|&nbsp; กรณีชุดเสียหาย ทางร้านขอสงวนสิทธิ์ไม่คืนเงินมัดจำ)
+</div>
         </div>
 
         <!-- 2. Payment Form -->

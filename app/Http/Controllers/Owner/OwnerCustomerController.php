@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Owner;
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException; 
+use Illuminate\Support\Facades\DB; // เพิ่ม DB สำหรับทำ Transaction
+use Exception; // เพิ่ม Exception สำหรับดักจับ Error ใน Transaction
 
 class OwnerCustomerController extends Controller
 {
@@ -105,14 +108,59 @@ class OwnerCustomerController extends Controller
     }
 
     /**
-     * ลบข้อมูลลูกค้า
+     * ลบข้อมูลลูกค้า (แบบเต็มระบบ - เคลียร์ข้อมูลที่เกี่ยวข้องทั้งหมด)
      */
     public function destroy($id)
     {
-        $customer = Customer::findOrFail($id);
-        $customer->delete();
+        // โหลดข้อมูลลูกค้ามาพร้อมกับข้อมูลการเช่า
+        $customer = Customer::with('rentals')->findOrFail($id);
 
-        return redirect()->route('owner.customers.index')
-            ->with('success', 'ลบข้อมูลลูกค้าเรียบร้อยแล้ว');
+        // เริ่มต้น Transaction เพื่อความปลอดภัยของข้อมูล
+        DB::beginTransaction();
+
+        try {
+            // 1. ลบข้อมูลรีวิวของลูกค้า (ถ้ามี)
+            if (method_exists($customer, 'reviews')) {
+                $customer->reviews()->delete();
+            }
+
+            // 2. เคลียร์ข้อมูลการเช่าแบบเจาะลึก
+            if ($customer->rentals) {
+                foreach ($customer->rentals as $rental) {
+                    // ลบรายละเอียดสินค้าที่เช่าในแต่ละบิล (rental_details)
+                    if (method_exists($rental, 'details')) {
+                        $rental->details()->delete();
+                    }
+                    
+                    // ลบข้อมูลการจ่ายเงิน (payments) 
+                    try {
+                        if (method_exists($rental, 'payments')) {
+                            $rental->payments()->delete();
+                        }
+                    } catch (Exception $e) { 
+                        // กรณีที่ Model ไม่มี relationships นี้ให้ข้ามไป
+                    }
+
+                    // ลบตัวบิลการเช่าหลัก (rentals)
+                    $rental->delete();
+                }
+            }
+
+            // 3. เมื่อลบข้อมูลลูกหมดแล้ว จะสามารถลบตัวลูกค้า (Parent) ได้สำเร็จ
+            $customer->delete();
+
+            // ยืนยันการเปลี่ยนแปลงข้อมูล
+            DB::commit();
+
+            return redirect()->route('owner.customers.index')
+                ->with('success', 'ลบข้อมูลลูกค้าและประวัติทุกอย่างที่เกี่ยวข้องสำเร็จแล้ว');
+
+        } catch (Exception $e) {
+            // หากเกิด Error ให้ย้อนกลับข้อมูลทั้งหมด
+            DB::rollBack();
+            
+            return redirect()->route('owner.customers.index')
+                ->with('error', 'ระบบลบข้อมูลไม่สำเร็จ ขัดข้องทางเทคนิค: ' . $e->getMessage());
+        }
     }
 }

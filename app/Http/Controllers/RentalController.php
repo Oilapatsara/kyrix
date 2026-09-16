@@ -14,9 +14,6 @@ class RentalController extends Controller
     public function book(Request $request,$productId)
     {
         $product=Product::findOrFail($productId);
-        if($product->status!=='available'){
-            return back()->with('error','ชุดนี้ไม่อยู่ในสถานะว่างพร้อมเช่า');
-        }
 
         $request->validate([
             'start_date'=>'required|date|after_or_equal:today',
@@ -47,14 +44,25 @@ class RentalController extends Controller
         DB::beginTransaction();
 
         try{
+            $product=Product::where('product_id',$productId)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            if($product->status!=='available' || $product->stock < $quantity){
+                throw new \RuntimeException('ชุดนี้ไม่อยู่ในสถานะว่างพร้อมเช่าหรือสต็อกไม่เพียงพอ');
+            }
+
+            $rentalCode='KR-'.date('Ym').'-'.str_pad(Rental::count()+1,4,'0',STR_PAD_LEFT);
+
             $rental=Rental::create([
+                'rental_code'=>$rentalCode,
                 'customer_id'=>$customer->customer_id,
                 'rental_date'=>now()->toDateString(),
                 'start_date'=>$start->toDateString(),
                 'end_date'=>$end->toDateString(),
                 'total_amount'=>$subtotal,
                 'deposit_amount'=>$depositTotal,
-                'status'=>'pending',
+                'status'=>'pending_payment',
                 'note'=>$request->note,
             ]);
 
@@ -65,6 +73,13 @@ class RentalController extends Controller
                 'price'=>$pricePerDay,
                 'subtotal'=>$subtotal,
             ]);
+
+            $product->decrement('stock', $quantity);
+            $product->increment('rental_count');
+
+            if ($product->fresh()->stock <= 0) {
+                $product->update(['status' => 'rented']);
+            }
 
             DB::commit();
 
@@ -120,16 +135,20 @@ class RentalController extends Controller
 
         Payment::create([
             'rental_id'=>$rental->rental_id,
-            'payment_amount'=>$rental->total_amount,
+            'payment_amount'=>$rental->grand_total,
             'payment_date'=>now(),
             'payment_method'=>$request->payment_method,
             'slip_image'=>$slipPath,
             'status'=>'pending',
-            'note'=>$request->note??'ชำระเงินค่าเช่าชุด',
+            'note'=>$request->note??'ชำระเงินค่าเช่าชุด (ค่าเช่า 100% + มัดจำ ฿'.number_format($rental->deposit_amount, 2).')',
         ]);
 
-        return redirect()->route('rentals.index')
-            ->with('success','ส่งหลักฐานการชำระเงินเรียบร้อยแล้ว สถานะ: รอตรวจสอบ');
+        $rental->update([
+            'status'=>'pending_verification'
+        ]);
+
+        return redirect()->route('rentals.show', $rental->rental_id)
+            ->with('success','ส่งหลักฐานการชำระเงินเรียบร้อยแล้ว สถานะ: รอตรวจสอบสลิป');
     }
 
     public function index()
@@ -137,7 +156,7 @@ class RentalController extends Controller
         $customer=$this->getCustomer();
 
         $activeRentals=Rental::where('customer_id',$customer->customer_id)
-            ->whereNotIn('status',['returned','cancelled'])
+            ->whereNotIn('status',['returned','completed','cancelled'])
             ->with(['details.product.mainImage','payments'])
             ->latest()
             ->get();
@@ -150,7 +169,7 @@ class RentalController extends Controller
         $customer=$this->getCustomer();
 
         $pastRentals=Rental::where('customer_id',$customer->customer_id)
-            ->whereIn('status',['returned','cancelled'])
+            ->whereIn('status',['returned','completed','cancelled'])
             ->with(['details.product.mainImage','payments'])
             ->latest()
             ->paginate(10);
@@ -174,22 +193,36 @@ class RentalController extends Controller
         return $this->submitPayment($request,$id);
     }
 
-    public function requestReturn($id)
+    public function requestReturn(Request $request,$id)
     {
         $customer=$this->getCustomer();
 
         $rental=Rental::where('customer_id',$customer->customer_id)
             ->findOrFail($id);
 
-        if($rental->status!=='renting'){
-            return back()->with('error','รายการนี้ยังไม่อยู่ในสถานะกำลังเช่า');
+        if(!in_array($rental->status, ['confirmed', 'ready_pickup', 'renting'], true)){
+            return back()->with('error','รายการนี้ยังไม่พร้อมแจ้งคืนชุด');
+        }
+
+        $data = $request->validate([
+            'return_method' => 'nullable|string|max:100',
+            'return_tracking_no' => 'nullable|string|max:100',
+        ]);
+
+        $returnTrackingNo = $data['return_tracking_no'] ?? null;
+        $returnNote = trim(($data['return_method'] ?? '') . ($returnTrackingNo ? ' | เลขพัสดุส่งคืน: '.$returnTrackingNo : ''));
+        $note = $rental->note;
+        if ($returnNote !== '') {
+            $note = $note ? ($note."\nแจ้งคืนจากลูกค้า: ".$returnNote) : ('แจ้งคืนจากลูกค้า: '.$returnNote);
         }
 
         $rental->update([
-            'status'=>'returned',
+            'status'=>'pending_return',
+            'return_tracking_no'=>$returnTrackingNo ?? $rental->return_tracking_no,
+            'note'=>$note,
         ]);
 
-        return back()->with('success','แจ้งคืนชุดเรียบร้อยแล้ว');
+        return back()->with('success','แจ้งส่งคืนชุดเรียบร้อยแล้ว รอเจ้าของร้านตรวจรับและจัดการเงินมัดจำ');
     }
 
     private function getCustomer(): Customer
