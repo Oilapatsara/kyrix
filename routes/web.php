@@ -216,7 +216,8 @@ Route::middleware(['auth', 'owner'])
                     [OwnerDressController::class, 'storeCategory']
                 )->name('categories.store');
 
-                Route::post(
+                Route::match(
+                    ['post', 'put'],
                     '/categories/{id}/update',
                     [OwnerDressController::class, 'updateCategory']
                 )->name('categories.update');
@@ -232,7 +233,8 @@ Route::middleware(['auth', 'owner'])
                     [OwnerDressController::class, 'edit']
                 )->name('edit');
 
-                Route::post(
+                Route::match(
+                    ['post', 'put'],
                     '/{id}/update',
                     [OwnerDressController::class, 'update']
                 )->name('update');

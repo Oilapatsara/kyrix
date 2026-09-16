@@ -244,10 +244,37 @@
             <div class="summary-card">
                 <h3 class="summary-title">สรุปยอดการเช่า</h3>
 
+                @if(!empty($totals['is_discounted']))
+                    <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 1px solid #86efac; padding: 12px 14px; border-radius: 8px; margin-bottom: 16px;">
+                        <div style="font-size: 13px; font-weight: 700; color: #166534; display: flex; align-items: center; gap: 6px;">
+                            <i class="fa-solid fa-gift"></i> {{ $totals['discount_reason'] }}
+                        </div>
+                        <div style="font-size: 11px; color: #15803d; margin-top: 3px;">
+                            รับส่วนลดพิเศษ 20% เมื่อเช่าครบ 3 รายการ หรือยอดเช่าครบ 2,000 บาท
+                        </div>
+                    </div>
+                @elseif(!empty($totals['hint_message']))
+                    <div style="background: #fffbeb; border: 1px dashed #fcd34d; padding: 10px 12px; border-radius: 8px; margin-bottom: 16px; font-size: 12px; color: #92400e; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-fire" style="color: #d97706;"></i>
+                        <span>{{ $totals['hint_message'] }}</span>
+                    </div>
+                @endif
+
                 <div class="summary-row">
                     <span>ค่าเช่าชุดรวม:</span>
                     <strong>฿{{ number_format($totals['rental_total']) }}</strong>
                 </div>
+
+                @if(!empty($totals['is_discounted']))
+                <div class="summary-row" style="color: #16a34a; font-weight: 600;">
+                    <span><i class="fa-solid fa-tag"></i> ส่วนลดโปรโมชั่น (20%):</span>
+                    <strong style="color: #16a34a;">-฿{{ number_format($totals['discount_amount']) }}</strong>
+                </div>
+                <div class="summary-row" style="font-size: 13px;">
+                    <span>ค่าเช่าสุทธิหลังหักส่วนลด:</span>
+                    <strong>฿{{ number_format($totals['net_rental_total']) }}</strong>
+                </div>
+                @endif
 
                 <div class="summary-row">
                     <span>เงินมัดจำรวม:</span>

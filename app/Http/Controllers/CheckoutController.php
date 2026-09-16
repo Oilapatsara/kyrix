@@ -26,6 +26,7 @@ class CheckoutController extends Controller
         $rentalTotal = 0;
         $depositTotal = 0;
         $serviceTotal = 0;
+        $itemCount = count($cart);
 
         foreach ($cart as $item) {
             $rentalTotal += $item['subtotal'];
@@ -33,13 +34,21 @@ class CheckoutController extends Controller
             $serviceTotal += $item['service_fee'];
         }
 
-        $grandTotal = $rentalTotal + $depositTotal + $serviceTotal;
+        $promo = \App\Services\PromotionService::calculateDiscount($itemCount, $rentalTotal);
+        $discountAmount = $promo['discount_amount'];
+        $discountReason = $promo['discount_reason'];
+        $netRentalTotal = $promo['net_rental_total'];
+        $grandTotal = $netRentalTotal + $depositTotal + $serviceTotal;
 
         return view('checkout.index', compact(
             'cart',
             'customer',
             'user',
             'rentalTotal',
+            'discountAmount',
+            'discountReason',
+            'netRentalTotal',
+            'promo',
             'depositTotal',
             'serviceTotal',
             'grandTotal'
@@ -84,6 +93,7 @@ class CheckoutController extends Controller
         $earliestStart = null;
         $latestEnd = null;
         $serviceTypes = [];
+        $itemCount = count($cart);
 
         foreach ($cart as $item) {
             $rentalTotal += $item['subtotal'];
@@ -101,7 +111,12 @@ class CheckoutController extends Controller
             }
         }
 
-        $grandTotal = $rentalTotal + $depositTotal + $serviceTotal;
+        $promo = \App\Services\PromotionService::calculateDiscount($itemCount, $rentalTotal);
+        $discountAmount = $promo['discount_amount'];
+        $discountReason = $promo['discount_reason'];
+        $netRentalTotal = $promo['net_rental_total'];
+
+        $grandTotal = $netRentalTotal + $depositTotal + $serviceTotal;
 
         // Generate unique rental code
         $count = Rental::count() + 1;
@@ -119,6 +134,8 @@ class CheckoutController extends Controller
                 'start_date' => $earliestStart ?? now()->toDateString(),
                 'end_date' => $latestEnd ?? now()->addDays(3)->toDateString(),
                 'total_amount' => $rentalTotal,
+                'discount_amount' => $discountAmount,
+                'discount_reason' => $discountReason,
                 'deposit_amount' => $depositTotal,
                 'service_type' => !empty($serviceTypes) ? implode(', ', array_unique($serviceTypes)) : null,
                 'service_fee' => $serviceTotal,

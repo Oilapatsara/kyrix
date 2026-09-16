@@ -233,18 +233,19 @@
     .product-img-wrap {
         position: relative;
         width: 100%;
-        height: 340px;
-        background: #eee;
+        height: 440px;
+        background: #f0ebe8;
         overflow: hidden;
     }
     .product-img-wrap img {
         width: 100%;
         height: 100%;
         object-fit: cover;
+        object-position: top center;
         transition: transform 0.4s ease;
     }
     .product-card:hover .product-img-wrap img {
-        transform: scale(1.06);
+        transform: scale(1.04);
     }
     .product-badges {
         position: absolute;
@@ -296,6 +297,7 @@
         font-size: 12px;
         color: var(--text-muted);
         margin-bottom: 14px;
+        flex-wrap: wrap;
     }
     .product-footer {
         margin-top: auto;
@@ -581,7 +583,7 @@
                 <img src="https://images.unsplash.com/photo-1566174053879-31528523f8ae?w=800&auto=format&fit=crop&q=80" alt="ชุดราตรีหรู">
             </div>
             <div class="hero-img-card">
-                <img src="https://images.unsplash.com/photo-1518895949257-7621c3c786d7?w=800&auto=format&fit=crop&q=80" alt="ชุดราตรีปักเลื่อม">
+                <img src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=800&auto=format&fit=crop&q=80" alt="ชุดราตรีปักเลื่อม">
             </div>
             <div class="hero-float-badge">
                 <i class="fa-solid fa-shield-check" style="color: #16a34a; font-size: 28px;"></i>
@@ -663,7 +665,7 @@
                     </a>
                     <div class="product-meta">
                         <span><i class="fa-solid fa-ruler-combined"></i> {{ $product->size ?? 'M' }}</span>
-                        <span><i class="fa-solid fa-palette"></i> {{ Str::limit($product->color, 16) }}</span>
+                        <span title="{{ $product->colors_text }}"><i class="fa-solid fa-palette"></i> {{ Str::limit($product->colors_text, 30) }}</span>
                         <span><i class="fa-solid fa-eye"></i> {{ $product->views_count }}</span>
                     </div>
                     <div class="product-footer">
@@ -689,24 +691,24 @@
     <div class="promo-banner">
         <div>
             <span class="promo-tag"><i class="fa-solid fa-fire"></i> โปรโมชั่นพิเศษต้อนรับซีซัน</span>
-            <h2 class="promo-title">เช่า 3 วันขึ้นไป ลดทันที 15%</h2>
+            <h2 class="promo-title">เช่าครบ 3 รายการ หรือ ยอดครบ 2,000 บาท ลดทันที 20%</h2>
             <p class="promo-desc">
-                เตรียมพร้อมสำหรับทุกงานเลี้ยง งานแต่ง หรือปาร์ตี้สำคัญ รับสิทธิ์ฟรีบริการซักรีดพรีเมียม และปรับแก้ขนาดชุดให้พอดีตัวโดยช่างมืออาชีพ
+                เช่าชุดราตรี ชุดไทย หรือสูทออกงานสุดหรู เพียงเลือกเช่าครบ 3 รายการขึ้นไป หรือมียอดค่าเช่าครบ 2,000 บาท ระบบจะคำนวณส่วนลด 20% ให้อัตโนมัติทันทีในตะกร้าสินค้า!
             </p>
             <div style="display: flex; gap: 12px;">
                 <a href="{{ route('products.index') }}" class="btn btn-gold" style="padding: 12px 26px;">
-                    <i class="fa-solid fa-tag"></i> รับโปรโมชั่นตอนนี้
+                    <i class="fa-solid fa-tag"></i> เลือกชุดรับโปรโมชั่น
                 </a>
             </div>
         </div>
         <div class="promo-coupons">
             <div class="coupon-box">
-                <div class="coupon-code">KYRIX15</div>
-                <div class="coupon-desc">ลด 15% ค่าเช่า เมื่อเช่า 3 วันขึ้นไป</div>
+                <div class="coupon-code">RENT3DISC</div>
+                <div class="coupon-desc">ลด 20% ทันที เมื่อเช่าครบ 3 รายการ</div>
             </div>
             <div class="coupon-box">
-                <div class="coupon-code">FREEDRY</div>
-                <div class="coupon-desc">ฟรีค่าซักรีดไอน้ำมูลค่า 150 บาท</div>
+                <div class="coupon-code">RENT2000</div>
+                <div class="coupon-desc">ลด 20% ทันที เมื่อยอดเช่าครบ 2,000 บาท</div>
             </div>
         </div>
     </div>
@@ -740,7 +742,7 @@
                     </a>
                     <div class="product-meta">
                         <span><i class="fa-solid fa-ruler-combined"></i> {{ $product->size ?? 'M' }}</span>
-                        <span><i class="fa-solid fa-palette"></i> {{ Str::limit($product->color, 16) }}</span>
+                        <span title="{{ $product->colors_text }}"><i class="fa-solid fa-palette"></i> {{ Str::limit($product->colors_text, 30) }}</span>
                     </div>
                     <div class="product-footer">
                         <div class="price-wrap">

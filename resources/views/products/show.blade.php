@@ -42,24 +42,27 @@
 
         .main-image-box {
             width: 100%;
-            height: 520px;
+            height: 600px;
             border-radius: var(--radius-lg);
             overflow: hidden;
-            background: #fff;
+            background: #faf8f7;
             border: 1px solid var(--border);
             box-shadow: var(--shadow-sm);
             margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .main-image-box img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
             transition: transform 0.3s ease;
         }
 
         .main-image-box:hover img {
-            transform: scale(1.03);
+            transform: scale(1.02);
         }
 
         .thumbs-row {
@@ -76,10 +79,13 @@
             border: 2px solid transparent;
             overflow: hidden;
             cursor: pointer;
-            background: #fff;
+            background: #faf8f7;
             padding: 0;
             transition: all 0.2s;
             flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .thumb-btn.active,
@@ -91,7 +97,7 @@
         .thumb-btn img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
         }
 
         /* Info */
@@ -262,6 +268,44 @@
             color: #fff;
             border-color: var(--primary);
             box-shadow: 0 4px 10px rgba(122, 31, 43, 0.2);
+        }
+
+        .color-option-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 18px;
+            border-radius: 25px;
+            border: 1.5px solid var(--border);
+            background: #fff;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .color-option-btn:hover {
+            border-color: var(--primary);
+            background: var(--primary-soft);
+        }
+
+        .color-option-btn.selected {
+            background: #fff;
+            color: var(--primary);
+            border-color: var(--primary);
+            box-shadow: 0 3px 10px rgba(122, 31, 43, 0.18);
+            font-weight: 700;
+            outline: 2px solid var(--primary-soft);
+        }
+
+        .color-circle {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: 1px solid rgba(0, 0, 0, 0.2);
+            display: inline-block;
+            flex-shrink: 0;
         }
 
         .dates-grid {
@@ -445,21 +489,37 @@
     <div class="detail-container">
         <!-- 1. Product Image Gallery -->
         <div class="gallery-wrap">
+            @php
+                // สร้าง map: ชื่อสี => URL รูปภาพ สำหรับ JS auto-switch
+                $colorImageMap = [];
+                foreach ($product->colors_list as $colorName) {
+                    // หารูปที่ color_name ตรงกับชื่อสี
+                    $matchImg = $product->images->first(fn($img) => $img->color_name && trim(mb_strtolower($img->color_name)) === trim(mb_strtolower($colorName)));
+                    if ($matchImg) {
+                        $url = str_starts_with($matchImg->image_path, 'http')
+                            ? $matchImg->image_path
+                            : asset('storage/' . $matchImg->image_path);
+                        $colorImageMap[$colorName] = $url;
+                    } else {
+                        // Fallback: ใช้รูปหลัก
+                        $colorImageMap[$colorName] = $product->main_image_url;
+                    }
+                }
+            @endphp
+
             <div class="main-image-box" id="mainImageBox">
                 <img src="{{ $product->main_image_url }}" id="mainProductImage" alt="{{ $product->product_name }}">
             </div>
 
-            @if ($product->images->count() > 1)
+            @if (count($colorImageMap) > 1)
                 <div class="thumbs-row">
-                    @foreach ($product->images as $idx => $img)
+                    @foreach ($product->colors_list as $idx => $colorLabel)
                         @php
-                            $thumbUrl = str_starts_with($img->image_path, 'http')
-                                ? $img->image_path
-                                : asset('storage/' . $img->image_path);
+                            $thumbUrl = $colorImageMap[$colorLabel] ?? $product->main_image_url;
                         @endphp
                         <button type="button" class="thumb-btn {{ $idx === 0 ? 'active' : '' }}"
-                            onclick="switchImage('{{ $thumbUrl }}', this)">
-                            <img src="{{ $thumbUrl }}" alt="thumb {{ $idx }}">
+                            onclick="selectColorByThumb('{{ $colorLabel }}', this)">
+                            <img src="{{ $thumbUrl }}" alt="{{ $colorLabel }}">
                         </button>
                     @endforeach
                 </div>
@@ -539,7 +599,7 @@
                 <div style="display: flex; gap: 20px; font-size: 13px; color: var(--text-muted);">
                     <span><i class="fa-solid fa-ruler"></i> ไซซ์มาตรฐาน:
                         <strong>{{ $product->size ?? 'M' }}</strong></span>
-                    <span><i class="fa-solid fa-palette"></i> สี: <strong>{{ $product->color ?? 'ตามแบบ' }}</strong></span>
+                    <span><i class="fa-solid fa-palette"></i> สี: <strong>{{ $product->colors_text }}</strong></span>
                 </div>
             </div>
 
@@ -571,12 +631,60 @@
 
                         <!-- Color Chooser -->
                         <div class="form-group">
-                            <label class="form-label">เลือกสี (Color):</label>
+                            <label class="form-label">
+                                เลือกสี (Color):
+                                <span id="currentColorLabel" style="font-weight: 700; color: var(--primary); margin-left: 6px;">{{ $product->colors_list[0] ?? $product->color }}</span>
+                            </label>
                             <div class="options-row">
+                                @php
+                                    $colorMap = [
+                                        'ดำ' => '#1a1a1a',
+                                        'black' => '#1a1a1a',
+                                        'ขาว' => '#ffffff',
+                                        'white' => '#ffffff',
+                                        'ทอง' => '#d4af37',
+                                        'gold' => '#d4af37',
+                                        'แชมเปญ' => '#f7e7ce',
+                                        'champagne' => '#f7e7ce',
+                                        'เงิน' => '#c0c0c0',
+                                        'silver' => '#c0c0c0',
+                                        'สปาร์คเกิล' => '#cbd5e1',
+                                        'แดง' => '#991b1b',
+                                        'red' => '#991b1b',
+                                        'เบอร์กันดี' => '#6f1a2b',
+                                        'burgundy' => '#6f1a2b',
+                                        'ชมพู' => '#f472b6',
+                                        'pink' => '#f472b6',
+                                        'โรสโกลด์' => '#b76e79',
+                                        'rose gold' => '#b76e79',
+                                        'น้ำเงิน' => '#1e3a8a',
+                                        'blue' => '#1e3a8a',
+                                        'มิดไนท์' => '#0f172a',
+                                        'กรมท่า' => '#0f172a',
+                                        'navy' => '#0f172a',
+                                        'เขียว' => '#065f46',
+                                        'green' => '#065f46',
+                                        'ครีม' => '#fffbeb',
+                                        'cream' => '#fffbeb',
+                                        'เบจ' => '#f5f5dc',
+                                        'ฟ้า' => '#38bdf8',
+                                        'ม่วง' => '#7e22ce',
+                                    ];
+                                @endphp
                                 @foreach ($product->colors_list as $idx => $c)
-                                    <button type="button" class="option-btn {{ $idx === 0 ? 'selected' : '' }}"
+                                    @php
+                                        $dotColor = '#737373';
+                                        foreach ($colorMap as $nameKey => $hex) {
+                                            if (mb_stripos($c, $nameKey) !== false) {
+                                                $dotColor = $hex;
+                                                break;
+                                            }
+                                        }
+                                    @endphp
+                                    <button type="button" class="color-option-btn {{ $idx === 0 ? 'selected' : '' }}"
                                         onclick="selectColor('{{ $c }}', this)">
-                                        {{ $c }}
+                                        <span class="color-circle" style="background-color: {{ $dotColor }};"></span>
+                                        <span>{{ $c }}</span>
                                     </button>
                                 @endforeach
                             </div>
@@ -746,10 +854,13 @@
             const depositPrice = 100;
             let currentServiceFee = 0;
 
+            // Color => image URL map (บันทึกจาก PHP)
+            const colorImageMap = @json($colorImageMap);
+
             function switchImage(src, btn) {
                 document.getElementById('mainProductImage').src = src;
                 document.querySelectorAll('.thumb-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
+                if (btn) btn.classList.add('active');
             }
 
             function selectSize(sz, btn) {
@@ -760,8 +871,34 @@
 
             function selectColor(color, btn) {
                 document.getElementById('selectedColor').value = color;
-                btn.closest('.options-row').querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+                const label = document.getElementById('currentColorLabel');
+                if (label) label.innerText = color;
+                btn.closest('.options-row').querySelectorAll('.color-option-btn').forEach(b => b.classList.remove('selected'));
                 btn.classList.add('selected');
+
+                // เปลี่ยนรูปหลักอัตโนมัติตามสีที่เลือก
+                const imgUrl = colorImageMap[color];
+                if (imgUrl) switchImage(imgUrl, null);
+
+                // sync thumb active state
+                document.querySelectorAll('.thumb-btn').forEach((tb, i) => {
+                    tb.classList.toggle('active', tb.querySelector('img')?.alt === color);
+                });
+            }
+
+            // เมื่อคลิก thumbnail → sync ทั้งรูปหลักและปุ่มเลือกสี
+            function selectColorByThumb(color, thumbBtn) {
+                // สลับ active ที่ thumbnail
+                document.querySelectorAll('.thumb-btn').forEach(b => b.classList.remove('active'));
+                thumbBtn.classList.add('active');
+
+                // หาปุ่มสีที่ตรงกันแล้วกดแทน
+                const colorBtns = document.querySelectorAll('.color-option-btn');
+                colorBtns.forEach(btn => {
+                    if (btn.innerText.trim() === color) {
+                        selectColor(color, btn);
+                    }
+                });
             }
 
             function setService(type, fee, labelElem) {

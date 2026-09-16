@@ -50,13 +50,16 @@ class Product extends Model
 
     public function images()
     {
-        return $this->hasMany(ProductImage::class, 'product_id', 'product_id');
+        return $this->hasMany(ProductImage::class, 'product_id', 'product_id')
+                    ->orderBy('is_main', 'desc')
+                    ->latest('image_id');
     }
 
     public function mainImage()
     {
         return $this->hasOne(ProductImage::class, 'product_id', 'product_id')
-                    ->where('is_main', true);
+                    ->where('is_main', true)
+                    ->latest('image_id');
     }
 
     public function reviews()
@@ -106,9 +109,20 @@ class Product extends Model
     public function getColorsListAttribute()
     {
         if (!empty($this->available_colors)) {
-            return array_map('trim', explode(',', $this->available_colors));
+            return array_values(array_filter(array_map('trim', explode(',', $this->available_colors))));
         }
-        return !empty($this->color) ? [$this->color] : ['Classic Burgundy'];
+        if (!empty($this->color)) {
+            return array_values(array_filter(array_map('trim', explode(',', $this->color))));
+        }
+        return ['Classic Burgundy'];
+    }
+
+    public function getColorsTextAttribute()
+    {
+        if (!empty($this->available_colors)) {
+            return $this->available_colors;
+        }
+        return $this->color ?: 'ตามแบบ';
     }
 
     public function getStatusLabelAttribute()

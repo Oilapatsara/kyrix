@@ -171,18 +171,19 @@
     .product-img-wrap {
         position: relative;
         width: 100%;
-        height: 320px;
-        background: #eee;
+        height: 440px;
+        background: #f0ebe8;
         overflow: hidden;
     }
     .product-img-wrap img {
         width: 100%;
         height: 100%;
         object-fit: cover;
+        object-position: top center;
         transition: transform 0.4s ease;
     }
     .product-card:hover .product-img-wrap img {
-        transform: scale(1.06);
+        transform: scale(1.04);
     }
     .product-badges {
         position: absolute;
@@ -241,6 +242,7 @@
         font-size: 12px;
         color: var(--text-muted);
         margin-bottom: 14px;
+        flex-wrap: wrap;
     }
     .product-footer {
         margin-top: auto;
@@ -457,6 +459,7 @@
                         <div class="product-meta">
                             <span><i class="fa-solid fa-tag"></i> {{ $product->product_code }}</span>
                             <span><i class="fa-solid fa-ruler-combined"></i> {{ $product->size ?? 'M' }}</span>
+                            <span title="{{ $product->colors_text }}"><i class="fa-solid fa-palette"></i> {{ Str::limit($product->colors_text, 22) }}</span>
                             <span><i class="fa-solid fa-star" style="color: #f59e0b;"></i> {{ $product->average_rating }} ({{ $product->reviews_count }})</span>
                         </div>
                         <div class="product-footer">

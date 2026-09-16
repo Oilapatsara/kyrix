@@ -116,10 +116,11 @@
     }
 
     .preview-thumb {
-        width: 60px;
-        height: 60px;
+        width: 70px;
+        height: 95px;
         border-radius: 8px;
-        object-fit: cover;
+        object-fit: contain;
+        background: #fff;
         border: 1px solid var(--line);
     }
 
@@ -302,10 +303,41 @@
 
     .color-row {
         display: grid;
-        grid-template-columns: 56px 1fr 44px;
+        grid-template-columns: 56px 1fr 1fr 44px;
         gap: 10px;
         margin-bottom: 10px;
         align-items: center;
+    }
+
+    .color-img-upload {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .color-img-preview {
+        width: 48px;
+        height: 62px;
+        object-fit: contain;
+        border-radius: 6px;
+        border: 1px solid var(--line);
+        background: var(--cream);
+    }
+
+    .color-img-label {
+        font-size: 11px;
+        color: var(--muted);
+        font-weight: 600;
+    }
+
+    .color-upload-input {
+        font-size: 12px;
+        border: 1px dashed var(--line);
+        border-radius: 8px;
+        padding: 5px 8px;
+        background: var(--cream);
+        cursor: pointer;
+        width: 100%;
     }
 
     .color-row input[type="color"] {
@@ -379,14 +411,7 @@
             $productId = $dress->product_id ?? $dress->id;
 
             // ดึงรูปภาพปัจจุบัน
-            $currentImage = null;
-            if (isset($dress->images) && $dress->images->count() > 0) {
-                $currentImage = $dress->images->first()->image_path ?? $dress->images->first()->url ?? null;
-            } elseif (!empty($dress->image)) {
-                $currentImage = $dress->image;
-            } elseif (!empty($dress->image_path)) {
-                $currentImage = $dress->image_path;
-            }
+            $currentImage = $dress->main_image_url ?? null;
 
             // ไซซ์ที่บันทึกไว้ (รองรับทั้ง array cast และ json string)
             $savedSizes = $dress->sizes ?? [];
@@ -395,16 +420,68 @@
             }
             $selectedSizes = (array) old('sizes', $savedSizes);
 
-            // สีที่บันทึกไว้ -> [['name' => ..., 'hex' => ...], ...]
-            $savedColors = $dress->colors ?? [];
-            if (is_string($savedColors)) {
-                $savedColors = json_decode($savedColors, true) ?: [];
+            // สีที่บันทึกไว้ในฐานข้อมูล (available_colors หรือ color)
+            $savedColorNames = [];
+            if (!empty($dress->available_colors)) {
+                $savedColorNames = array_map('trim', explode(',', $dress->available_colors));
+            } elseif (!empty($dress->color)) {
+                $savedColorNames = [$dress->color];
             }
-            $colorNames = old('color_names', array_column($savedColors, 'name'));
-            $colorHexes = old('color_hexes', array_column($savedColors, 'hex'));
+
+            $colorNames = old('color_names', $savedColorNames);
             if (empty($colorNames)) {
                 $colorNames = [''];
-                $colorHexes = ['#6f1a2b'];
+            }
+
+            $colorMap = [
+                'ดำ' => '#1a1a1a',
+                'black' => '#1a1a1a',
+                'ขาว' => '#ffffff',
+                'white' => '#ffffff',
+                'ทอง' => '#d4af37',
+                'gold' => '#d4af37',
+                'แชมเปญ' => '#f7e7ce',
+                'เงิน' => '#c0c0c0',
+                'silver' => '#c0c0c0',
+                'แดง' => '#991b1b',
+                'red' => '#991b1b',
+                'เบอร์กันดี' => '#6f1a2b',
+                'burgundy' => '#6f1a2b',
+                'ชมพู' => '#f472b6',
+                'โรสโกลด์' => '#b76e79',
+                'น้ำเงิน' => '#1e3a8a',
+                'กรมท่า' => '#0f172a',
+                'เขียว' => '#065f46',
+                'ครีม' => '#fffbeb',
+                'เทา' => '#9ca3af',
+                'gray' => '#9ca3af',
+                'grey' => '#9ca3af',
+            ];
+
+            $colorHexes = old('color_hexes', []);
+            if (empty($colorHexes)) {
+                $colorHexes = [];
+                foreach ($colorNames as $cn) {
+                    $foundHex = '#1a1a1a';
+                    foreach ($colorMap as $k => $hex) {
+                        if (mb_stripos($cn, $k) !== false) {
+                            $foundHex = $hex;
+                            break;
+                        }
+                    }
+                    $colorHexes[] = $foundHex;
+                }
+            }
+
+            // map: color_name => image url (รูปที่มีอยู่แล้วในระบบ)
+            $existingColorImages = [];
+            foreach ($dress->images as $img) {
+                if ($img->color_name) {
+                    $url = str_starts_with($img->image_path, 'http')
+                        ? $img->image_path
+                        : asset('storage/' . $img->image_path);
+                    $existingColorImages[$img->color_name] = $url;
+                }
             }
         @endphp
 
@@ -496,6 +573,25 @@
                 </div>
             </div>
 
+            <!-- ป้ายกำกับพิเศษ (แสดงที่หน้าแรก / หมวดหมู่) -->
+            <div class="form-group" style="background: #faf5f6; padding: 14px 18px; border-radius: 10px; border: 1px solid var(--line); margin-bottom: 22px;">
+                <label class="form-label" style="margin-bottom: 8px; font-weight: 700;">ป้ายกำกับพิเศษ (แสดงในการ์ดชุด)</label>
+                <div style="display: flex; gap: 24px; flex-wrap: wrap; font-size: 13px;">
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="checkbox" name="is_featured" value="1" {{ old('is_featured', $dress->is_featured) ? 'checked' : '' }}>
+                        <span>★ <strong>ชุดแนะนำ</strong> (แสดงที่แถบหน้าแรก)</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="checkbox" name="is_popular" value="1" {{ old('is_popular', $dress->is_popular) ? 'checked' : '' }}>
+                        <span>🔥 <strong>ชุดยอดนิยม</strong></span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="checkbox" name="is_new" value="1" {{ old('is_new', $dress->is_new) ? 'checked' : '' }}>
+                        <span>✨ <strong>ชุดมาใหม่</strong> (NEW)</span>
+                    </label>
+                </div>
+            </div>
+
             <!-- ======================= ไซซ์และสี ======================= -->
             <div class="block-title">
                 <i class="fa-solid fa-shirt"></i>
@@ -521,12 +617,34 @@
 
             <!-- เลือกสี -->
             <div class="form-group">
-                <label class="form-label">เลือกสี (Color) <span style="color: #991b1b;">*</span></label>
+                <label class="form-label">เลือกสี (Color) <span style="color: #991b1b;">*</span> <small style="color: var(--muted); font-weight: normal; margin-left: 6px;">(คลิกที่กล่องสีเพื่อจิ้มเลือกสีจริง พิมพ์ชื่อสีในช่องข้อความ และอัพโหลดรูปของแต่ละสีได้เลย)</small></label>
+                <div style="display: grid; grid-template-columns: 56px 1fr 1fr 44px; gap: 8px; margin-bottom: 6px; padding: 0 2px;">
+                    <span style="font-size: 11px; color: var(--muted); font-weight: 700;">สี</span>
+                    <span style="font-size: 11px; color: var(--muted); font-weight: 700;">ชื่อสี</span>
+                    <span style="font-size: 11px; color: var(--muted); font-weight: 700;">📎 รูปภาพสำหรับสีนี้</span>
+                    <span></span>
+                </div>
                 <div id="colorList">
                     @foreach((array) $colorNames as $i => $colorName)
+                        @php
+                            $existingThumb = $existingColorImages[$colorName] ?? null;
+                        @endphp
                         <div class="color-row">
-                            <input type="color" name="color_hexes[]" value="{{ $colorHexes[$i] ?? '#6f1a2b' }}">
-                            <input type="text" name="color_names[]" class="form-control" value="{{ $colorName }}" placeholder="ชื่อสี เช่น แดงเบอร์กันดี">
+                            <input type="hidden" name="existing_color_names[{{ $i }}]" value="{{ $colorName }}">
+                            <input type="color" name="color_hexes[]" value="{{ $colorHexes[$i] ?? '#1a1a1a' }}" title="คลิกเพื่อเลือกสี">
+                            <input type="text" name="color_names[]" class="form-control" value="{{ $colorName }}" placeholder="ชื่อสี เช่น ดำคลาสสิก, ทองแชมเปญ">
+                            <div class="color-img-upload">
+                                @if($existingThumb)
+                                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                                        <img src="{{ $existingThumb }}" class="color-img-preview" alt="รูปสี {{ $colorName }}">
+                                        <span class="color-img-label">มีรูปอยู่แล้ว<br>อัพใหม่เพื่อเปลี่ยน</span>
+                                    </div>
+                                @else
+                                    <span class="color-img-label" style="margin-bottom: 2px;">ยังไม่มีรูปสีนี้</span>
+                                @endif
+                                <input type="file" name="color_images[{{ $i }}]" accept="image/*" class="color-upload-input"
+                                    title="อัพโหลดรูปสำหรับสี: {{ $colorName ?: 'สีนี้' }}">
+                            </div>
                             <button type="button" class="icon-btn" onclick="removeColor(this)" title="ลบสีนี้">
                                 <i class="fa-solid fa-xmark"></i>
                             </button>
@@ -580,29 +698,22 @@
                 @enderror
             </div>
 
-            <!-- ======================= รูปภาพและรายละเอียด ======================= -->
+            <!-- รูปภาพและรายละเอียด -->
             <div class="block-title">
                 <i class="fa-solid fa-image"></i>
                 รูปภาพและรายละเอียด
             </div>
 
-            <!-- แก้ไขรูปภาพชุด -->
-            <div class="form-group">
-                <label class="form-label">รูปภาพชุด (อัปโหลดรูปใหม่เพื่อเปลี่ยนรูปเดิม)</label>
-                @if($currentImage)
-                    <div class="current-image-preview">
-                        <img src="{{ Str::startsWith($currentImage, ['http://', 'https://']) ? $currentImage : asset('storage/' . ltrim($currentImage, '/')) }}" alt="รูปปัจจุบัน" class="preview-thumb">
-                        <div>
-                            <div style="font-size: 12px; font-weight: 700; color: var(--maroon-900);">รูปภาพปัจจุบันในระบบ</div>
-                            <div style="font-size: 11px; color: var(--muted);">หากต้องการเปลี่ยนรูป ให้เลือกไฟล์รูปภาพใหม่ด้านล่างนี้</div>
-                        </div>
-                    </div>
-                @endif
-                <input type="file" name="image" accept="image/*" class="form-control" style="padding-top: 8px;">
-                @error('image')
-                    <div class="error-feedback">{{ $message }}</div>
-                @enderror
+            <!-- หมายเหตุรูปภาพ -->
+            @if($currentImage)
+            <div class="current-image-preview">
+                <img src="{{ $currentImage }}" alt="รูปปัจจุบัน" class="preview-thumb">
+                <div>
+                    <div style="font-size: 12px; font-weight: 700; color: var(--maroon-900);">รูปภาพหลักในระบบตอนนี้</div>
+                    <div style="font-size: 11px; color: var(--muted);">อัพโหลดรูปในแถวสีแต่ละสีด้านบน เพื่อเพิ่มหรือเปลี่ยนรูปตามสี (รูปสีแรกจะเป็นรูปหลักโดยอัตโนมัติ)</div>
+                </div>
             </div>
+            @endif
 
             <!-- รายละเอียดเพิ่มเติม -->
             <div class="form-group">
@@ -629,19 +740,37 @@
 <script>
     // เพิ่มแถวสีใหม่
     function addColor() {
-        const row = document.createElement('div');
+        const list = document.getElementById('colorList');
+        const idx  = list.children.length;
+        const row  = document.createElement('div');
         row.className = 'color-row';
         row.innerHTML = `
-            <input type="color" name="color_hexes[]" value="#6f1a2b">
-            <input type="text" name="color_names[]" class="form-control" placeholder="ชื่อสี เช่น แดงเบอร์กันดี">
+            <input type="color" name="color_hexes[]" value="#1a1a1a" title="คลิกเพื่อเลือกสี">
+            <input type="text" name="color_names[]" class="form-control" placeholder="ชื่อสี เช่น ดำคลาสสิก, ทองแชมเปญ">
+            <div class="color-img-upload">
+                <span class="color-img-label" style="margin-bottom: 2px;">ยังไม่มีรูปสีนี้</span>
+                <input type="file" name="color_images[${idx}]" accept="image/*" class="color-upload-input"
+                    title="อัพโหลดรูปสำหรับสีนี้">
+            </div>
             <button type="button" class="icon-btn" onclick="removeColor(this)" title="ลบสีนี้">
                 <i class="fa-solid fa-xmark"></i>
             </button>`;
-        document.getElementById('colorList').appendChild(row);
+        list.appendChild(row);
+        // อัพเดต index ของทุก color_images input ให้ตรงกับ position
+        updateColorImageIndexes();
         row.querySelector('input[type="text"]').focus();
     }
 
-    // ลบแถวสี (เหลืออย่างน้อย 1 แถว)
+    // อัพเดต name index ของ color_images inputs ให้ตรงกับ position ปัจจุบัน
+    function updateColorImageIndexes() {
+        const list = document.getElementById('colorList');
+        Array.from(list.children).forEach((row, i) => {
+            const fileInput = row.querySelector('input[type="file"]');
+            if (fileInput) fileInput.name = `color_images[${i}]`;
+        });
+    }
+
+    // ลบแถวสี (เหลืออย่างน้อย 1 แถว) แล้ว re-index
     function removeColor(btn) {
         const list = document.getElementById('colorList');
         if (list.children.length <= 1) {
@@ -649,6 +778,7 @@
             return;
         }
         btn.closest('.color-row').remove();
+        updateColorImageIndexes();
     }
 
     function confirmUpdate() {

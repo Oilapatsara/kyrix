@@ -725,13 +725,13 @@
 
     .dress-image,
     .dress-image-empty {
-        width: 46px;
-        height: 46px;
-        min-width: 46px;
+        width: 48px;
+        height: 64px;
+        min-width: 48px;
         border-radius: 8px;
         border: 1px solid var(--border);
-        object-fit: cover;
-        background: var(--surface-alt);
+        object-fit: contain;
+        background: #faf8f7;
     }
 
     .dress-image-empty {
@@ -1159,7 +1159,7 @@
                     >
 
                         <option value="">
-                            ทุกหมวดหมู่ ({{ $summary['total'] ?? $products->total() }})
+                            ทุกหมวดหมู่
                         </option>
 
                         @foreach($categories as $category)
@@ -1244,20 +1244,7 @@
 
                     @php
 
-                        $image = null;
-
-                        if (isset($product->images) && $product->images->count()) {
-                            $image = $product->images->first()->image_path
-                                ?? $product->images->first()->url;
-                        }
-
-                        if (!$image && !empty($product->image)) {
-                            $image = $product->image;
-                        }
-
-                        if (!$image && !empty($product->image_path)) {
-                            $image = $product->image_path;
-                        }
+                        $image = $product->main_image_url;
 
                         $productId = $product->product_id ?? $product->id;
 
@@ -1295,11 +1282,7 @@
 
                                 @if($image)
                                     <img
-                                        src="{{
-                                            Str::startsWith($image, ['http://', 'https://'])
-                                                ? $image
-                                                : asset('storage/' . ltrim($image, '/'))
-                                        }}"
+                                        src="{{ $image }}"
                                         alt="{{ $product->product_name }}"
                                         class="dress-image"
                                     >

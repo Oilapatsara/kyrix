@@ -54,6 +54,8 @@ class RentalController extends Controller
 
             $rentalCode='KR-'.date('Ym').'-'.str_pad(Rental::count()+1,4,'0',STR_PAD_LEFT);
 
+            $promo = \App\Services\PromotionService::calculateDiscount($quantity, $subtotal);
+
             $rental=Rental::create([
                 'rental_code'=>$rentalCode,
                 'customer_id'=>$customer->customer_id,
@@ -61,6 +63,8 @@ class RentalController extends Controller
                 'start_date'=>$start->toDateString(),
                 'end_date'=>$end->toDateString(),
                 'total_amount'=>$subtotal,
+                'discount_amount'=>$promo['discount_amount'],
+                'discount_reason'=>$promo['discount_reason'],
                 'deposit_amount'=>$depositTotal,
                 'status'=>'pending_payment',
                 'note'=>$request->note,

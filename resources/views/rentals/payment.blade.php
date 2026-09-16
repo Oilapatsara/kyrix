@@ -185,9 +185,20 @@
             </div>
 
             <div class="amount-row">
-                <span>ค่าเช่าชุดเต็มจำนวน (100%):</span>
+                <span>ค่าเช่าชุดรวม:</span>
                 <strong>฿{{ number_format($rental->total_amount) }}</strong>
             </div>
+
+            @if(!empty($rental->discount_amount) && $rental->discount_amount > 0)
+            <div class="amount-row" style="color: #16a34a;">
+                <span><i class="fa-solid fa-tag"></i> ส่วนลดโปรโมชั่น (20%):</span>
+                <strong style="color: #16a34a;">-฿{{ number_format($rental->discount_amount) }}</strong>
+            </div>
+            <div class="amount-row" style="font-size: 13px;">
+                <span>ค่าเช่าสุทธิหลังหักส่วนลด:</span>
+                <strong>฿{{ number_format($rental->net_rental_amount) }}</strong>
+            </div>
+            @endif
 
             <div class="amount-row">
                 <span>เงินมัดจำประกันชุด:</span>

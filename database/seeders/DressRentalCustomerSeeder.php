@@ -142,7 +142,7 @@ class DressRentalCustomerSeeder extends Seeder
                 'views_count' => 210,
                 'rental_count' => 24,
                 'images' => [
-                    'https://images.unsplash.com/photo-1518895949257-7621c3c786d7?w=800&auto=format&fit=crop&q=80',
+                    'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=800&auto=format&fit=crop&q=80',
                     'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=800&auto=format&fit=crop&q=80',
                 ],
             ],
@@ -226,7 +226,7 @@ class DressRentalCustomerSeeder extends Seeder
                 'views_count' => 175,
                 'rental_count' => 22,
                 'images' => [
-                    'https://images.unsplash.com/photo-1518895949257-7621c3c786d7?w=800&auto=format&fit=crop&q=80',
+                    'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=800&auto=format&fit=crop&q=80',
                 ],
             ],
             [

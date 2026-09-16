@@ -228,7 +228,12 @@
                             <div>{{ !empty($booking->end_date) ? \Carbon\Carbon::parse($booking->end_date)->format('d/m/Y') : '-' }}</div>
                         </td>
                         <td style="text-align: center; font-weight: 750; color: var(--maroon-900);">
-                            ฿{{ number_format($booking->total_amount ?? 0, 2) }}
+                            ฿{{ number_format($booking->grand_total, 2) }}
+                            @if(!empty($booking->discount_amount) && $booking->discount_amount > 0)
+                                <div style="font-size: 11px; color: #16a34a; font-weight: 600; margin-top: 2px;">
+                                    <i class="fa-solid fa-gift"></i> ลด 20% (-฿{{ number_format($booking->discount_amount, 0) }})
+                                </div>
+                            @endif
                         </td>
                         <td style="text-align: center;">
                             <span class="status-badge {{ $statusClass }}">

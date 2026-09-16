@@ -11,7 +11,8 @@ class Rental extends Model
 
     protected $fillable = [
         'rental_code', 'customer_id', 'rental_date', 'start_date', 'end_date',
-        'total_amount', 'deposit_amount', 'service_type', 'service_fee',
+        'total_amount', 'discount_amount', 'discount_reason', 'deposit_amount',
+        'service_type', 'service_fee',
         'delivery_method', 'delivery_address', 'recipient_phone',
         'tracking_number', 'return_tracking_no', 'status', 'note',
         'condition_status', 'deposit_status', 'deposit_refund_amount',
@@ -20,18 +21,26 @@ class Rental extends Model
 
     protected $casts = [
         'total_amount' => 'float',
+        'discount_amount' => 'float',
         'deposit_amount' => 'float',
         'service_fee' => 'float',
         'deposit_refund_amount' => 'float',
         'inspected_at' => 'datetime',
     ];
 
-    // Accessor: Grand Total (100% rental + deposit + service fee)
+    // Accessor: Grand Total (Net rental + deposit + service fee)
     public function getGrandTotalAttribute(): float
     {
-        return (float)($this->total_amount ?? 0)
+        $netRental = max(0.0, (float)($this->total_amount ?? 0) - (float)($this->discount_amount ?? 0));
+        return $netRental
             + (float)($this->deposit_amount ?? 0)
             + (float)($this->service_fee ?? 0);
+    }
+
+    // Accessor: Net Rental Amount (ค่าเช่าชุดหลังหักส่วนลด)
+    public function getNetRentalAmountAttribute(): float
+    {
+        return max(0.0, (float)($this->total_amount ?? 0) - (float)($this->discount_amount ?? 0));
     }
 
     // Accessor: Formatted Rental Code

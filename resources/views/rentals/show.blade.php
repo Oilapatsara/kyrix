@@ -435,9 +435,19 @@
                         <span>ค่าเช่าชุดรวม:</span>
                         <strong>฿{{ number_format($rental->total_amount) }}</strong>
                     </div>
+                    @if(!empty($rental->discount_amount) && $rental->discount_amount > 0)
+                    <div class="totals-row" style="color: #16a34a;">
+                        <span><i class="fa-solid fa-tag"></i> ส่วนลดโปรโมชั่น (20%):</span>
+                        <strong style="color: #16a34a;">-฿{{ number_format($rental->discount_amount) }}</strong>
+                    </div>
+                    <div class="totals-row" style="font-size: 13px;">
+                        <span>ค่าเช่าสุทธิหลังหักส่วนลด:</span>
+                        <strong>฿{{ number_format($rental->net_rental_amount) }}</strong>
+                    </div>
+                    @endif
                     <div class="totals-row">
                         <span>เงินมัดจำประกันชุด:</span>
-                        <strong style="color: #b45309;">฿100</strong>
+                        <strong style="color: #b45309;">฿{{ number_format($rental->deposit_amount ?: 100) }}</strong>
                     </div>
                     <div class="totals-row">
                         <span>บริการเสริม ({{ $rental->service_type ?? 'มาตรฐาน' }}):</span>
