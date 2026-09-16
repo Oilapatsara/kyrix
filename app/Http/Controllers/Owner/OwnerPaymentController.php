@@ -4,74 +4,110 @@ namespace App\Http\Controllers\Owner;
 
 use App\Http\Controllers\Controller;
 use App\Models\Payment;
-use App\Models\Rental;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class OwnerPaymentController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Payment::with(['rental.customer', 'rental.details.product']);
+        $status = $request->query('status');
 
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
+        /*
+        |--------------------------------------------------------------------------
+        | ดึงข้อมูล Payment พร้อม Rental และ Customer
+        |--------------------------------------------------------------------------
+        */
+        $query = Payment::query()
+            ->with([
+                'rental.customer',
+            ])
+            ->orderByDesc('payment_id');
+
+        /*
+        |--------------------------------------------------------------------------
+        | Filter Status
+        |--------------------------------------------------------------------------
+        */
+        if (in_array($status, ['pending', 'approved', 'rejected'], true)) {
+            $query->where('status', $status);
         }
 
-        if ($request->filled('search')) {
-            $search = trim($request->search);
-            $query->whereHas('rental', function ($q) use ($search) {
-                $q->where('rental_code', 'like', "%{$search}%")
-                  ->orWhereHas('customer', function ($cq) use ($search) {
-                      $cq->where('first_name', 'like', "%{$search}%")
-                         ->orWhere('last_name', 'like', "%{$search}%")
-                         ->orWhere('phone', 'like', "%{$search}%");
-                  });
-            });
-        }
+        /*
+        |--------------------------------------------------------------------------
+        | Pagination
+        |--------------------------------------------------------------------------
+        */
+        $payments = $query
+            ->paginate(15)
+            ->withQueryString();
 
-        $payments = $query->latest('payment_id')->paginate(15)->withQueryString();
+        /*
+        |--------------------------------------------------------------------------
+        | จำนวนแต่ละสถานะ (ปรับเป็น 1 Query เพื่อลดภาระ Database)
+        |--------------------------------------------------------------------------
+        */
+        $statusCounts = Payment::query()
+            ->select('status', DB::raw('count(*) as count'))
+            ->groupBy('status')
+            ->pluck('count', 'status');
 
         $counts = [
-            'all'      => Payment::count(),
-            'pending'  => Payment::where('status', 'pending')->count(),
-            'approved' => Payment::where('status', 'approved')->count(),
-            'rejected' => Payment::where('status', 'rejected')->count(),
+            'pending'  => $statusCounts->get('pending', 0),
+            'approved' => $statusCounts->get('approved', 0),
+            'rejected' => $statusCounts->get('rejected', 0),
         ];
 
-        return view('owner.payments.index', compact('payments', 'counts'));
+        return view('owner.payments.index', compact(
+            'payments',
+            'counts'
+        ));
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | อนุมัติการชำระเงิน (Approve Payment)
+    |--------------------------------------------------------------------------
+    */
     public function approve($id)
     {
-        $payment = Payment::with('rental')->findOrFail($id);
-        $payment->update([
-            'status'       => 'approved',
-            'payment_date' => $payment->payment_date ?? now(),
-        ]);
+        $payment = Payment::findOrFail($id);
 
-        // If rental is pending, advance to confirmed
-        if ($payment->rental && in_array($payment->rental->status, ['pending', 'pending_payment', 'pending_verification'])) {
-            $payment->rental->update(['status' => 'confirmed']);
-        }
+        DB::transaction(function () use ($payment) {
+            // 1. อัปเดตสถานะการชำระเงินเป็น approved
+            $payment->update([
+                'status' => 'approved',
+            ]);
 
-        return back()->with('success', "อนุมัติการชำระเงินยอด ฿" . number_format($payment->payment_amount, 2) . " เรียบร้อยแล้ว");
+            // 2. อัปเดตสถานะใบเช่า (Rental) เป็น renting
+            if ($payment->rental) {
+                $payment->rental->update([
+                    'status' => 'renting',
+                ]);
+            }
+        });
+
+        return redirect()->back()->with('success', 'อนุมัติการชำระเงินเรียบร้อยแล้ว');
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | ปฏิเสธการชำระเงิน (Reject Payment)
+    |--------------------------------------------------------------------------
+    */
     public function reject(Request $request, $id)
     {
-        $payment = Payment::with('rental')->findOrFail($id);
-
         $request->validate([
-            'note' => 'required|string|max:255',
-        ], [
-            'note.required' => 'กรุณาระบุเหตุผลการปฏิเสธสลิป',
+            'note' => 'nullable|string|max:500',
         ]);
+
+        $payment = Payment::findOrFail($id);
 
         $payment->update([
             'status' => 'rejected',
-            'note'   => $request->note,
+            'note'   => $request->input('note', $payment->note),
         ]);
 
-        return back()->with('error', "ปฏิเสธสลิปการชำระเงินแล้ว เหตุผล: {$request->note}");
+        return redirect()->back()->with('success', 'ปฏิเสธรายการชำระเงินเรียบร้อยแล้ว');
     }
 }

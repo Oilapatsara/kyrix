@@ -225,7 +225,7 @@
                             <input type="radio" name="delivery_method" value="pickup" checked style="accent-color: var(--primary);">
                             <div>
                                 <strong style="font-size: 14px; display: block;">รับที่หน้าร้าน KYRIX</strong>
-                                <span style="font-size: 12px; color: var(--text-muted);">สาขาสุขุมวิท 55 (ทองหล่อ) ฟรีค่าส่ง</span>
+                                <span style="font-size: 12px; color: var(--text-muted);">สาขาโคราช (โคราช) ฟรีค่าส่ง</span>
                             </div>
                         </label>
 
@@ -233,7 +233,7 @@
                             <input type="radio" name="delivery_method" value="delivery" style="accent-color: var(--primary);">
                             <div>
                                 <strong style="font-size: 14px; display: block;">จัดส่งถึงที่อยู่</strong>
-                                <span style="font-size: 12px; color: var(--text-muted);">แมสเซนเจอร์ใน กทม. / EMS ทั่วไทย</span>
+                                <span style="font-size: 12px; color: var(--text-muted);">แมสเซนเจอร์ใน โคราช/ EMS ทั่วไทย</span>
                             </div>
                         </label>
                     </div>
@@ -274,7 +274,7 @@
                             <input type="radio" name="payment_method" value="transfer" style="accent-color: var(--primary);">
                             <div>
                                 <strong style="display: block; font-size: 14px;">โอนผ่านบัญชีธนาคาร</strong>
-                                <span style="font-size: 12px; color: var(--text-muted);">ธ.กสิกรไทย / ไทยพาณิชย์</span>
+                                <span style="font-size: 12px; color: var(--text-muted);">ธ.ออมสิน</span>
                             </div>
                         </label>
                     </div>
@@ -291,8 +291,8 @@
                         </div>
 
                         <div class="bank-details">
-                            <div><strong>ธนาคาร:</strong> กสิกรไทย (KBANK)</div>
-                            <div><strong>เลขที่บัญชี:</strong> 123-4-56789-0</div>
+                            <div><strong>ธนาคาร:</strong> ออมสิน </div>
+                            <div><strong>เลขที่บัญชี:</strong> 020-310925126</div>
                             <div><strong>ชื่อบัญชี:</strong> บจก. ไคริกซ์ เดรส เรนทอล (KYRIX)</div>
                         </div>
                     </div>

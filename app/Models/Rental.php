@@ -3,11 +3,20 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Rental extends Model
 {
     protected $table = 'rentals';
+
     protected $primaryKey = 'rental_id';
+
+    public $incrementing = true;
+
+    protected $keyType = 'int';
+
     protected $fillable = [
         'rental_code',
         'customer_id',
@@ -39,109 +48,291 @@ class Rental extends Model
         ];
     }
 
-    public function customer()
+    /*
+    |--------------------------------------------------------------------------
+    | Customer
+    |--------------------------------------------------------------------------
+    */
+
+    public function customer(): BelongsTo
     {
-        return $this->belongsTo(Customer::class, 'customer_id', 'customer_id');
+        return $this->belongsTo(
+            Customer::class,
+            'customer_id',
+            'customer_id'
+        );
     }
 
-    public function details()
+    /*
+    |--------------------------------------------------------------------------
+    | Rental Details
+    |--------------------------------------------------------------------------
+    */
+
+    public function details(): HasMany
     {
-        return $this->hasMany(RentalDetail::class, 'rental_id', 'rental_id');
+        return $this->hasMany(
+            RentalDetail::class,
+            'rental_id',
+            'rental_id'
+        );
     }
 
-    public function payments()
+    /*
+    |--------------------------------------------------------------------------
+    | Payments
+    |--------------------------------------------------------------------------
+    */
+
+    public function payments(): HasMany
     {
-        return $this->hasMany(Payment::class, 'rental_id', 'rental_id')->latest();
+        return $this->hasMany(
+            Payment::class,
+            'rental_id',
+            'rental_id'
+        )->latest('payment_id');
     }
 
-    public function latestPayment()
+    /*
+    |--------------------------------------------------------------------------
+    | Latest Payment
+    |--------------------------------------------------------------------------
+    |
+    | สำคัญ:
+    | ตาราง payments ไม่มี id
+    | Primary Key คือ payment_id
+    |
+    | ระบุ payment_id โดยตรง เพื่อป้องกัน Laravel
+    | สร้าง SQL ที่เรียก payments.id
+    |
+    */
+
+    public function latestPayment(): HasOne
     {
-        return $this->hasOne(Payment::class, 'rental_id', 'rental_id')->latestOfMany('payment_id');
+        return $this->hasOne(
+            Payment::class,
+            'rental_id',
+            'rental_id'
+        )->latestOfMany('payment_id');
     }
 
-    public function reviews()
+    /*
+    |--------------------------------------------------------------------------
+    | Reviews
+    |--------------------------------------------------------------------------
+    */
+
+    public function reviews(): HasMany
     {
-        return $this->hasMany(Review::class, 'rental_id', 'rental_id');
+        return $this->hasMany(
+            Review::class,
+            'rental_id',
+            'rental_id'
+        );
     }
 
-    /**
-     * Rental Code display format, e.g. #R00001
-     */
-    public function getFormattedCodeAttribute()
+    /*
+    |--------------------------------------------------------------------------
+    | Customer Full Name
+    |--------------------------------------------------------------------------
+    */
+
+    public function getCustomerFullNameAttribute(): string
     {
-        if (!empty($this->rental_code) && str_starts_with($this->rental_code, '#R')) {
+        if ($this->relationLoaded('customer') && $this->customer) {
+            $firstName = trim($this->customer->first_name ?? '');
+            $lastName = trim($this->customer->last_name ?? '');
+
+            $fullName = trim($firstName . ' ' . $lastName);
+
+            if ($fullName !== '') {
+                return $fullName;
+            }
+        }
+
+        return $this->customer_name ?? 'ไม่ระบุชื่อ';
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Formatted Rental Code
+    |--------------------------------------------------------------------------
+    |
+    | ตัวอย่าง:
+    | #R00001
+    |
+    */
+
+    public function getFormattedCodeAttribute(): string
+    {
+        if (
+            !empty($this->rental_code) &&
+            str_starts_with($this->rental_code, '#R')
+        ) {
             return $this->rental_code;
         }
-        return '#R' . str_pad($this->rental_id, 5, '0', STR_PAD_LEFT);
+
+        return '#R' . str_pad(
+            $this->rental_id,
+            5,
+            '0',
+            STR_PAD_LEFT
+        );
     }
 
-    /**
-     * Exact 5 statuses from database:
-     * pending   -> รอดำเนินการ
-     * confirmed -> ยืนยันการเช่า
-     * renting   -> กำลังเช่า
-     * returned  -> คืนชุดแล้ว
-     * cancelled -> ยกเลิก
-     */
-    public function getStatusLabelAttribute()
+    /*
+    |--------------------------------------------------------------------------
+    | Status Label
+    |--------------------------------------------------------------------------
+    */
+
+    public function getStatusLabelAttribute(): string
     {
         return match ($this->status) {
-            'pending', 'pending_payment', 'pending_verification' => 'รอดำเนินการ',
-            'confirmed', 'ready_pickup' => 'ยืนยันการเช่า',
-            'renting', 'pending_return' => 'กำลังเช่า',
-            'returned', 'completed' => 'คืนชุดแล้ว',
-            'cancelled' => 'ยกเลิก',
-            default => $this->status,
+            'pending',
+            'pending_payment',
+            'pending_verification'
+                => 'รอดำเนินการ',
+
+            'confirmed',
+            'ready_pickup'
+                => 'ยืนยันการเช่า',
+
+            'renting',
+            'pending_return'
+                => 'กำลังเช่า',
+
+            'returned',
+            'completed'
+                => 'คืนชุดแล้ว',
+
+            'cancelled'
+                => 'ยกเลิก',
+
+            default
+                => $this->status ?? '-',
         };
     }
 
-    public function getStatusBadgeClassAttribute()
+    /*
+    |--------------------------------------------------------------------------
+    | Status Badge Class
+    |--------------------------------------------------------------------------
+    */
+
+    public function getStatusBadgeClassAttribute(): string
     {
         return match ($this->status) {
-            'pending', 'pending_payment', 'pending_verification' => 'badge-warning',
-            'confirmed', 'ready_pickup' => 'badge-primary',
-            'renting', 'pending_return' => 'badge-info',
-            'returned', 'completed' => 'badge-success',
-            'cancelled' => 'badge-danger',
-            default => 'badge-secondary',
+            'pending',
+            'pending_payment',
+            'pending_verification'
+                => 'badge-warning',
+
+            'confirmed',
+            'ready_pickup'
+                => 'badge-primary',
+
+            'renting',
+            'pending_return'
+                => 'badge-info',
+
+            'returned',
+            'completed'
+                => 'badge-success',
+
+            'cancelled'
+                => 'badge-danger',
+
+            default
+                => 'badge-secondary',
         };
     }
 
-    public function getPaymentStatusLabelAttribute()
+    /*
+    |--------------------------------------------------------------------------
+    | Payment Status Label
+    |--------------------------------------------------------------------------
+    */
+
+    public function getPaymentStatusLabelAttribute(): string
     {
         $lastPayment = $this->latestPayment;
+
         if (!$lastPayment) {
             return 'ยังไม่ชำระ';
         }
+
         return match ($lastPayment->status) {
-            'pending' => 'รอตรวจสอบ',
-            'approved' => 'อนุมัติแล้ว',
-            'rejected' => 'ถูกปฏิเสธ',
-            default => $lastPayment->status,
+            'pending'
+                => 'รอตรวจสอบ',
+
+            'approved'
+                => 'อนุมัติแล้ว',
+
+            'rejected'
+                => 'ถูกปฏิเสธ',
+
+            default
+                => $lastPayment->status ?? '-',
         };
     }
 
-    public function getPaymentBadgeClassAttribute()
+    /*
+    |--------------------------------------------------------------------------
+    | Payment Badge Class
+    |--------------------------------------------------------------------------
+    */
+
+    public function getPaymentBadgeClassAttribute(): string
     {
         $lastPayment = $this->latestPayment;
+
         if (!$lastPayment) {
             return 'badge-secondary';
         }
+
         return match ($lastPayment->status) {
-            'pending' => 'badge-warning',
-            'approved' => 'badge-success',
-            'rejected' => 'badge-danger',
-            default => 'badge-secondary',
+            'pending'
+                => 'badge-warning',
+
+            'approved'
+                => 'badge-success',
+
+            'rejected'
+                => 'badge-danger',
+
+            default
+                => 'badge-secondary',
         };
     }
 
-    public function getGrandTotalAttribute()
+    /*
+    |--------------------------------------------------------------------------
+    | Grand Total
+    |--------------------------------------------------------------------------
+    */
+
+    public function getGrandTotalAttribute(): float
     {
-        return $this->total_amount + $this->deposit_amount + ($this->service_fee ?? 0);
+        return (float) $this->total_amount
+            + (float) $this->deposit_amount
+            + (float) ($this->service_fee ?? 0);
     }
 
-    public function getPaidAmountAttribute()
+    /*
+    |--------------------------------------------------------------------------
+    | Paid Amount
+    |--------------------------------------------------------------------------
+    |
+    | ตาราง payments ใช้ payment_amount
+    | ไม่ใช่ amount
+    |
+    */
+
+    public function getPaidAmountAttribute(): float
     {
-        return (float) $this->payments()->where('status', 'approved')->sum('payment_amount');
+        return (float) $this->payments()
+            ->where('status', 'approved')
+            ->sum('payment_amount');
     }
 }

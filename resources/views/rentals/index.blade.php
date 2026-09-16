@@ -223,7 +223,7 @@
                         </span>
                     @elseif($rental->latestPayment->status === 'approved')
                         <span style="color: #166534; font-size: 13px; font-weight: 600;">
-                            <i class="fa-solid fa-circle-check"></i> ชำระเงินเรียบร้อยแล้ว
+                            <i class="fa-solid fa-circle-check"></i> ชำระเงินเรียบร้อยแล้วresources/views/rentals/show.blade.php
                         </span>
                     @endif
                 </div>

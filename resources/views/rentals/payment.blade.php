@@ -219,7 +219,7 @@
                     <input type="radio" name="payment_method" value="transfer" style="accent-color: var(--primary);">
                     <div>
                         <strong style="display: block; font-size: 14px;">โอนเงินผ่านบัญชีธนาคาร</strong>
-                        <span style="font-size: 12px; color: var(--text-muted);">ธ.กสิกรไทย / ไทยพาณิชย์</span>
+                        <span style="font-size: 12px; color: var(--text-muted);">ธ.ออมสิน</span>
                     </div>
                 </label>
 
@@ -244,8 +244,8 @@
             <div class="bank-box">
                 <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=00020101021129370016A000000677010111011300668912345675802TH5303764540{{ number_format($rental->grand_total, 2, '', '') }}6304" class="qr-img" alt="PromptPay QR">
                 <div style="font-size: 14px;">
-                    <div><strong>ธนาคาร:</strong> กสิกรไทย (KBANK)</div>
-                    <div><strong>เลขที่บัญชี:</strong> <span style="font-family: monospace; font-size: 16px; color: var(--primary); font-weight: 700;">123-4-56789-0</span></div>
+                    <div><strong>ธนาคาร:</strong> ออมสิน</div>
+                    <div><strong>เลขที่บัญชี:</strong> <span style="font-family: monospace; font-size: 16px; color: var(--primary); font-weight: 700;">020310925126</span></div>
                     <div><strong>ชื่อบัญชี:</strong> บจก. ไคริกซ์ เดรส เรนทอล (KYRIX)</div>
                 </div>
             </div>

@@ -3,9 +3,7 @@
 @section('title', 'ตรวจสอบการชำระเงิน | KYRIX Admin')
 
 @push('styles')
-<!-- ใช้ฟอนต์ Noto Sans Thai ทั้งหน้า -->
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<!-- โหลด SweetAlert2 สำหรับ Lightbox ดูสลิป -->
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <style>
@@ -13,29 +11,64 @@
         --maroon-900: #430d17;
         --maroon-800: #5c1522;
         --maroon-700: #6f1a2b;
-        --gold:       #c79a5c;
-        --gold-dark:  #a97f45;
-        --rose-bg:    #f7e7ea;
-        --rose-text:  #7f2138;
-        --cream:      #faf7f4;
-        --ink:        #241417;
-        --muted:      #8a7a7d;
-        --line:       #efe6e4;
+        --gold: #c79a5c;
+        --gold-dark: #a97f45;
+        --rose-bg: #f7e7ea;
+        --rose-text: #7f2138;
+        --cream: #faf7f4;
+        --cream-dark: #f4eeea;
+        --ink: #241417;
+        --muted: #8a7a7d;
+        --line: #efe6e4;
+        --white: #ffffff;
+        --green: #2e7d32;
+        --green-bg: #eef7ef;
+        --green-line: #c8e6c9;
+        --orange: #9a6b00;
+        --orange-bg: #fff5dd;
+        --orange-line: #f0d99a;
+        --red: #c62828;
+        --red-bg: #fdf2f2;
+        --red-line: #ffcdd2;
     }
 
-    body, h1, h2, h3, h4, h5, h6, p, span, a, button, input, table, div {
+    * {
+        box-sizing: border-box;
+    }
+
+    body,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    p,
+    span,
+    a,
+    button,
+    input,
+    select,
+    textarea,
+    table,
+    th,
+    td,
+    div {
         font-family: 'Noto Sans Thai', sans-serif !important;
     }
 
-    .kyrix-admin-container {
-        padding: 0;
-        color: var(--ink);
-        max-width: 1200px;
+    .kyrix-payment-page {
+        width: 100%;
+        max-width: 1250px;
         margin: 0 auto;
+        color: var(--ink);
     }
 
-    /* HEADER */
-    .admin-header {
+    /* =========================================================
+       HEADER
+    ========================================================= */
+
+    .payment-page-header {
         display: flex;
         align-items: flex-end;
         justify-content: space-between;
@@ -44,427 +77,1212 @@
         flex-wrap: wrap;
     }
 
-    .admin-heading .eyebrow {
+    .payment-page-header-left {
+        min-width: 0;
+    }
+
+    .payment-eyebrow {
         display: inline-block;
+        margin-bottom: 7px;
         color: var(--gold-dark);
         font-size: 11px;
-        font-weight: 700;
+        font-weight: 800;
         letter-spacing: 2px;
-        margin-bottom: 6px;
     }
 
-    .admin-heading h1 {
+    .payment-page-title {
         margin: 0;
-        font-size: 28px;
-        font-weight: 700;
         color: var(--maroon-900);
+        font-size: 28px;
+        line-height: 1.25;
+        font-weight: 800;
     }
 
-    .admin-heading p {
-        margin: 6px 0 0;
+    .payment-page-description {
+        margin: 7px 0 0;
         color: var(--muted);
         font-size: 13px;
+        line-height: 1.7;
     }
 
-    /* STATS CARDS (INTERACTIVE) */
-    .stats-grid {
+    /* =========================================================
+       ALERT
+    ========================================================= */
+
+    .payment-alert {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 18px;
+        padding: 12px 15px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .payment-alert.success {
+        background: var(--green-bg);
+        border: 1px solid var(--green-line);
+        color: var(--green);
+    }
+
+    .payment-alert.error {
+        background: var(--red-bg);
+        border: 1px solid var(--red-line);
+        color: var(--red);
+    }
+
+    /* =========================================================
+       STAT CARDS
+    ========================================================= */
+
+    .payment-stats {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 16px;
         margin-bottom: 20px;
     }
 
-    .stat-card {
-        background: #fff;
+    .payment-stat {
+        position: relative;
+        display: block;
+        padding: 20px;
+        background: var(--white);
         border: 1px solid var(--line);
         border-radius: 14px;
-        padding: 20px;
-        box-shadow: 0 3px 15px rgba(111, 26, 43, .03);
+        color: inherit;
         text-decoration: none;
-        display: block;
-        transition: all 0.2s ease;
-        position: relative;
-    }
-
-    .stat-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(111, 26, 43, .08);
-        border-color: var(--gold);
-    }
-
-    .stat-card.pending { border-left: 4px solid #d97706; }
-    .stat-card.approved { border-left: 4px solid #16a34a; }
-    .stat-card.rejected { border-left: 4px solid #dc2626; }
-
-    /* Active state when clicked */
-    .stat-card.active-filter {
-        background: var(--cream);
-        border-color: var(--gold);
-        box-shadow: 0 0 0 2px rgba(199, 154, 92, 0.3);
-    }
-
-    .stat-label {
-        font-size: 12px;
-        font-weight: 600;
-        color: var(--muted);
-    }
-
-    .stat-value {
-        font-size: 22px;
-        font-weight: 750;
-        color: var(--maroon-900);
-        margin-top: 6px;
-    }
-
-    .stat-hint {
-        font-size: 11px;
-        color: var(--gold-dark);
-        margin-top: 8px;
-        display: flex;
-        align-items: center;
-        gap: 4px;
-        font-weight: 600;
-    }
-
-    /* FILTER BAR */
-    .filter-bar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        background: var(--cream);
-        padding: 12px 18px;
-        border-radius: 12px;
-        border: 1px solid var(--line);
-        margin-bottom: 20px;
-        font-size: 13px;
-    }
-
-    .filter-reset {
-        color: var(--maroon-800);
-        font-weight: 700;
-        text-decoration: underline;
-        transition: color .2s;
-    }
-    .filter-reset:hover { color: var(--maroon-900); }
-
-    /* CONTENT CARD & TABLE */
-    .content-card {
-        background: #fff;
-        border: 1px solid var(--line);
-        border-radius: 16px;
-        box-shadow: 0 3px 18px rgba(111, 26, 43, .04);
+        box-shadow: 0 3px 15px rgba(111, 26, 43, .03);
+        transition:
+            transform .2s ease,
+            box-shadow .2s ease,
+            border-color .2s ease;
         overflow: hidden;
     }
 
-    .table-wrapper {
-        overflow-x: auto;
+    .payment-stat::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
     }
 
-    .kyrix-table {
-        width: 100%;
-        border-collapse: collapse;
-        min-width: 850px;
+    .payment-stat.pending::before {
+        background: #d97706;
     }
 
-    .kyrix-table th {
-        text-align: left;
-        padding: 14px 18px;
+    .payment-stat.approved::before {
+        background: #16a34a;
+    }
+
+    .payment-stat.rejected::before {
+        background: #dc2626;
+    }
+
+    .payment-stat:hover {
+        transform: translateY(-2px);
+        border-color: var(--gold);
+        box-shadow: 0 7px 22px rgba(111, 26, 43, .08);
+    }
+
+    .payment-stat.active {
         background: var(--cream);
+        border-color: var(--gold);
+        box-shadow:
+            0 0 0 2px rgba(199, 154, 92, .22),
+            0 7px 22px rgba(111, 26, 43, .06);
+    }
+
+    .payment-stat-label {
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .payment-stat-number {
+        margin-top: 6px;
+        color: var(--maroon-900);
+        font-size: 23px;
+        line-height: 1.3;
+        font-weight: 800;
+    }
+
+    .payment-stat-sub {
+        margin-top: 5px;
         color: var(--muted);
         font-size: 11px;
+    }
+
+    /* =========================================================
+       FILTER
+    ========================================================= */
+
+    .payment-filter {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        margin-bottom: 20px;
+        padding: 12px 17px;
+        background: var(--cream);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        font-size: 13px;
+    }
+
+    .payment-filter-label {
+        color: var(--muted);
+    }
+
+    .payment-filter-label strong {
+        color: var(--maroon-900);
+    }
+
+    .payment-filter-reset {
+        flex-shrink: 0;
+        color: var(--maroon-800);
+        font-size: 12px;
         font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
+        text-decoration: underline;
+    }
+
+    .payment-filter-reset:hover {
+        color: var(--maroon-900);
+    }
+
+    /* =========================================================
+       TABLE CARD
+    ========================================================= */
+
+    .payment-table-card {
+        overflow: hidden;
+        background: var(--white);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        box-shadow: 0 3px 18px rgba(111, 26, 43, .04);
+    }
+
+    .payment-table-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        padding: 16px 20px;
+        background: var(--white);
         border-bottom: 1px solid var(--line);
     }
 
-    .kyrix-table td {
-        padding: 14px 18px;
+    .payment-table-heading {
+        color: var(--maroon-900);
+        font-size: 14px;
+        font-weight: 800;
+    }
+
+    .payment-table-count {
+        color: var(--muted);
+        font-size: 12px;
+    }
+
+    .payment-table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .payment-table {
+        width: 100%;
+        min-width: 980px;
+        border-collapse: collapse;
+    }
+
+    .payment-table th {
+        padding: 14px 17px;
+        background: var(--cream);
+        border-bottom: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 800;
+        text-align: left;
+        white-space: nowrap;
+    }
+
+    .payment-table td {
+        padding: 15px 17px;
         border-top: 1px solid var(--line);
         color: #3a2b2e;
         font-size: 13px;
         vertical-align: middle;
     }
 
-    .kyrix-table tr:hover {
-        background-color: #fdfbfb;
+    .payment-table tbody tr {
+        transition: background .15s ease;
     }
 
-    /* SLIP THUMBNAIL */
-    .slip-thumb-wrap {
+    .payment-table tbody tr:hover {
+        background: #fdfbfb;
+    }
+
+    /* =========================================================
+       PAYMENT CODE
+    ========================================================= */
+
+    .payment-code {
+        color: var(--maroon-900);
+        font-size: 13px;
+        font-weight: 800;
+        white-space: nowrap;
+    }
+
+    .payment-date {
+        margin-top: 4px;
+        color: var(--muted);
+        font-size: 10.5px;
+        white-space: nowrap;
+    }
+
+    /* =========================================================
+       CUSTOMER
+    ========================================================= */
+
+    .payment-customer-name {
+        color: #2d1e21;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .payment-rental-reference {
+        margin-top: 3px;
+        color: var(--muted);
+        font-size: 11px;
+    }
+
+    .payment-method {
         display: inline-flex;
         align-items: center;
-        gap: 10px;
-        cursor: pointer;
-        transition: transform .2s ease;
+        gap: 4px;
+        margin-top: 5px;
+        padding: 2px 7px;
+        background: var(--cream);
+        border-radius: 5px;
+        color: var(--muted);
+        font-size: 10.5px;
     }
-    .slip-thumb-wrap:hover { transform: scale(1.03); }
 
-    .slip-thumb {
-        width: 44px;
-        height: 44px;
-        border-radius: 8px;
+    /* =========================================================
+       SLIP
+    ========================================================= */
+
+    .slip-cell {
+        text-align: center;
+    }
+
+    .slip-preview {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        cursor: pointer;
+        transition: transform .18s ease;
+    }
+
+    .slip-preview:hover {
+        transform: translateY(-1px);
+    }
+
+    .slip-image {
+        display: block;
+        width: 54px;
+        height: 54px;
         object-fit: cover;
+        border-radius: 9px;
         border: 1px solid var(--gold);
         background: var(--cream);
-        box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        box-shadow: 0 2px 7px rgba(0, 0, 0, .08);
     }
 
-    .slip-placeholder {
-        width: 44px;
-        height: 44px;
-        border-radius: 8px;
+    .slip-preview-text {
+        color: var(--maroon-800);
+        font-size: 11.5px;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    .slip-empty {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        color: var(--muted);
+        font-size: 11.5px;
+    }
+
+    .slip-empty-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 50px;
+        height: 50px;
         background: var(--rose-bg);
+        border: 1px solid var(--line);
+        border-radius: 9px;
         color: var(--rose-text);
+        font-size: 17px;
+    }
+
+    /* =========================================================
+       AMOUNT
+    ========================================================= */
+
+    .payment-amount {
+        color: var(--maroon-900);
+        font-size: 14px;
+        font-weight: 800;
+        text-align: center;
+        white-space: nowrap;
+    }
+
+    /* =========================================================
+       STATUS
+    ========================================================= */
+
+    .payment-status-cell {
+        text-align: center;
+    }
+
+    .payment-status {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 5px 11px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 800;
+        white-space: nowrap;
+    }
+
+    .payment-status.pending {
+        background: var(--orange-bg);
+        color: var(--orange);
+    }
+
+    .payment-status.approved {
+        background: var(--green-bg);
+        color: var(--green);
+    }
+
+    .payment-status.rejected {
+        background: var(--red-bg);
+        color: var(--red);
+    }
+
+    /* =========================================================
+       ACTION
+    ========================================================= */
+
+    .payment-actions {
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 14px;
-        border: 1px solid var(--line);
+        gap: 7px;
     }
 
-    /* BADGES */
-    .status-badge {
+    .payment-action-form {
+        margin: 0;
+    }
+
+    .payment-btn {
         display: inline-flex;
         align-items: center;
-        padding: 5px 12px;
-        border-radius: 999px;
-        font-size: 11px;
+        justify-content: center;
+        gap: 5px;
+        min-width: 74px;
+        padding: 7px 10px;
+        border-radius: 8px;
+        font-size: 11.5px;
+        font-weight: 700;
+        cursor: pointer;
+        border: none;
+        transition:
+            background .18s ease,
+            transform .18s ease;
+    }
+
+    .payment-btn:hover {
+        transform: translateY(-1px);
+    }
+
+    .payment-btn.approve {
+        background: var(--green-bg);
+        border: 1px solid var(--green-line);
+        color: var(--green);
+    }
+
+    .payment-btn.approve:hover {
+        background: #dcefdc;
+    }
+
+    .payment-btn.reject {
+        background: var(--red-bg);
+        border: 1px solid var(--red-line);
+        color: var(--red);
+    }
+
+    .payment-btn.reject:hover {
+        background: #f9dddd;
+    }
+
+    .payment-checked {
+        color: var(--muted);
+        font-size: 11.5px;
         font-weight: 700;
         white-space: nowrap;
     }
-    .status-pending { background: #fff5dd; color: #9a6b00; }
-    .status-approved { background: #eef7ef; color: #4f7e53; }
-    .status-rejected { background: #fdf2f2; color: #991b1b; }
 
-    /* ACTION BUTTONS */
-    .action-group {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-    }
+    /* =========================================================
+       EMPTY
+    ========================================================= */
 
-    .btn-approve {
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-        padding: 6px 12px;
-        border-radius: 8px;
-        font-size: 12px;
-        font-weight: 650;
-        background: #eef7ef;
-        color: #2e7d32;
-        border: 1px solid #c8e6c9;
-        cursor: pointer;
-        transition: .2s;
-    }
-    .btn-approve:hover { background: #d0e8d1; }
-
-    .btn-reject {
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-        padding: 6px 12px;
-        border-radius: 8px;
-        font-size: 12px;
-        font-weight: 650;
-        background: #fdf2f2;
-        color: #c62828;
-        border: 1px solid #ffcdd2;
-        cursor: pointer;
-        transition: .2s;
-    }
-    .btn-reject:hover { background: #ffcdd2; }
-
-    .empty-state {
-        padding: 50px 20px;
+    .payment-empty {
+        padding: 65px 20px;
         text-align: center;
-        color: var(--muted);
-    }
-    .empty-icon {
-        font-size: 36px;
-        color: var(--rose-text);
-        opacity: .6;
-        margin-bottom: 12px;
     }
 
-    @media (max-width: 768px) {
-        .stats-grid { grid-template-columns: 1fr; }
+    .payment-empty-icon {
+        margin-bottom: 13px;
+        color: var(--rose-text);
+        opacity: .55;
+        font-size: 38px;
+    }
+
+    .payment-empty-title {
+        color: var(--maroon-900);
+        font-size: 14px;
+        font-weight: 800;
+    }
+
+    .payment-empty-text {
+        margin-top: 5px;
+        color: var(--muted);
+        font-size: 12px;
+    }
+
+    /* =========================================================
+       PAGINATION
+    ========================================================= */
+
+    .payment-pagination {
+        padding: 15px 20px;
+        background: var(--cream);
+        border-top: 1px solid var(--line);
+    }
+
+    /* =========================================================
+       SWEETALERT
+    ========================================================= */
+
+    .kyrix-swal-popup {
+        border-radius: 16px !important;
+    }
+
+    /* =========================================================
+       RESPONSIVE
+    ========================================================= */
+
+    @media (max-width: 900px) {
+        .payment-stats {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .payment-page-title {
+            font-size: 23px;
+        }
+
+        .payment-page-description {
+            font-size: 12px;
+        }
+
+        .payment-filter {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .payment-table-header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
     }
 </style>
 @endpush
 
 @section('content')
-<div class="kyrix-admin-container">
 
-    <!-- HEADER -->
-    <div class="admin-header">
-        <div class="admin-heading">
-            <span class="eyebrow">KYRIX RENTAL · PAYMENTS</span>
-            <h1>ตรวจสอบการชำระเงิน / สลิป</h1>
-            <p>คลิกการ์ดด้านบนเพื่อกรองข้อมูลตามสถานะ หรือคลิกรูปสลิปเพื่อตรวจสอบหลักฐานการโอน</p>
+<div class="kyrix-payment-page">
+
+    {{-- =====================================================
+         HEADER
+    ====================================================== --}}
+
+    <div class="payment-page-header">
+
+        <div class="payment-page-header-left">
+
+            <span class="payment-eyebrow">
+                KYRIX RENTAL · PAYMENTS
+            </span>
+
+            <h1 class="payment-page-title">
+                ตรวจสอบการชำระเงิน / สลิป
+            </h1>
+
+            <p class="payment-page-description">
+                ตรวจสอบยอดชำระเงินและหลักฐานการโอนของลูกค้า
+            </p>
+
         </div>
+
     </div>
 
-    <!-- STATS CARDS (CLICKABLE) -->
-    @if(isset($counts))
-    <div class="stats-grid">
-        <a href="{{ route('owner.payments.index', ['status' => 'pending']) }}" class="stat-card pending {{ request('status') == 'pending' ? 'active-filter' : '' }}">
-            <div class="stat-label">รอตรวจสอบ</div>
-            <div class="stat-value">{{ number_format($counts['pending'] ?? 0) }} รายการ</div>
+
+    {{-- =====================================================
+         ALERT
+    ====================================================== --}}
+
+    @if(session('success'))
+
+        <div class="payment-alert success">
+
+            <i class="fa-solid fa-circle-check"></i>
+
+            <span>
+                {{ session('success') }}
+            </span>
+
+        </div>
+
+    @endif
+
+    @if(session('error'))
+
+        <div class="payment-alert error">
+
+            <i class="fa-solid fa-circle-exclamation"></i>
+
+            <span>
+                {{ session('error') }}
+            </span>
+
+        </div>
+
+    @endif
+
+
+    {{-- =====================================================
+         STAT CARDS
+    ====================================================== --}}
+
+    <div class="payment-stats">
+
+        {{-- PENDING --}}
+        <a
+            href="{{ route('owner.payments.index', ['status' => 'pending']) }}"
+            class="payment-stat pending {{ request('status') === 'pending' ? 'active' : '' }}"
+        >
+
+            <div class="payment-stat-label">
+                รอตรวจสอบ
+            </div>
+
+            <div class="payment-stat-number">
+                {{ number_format($counts['pending'] ?? 0) }}
+                รายการ
+            </div>
+
+            <div class="payment-stat-sub">
+                รายการที่รอเจ้าของตรวจสอบสลิป
+            </div>
+
         </a>
-        <a href="{{ route('owner.payments.index', ['status' => 'approved']) }}" class="stat-card approved {{ request('status') == 'approved' ? 'active-filter' : '' }}">
-            <div class="stat-label">อนุมัติแล้ว</div>
-            <div class="stat-value">{{ number_format($counts['approved'] ?? 0) }} รายการ</div>
+
+
+        {{-- APPROVED --}}
+        <a
+            href="{{ route('owner.payments.index', ['status' => 'approved']) }}"
+            class="payment-stat approved {{ request('status') === 'approved' ? 'active' : '' }}"
+        >
+
+            <div class="payment-stat-label">
+                อนุมัติแล้ว
+            </div>
+
+            <div class="payment-stat-number">
+                {{ number_format($counts['approved'] ?? 0) }}
+                รายการ
+            </div>
+
+            <div class="payment-stat-sub">
+                รายการที่ตรวจสอบและอนุมัติแล้ว
+            </div>
+
         </a>
-        <a href="{{ route('owner.payments.index', ['status' => 'rejected']) }}" class="stat-card rejected {{ request('status') == 'rejected' ? 'active-filter' : '' }}">
-            <div class="stat-label">ปฏิเสธ / ไม่ถูกต้อง</div>
-            <div class="stat-value">{{ number_format($counts['rejected'] ?? 0) }} รายการ</div>
+
+
+        {{-- REJECTED --}}
+        <a
+            href="{{ route('owner.payments.index', ['status' => 'rejected']) }}"
+            class="payment-stat rejected {{ request('status') === 'rejected' ? 'active' : '' }}"
+        >
+
+            <div class="payment-stat-label">
+                ปฏิเสธ / ไม่ถูกต้อง
+            </div>
+
+            <div class="payment-stat-number">
+                {{ number_format($counts['rejected'] ?? 0) }}
+                รายการ
+            </div>
+
+            <div class="payment-stat-sub">
+                รายการที่หลักฐานไม่ถูกต้อง
+            </div>
+
         </a>
+
     </div>
+
+
+    {{-- =====================================================
+         FILTER BAR
+    ====================================================== --}}
 
     @if(request('status'))
-    <div class="filter-bar">
-        <span>กำลังแสดงผลข้อมูลเฉพาะสถานะ: <strong style="color: var(--maroon-900);">{{ request('status') == 'pending' ? 'รอตรวจสอบ' : (request('status') == 'approved' ? 'อนุมัติแล้ว' : 'ปฏิเสธ') }}</strong></span>
-        <a href="{{ route('owner.payments.index') }}" class="filter-reset">แสดงทั้งหมด</a>
-    </div>
-    @endif
+
+        <div class="payment-filter">
+
+            <div class="payment-filter-label">
+
+                กำลังแสดงข้อมูลเฉพาะสถานะ:
+
+                <strong>
+
+                    @if(request('status') === 'pending')
+                        รอตรวจสอบ
+                    @elseif(request('status') === 'approved')
+                        อนุมัติแล้ว
+                    @elseif(request('status') === 'rejected')
+                        ปฏิเสธ
+                    @else
+                        {{ request('status') }}
+                    @endif
+
+                </strong>
+
+            </div>
+
+            <a
+                href="{{ route('owner.payments.index') }}"
+                class="payment-filter-reset"
+            >
+                แสดงทั้งหมด
+            </a>
+
+        </div>
+
     @endif
 
-    <!-- TABLE CARD -->
-    <div class="content-card">
-        <div class="table-wrapper">
-            <table class="kyrix-table">
+
+    {{-- =====================================================
+         TABLE CARD
+    ====================================================== --}}
+
+    <div class="payment-table-card">
+
+        <div class="payment-table-header">
+
+            <div class="payment-table-heading">
+                รายการชำระเงิน
+            </div>
+
+            <div class="payment-table-count">
+
+                ทั้งหมด
+                {{ method_exists($payments, 'total') ? number_format($payments->total()) : $payments->count() }}
+                รายการ
+
+            </div>
+
+        </div>
+
+
+        <div class="payment-table-wrapper">
+
+            <table class="payment-table">
+
                 <thead>
+
                     <tr>
-                        <th style="width: 15%;">รหัสการชำระเงิน</th>
-                        <th style="width: 25%;">ลูกค้า / เลขอ้างอิงเช่า</th>
-                        <th style="width: 18%; text-align: center;">หลักฐานสลิปโอนเงิน</th>
-                        <th style="width: 12%; text-align: center;">จำนวนเงิน</th>
-                        <th style="width: 12%; text-align: center;">สถานะ</th>
-                        <th style="width: 18%; text-align: center;">จัดการ</th>
+
+                        <th style="width:13%;">
+                            รหัสการชำระเงิน
+                        </th>
+
+                        <th style="width:22%;">
+                            ลูกค้า / การเช่า
+                        </th>
+
+                        <th style="width:21%; text-align:center;">
+                            หลักฐานการโอน
+                        </th>
+
+                        <th style="width:12%; text-align:center;">
+                            จำนวนเงิน
+                        </th>
+
+                        <th style="width:12%; text-align:center;">
+                            สถานะ
+                        </th>
+
+                        <th style="width:20%; text-align:center;">
+                            จัดการ
+                        </th>
+
                     </tr>
+
                 </thead>
+
+
                 <tbody>
-                    @forelse($payments as $payment)
+
+                @forelse($payments as $payment)
+
                     @php
-                        $status = strtolower($payment->status ?? 'pending');
-                        $statusText = match($status) {
-                            'pending'  => 'รอตรวจสอบ',
+                        $paymentId = $payment->payment_id;
+
+                        $status = strtolower(
+                            (string) ($payment->status ?? 'pending')
+                        );
+
+                        $statusText = match ($status) {
+                            'pending' => 'รอตรวจสอบ',
                             'approved' => 'อนุมัติแล้ว',
                             'rejected' => 'ปฏิเสธ',
-                            default    => ucfirst($payment->status)
+                            default => $payment->status ?? '-',
                         };
-                        $statusClass = match($status) {
-                            'pending'  => 'status-pending',
-                            'approved' => 'status-approved',
-                            'rejected' => 'status-rejected',
-                            default    => 'status-pending'
+
+                        $statusClass = match ($status) {
+                            'pending' => 'pending',
+                            'approved' => 'approved',
+                            'rejected' => 'rejected',
+                            default => 'pending',
                         };
-                        $paymentId = $payment->payment_id ?? $payment->id;
 
-                        // ดึงรูปสลิป
-                        $slipImage = $payment->slip_path ?? $payment->slip_image ?? $payment->image ?? $payment->proof ?? null;
-                        $slipUrl = $slipImage ? (Str::startsWith($slipImage, ['http://', 'https://']) ? $slipImage : asset('storage/' . ltrim($slipImage, '/'))) : null;
+                        $rental = $payment->rental;
 
-                        $customerName = $payment->customer->name ?? $payment->rental->customer->name ?? 'ไม่ระบุชื่อ';
-                        $amountFormatted = number_format($payment->amount ?? 0, 2);
+                        $customer = $rental?->customer;
+
+                        $customerName = '';
+
+                        if ($customer) {
+                            $firstName = trim(
+                                (string) ($customer->first_name ?? '')
+                            );
+                            $lastName = trim(
+                                (string) ($customer->last_name ?? '')
+                            );
+                            $customerName = trim(
+                                $firstName . ' ' . $lastName
+                            );
+                        }
+
+                        if ($customerName === '') {
+                            $customerName = 'ไม่ระบุชื่อ';
+                        }
+
+                        $paymentAmount = (float) (
+                            $payment->payment_amount ?? 0
+                        );
+
+                        $paymentAmountFormatted = number_format(
+                            $paymentAmount,
+                            2
+                        );
+
+                        // ปรับแก้ระบบ URL รูปภาพให้ชี้ไปที่ uploads/slips
+                        $slipImage = trim(
+                            (string) ($payment->slip_image ?? '')
+                        );
+
+                        $slipUrl = null;
+
+                        if ($slipImage !== '') {
+                            if (
+                                str_starts_with(
+                                    $slipImage,
+                                    'http://'
+                                ) ||
+                                str_starts_with(
+                                    $slipImage,
+                                    'https://'
+                                )
+                            ) {
+                                $slipUrl = $slipImage;
+                            } else {
+                                $cleanedPath = preg_replace(
+                                    '/^(public\/|storage\/)+/',
+                                    '',
+                                    $slipImage
+                                );
+
+                                if (!str_starts_with($cleanedPath, 'uploads/')) {
+                                    $cleanedPath = 'uploads/' . ltrim($cleanedPath, '/');
+                                }
+
+                                $slipUrl = asset($cleanedPath);
+                            }
+                        }
+
+                        $paymentMethod = match (
+                            strtolower(
+                                (string) (
+                                    $payment->payment_method ?? ''
+                                )
+                            )
+                        ) {
+                            'cash' => 'เงินสด',
+                            'transfer' => 'โอนเงิน',
+                            'qr' => 'QR / PromptPay',
+                            'other' => 'อื่น ๆ',
+                            default => '-',
+                        };
+
+                        $paymentDate = '-';
+
+                        if ($payment->payment_date) {
+                            try {
+                                $paymentDate = $payment->payment_date
+                                    ->format('d/m/Y H:i');
+                            } catch (\Throwable $e) {
+                                $paymentDate = '-';
+                            }
+                        }
                     @endphp
+
+
                     <tr>
+
+                        {{-- PAYMENT CODE --}}
                         <td>
-                            <strong style="color: var(--maroon-900);">#PAY-{{ $paymentId }}</strong>
+
+                            <div class="payment-code">
+                                #PAY-{{ $paymentId }}
+                            </div>
+
+                            <div class="payment-date">
+                                {{ $paymentDate }}
+                            </div>
+
                         </td>
+
+
+                        {{-- CUSTOMER --}}
                         <td>
-                            <div style="font-weight: 650; color: #2d1e21;">{{ $customerName }}</div>
-                            <div style="font-size: 11px; color: var(--muted); margin-top: 2px;">เลขอ้างอิงเช่า: #{{ $payment->rental_id ?? '-' }}</div>
+
+                            <div class="payment-customer-name">
+                                {{ $customerName }}
+                            </div>
+
+                            <div class="payment-rental-reference">
+
+                                เลขอ้างอิงการเช่า:
+
+                                <strong>
+                                    #{{ $payment->rental_id ?? '-' }}
+                                </strong>
+
+                            </div>
+
+                            <div class="payment-method">
+
+                                <i class="fa-solid fa-wallet"></i>
+
+                                {{ $paymentMethod }}
+
+                            </div>
+
                         </td>
-                        <td style="text-align: center;">
+
+
+                        {{-- SLIP --}}
+                        <td class="slip-cell">
+
                             @if($slipUrl)
-                                <div class="slip-thumb-wrap" onclick="showSlipModal('{{ $slipUrl }}', 'PAY-{{ $paymentId }}', '{{ $customerName }}', '{{ $amountFormatted }}')">
-                                    <img src="{{ $slipUrl }}" alt="Slip" class="slip-thumb">
-                                    <span style="font-size: 11.5px; font-weight: 650; color: var(--maroon-800); text-decoration: underline;">ดูสลิป</span>
+
+                                <div
+                                    class="slip-preview"
+                                    onclick="showSlipModal(
+                                        @js($slipUrl),
+                                        @js('PAY-' . $paymentId),
+                                        @js($customerName),
+                                        @js($paymentAmountFormatted)
+                                    )"
+                                    title="คลิกเพื่อดูสลิป"
+                                >
+
+                                    <img
+                                        src="{{ $slipUrl }}"
+                                        alt="หลักฐานการโอนเงิน PAY-{{ $paymentId }}"
+                                        class="slip-image"
+                                        loading="lazy"
+                                        onerror="handleSlipError(this)"
+                                    >
+
+                                    <span class="slip-preview-text">
+                                        ดูสลิป
+                                    </span>
+
                                 </div>
+
                             @else
-                                <div style="display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 12px;">
-                                    <div class="slip-placeholder"><i class="fa-solid fa-image-slash"></i></div>
-                                    <span>ไม่มีสลิป</span>
+
+                                <div class="slip-empty">
+
+                                    <div class="slip-empty-icon">
+
+                                        <i class="fa-solid fa-image-slash"></i>
+
+                                    </div>
+
+                                    <span>
+                                        ไม่มีสลิป
+                                    </span>
+
                                 </div>
+
                             @endif
+
                         </td>
-                        <td style="text-align: center; font-weight: 750; color: var(--maroon-900);">
-                            ฿{{ $amountFormatted }}
+
+
+                        {{-- AMOUNT --}}
+                        <td>
+
+                            <div class="payment-amount">
+
+                                ฿{{ $paymentAmountFormatted }}
+
+                            </div>
+
                         </td>
-                        <td style="text-align: center;">
-                            <span class="status-badge {{ $statusClass }}">
-                                {{ $statusText }}
+
+
+                        {{-- STATUS --}}
+                        <td class="payment-status-cell">
+
+                            <span class="payment-status {{ $statusClass }}">
+
+                                @if($status === 'pending')
+                                    รอตรวจสอบ
+                                @elseif($status === 'approved')
+                                    อนุมัติแล้ว
+                                @elseif($status === 'rejected')
+                                    ปฏิเสธ
+                                @else
+                                    {{ $statusText }}
+                                @endif
+
                             </span>
+
                         </td>
-                        <td style="text-align: center;">
-                            @if($status == 'pending')
-                                <div class="action-group">
-                                    <form action="{{ route('owner.payments.approve', $paymentId) }}" method="POST" style="margin: 0;">
+
+
+                        {{-- ACTION --}}
+                        <td>
+
+                            @if($status === 'pending')
+
+                                <div class="payment-actions">
+
+                                    {{-- APPROVE --}}
+                                    <form
+                                        action="{{ route('owner.payments.approve', $paymentId) }}"
+                                        method="POST"
+                                        class="payment-action-form"
+                                        onsubmit="return confirmApprove(event, this)"
+                                    >
+
                                         @csrf
-                                        <button type="submit" class="btn-approve" onclick="return confirm('ยืนยันการอนุมัติยอดเงินนี้ใช่หรือไม่?')" title="อนุมัติ">
+
+                                        <button
+                                            type="submit"
+                                            class="payment-btn approve"
+                                            title="อนุมัติการชำระเงินนี้"
+                                        >
                                             <i class="fa-solid fa-check"></i> อนุมัติ
                                         </button>
+
                                     </form>
-                                    @if(Route::has('owner.payments.reject'))
-                                    <form action="{{ route('owner.payments.reject', $paymentId) }}" method="POST" style="margin: 0;">
+
+
+                                    {{-- REJECT --}}
+                                    <form
+                                        action="{{ route('owner.payments.reject', $paymentId) }}"
+                                        method="POST"
+                                        class="payment-action-form"
+                                        onsubmit="return confirmReject(event, this)"
+                                    >
+
                                         @csrf
-                                        <button type="submit" class="btn-reject" onclick="return confirm('ยืนยันการปฏิเสธรายการนี้ใช่หรือไม่?')" title="ปฏิเสธ">
+
+                                        <button
+                                            type="submit"
+                                            class="payment-btn reject"
+                                            title="ปฏิเสธการชำระเงินนี้"
+                                        >
                                             <i class="fa-solid fa-xmark"></i> ปฏิเสธ
                                         </button>
+
                                     </form>
-                                    @endif
+
                                 </div>
+
                             @else
-                                <span style="font-size: 12px; color: var(--muted); font-weight: 600;">ตรวจสอบแล้ว</span>
+
+                                <div style="text-align: center;">
+                                    <span class="payment-checked">
+                                        <i class="fa-solid fa-lock"></i> ดำเนินการแล้ว
+                                    </span>
+                                </div>
+
                             @endif
+
                         </td>
+
                     </tr>
-                    @empty
+
+                @empty
+
                     <tr>
                         <td colspan="6">
-                            <div class="empty-state">
-                                <div class="empty-icon"><i class="fa-solid fa-receipt"></i></div>
-                                <div style="font-weight: 600; font-size: 14px; color: var(--maroon-900);">ไม่พบรายการชำระเงินในสถานะนี้</div>
-                                <div style="font-size: 12px; margin-top: 4px;">ลองคลิก "แสดงทั้งหมด" เพื่อดูรายการชำระเงินทั้งหมดในระบบ</div>
+                            <div class="payment-empty">
+                                <div class="payment-empty-icon">
+                                    <i class="fa-solid fa-receipt"></i>
+                                </div>
+                                <div class="payment-empty-title">
+                                    ไม่พบรายการชำระเงิน
+                                </div>
+                                <div class="payment-empty-text">
+                                    ยังไม่มีประวัติการชำระเงินในระบบขณะนี้
+                                </div>
                             </div>
                         </td>
                     </tr>
-                    @endforelse
+
+                @endforelse
+
                 </tbody>
+
             </table>
+
         </div>
 
-        <!-- PAGINATION -->
+
+        {{-- =====================================================
+             PAGINATION
+        ====================================================== --}}
+
         @if(method_exists($payments, 'hasPages') && $payments->hasPages())
-            <div style="padding: 16px 20px; background: var(--cream); border-top: 1px solid var(--line);">
+            <div class="payment-pagination">
                 {{ $payments->links() }}
             </div>
         @endif
+
     </div>
+
 </div>
 
-<!-- SLIP LIGHTBOX MODAL -->
+@endsection
+
+@push('scripts')
 <script>
-    function showSlipModal(imageUrl, payCode, customerName, amount) {
+    /**
+     * แสดง Modal รูปสลิปด้วย SweetAlert2
+     */
+    function showSlipModal(url, code, customer, amount) {
         Swal.fire({
-            title: `<span style="color: #430d17; font-size: 18px; font-weight: 700;">หลักฐานการโอนเงิน (${payCode})</span>`,
+            title: `หลักฐานการโอนเงิน #${code}`,
             html: `
-                <div style="margin-bottom: 12px; font-size: 13px; color: #440e18; background: #f7e7ea; padding: 8px 12px; border-radius: 8px;">
-                    ลูกค้า: <strong>${customerName}</strong> | ยอดโอน: <strong style="color: #6f1a2b;">฿${amount}</strong>
+                <div style="font-size: 13px; margin-bottom: 12px; color: #5c1522;">
+                    <strong>ลูกค้า:</strong> ${customer} | <strong>ยอดเงิน:</strong> ฿${amount}
                 </div>
-                <div style="background: #faf7f4; padding: 12px; border-radius: 12px; border: 1px solid #efe6e4; max-height: 500px; overflow-y: auto; text-align: center;">
-                    <img src="${imageUrl}" alt="Payment Slip" style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.15);">
+                <div style="max-height: 450px; overflow-y: auto; border-radius: 8px;">
+                    <img src="${url}" style="max-width: 100%; height: auto; border-radius: 8px;" alt="Slip Image">
                 </div>
             `,
-            width: '620px',
             showCloseButton: true,
             showConfirmButton: false,
-            focusConfirm: false
+            customClass: {
+                popup: 'kyrix-swal-popup'
+            }
         });
     }
+
+    /**
+     * จัดการภาพสลิปกรณีโหลดรูปไม่สำเร็จ
+     */
+    function handleSlipError(img) {
+        img.onerror = null;
+        img.parentElement.innerHTML = `
+            <div class="slip-empty">
+                <div class="slip-empty-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                <span>โหลดรูปไม่สำเร็จ</span>
+            </div>
+        `;
+    }
+
+    /**
+     * ยืนยันการอนุมัติ
+     */
+    function confirmApprove(event, form) {
+        event.preventDefault();
+        Swal.fire({
+            title: 'ยืนยันการอนุมัติ?',
+            text: "คุณต้องการอนุมัติรายการชำระเงินนี้ใช่หรือไม่",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#2e7d32',
+            cancelButtonColor: '#8a7a7d',
+            confirmButtonText: 'ใช่, อนุมัติเลย',
+            cancelButtonText: 'ยกเลิก',
+            customClass: { popup: 'kyrix-swal-popup' }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+        return false;
+    }
+
+    /**
+     * ยืนยันการปฏิเสธ
+     */
+    function confirmReject(event, form) {
+        event.preventDefault();
+        Swal.fire({
+            title: 'ยืนยันการปฏิเสธ?',
+            text: "คุณต้องการปฏิเสธรายการชำระเงินนี้ใช่หรือไม่",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#c62828',
+            cancelButtonColor: '#8a7a7d',
+            confirmButtonText: 'ใช่, ปฏิเสธรายการ',
+            cancelButtonText: 'ยกเลิก',
+            customClass: { popup: 'kyrix-swal-popup' }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+        return false;
+    }
 </script>
-@endsection
+@endpush

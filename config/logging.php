@@ -107,8 +107,8 @@ return [
 
         'syslog' => [
             'driver' => 'syslog',
-            'level' => env('LOG_LEVEL', 'debug'),
             'facility' => env('LOG_SYSLOG_FACILITY', LOG_USER),
+            'level' => env('LOG_LEVEL', 'debug'),
             'replace_placeholders' => true,
         ],
 

@@ -10,6 +10,7 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\RentalController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\SocialAuthController;
 
 use App\Http\Controllers\Owner\OwnerDashboardController;
 use App\Http\Controllers\Owner\OwnerDressController;
@@ -19,19 +20,16 @@ use App\Http\Controllers\Owner\OwnerReturnController;
 use App\Http\Controllers\Owner\OwnerCustomerController;
 use App\Http\Controllers\Owner\OwnerReportController;
 
-
 /*
 |--------------------------------------------------------------------------
 | KYRIX Dress Rental
 |--------------------------------------------------------------------------
 */
 
-
 /* =========================
    PUBLIC
 ========================= */
 
-// แก้ไข: ลบ <<<<<<< HEAD, ======= และ >>>>>>> ที่เป็น Git Merge Conflict ออก
 Route::get('/', [HomeController::class, 'index'])
     ->name('home');
 
@@ -46,7 +44,6 @@ Route::get('/dresses/{id}', [ProductController::class, 'show'])
    CART
 ========================= */
 
-// แก้ไข: ลบส่วน Git Merge Conflict ออก และคง route เดิมไว้เพียงชุดเดียว
 Route::prefix('cart')->name('cart.')->group(function () {
 
     Route::get('/', [CartController::class, 'index'])
@@ -70,7 +67,6 @@ Route::prefix('cart')->name('cart.')->group(function () {
    AUTH
 ========================= */
 
-// แก้ไข: ลบส่วน Git Merge Conflict ออก
 Route::get('/login', [AuthController::class, 'showLogin'])
     ->name('login');
 
@@ -94,10 +90,17 @@ Route::post('/logout', [AuthController::class, 'logout'])
 
 
 /* =========================
+   SOCIAL LOGIN
+========================= */
+
+Route::get('/auth/{provider}', [SocialAuthController::class, 'redirect'])
+    ->name('social.redirect');
+
+
+/* =========================
    CUSTOMER
 ========================= */
 
-// แก้ไข: ลบ Git Merge Conflict ที่ซ้ำกันออก
 Route::middleware('customer')->group(function () {
 
     Route::get('/customer/dashboard', function () {
@@ -172,11 +175,11 @@ Route::middleware('customer')->group(function () {
    ใช้ Laravel Auth + OwnerMiddleware
 ========================= */
 
-// แก้ไข: รวม Route middleware ของ Owner ที่ซ้ำกันให้เหลือเพียงชุดเดียว
 Route::middleware(['auth', 'owner'])
     ->prefix('owner')
     ->name('owner.')
     ->group(function () {
+
 
         /* ===== DASHBOARD ===== */
 
@@ -304,7 +307,6 @@ Route::middleware(['auth', 'owner'])
                     [OwnerCustomerController::class, 'index']
                 )->name('index');
 
-                // แก้ไข: เก็บ CRUD ลูกค้าไว้ตามโค้ดเดิมส่วนล่าง เพราะมี create/edit/update/delete ครบกว่า
                 Route::get(
                     '/create',
                     [OwnerCustomerController::class, 'create']

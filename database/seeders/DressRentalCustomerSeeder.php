@@ -312,8 +312,8 @@ class DressRentalCustomerSeeder extends Seeder
         $customer = Customer::firstOrCreate(
             ['user_id' => $customerUser->user_id],
             [
-                'phone' => '089-123-4567',
-                'address' => '88/9 คอนโดพาร์ควิลล่า ถ.สุขุมวิท 55 แขวงคลองตันเหนือ เขตวัฒนา กรุงเทพฯ 10110',
+                'phone' => '0652599072',
+                'address' => '77 ตำบลในเมือง อำเภอเมือง จังหวัดนครราชสีมา 30000',
             ]
         );
 

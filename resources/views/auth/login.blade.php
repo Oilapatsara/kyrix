@@ -1,15 +1,20 @@
 <!DOCTYPE html>
+
 <html lang="th">
 
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>เข้าสู่ระบบ | KYRIX</title>
+
     <style>
         * {
             box-sizing: border-box;
             margin: 0;
-            padding: 0
+            padding: 0;
         }
 
         body {
@@ -19,15 +24,17 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #302a27
+            color: #302a27;
+            padding: 20px;
         }
 
         .box {
             width: 420px;
+            max-width: 100%;
             background: #fff;
             border-radius: 24px;
             padding: 40px;
-            box-shadow: 0 15px 50px rgba(0, 0, 0, .08)
+            box-shadow: 0 15px 50px rgba(0, 0, 0, .08);
         }
 
         .logo {
@@ -35,34 +42,35 @@
             font-size: 32px;
             font-weight: 800;
             color: #7a1f2b;
-            margin-bottom: 8px
+            margin-bottom: 8px;
         }
 
         .subtitle {
             text-align: center;
             color: #777;
-            margin-bottom: 30px
+            margin-bottom: 30px;
         }
 
         label {
             display: block;
             font-size: 14px;
             font-weight: 600;
-            margin-bottom: 8px
+            margin-bottom: 8px;
         }
 
-        input {
+        input[type="email"],
+        input[type="password"] {
             width: 100%;
             padding: 13px 14px;
             border: 1px solid #ddd;
             border-radius: 10px;
             margin-bottom: 18px;
-            font-size: 15px
+            font-size: 15px;
         }
 
         input:focus {
             outline: none;
-            border-color: #7a1f2b
+            border-color: #7a1f2b;
         }
 
         .btn {
@@ -74,19 +82,29 @@
             color: #fff;
             font-weight: 700;
             font-size: 15px;
-            cursor: pointer
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        .btn:hover {
+            background: #601722;
         }
 
         .link {
             text-align: center;
             margin-top: 20px;
-            font-size: 14px
+            font-size: 14px;
+            line-height: 1.8;
         }
 
         .link a {
             color: #7a1f2b;
             text-decoration: none;
-            font-weight: 600
+            font-weight: 600;
+        }
+
+        .link a:hover {
+            text-decoration: underline;
         }
 
         .error {
@@ -95,48 +113,203 @@
             padding: 12px;
             border-radius: 10px;
             margin-bottom: 18px;
-            font-size: 14px
+            font-size: 14px;
         }
 
         .remember {
             display: flex;
             align-items: center;
             gap: 8px;
-            margin-bottom: 18px;
-            font-size: 14px
+            font-size: 14px;
+            cursor: pointer;
         }
 
         .remember input {
             width: auto;
-            margin: 0
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .social-login {
+            margin-top: 24px;
+        }
+
+        .social-divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #999;
+            font-size: 13px;
+            margin: 22px 0;
+        }
+
+        .social-divider::before,
+        .social-divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #e5e5e5;
+        }
+
+        .social-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background: #fff;
+            color: #302a27;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            transition: .2s;
+        }
+
+        .social-btn:hover {
+            background: #fafafa;
+            border-color: #bbb;
+        }
+
+        .social-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 22px;
+            height: 22px;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .google-icon {
+            color: #4285F4;
+        }
+
+        .facebook-icon {
+            color: #1877F2;
+        }
+
+        @media (max-width: 480px) {
+            .box {
+                padding: 28px 22px;
+                border-radius: 18px;
+            }
         }
     </style>
+
 </head>
 
 <body>
+
     <div class="box">
+
         <div class="logo">KYRIX</div>
-        <div class="subtitle">เข้าสู่ระบบร้านเช่าชุด</div>
+
+        <div class="subtitle">
+            เข้าสู่ระบบร้านเช่าชุด
+        </div>
+
         @if ($errors->any())
-            <div class="error">{{ $errors->first() }}</div>
-        @endif
-        <form method="POST" action="{{ route('login.submit') }}">
-            @csrf
-            <label>อีเมล</label>
-            <input type="email" name="email" value="{{ old('email') }}" placeholder="กรอกอีเมล" required>
-            <label>รหัสผ่าน</label>
-            <input type="password" name="password" placeholder="กรอกรหัสผ่าน" required>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; font-size: 14px;">
-                <label class="remember" style="margin-bottom: 0;">
-                    <input type="checkbox" name="remember" value="1">
-                    จดจำการเข้าสู่ระบบ
-                </label>
-                <a href="{{ route('password.request') }}" style="color: #7a1f2b; text-decoration: none; font-weight: 600;">ลืมรหัสผ่าน?</a>
+            <div class="error">
+                {{ $errors->first() }}
             </div>
-            <button type="submit" class="btn">เข้าสู่ระบบ</button>
+        @endif
+
+        {{-- Login ด้วยอีเมลและรหัสผ่าน --}}
+
+        <form method="POST" action="{{ route('login.submit') }}">
+
+            @csrf
+
+            <label for="email">อีเมล</label>
+
+            <input type="email" id="email" name="email" value="{{ old('email') }}" placeholder="กรอกอีเมล"
+                required autocomplete="email">
+
+            <label for="password">รหัสผ่าน</label>
+
+            <input type="password" id="password" name="password" placeholder="กรอกรหัสผ่าน" required
+                autocomplete="current-password">
+
+            <div
+                style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 18px;
+                font-size: 14px;
+                gap: 10px;
+            ">
+
+                <label class="remember">
+
+                    <input type="checkbox" name="remember" value="1">
+
+                    <span>จดจำการเข้าสู่ระบบ</span>
+
+                </label>
+
+                <a href="{{ route('password.request') }}"
+                    style="
+                        color: #7a1f2b;
+                        text-decoration: none;
+                        font-weight: 600;
+                        white-space: nowrap;
+                    ">
+                    ลืมรหัสผ่าน?
+                </a>
+
+            </div>
+
+            <button type="submit" class="btn">
+                เข้าสู่ระบบ
+            </button>
+
         </form>
-        <div class="link">ยังไม่มีบัญชี? <a href="{{ route('register') }}">สมัครสมาชิก</a> | <a href="{{ route('home') }}">กลับหน้าหลัก</a></div>
+
+        {{-- Social Login --}}
+
+        <div class="social-login">
+
+            <div class="social-divider">
+                หรือเข้าสู่ระบบด้วย
+            </div>
+
+            {{-- Google --}}
+
+           <a href="{{ route('social.redirect', 'google') }}" class="social-btn">
+    <span class="social-icon google-icon">G</span>
+    <span>เข้าสู่ระบบด้วย Google</span>
+            </a>
+
+            {{-- Facebook --}}
+
+            <a href="{{ route('social.redirect', ['provider' => 'facebook']) }}" class="social-btn">
+                <span class="social-icon facebook-icon">f</span>
+                <span>เข้าสู่ระบบด้วย Facebook</span>
+            </a>
+
+        </div>
+
+        {{-- Links --}}
+
+        <div class="link">
+
+            ยังไม่มีบัญชี?
+
+            <a href="{{ route('register') }}">สมัครสมาชิก</a>
+
+            |
+
+            <a href="{{ route('home') }}">กลับหน้าหลัก</a>
+
+        </div>
+
     </div>
+
 </body>
 
 </html>
