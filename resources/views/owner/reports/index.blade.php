@@ -41,22 +41,34 @@
     .dash-header {
         display: flex;
         justify-content: space-between;
-        align-items: center;
+        align-items: flex-end;
         margin-bottom: 24px;
-        padding-bottom: 16px;
-        border-bottom: 1px solid var(--line);
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+    .page-eyebrow {
+        display: inline-block;
+        color: #a97f45;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        margin-bottom: 6px;
     }
     .dash-title h1 {
-        font-size: 22px;
-        font-weight: 800;
-        color: var(--maroon-900);
-        margin: 0 0 4px;
-        letter-spacing: -0.5px;
+        font-family: 'Prompt', sans-serif;
+        font-size: 28px;
+        font-weight: 700;
+        color: #430d17;
+        margin: 0;
+        line-height: 1.25;
+        letter-spacing: -0.3px;
     }
     .dash-title p {
         font-size: 13px;
         color: var(--muted);
-        margin: 0;
+        margin: 6px 0 0;
+        font-weight: 400;
     }
 
     .btn-action {
@@ -232,6 +244,7 @@
     <!-- Header หน้าจอปกติ -->
     <div class="dash-header">
         <div class="dash-title">
+            <span class="page-eyebrow">KYRIX RENTAL · REPORTS</span>
             <h1>รายงานผลประกอบการและสถิติ</h1>
             <p>วิเคราะห์ภาพรวมรายได้ ยอดจอง และความนิยมของชุดภายในร้าน</p>
         </div>

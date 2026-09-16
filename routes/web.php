@@ -210,6 +210,23 @@ Route::middleware(['auth', 'owner'])
                     [OwnerDressController::class, 'store']
                 )->name('store');
 
+                /* Categories */
+                Route::post(
+                    '/categories/store',
+                    [OwnerDressController::class, 'storeCategory']
+                )->name('categories.store');
+
+                Route::post(
+                    '/categories/{id}/update',
+                    [OwnerDressController::class, 'updateCategory']
+                )->name('categories.update');
+
+                Route::delete(
+                    '/categories/{id}/delete',
+                    [OwnerDressController::class, 'destroyCategory']
+                )->name('categories.destroy');
+
+                /* Item Operations */
                 Route::get(
                     '/{id}/edit',
                     [OwnerDressController::class, 'edit']
@@ -229,22 +246,6 @@ Route::middleware(['auth', 'owner'])
                     '/{id}/toggle-status',
                     [OwnerDressController::class, 'toggleStatus']
                 )->name('toggle-status');
-
-                Route::post(
-                    '/categories/store',
-                    [OwnerDressController::class, 'storeCategory']
-                )->name('categories.store');
-
-                Route::post(
-                    '/categories/{id}/update',
-                    [OwnerDressController::class, 'updateCategory']
-                )->name('categories.update');
-
-                Route::delete(
-                    '/categories/{id}/delete',
-                    [OwnerDressController::class, 'destroyCategory']
-                )->name('categories.destroy');
-
             });
 
 
