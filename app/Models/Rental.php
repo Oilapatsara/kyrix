@@ -56,7 +56,7 @@ class Rental extends Model
         return asset($this->refund_slip);
     }
 
-    // Accessor: Step Index for Timeline (1 to 8)
+    // Accessor: Step Index for Timeline (1 to 7)
     public function getStepIndexAttribute(): int
     {
         return match($this->status) {
@@ -64,10 +64,9 @@ class Rental extends Model
             'pending_verification' => 2,
             'confirmed' => 3,
             'ready_pickup' => 4,
-            'renting' => 5,
-            'pending_return' => 6,
-            'returned' => 7,
-            'completed' => 8,
+            'renting', 'pending_return' => 5,
+            'returned' => 6,
+            'completed' => 7,
             default => 1,
         };
     }

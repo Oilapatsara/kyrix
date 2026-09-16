@@ -630,7 +630,6 @@
 
                         $statusText = match($status) {
                             'confirmed' => 'ยืนยันแล้ว',
-                            'ready_pickup' => 'รอรับชุด',
                             'renting', 'active' => 'กำลังเช่า',
                             'pending_return' => 'ลูกค้าแจ้งคืนแล้ว',
                             'overdue' => $daysLate ? 'เกินกำหนด ' . $daysLate . ' วัน' : 'เกินกำหนด',
@@ -638,7 +637,7 @@
                             default => ucfirst($rental->status)
                         };
                         $statusClass = match($status) {
-                            'confirmed', 'ready_pickup', 'renting', 'active' => 'status-active',
+                            'confirmed', 'renting', 'active' => 'status-active',
                             'pending_return' => 'status-overdue',
                             'overdue' => 'status-overdue',
                             'returned', 'completed' => 'status-returned',
@@ -706,7 +705,7 @@
                             @if(!in_array($rawStatus, ['returned', 'completed']))
                                 <div class="action-stack">
                                     <button type="button" class="btn-return {{ $status === 'overdue' ? 'is-urgent' : '' }}" 
-                                        onclick="openInspectionModal('{{ $rentalId }}', '{{ $rental->formatted_code ?? ('KR-' . $rentalId) }}', '{{ addslashes($customerName) }}', '{{ $contactPhone }}', '{{ number_format($rental->deposit_amount ?: 100, 2) }}', '{{ addslashes($itemSummary) }}')">
+                                        onclick="openInspectionModal('{{ $rentalId }}', '{{ $rental->formatted_code ?? ('KR-' . $rentalId) }}', '{{ addslashes($customerName) }}', '{{ $contactPhone }}', '100.00', '{{ addslashes($itemSummary) }}')">
                                         <i class="fa-solid fa-clipboard-check"></i> ตรวจรับคืน & จัดการมัดจำ
                                     </button>
 
@@ -723,7 +722,7 @@
                                             <i class="fa-solid fa-circle-check"></i> ชุดสมบูรณ์
                                         </span>
                                         <span style="font-size: 11px; color: #16a34a; font-weight: 700;">
-                                            คืนมัดจำแล้ว ฿{{ number_format($rental->deposit_refund_amount ?: ($rental->deposit_amount ?: 100), 2) }}
+                                            คืนมัดจำแล้ว ฿100.00
                                         </span>
                                         @if($rental->refund_slip)
                                             <a href="{{ $rental->refund_slip_url }}" target="_blank" style="font-size: 11px; color: var(--gold-dark); text-decoration: underline; margin-top: 2px;">
@@ -735,7 +734,7 @@
                                             <i class="fa-solid fa-triangle-exclamation"></i> ชุดชำรุดเสียหาย
                                         </span>
                                         <span style="font-size: 11px; color: #dc2626; font-weight: 700;">
-                                            ยึดมัดจำ ฿{{ number_format($rental->deposit_amount ?: 100, 2) }} (ไม่คืนเงิน)
+                                            ยึดมัดจำ ฿100.00 (ไม่คืนเงิน)
                                         </span>
                                         @if($rental->damage_note)
                                             <span style="font-size: 10.5px; color: #888; max-width: 140px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ $rental->damage_note }}">

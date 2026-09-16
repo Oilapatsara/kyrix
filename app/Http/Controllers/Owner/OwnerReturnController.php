@@ -96,7 +96,8 @@ class OwnerReturnController extends Controller
             $refundSlipPath = 'uploads/returns/' . $filename;
         }
 
-        $depositAmount = (float)($rental->deposit_amount ?: 100);
+        // เงินมัดจำประกันชุดกำหนดไว้ที่ 100 บาทเสมอ (ไม่เกี่ยวกับค่าเช่าชุด)
+        $depositAmount = 100.00;
 
         if ($condition === 'good') {
             $depositStatus = 'refunded';

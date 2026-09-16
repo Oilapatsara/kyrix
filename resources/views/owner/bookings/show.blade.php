@@ -254,7 +254,6 @@
             'pending', 'pending_payment' => 'รอชำระเงิน',
             'pending_verification' => 'รอตรวจสอบสลิป',
             'confirmed' => 'ยืนยันแล้ว',
-            'ready_pickup' => 'รอรับชุด',
             'renting'   => 'กำลังเช่า',
             'returned'  => 'คืนชุดแล้ว',
             'completed' => 'เสร็จสิ้น',
@@ -264,7 +263,6 @@
         $statusClass = match($statusCode) {
             'pending', 'pending_payment', 'pending_verification' => 'status-pending',
             'confirmed' => 'status-confirmed',
-            'ready_pickup' => 'status-confirmed',
             'renting'   => 'status-renting',
             'pending_return' => 'status-pending',
             'returned'  => 'status-returned',
@@ -349,28 +347,14 @@
                 </div>
             </div>
 
-            <!-- ประวัติการชำระเงิน & แจกแจงยอดเงิน -->
+            <!-- ประวัติการชำระเงิน & ยอดเงินรวม -->
             <div class="detail-card">
                 <div class="card-title">
-                    <i class="fa-solid fa-receipt"></i> ข้อมูลการชำระเงิน & เงินมัดจำ
+                    <i class="fa-solid fa-receipt"></i> ข้อมูลการชำระเงิน
                 </div>
                 <div class="info-row">
-                    <span class="info-label">ค่าเช่าชุด (100%)</span>
-                    <span class="info-value" style="color: var(--maroon-900);">฿{{ number_format($rental->total_amount, 2) }}</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">เงินมัดจำประกันชุด</span>
-                    <span class="info-value" style="color: #b45309; font-weight: 700;">฿{{ number_format($rental->deposit_amount, 2) }}</span>
-                </div>
-                @if($rental->service_fee > 0)
-                <div class="info-row">
-                    <span class="info-label">บริการเสริม ({{ $rental->service_type ?? 'มาตรฐาน' }})</span>
-                    <span class="info-value">฿{{ number_format($rental->service_fee, 2) }}</span>
-                </div>
-                @endif
-                <div class="info-row" style="border-top: 1.5px solid var(--line); margin-top: 4px; padding-top: 8px;">
-                    <span class="info-label" style="font-weight: 750; color: var(--maroon-900);">ยอดรวมสุทธิที่ต้องชำระ</span>
-                    <span class="info-value" style="font-size: 16px; font-weight: 800; color: var(--maroon-900);">฿{{ number_format($rental->grand_total, 2) }}</span>
+                    <span class="info-label" style="font-weight: 750; color: var(--maroon-900);">ยอดรวมสุทธิ</span>
+                    <span class="info-value" style="font-size: 18px; font-weight: 800; color: var(--maroon-900);">฿{{ number_format($rental->grand_total, 2) }}</span>
                 </div>
 
                 <div style="margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--line);">
@@ -399,76 +383,6 @@
                     @endforelse
                 </div>
             </div>
-
-            <!-- ผลการตรวจรับชุด & สถานะเงินมัดจำ (ถ้ามีการตรวจรับแล้ว) -->
-            @if(in_array($rental->status, ['returned', 'completed']) || $rental->condition_status)
-            <div class="detail-card" style="border: 2px solid {{ $rental->condition_status === 'damaged' ? '#fecaca' : '#bbf7d0' }}; background: {{ $rental->condition_status === 'damaged' ? '#fffdfd' : '#fafffa' }};">
-                <div class="card-title" style="color: {{ $rental->condition_status === 'damaged' ? '#dc2626' : '#166534' }};">
-                    <i class="fa-solid fa-clipboard-check"></i> ผลการตรวจสภาพชุด & จัดการเงินมัดจำ
-                </div>
-                <div class="info-row">
-                    <span class="info-label">สภาพชุดที่ตรวจรับ</span>
-                    <span class="info-value">
-                        @if($rental->condition_status === 'good')
-                            <span style="color: #166534; font-weight: 750;"><i class="fa-solid fa-circle-check"></i> ชุดสมบูรณ์ ไม่พบความเสียหาย</span>
-                        @elseif($rental->condition_status === 'damaged')
-                            <span style="color: #dc2626; font-weight: 750;"><i class="fa-solid fa-triangle-exclamation"></i> ตรวจพบชุดชำรุด/เสียหาย</span>
-                        @else
-                            <span style="color: #666;">รับคืนแล้ว</span>
-                        @endif
-                    </span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">การจัดการเงินมัดจำ</span>
-                    <span class="info-value">
-                        @if($rental->deposit_status === 'refunded')
-                            <span style="color: #166534; font-weight: 750;">
-                                คืนเงินมัดจำ ฿{{ number_format($rental->deposit_refund_amount ?: $rental->deposit_amount ?: 100, 2) }} ทันที
-                            </span>
-                        @elseif($rental->deposit_status === 'forfeited' || $rental->condition_status === 'damaged')
-                            <span style="color: #dc2626; font-weight: 750;">
-                                ยึดเงินมัดจำ ฿{{ number_format($rental->deposit_amount ?: 100, 2) }} (ไม่คืนเงิน)
-                            </span>
-                        @else
-                            <span style="color: #d97706;">รอดำเนินการ</span>
-                        @endif
-                    </span>
-                </div>
-                @if($rental->damage_note)
-                <div class="info-row">
-                    <span class="info-label">สาเหตุความเสียหาย</span>
-                    <span class="info-value" style="color: #dc2626;">{{ $rental->damage_note }}</span>
-                </div>
-                @endif
-                @if($rental->inspected_at)
-                <div class="info-row">
-                    <span class="info-label">วันเวลาที่ตรวจรับ</span>
-                    <span class="info-value">{{ $rental->inspected_at->format('d/m/Y H:i') }} น.</span>
-                </div>
-                @endif
-
-                @if($rental->refund_slip || $rental->damage_image)
-                <div style="display: flex; gap: 14px; margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--line);">
-                    @if($rental->refund_slip)
-                    <div>
-                        <div style="font-size: 11px; color: var(--muted); margin-bottom: 4px;">สลิปคืนเงินมัดจำ:</div>
-                        <a href="{{ $rental->refund_slip_url }}" target="_blank">
-                            <img src="{{ $rental->refund_slip_url }}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd;" alt="สลิปโอนคืน">
-                        </a>
-                    </div>
-                    @endif
-                    @if($rental->damage_image)
-                    <div>
-                        <div style="font-size: 11px; color: #dc2626; margin-bottom: 4px;">ภาพหลักฐานความเสียหาย:</div>
-                        <a href="{{ $rental->damage_image_url }}" target="_blank">
-                            <img src="{{ $rental->damage_image_url }}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid #fca5a5;" alt="รูปความเสียหาย">
-                        </a>
-                    </div>
-                    @endif
-                </div>
-                @endif
-            </div>
-            @endif
         </div>
 
         <!-- RIGHT COLUMN -->
@@ -511,24 +425,22 @@
                     <span class="info-value" style="font-size: 18px; font-weight: 800; color: var(--maroon-900);">฿{{ number_format($rental->grand_total, 2) }}</span>
                 </div>
 
-                <!-- ฟอร์มเปลี่ยนสถานะ -->
-                <div style="margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--line);">
-                    <form action="{{ route('owner.bookings.updateStatus', $rentalId) }}" method="POST">
-                        @csrf
-                        <div class="form-group">
-                            <label class="form-label">อัปเดตสถานะการเช่า</label>
-                            <select name="status" class="form-control" required>
-                                <option value="pending_payment" {{ in_array($statusCode, ['pending', 'pending_payment']) ? 'selected' : '' }}>รอชำระเงิน</option>
-                                <option value="pending_verification" {{ $statusCode == 'pending_verification' ? 'selected' : '' }}>รอตรวจสอบสลิป</option>
-                                <option value="confirmed" {{ $statusCode == 'confirmed' ? 'selected' : '' }}>ยืนยันแล้ว</option>
-                                <option value="ready_pickup" {{ $statusCode == 'ready_pickup' ? 'selected' : '' }}>รอรับชุด</option>
-                                <option value="renting" {{ $statusCode == 'renting' ? 'selected' : '' }}>กำลังเช่า</option>
-                                <option value="pending_return" {{ $statusCode == 'pending_return' ? 'selected' : '' }}>รอตรวจรับคืน</option>
-                                <option value="returned" {{ $statusCode == 'returned' ? 'selected' : '' }}>คืนชุดแล้ว</option>
-                                <option value="completed" {{ $statusCode == 'completed' ? 'selected' : '' }}>เสร็จสิ้น</option>
-                                <option value="cancelled" {{ $statusCode == 'cancelled' ? 'selected' : '' }}>ยกเลิก</option>
-                            </select>
-                        </div>
+                    <!-- ฟอร์มเปลี่ยนสถานะ -->
+                    <div style="margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--line);">
+                        <form action="{{ route('owner.bookings.updateStatus', $rentalId) }}" method="POST">
+                            @csrf
+                            <div class="form-group">
+                                <label class="form-label">อัปเดตสถานะการเช่า</label>
+                                <select name="status" class="form-control" required>
+                                    <option value="pending_payment" {{ in_array($statusCode, ['pending', 'pending_payment']) ? 'selected' : '' }}>รอชำระเงิน</option>
+                                    <option value="pending_verification" {{ $statusCode == 'pending_verification' ? 'selected' : '' }}>รอตรวจสอบสลิป</option>
+                                    <option value="confirmed" {{ $statusCode == 'confirmed' ? 'selected' : '' }}>ยืนยันแล้ว</option>
+                                    <option value="renting" {{ $statusCode == 'renting' ? 'selected' : '' }}>กำลังเช่า</option>
+                                    <option value="returned" {{ $statusCode == 'returned' ? 'selected' : '' }}>คืนชุดแล้ว</option>
+                                    <option value="completed" {{ $statusCode == 'completed' ? 'selected' : '' }}>เสร็จสิ้น</option>
+                                    <option value="cancelled" {{ $statusCode == 'cancelled' ? 'selected' : '' }}>ยกเลิก</option>
+                                </select>
+                            </div>
                         <div class="form-group">
                             <label class="form-label">หมายเหตุ / Tracking Number</label>
                             <input type="text" name="tracking_number" value="{{ $rental->tracking_number ?? '' }}" class="form-control" placeholder="กรอกเลขพัสดุขนส่ง (ถ้ามี)">

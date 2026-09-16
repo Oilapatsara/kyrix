@@ -178,7 +178,6 @@
                             'pending', 'pending_payment' => 'รอชำระเงิน',
                             'pending_verification' => 'รอตรวจสอบสลิป',
                             'confirmed' => 'ยืนยันแล้ว',
-                            'ready_pickup' => 'รอรับชุด',
                             'renting'   => 'กำลังเช่า',
                             'pending_return' => 'รอตรวจรับคืน',
                             'returned'  => 'คืนชุดแล้ว',
@@ -189,7 +188,6 @@
                         $statusClass = match($statusCode) {
                             'pending', 'pending_payment', 'pending_verification' => 'status-pending',
                             'confirmed' => 'status-confirmed',
-                            'ready_pickup' => 'status-confirmed',
                             'renting'   => 'status-renting',
                             'pending_return' => 'status-pending',
                             'returned'  => 'status-returned',

@@ -226,18 +226,17 @@
             </div>
         </div>
 
-        <!-- 8-Stage Tracker Timeline -->
+        <!-- 7-Stage Tracker Timeline -->
         @php
             $step = $rental->step_index;
             $progressPercent = match($step) {
                 1 => 0,
-                2 => 14,
-                3 => 28,
-                4 => 42,
-                5 => 57,
-                6 => 71,
-                7 => 85,
-                8 => 100,
+                2 => 17,
+                3 => 33,
+                4 => 50,
+                5 => 67,
+                6 => 83,
+                7 => 100,
                 default => 0,
             };
             $stages = [
