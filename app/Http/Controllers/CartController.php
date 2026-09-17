@@ -59,7 +59,7 @@ class CartController extends Controller
             'days' => $days,
             'daily_price' => (float)$product->rental_price,
             'subtotal' => (float)$product->rental_price * $days,
-            'deposit' => (float)$product->deposit,
+            'deposit' => 100.00,
             'service_type' => $serviceType,
             'service_fee' => $serviceFee,
         ];
