@@ -564,11 +564,11 @@
             </div>
             <div class="hero-stats">
                 <div class="hero-stat-item">
-                    <h3>500+</h3>
+                    <h3>50+</h3>
                     <p>ชุดสวยพร้อมให้เช่า</p>
                 </div>
                 <div class="hero-stat-item">
-                    <h3>1,200+</h3>
+                    <h3>10+</h3>
                     <p>ลูกค้าพึงพอใจ</p>
                 </div>
                 <div class="hero-stat-item">
