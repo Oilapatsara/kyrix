@@ -57,13 +57,9 @@ class SocialAuthController extends Controller
                     'password' => Str::random(32),
 
                     'provider' => $provider,
-
                     'provider_id' => $socialUser->getId(),
-
                     'avatar' => $socialUser->getAvatar(),
-
                     'role' => 'customer',
-
                     'status' => 1,
                 ]);
             } else {
@@ -75,18 +71,30 @@ class SocialAuthController extends Controller
                 ]);
             }
 
-            // ค้นหาหรือสร้างข้อมูลในตาราง customers สำหรับระบบฝั่งลูกค้า
-            $rawName = trim($socialUser->getName() ?: $socialUser->getNickname() ?: 'ผู้ใช้งาน Google');
+            // ค้นหาหรือสร้างข้อมูลในตาราง customers
+            $rawName = trim(
+                $socialUser->getName()
+                    ?: $socialUser->getNickname()
+                    ?: 'ผู้ใช้งาน Google'
+            );
+
             $parts = preg_split('/\s+/u', $rawName, 2);
+
             $firstName = $parts[0] ?? $rawName;
             $lastName = $parts[1] ?? '-';
-            $email = $socialUser->getEmail() ?: ($provider . '_' . $socialUser->getId() . '@example.com');
 
+            $email = $socialUser->getEmail()
+                ?: ($provider . '_' . $socialUser->getId() . '@example.com');
+
+            // ค้นหา Customer จาก user_id
             $customer = Customer::where('user_id', $user->user_id)->first();
+
+            // ถ้าไม่เจอ ลองค้นหาจาก email
             if (!$customer && $email) {
                 $customer = Customer::where('email', $email)->first();
             }
 
+            // ถ้ายังไม่มี Customer ให้สร้างใหม่
             if (!$customer) {
                 $customer = Customer::create([
                     'user_id' => $user->user_id,
@@ -96,36 +104,46 @@ class SocialAuthController extends Controller
                     'password' => Hash::make(Str::random(32)),
                 ]);
             } else {
+                // ถ้ามี Customer แต่ยังไม่มี user_id
                 if (!$customer->user_id) {
-                    $customer->update(['user_id' => $user->user_id]);
+                    $customer->update([
+                        'user_id' => $user->user_id,
+                    ]);
                 }
             }
 
             DB::commit();
 
-            // ล็อกอินระบบ Auth หลัก (User)
+            // ล็อกอินระบบ Auth หลัก
             Auth::login($user, true);
 
-<<<<<<< HEAD
-            return redirect()->intended('/');
-=======
-            // ตั้งค่า Session สำหรับระบบฝั่งลูกค้า (Customer Middleware)
+            // สร้าง Session ใหม่
             $request->session()->regenerate();
+
+            // ตั้งค่า Session สำหรับระบบฝั่งลูกค้า
             $request->session()->put([
                 'customer_logged_in' => true,
                 'customer_id' => $customer->customer_id,
-                'customer_name' => trim(($customer->first_name ?? '') . ' ' . ($customer->last_name ?? '')),
+                'customer_name' => trim(
+                    ($customer->first_name ?? '') . ' ' .
+                    ($customer->last_name ?? '')
+                ),
                 'customer_email' => $customer->email,
             ]);
 
-            return redirect()->intended(route('customer.dashboard'))->with('success', 'เข้าสู่ระบบด้วย Google สำเร็จแล้ว!');
-
->>>>>>> 7b43cc16f3185f917529f62a54c47fea551af7e3
+            // ส่งไป Dashboard ลูกค้า
+            return redirect()
+                ->intended(route('customer.dashboard'))
+                ->with('success', 'เข้าสู่ระบบด้วย Google สำเร็จแล้ว!');
         } catch (\Exception $e) {
             DB::rollBack();
+
             return redirect()
                 ->route('login')
-                ->with('error', 'ไม่สามารถเข้าสู่ระบบด้วยบัญชีโซเชียลได้');
+                ->with(
+                    'error',
+                    'ไม่สามารถเข้าสู่ระบบด้วยบัญชีโซเชียลได้'
+                );
         }
     }
 }
