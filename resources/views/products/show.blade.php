@@ -587,7 +587,8 @@
                     <span style="font-size: 14px; color: var(--text-muted);">/ วัน</span>
                 </div>
                 <div>
-                    <span class="deposit-badge"><i class="fa-solid fa-shield"></i> เงินมัดจำ ฿100</span>
+                    <span class="deposit-badge"><i class="fa-solid fa-shield"></i> เงินมัดจำ
+                        ฿{{ number_format($product->deposit) }}</span>
                 </div>
             </div>
 
@@ -637,48 +638,104 @@
                             </label>
                             <div class="options-row">
                                 @php
+                                    /**
+                                     * แผนที่ชื่อสี (ไทย/อังกฤษ) => รหัสสี HEX สำหรับจุดวงกลมหน้าตัวเลือกสี
+                                     * หมายเหตุ: อัปเดตให้ครอบคลุมสีทั้งหมดที่มีอยู่ใน seeder ปัจจุบัน (ก.ย. 2569)
+                                     * ถ้าเพิ่มสีใหม่ในอนาคตแล้วไม่มีใน map นี้ ระบบจะไม่ fallback เป็นสีเทาทื่อๆ อีกต่อไป
+                                     * แต่จะสุ่มสีจากชุดสีที่กำหนดไว้ (deterministic ตามชื่อ) แทน ดูฟังก์ชัน resolveDotColor() ด้านล่าง
+                                     */
                                     $colorMap = [
+                                        // โทนดำ
+                                        'ดำคลาสสิก' => '#1a1a1a',
+                                        'ดำชิมเมอร์' => '#1a1a1a',
+                                        'ดำชาร์โคล' => '#36454f',
                                         'ดำ' => '#1a1a1a',
                                         'black' => '#1a1a1a',
+                                        'charcoal' => '#36454f',
+                                        // โทนขาว/ครีม
+                                        'ขาวออฟไวท์' => '#f5f5f0',
+                                        'ขาวมุก' => '#f8f6f0',
+                                        'ขาวครีม' => '#fdf6ec',
                                         'ขาว' => '#ffffff',
                                         'white' => '#ffffff',
+                                        'ครีมงาช้าง' => '#fffff0',
+                                        'งาช้าง' => '#fffff0',
+                                        'ivory' => '#fffff0',
+                                        'ครีมเบจ' => '#f5f5dc',
+                                        'ครีม' => '#fffbeb',
+                                        'cream' => '#fffbeb',
+                                        'เบจ' => '#f5f5dc',
+                                        'นู้ด' => '#e3bc9a',
+                                        'nude' => '#e3bc9a',
+                                        // โทนทอง/เมทัลลิก
+                                        'ทองแชมเปญ' => '#d4af37',
+                                        'ทองเมทัลลิก' => '#d4af37',
+                                        'ทองกลิตเตอร์' => '#d4af37',
                                         'ทอง' => '#d4af37',
                                         'gold' => '#d4af37',
                                         'แชมเปญ' => '#f7e7ce',
                                         'champagne' => '#f7e7ce',
+                                        'เงินสปาร์คเกิล' => '#c0c0c0',
+                                        'เงินเมทัลลิก' => '#c0c0c0',
+                                        'เงินกลิตเตอร์' => '#c0c0c0',
+                                        'เงินคริสตัล' => '#c0c0c0',
                                         'เงิน' => '#c0c0c0',
                                         'silver' => '#c0c0c0',
                                         'สปาร์คเกิล' => '#cbd5e1',
-                                        'แดง' => '#991b1b',
-                                        'red' => '#991b1b',
+                                        'เมทัลลิก' => '#b8b8b8',
+                                        'metallic' => '#b8b8b8',
+                                        'มุก' => '#f0ead6',
+                                        'pearl' => '#f0ead6',
+                                        // โทนแดง/ชมพู
+                                        'แดงไวน์' => '#722f37',
+                                        'แดงเบอร์กันดี' => '#6f1a2b',
                                         'เบอร์กันดี' => '#6f1a2b',
                                         'burgundy' => '#6f1a2b',
+                                        'แดง' => '#991b1b',
+                                        'red' => '#991b1b',
+                                        'ชมพูดัสตี้' => '#c9958a',
+                                        'ชมพูพาสเทล' => '#f9c9d6',
                                         'ชมพู' => '#f472b6',
                                         'pink' => '#f472b6',
                                         'โรสโกลด์' => '#b76e79',
                                         'rose gold' => '#b76e79',
-                                        'น้ำเงิน' => '#1e3a8a',
-                                        'blue' => '#1e3a8a',
+                                        // โทนน้ำเงิน/เขียว/ม่วง
+                                        'น้ำเงินมิดไนท์บลู' => '#0f172a',
                                         'มิดไนท์' => '#0f172a',
                                         'กรมท่า' => '#0f172a',
                                         'navy' => '#0f172a',
+                                        'น้ำเงิน' => '#1e3a8a',
+                                        'blue' => '#1e3a8a',
+                                        'เขียวเอเมอรัลด์' => '#046307',
+                                        'เขียวเสจ' => '#9caf88',
                                         'เขียว' => '#065f46',
                                         'green' => '#065f46',
-                                        'ครีม' => '#fffbeb',
-                                        'cream' => '#fffbeb',
-                                        'เบจ' => '#f5f5dc',
+                                        'ฟ้าพีช' => '#a7c7e7',
                                         'ฟ้า' => '#38bdf8',
                                         'ม่วง' => '#7e22ce',
+                                        // โทนน้ำตาล/ส้ม
+                                        'น้ำตาล' => '#6b4226',
+                                        'brown' => '#6b4226',
+                                        'ส้ม' => '#ea580c',
+                                        'orange' => '#ea580c',
                                     ];
                                 @endphp
                                 @foreach ($product->colors_list as $idx => $c)
                                     @php
-                                        $dotColor = '#737373';
+                                        // 1) หา match แบบตรงคำก่อน (คำยาวสุดจะถูกจับก่อน เพราะ PHP วน array ตามลำดับ key ด้านบน)
+                                        $dotColor = null;
                                         foreach ($colorMap as $nameKey => $hex) {
                                             if (mb_stripos($c, $nameKey) !== false) {
                                                 $dotColor = $hex;
                                                 break;
                                             }
+                                        }
+                                        // 2) ถ้าไม่เจอใน map เลย ให้สุ่มสีแบบ deterministic จากชุดสีสำรอง
+                                        //    (กันไม่ให้ตกเป็นสีเทาทื่อๆ ทุกครั้งที่มีสีใหม่ที่ยังไม่ได้เพิ่มใน map)
+                                        if ($dotColor === null) {
+                                            $fallbackPalette = ['#8b5e3c', '#5b7f6b', '#7a5c99', '#b5654a', '#4a6d8c', '#9c7a4a'];
+                                            $hashIndex = abs(crc32($c)) % count($fallbackPalette);
+                                            $dotColor = $fallbackPalette[$hashIndex];
                                         }
                                     @endphp
                                     <button type="button" class="color-option-btn {{ $idx === 0 ? 'selected' : '' }}"
@@ -748,7 +805,7 @@
                             </div>
                             <div class="calc-row">
                                 <span>เงินมัดจำประกันชุด (<span id="displayQtyDepositText">1</span> ชุด):</span>
-                                <span id="displayDeposit">฿100</span>
+                                <span id="displayDeposit">฿{{ number_format($product->deposit) }}</span>
                             </div>
                             <div class="calc-row total">
                                 <span>ยอดที่ต้องจ่ายรวมทั้งหมด:</span>
@@ -803,16 +860,35 @@
         </div>
 
         @forelse($product->reviews as $review)
+            @php
+                /**
+                 * หมายเหตุสำคัญ (แก้ตามฐานข้อมูลจริง kyrix.sql):
+                 * ตาราง `customers` เก็บชื่อลูกค้าไว้ที่คอลัมน์ `first_name` + `last_name`
+                 * โดยตรง ไม่ได้ผูกกับตาราง `users` (ตาราง users มีไว้สำหรับเจ้าของร้าน/แอดมินเท่านั้น
+                 * และ customers.user_id เป็น NULL ทุกแถวในระบบจริง)
+                 * ดังนั้นการอ้างอิง $review->customer->user->name จะเป็น null เสมอ
+                 * ต้องดึงจาก $review->customer->first_name / last_name แทน
+                 */
+                $customerFirstName = trim($review->customer->first_name ?? '');
+                $customerLastName = trim($review->customer->last_name ?? '');
+                $reviewerName = trim($customerFirstName . ' ' . $customerLastName);
+
+                if ($reviewerName === '') {
+                    $reviewerName = 'ลูกค้า KYRIX';
+                }
+
+                $reviewerInitial = $reviewerName === 'ลูกค้า KYRIX' ? 'K' : mb_substr($reviewerName, 0, 1);
+            @endphp
             <div class="review-item">
                 <div class="review-user-row">
                     <div style="display: flex; align-items: center; gap: 10px;">
                         <div
                             style="width: 38px; height: 38px; border-radius: 50%; background: var(--primary-soft); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700;">
-                            {{ mb_substr($review->customer->user->name ?? 'U', 0, 1) }}
+                            {{ $reviewerInitial }}
                         </div>
                         <div>
                             <div style="font-weight: 700; font-size: 14px;">
-                                {{ $review->customer->user->name ?? 'ลูกค้าสมาชิก' }}</div>
+                                {{ $reviewerName }}</div>
                             <div style="font-size: 12px; color: var(--text-muted);">
                                 {{ $review->created_at->format('d/m/Y') }}</div>
                         </div>
@@ -851,7 +927,7 @@
     @push('scripts')
         <script>
             const dailyPrice = {{ (float) $product->rental_price }};
-            const depositPrice = 100;
+            const depositPrice = {{ (float) $product->deposit }};
             let currentServiceFee = 0;
 
             // Color => image URL map (บันทึกจาก PHP)
