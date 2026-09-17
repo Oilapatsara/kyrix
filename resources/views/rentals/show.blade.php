@@ -50,7 +50,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            min-width: 760px;
+            min-width: 680px;
             position: relative;
         }
 
@@ -245,18 +245,17 @@
                 </div>
             </div>
 
-            <!-- 8-Stage Tracker Timeline -->
+            <!-- 7-Stage Tracker Timeline -->
             @php
                 $step = $rental->step_index;
                 $progressPercent = match ($step) {
                     1 => 0,
-                    2 => 14,
-                    3 => 28,
-                    4 => 42,
-                    5 => 57,
-                    6 => 71,
-                    7 => 85,
-                    8 => 100,
+                    2 => 17,
+                    3 => 34,
+                    4 => 50,
+                    5 => 67,
+                    6 => 84,
+                    7 => 100,
                     default => 0,
                 };
                 $stages = [
@@ -265,9 +264,8 @@
                     3 => ['num' => '3', 'label' => 'ยืนยันการเช่า', 'icon' => 'fa-check'],
                     4 => ['num' => '4', 'label' => 'รอรับชุด', 'icon' => 'fa-box'],
                     5 => ['num' => '5', 'label' => 'กำลังเช่า', 'icon' => 'fa-person-dress'],
-                    6 => ['num' => '6', 'label' => 'รอคืน', 'icon' => 'fa-arrow-rotate-left'],
-                    7 => ['num' => '7', 'label' => 'คืนแล้ว', 'icon' => 'fa-shield-heart'],
-                    8 => ['num' => '8', 'label' => 'เสร็จสิ้น', 'icon' => 'fa-circle-check'],
+                    6 => ['num' => '6', 'label' => 'คืนแล้ว', 'icon' => 'fa-shield-heart'],
+                    7 => ['num' => '7', 'label' => 'เสร็จสิ้น', 'icon' => 'fa-circle-check'],
                 ];
             @endphp
             <div class="timeline-wrap">
@@ -435,9 +433,19 @@
                         <span>ค่าเช่าชุดรวม:</span>
                         <strong>฿{{ number_format($rental->total_amount) }}</strong>
                     </div>
+                    @if(!empty($rental->discount_amount) && $rental->discount_amount > 0)
+                    <div class="totals-row" style="color: #16a34a;">
+                        <span><i class="fa-solid fa-tag"></i> ส่วนลดโปรโมชั่น (20%):</span>
+                        <strong style="color: #16a34a;">-฿{{ number_format($rental->discount_amount) }}</strong>
+                    </div>
+                    <div class="totals-row" style="font-size: 13px;">
+                        <span>ค่าเช่าสุทธิหลังหักส่วนลด:</span>
+                        <strong>฿{{ number_format($rental->net_rental_amount) }}</strong>
+                    </div>
+                    @endif
                     <div class="totals-row">
                         <span>เงินมัดจำประกันชุด:</span>
-                        <strong style="color: #b45309;">฿100</strong>
+                        <strong style="color: #b45309;">฿{{ number_format($rental->deposit_amount ?: 100) }}</strong>
                     </div>
                     <div class="totals-row">
                         <span>บริการเสริม ({{ $rental->service_type ?? 'มาตรฐาน' }}):</span>

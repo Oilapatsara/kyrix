@@ -153,45 +153,60 @@
     /* Category Cards */
     .categories-grid {
         display: grid;
-        grid-template-columns: repeat(6, 1fr);
-        gap: 16px;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
     }
     .category-card {
         background: #fff;
         border: 1px solid var(--border);
         border-radius: var(--radius-md);
-        padding: 24px 16px;
+        padding: 28px 20px;
         text-align: center;
-        transition: all 0.3s ease;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 12px;
+        justify-content: center;
+        gap: 14px;
+        height: 100%;
+        min-height: 180px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
     }
     .category-card:hover {
         border-color: var(--primary);
-        transform: translateY(-4px);
-        box-shadow: var(--shadow-md);
+        transform: translateY(-6px);
+        box-shadow: 0 12px 24px rgba(122, 46, 61, 0.08);
     }
     .category-icon {
-        width: 56px;
-        height: 56px;
+        width: 60px;
+        height: 60px;
         border-radius: 50%;
         background: var(--primary-soft);
         color: var(--primary);
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 22px;
+        font-size: 24px;
+        transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+    }
+    .category-card:hover .category-icon {
+        transform: scale(1.1);
+        background: var(--primary);
+        color: #fff;
     }
     .category-name {
-        font-size: 14px;
-        font-weight: 600;
-        color: var(--text-main);
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--text-heading);
+        line-height: 1.4;
+        word-break: keep-all;
+        overflow-wrap: break-word;
+        max-width: 100%;
     }
     .category-count {
-        font-size: 12px;
+        font-size: 13px;
         color: var(--text-muted);
+        font-weight: 500;
     }
 
     /* Product Grid & Card */
@@ -218,18 +233,19 @@
     .product-img-wrap {
         position: relative;
         width: 100%;
-        height: 340px;
-        background: #eee;
+        height: 440px;
+        background: #f0ebe8;
         overflow: hidden;
     }
     .product-img-wrap img {
         width: 100%;
         height: 100%;
         object-fit: cover;
+        object-position: top center;
         transition: transform 0.4s ease;
     }
     .product-card:hover .product-img-wrap img {
-        transform: scale(1.06);
+        transform: scale(1.04);
     }
     .product-badges {
         position: absolute;
@@ -281,6 +297,7 @@
         font-size: 12px;
         color: var(--text-muted);
         margin-bottom: 14px;
+        flex-wrap: wrap;
     }
     .product-footer {
         margin-top: auto;
@@ -566,7 +583,7 @@
                 <img src="https://images.unsplash.com/photo-1566174053879-31528523f8ae?w=800&auto=format&fit=crop&q=80" alt="ชุดราตรีหรู">
             </div>
             <div class="hero-img-card">
-                <img src="https://images.unsplash.com/photo-1518895949257-7621c3c786d7?w=800&auto=format&fit=crop&q=80" alt="ชุดราตรีปักเลื่อม">
+                <img src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=800&auto=format&fit=crop&q=80" alt="ชุดราตรีปักเลื่อม">
             </div>
             <div class="hero-float-badge">
                 <i class="fa-solid fa-shield-check" style="color: #16a34a; font-size: 28px;"></i>
@@ -594,18 +611,20 @@
     <div class="categories-grid">
         @php
             $catIcons = [
-                1 => 'fa-person-dress',
-                2 => 'fa-champagne-glasses',
-                3 => 'fa-fan',
-                4 => 'fa-heart',
-                5 => 'fa-gem',
-                6 => 'fa-user-tie',
+                1 => 'fa-fire-flame-curved',   // Western Muse — เดรสสายฝอ
+                2 => 'fa-heart',               // Sweet Romance — เดรสหวาน
+                3 => 'fa-wand-magic-sparkles', // Mini Chic — มินิเดรส
+                4 => 'fa-shirt',               // Elegant Tops — เสื้อ & ท็อปส์
+                5 => 'fa-layer-group',         // Feminine Skirts — กระโปรง
+                6 => 'fa-user-tie',            // Modern Pants — กางเกง
+                7 => 'fa-shoe-prints',         // Elegant Shoes — รองเท้า
+                8 => 'fa-bag-shopping',        // Luxury Bags — กระเป๋า
             ];
         @endphp
         @foreach($categories as $category)
             <a href="{{ route('products.index', ['category_id' => $category->category_id]) }}" class="category-card">
                 <div class="category-icon">
-                    <i class="fa-solid {{ $catIcons[$category->category_id] ?? 'fa-sparkles' }}"></i>
+                    <i class="fa-solid {{ $catIcons[$category->category_id] ?? 'fa-gem' }}"></i>
                 </div>
                 <div class="category-name">{{ $category->category_name }}</div>
                 <div class="category-count">{{ $category->products_count }} รายการ</div>
@@ -646,12 +665,10 @@
                     </a>
                     <div class="product-meta">
                         <span><i class="fa-solid fa-ruler-combined"></i> {{ $product->size ?? 'M' }}</span>
-                        <span><i class="fa-solid fa-palette"></i> {{ Str::limit($product->color, 16) }}</span>
-                        <span><i class="fa-solid fa-eye"></i> {{ $product->views_count }}</span>
+                        <span title="{{ $product->colors_text }}"><i class="fa-solid fa-palette"></i> {{ Str::limit($product->colors_text, 30) }}</span>
                     </div>
                     <div class="product-footer">
                         <div class="price-wrap">
-                            <span class="price-label">ค่าเช่าเริ่มต้น</span>
                             <span class="price-value">฿{{ number_format($product->rental_price) }} <small style="font-size: 12px; font-weight: normal; color: #888;">/ วัน</small></span>
                             <span class="price-deposit">มัดจำ ฿{{ number_format($product->deposit) }}</span>
                         </div>
@@ -672,24 +689,24 @@
     <div class="promo-banner">
         <div>
             <span class="promo-tag"><i class="fa-solid fa-fire"></i> โปรโมชั่นพิเศษต้อนรับซีซัน</span>
-            <h2 class="promo-title">เช่า 3 วันขึ้นไป ลดทันที 15%</h2>
+            <h2 class="promo-title">เช่าครบ 3 รายการ หรือ ยอดครบ 2,000 บาท ลดทันที 20%</h2>
             <p class="promo-desc">
-                เตรียมพร้อมสำหรับทุกงานเลี้ยง งานแต่ง หรือปาร์ตี้สำคัญ รับสิทธิ์ฟรีบริการซักรีดพรีเมียม และปรับแก้ขนาดชุดให้พอดีตัวโดยช่างมืออาชีพ
+                เช่าชุดราตรี ชุดไทย หรือสูทออกงานสุดหรู เพียงเลือกเช่าครบ 3 รายการขึ้นไป หรือมียอดค่าเช่าครบ 2,000 บาท ระบบจะคำนวณส่วนลด 20% ให้อัตโนมัติทันทีในตะกร้าสินค้า!
             </p>
             <div style="display: flex; gap: 12px;">
                 <a href="{{ route('products.index') }}" class="btn btn-gold" style="padding: 12px 26px;">
-                    <i class="fa-solid fa-tag"></i> รับโปรโมชั่นตอนนี้
+                    <i class="fa-solid fa-tag"></i> เลือกชุดรับโปรโมชั่น
                 </a>
             </div>
         </div>
         <div class="promo-coupons">
             <div class="coupon-box">
-                <div class="coupon-code">KYRIX15</div>
-                <div class="coupon-desc">ลด 15% ค่าเช่า เมื่อเช่า 3 วันขึ้นไป</div>
+                <div class="coupon-code">RENT3DISC</div>
+                <div class="coupon-desc">ลด 20% ทันที เมื่อเช่าครบ 3 รายการ</div>
             </div>
             <div class="coupon-box">
-                <div class="coupon-code">FREEDRY</div>
-                <div class="coupon-desc">ฟรีค่าซักรีดไอน้ำมูลค่า 150 บาท</div>
+                <div class="coupon-code">RENT2000</div>
+                <div class="coupon-desc">ลด 20% ทันที เมื่อยอดเช่าครบ 2,000 บาท</div>
             </div>
         </div>
     </div>
@@ -723,11 +740,10 @@
                     </a>
                     <div class="product-meta">
                         <span><i class="fa-solid fa-ruler-combined"></i> {{ $product->size ?? 'M' }}</span>
-                        <span><i class="fa-solid fa-palette"></i> {{ Str::limit($product->color, 16) }}</span>
+                        <span title="{{ $product->colors_text }}"><i class="fa-solid fa-palette"></i> {{ Str::limit($product->colors_text, 30) }}</span>
                     </div>
                     <div class="product-footer">
                         <div class="price-wrap">
-                            <span class="price-label">ค่าเช่าเริ่มต้น</span>
                             <span class="price-value">฿{{ number_format($product->rental_price) }} <small style="font-size: 12px; font-weight: normal; color: #888;">/ วัน</small></span>
                             <span class="price-deposit">มัดจำ ฿{{ number_format($product->deposit) }}</span>
                         </div>
@@ -797,9 +813,14 @@
                 </div>
                 <p class="review-text">“{{ Str::limit($review->comment, 120) }}”</p>
                 <div class="review-author">
-                    <div class="author-avatar">{{ mb_substr($review->customer->user->name ?? 'C', 0, 1) }}</div>
+                    @php
+                        $custName = trim(($review->customer->first_name ?? '') . ' ' . ($review->customer->last_name ?? ''));
+                        if (!$custName) $custName = 'ลูกค้าท่านหนึ่ง';
+                        $custInitial = mb_strtoupper(mb_substr($custName, 0, 1, 'UTF-8'), 'UTF-8');
+                    @endphp
+                    <div class="author-avatar">{{ $custInitial }}</div>
                     <div>
-                        <div class="author-name">{{ $review->customer->user->name ?? 'ลูกค้าท่านหนึ่ง' }}</div>
+                        <div class="author-name">{{ $custName }}</div>
                         <div class="author-dress">{{ Str::limit($review->product->product_name ?? 'ชุดเช่า', 22) }}</div>
                     </div>
                 </div>

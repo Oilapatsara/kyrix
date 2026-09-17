@@ -59,6 +59,78 @@
             box-sizing: border-box;
         }
 
+        /* Prevent unstyled giant Laravel pagination SVGs */
+        nav svg,
+        .pagination svg,
+        .pagination-wrap svg {
+            width: 1.25rem !important;
+            height: 1.25rem !important;
+            max-width: 1.25rem !important;
+            max-height: 1.25rem !important;
+            display: inline-block !important;
+            vertical-align: middle !important;
+            flex-shrink: 0 !important;
+        }
+
+        /* ==============================
+           Global Bootstrap-5 Pagination Style
+        ============================== */
+        .pagination {
+            display: flex;
+            padding-left: 0;
+            list-style: none;
+            gap: 6px;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .page-item .page-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 40px;
+            height: 40px;
+            padding: 0 14px;
+            color: var(--primary);
+            text-decoration: none;
+            background-color: #fff;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        .page-item.active .page-link {
+            color: #fff;
+            background-color: var(--primary);
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(122, 31, 43, 0.3);
+        }
+        .page-item.disabled .page-link {
+            color: #bbb;
+            pointer-events: none;
+            background-color: #fafafa;
+            border-color: var(--border);
+        }
+        .page-item .page-link:hover:not(.active) {
+            color: #fff;
+            background-color: var(--primary);
+            border-color: var(--primary);
+            transform: translateY(-1px);
+        }
+        .pagination-wrap {
+            margin-top: 36px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+        .pagination-wrap p.text-sm {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
 
         html {
             scroll-behavior: smooth;

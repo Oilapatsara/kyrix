@@ -341,10 +341,31 @@
                 </div>
 
                 <div style="border-top: 1px solid var(--border); padding-top: 14px;">
+                    @if(!empty($discountAmount) && $discountAmount > 0)
+                        <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 1px solid #86efac; padding: 10px 12px; border-radius: 8px; margin-bottom: 14px;">
+                            <div style="font-size: 12.5px; font-weight: 700; color: #166534; display: flex; align-items: center; gap: 6px;">
+                                <i class="fa-solid fa-gift"></i> {{ $discountReason }}
+                            </div>
+                            <span style="font-size: 11px; color: #15803d;">ส่วนลด 20% สำหรับการเช่าครบ 3 รายการ หรือยอดเช่าครบ 2,000 บาท</span>
+                        </div>
+                    @endif
+
                     <div style="display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 8px; color: var(--text-muted);">
                         <span>ค่าเช่าชุดรวม:</span>
                         <strong style="color: var(--text-main);">฿{{ number_format($rentalTotal) }}</strong>
                     </div>
+
+                    @if(!empty($discountAmount) && $discountAmount > 0)
+                    <div style="display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 8px; color: #16a34a; font-weight: 600;">
+                        <span><i class="fa-solid fa-tag"></i> ส่วนลดโปรโมชั่น (20%):</span>
+                        <strong style="color: #16a34a;">-฿{{ number_format($discountAmount) }}</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 8px; color: var(--text-muted);">
+                        <span>ค่าเช่าสุทธิหลังหักส่วนลด:</span>
+                        <strong style="color: var(--text-main);">฿{{ number_format($netRentalTotal) }}</strong>
+                    </div>
+                    @endif
+
                     <div style="display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 8px; color: var(--text-muted);">
                         <span>เงินมัดจำประกันชุด (ได้รับคืน):</span>
                         <strong style="color: #b45309;">฿{{ number_format($depositTotal) }}</strong>

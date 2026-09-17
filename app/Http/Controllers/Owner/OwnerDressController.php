@@ -80,27 +80,29 @@ class OwnerDressController extends Controller
         $categoryKey = (new Category)->getKeyName(); // ดึงชื่อ PK ของ Category เช่น category_id หรือ id
 
         $data = $request->validate([
-            'category_id'      => "required|exists:categories,{$categoryKey}",
-            'product_code'     => 'required|string|max:50|unique:products,product_code',
-            'product_name'     => 'required|string|max:150',
-            'description'      => 'nullable|string',
-            'size'             => 'nullable|string|max:20',
-            'color'            => 'nullable|string|max:50',
-            'available_sizes'  => 'nullable|string|max:100',
-            'available_colors' => 'nullable|string|max:150',
-            'bust'             => 'nullable|string|max:50',
-            'waist'            => 'nullable|string|max:50',
-            'hips'             => 'nullable|string|max:50',
-            'length'           => 'nullable|string|max:50',
-            'rental_price'     => 'required|numeric|min:0',
-            'deposit'          => 'required|numeric|min:0',
-            'stock'            => 'required|integer|min:0',
-            'status'           => 'required|in:available,rented,maintenance,inactive',
-            'is_featured'      => 'nullable|boolean',
-            'is_popular'       => 'nullable|boolean',
-            'is_new'           => 'nullable|boolean',
-            'image_file'       => 'nullable|image|mimes:jpeg,png,jpg,webp|max:4096',
-            'image_url'        => 'nullable|string|max:500',
+            'category_id'        => "required|exists:categories,{$categoryKey}",
+            'product_code'       => 'required|string|max:50|unique:products,product_code',
+            'product_name'       => 'required|string|max:150',
+            'description'        => 'nullable|string',
+            'size'               => 'nullable|string|max:20',
+            'color'              => 'nullable|string|max:50',
+            'available_sizes'    => 'nullable|string|max:100',
+            'available_colors'   => 'nullable|string|max:150',
+            'bust'               => 'nullable|string|max:50',
+            'waist'              => 'nullable|string|max:50',
+            'hips'               => 'nullable|string|max:50',
+            'length'             => 'nullable|string|max:50',
+            'rental_price'       => 'required|numeric|min:0',
+            'deposit'            => 'required|numeric|min:0',
+            'stock'              => 'required|integer|min:0',
+            'status'             => 'required|in:available,rented,maintenance,inactive',
+            'is_featured'        => 'nullable|boolean',
+            'is_popular'         => 'nullable|boolean',
+            'is_new'             => 'nullable|boolean',
+            'image'              => 'nullable|image|mimes:jpeg,png,jpg,webp|max:4096',
+            'image_file'         => 'nullable|image|mimes:jpeg,png,jpg,webp|max:4096',
+            'image_url'          => 'nullable|string|max:500',
+            'color_images.*'     => 'nullable|image|mimes:jpeg,png,jpg,webp|max:4096',
         ], [
             'product_code.unique'   => 'รหัสชุดนี้มีอยู่ในระบบแล้ว',
             'product_name.required' => 'กรุณากรอกชื่อชุด',
@@ -113,22 +115,58 @@ class OwnerDressController extends Controller
         $data['is_popular']  = $request->has('is_popular');
         $data['is_new']      = $request->has('is_new');
 
+        $colorNames = [];
+        if ($request->has('sizes')) {
+            $sizes = array_filter((array) $request->sizes);
+            $data['available_sizes'] = implode(', ', $sizes);
+            $data['size'] = $sizes[0] ?? 'M';
+        }
+
+        if ($request->has('color_names')) {
+            $colorNames = array_values(array_filter(array_map('trim', (array) $request->color_names)));
+            if (!empty($colorNames)) {
+                $colorString = implode(', ', $colorNames);
+                $data['available_colors'] = $colorString;
+                $data['color'] = Str::limit($colorString, 50, '');
+            }
+        }
+
         $product = Product::create($data);
 
-        // จัดการอัปโหลดรูปภาพ
-        if ($request->hasFile('image_file')) {
-            $path = $request->file('image_file')->store('products', 'public');
-            ProductImage::create([
-                'product_id' => $product->product_id,
-                'image_path' => $path,
-                'is_main'    => true,
-            ]);
-        } elseif (!empty($data['image_url'])) {
-            ProductImage::create([
-                'product_id' => $product->product_id,
-                'image_path' => $data['image_url'],
-                'is_main'    => true,
-            ]);
+        // ===== จัดการอัปโหลดรูปภาพแบบ Per-Color =====
+        $colorImages = $request->file('color_images') ?? [];
+        $isFirstImage = true;
+
+        foreach ($colorNames as $i => $colorName) {
+            if (!empty($colorImages[$i]) && $colorImages[$i]->isValid()) {
+                $path = $colorImages[$i]->store('products', 'public');
+                ProductImage::create([
+                    'product_id' => $product->product_id,
+                    'image_path' => $path,
+                    'is_main'    => $isFirstImage,
+                    'color_name' => $colorName ?: null,
+                ]);
+                $isFirstImage = false;
+            }
+        }
+
+        // Fallback: รูปเดี่ยว (legacy input หรือ URL)
+        if ($isFirstImage) {
+            $uploadedFile = $request->file('image') ?? $request->file('image_file');
+            if ($uploadedFile) {
+                $path = $uploadedFile->store('products', 'public');
+                ProductImage::create([
+                    'product_id' => $product->product_id,
+                    'image_path' => $path,
+                    'is_main'    => true,
+                ]);
+            } elseif (!empty($data['image_url'])) {
+                ProductImage::create([
+                    'product_id' => $product->product_id,
+                    'image_path' => $data['image_url'],
+                    'is_main'    => true,
+                ]);
+            }
         }
 
         return redirect()->route('owner.dresses.index')->with('success', 'เพิ่มชุดเรียบร้อยแล้ว: ' . $product->product_name);
@@ -154,54 +192,120 @@ class OwnerDressController extends Controller
         $categoryKey = (new Category)->getKeyName();
 
         $data = $request->validate([
-            'category_id'      => "required|exists:categories,{$categoryKey}",
-            'product_code'     => 'required|string|max:50|unique:products,product_code,' . $product->product_id . ',product_id',
-            'product_name'     => 'required|string|max:150',
-            'description'      => 'nullable|string',
-            'size'             => 'nullable|string|max:20',
-            'color'            => 'nullable|string|max:50',
-            'available_sizes'  => 'nullable|string|max:100',
-            'available_colors' => 'nullable|string|max:150',
-            'bust'             => 'nullable|string|max:50',
-            'waist'            => 'nullable|string|max:50',
-            'hips'             => 'nullable|string|max:50',
-            'length'           => 'nullable|string|max:50',
-            'rental_price'     => 'required|numeric|min:0',
-            'deposit'          => 'required|numeric|min:0',
-            'stock'            => 'required|integer|min:0',
-            'status'           => 'required|in:available,rented,maintenance,inactive',
-            'is_featured'      => 'nullable|boolean',
-            'is_popular'       => 'nullable|boolean',
-            'is_new'           => 'nullable|boolean',
-            'image_file'       => 'nullable|image|mimes:jpeg,png,jpg,webp|max:4096',
-            'image_url'        => 'nullable|string|max:500',
+            'category_id'        => "required|exists:categories,{$categoryKey}",
+            'product_code'       => 'required|string|max:50|unique:products,product_code,' . $product->product_id . ',product_id',
+            'product_name'       => 'required|string|max:150',
+            'description'        => 'nullable|string',
+            'size'               => 'nullable|string|max:20',
+            'color'              => 'nullable|string|max:50',
+            'available_sizes'    => 'nullable|string|max:100',
+            'available_colors'   => 'nullable|string|max:150',
+            'bust'               => 'nullable|string|max:50',
+            'waist'              => 'nullable|string|max:50',
+            'hips'               => 'nullable|string|max:50',
+            'length'             => 'nullable|string|max:50',
+            'rental_price'       => 'required|numeric|min:0',
+            'deposit'            => 'required|numeric|min:0',
+            'stock'              => 'required|integer|min:0',
+            'status'             => 'required|in:available,rented,maintenance,inactive',
+            'is_featured'        => 'nullable|boolean',
+            'is_popular'         => 'nullable|boolean',
+            'is_new'             => 'nullable|boolean',
+            'image'              => 'nullable|image|mimes:jpeg,png,jpg,webp|max:4096',
+            'image_file'         => 'nullable|image|mimes:jpeg,png,jpg,webp|max:4096',
+            'image_url'          => 'nullable|string|max:500',
+            'color_images.*'     => 'nullable|image|mimes:jpeg,png,jpg,webp|max:4096',
         ]);
 
         $data['is_featured'] = $request->has('is_featured');
         $data['is_popular']  = $request->has('is_popular');
         $data['is_new']      = $request->has('is_new');
 
+        $colorNames = [];
+        if ($request->has('sizes')) {
+            $sizes = array_filter((array) $request->sizes);
+            $data['available_sizes'] = implode(', ', $sizes);
+            $data['size'] = $sizes[0] ?? 'M';
+        }
+
+        if ($request->has('color_names')) {
+            $colorNames = array_values(array_filter(array_map('trim', (array) $request->color_names)));
+            if (!empty($colorNames)) {
+                $colorString = implode(', ', $colorNames);
+                $data['available_colors'] = $colorString;
+                $data['color'] = Str::limit($colorString, 50, '');
+            }
+        }
+
         $product->update($data);
 
-        // จัดการเปลี่ยนรูปภาพหลักใหม่ (พร้อมลบรูปเก่าจาก Storage ถ้ามี)
-        if ($request->hasFile('image_file')) {
-            $path = $request->file('image_file')->store('products', 'public');
-            
-            // ปรับรูปเก่าให้ไม่เป็นรูปหลัก
-            ProductImage::where('product_id', $product->product_id)->update(['is_main' => false]);
-            
-            ProductImage::create([
-                'product_id' => $product->product_id,
-                'image_path' => $path,
-                'is_main'    => true,
-            ]);
-        } elseif (!empty($request->image_url)) {
-            ProductImage::where('product_id', $product->product_id)->update(['is_main' => false]);
-            ProductImage::create([
-                'product_id' => $product->product_id,
-                'image_path' => $request->image_url,
-                'is_main'    => true,
-            ]);
+        // ซิงค์ชื่อสีของรูปเดิมกรณีที่มีการเปลี่ยนชื่อสีในฟอร์ม
+        $existingColorNames = (array) $request->input('existing_color_names', []);
+        foreach ($colorNames as $i => $newColorName) {
+            $oldColorName = $existingColorNames[$i] ?? null;
+            if ($oldColorName && $oldColorName !== $newColorName) {
+                ProductImage::where('product_id', $product->product_id)
+                    ->where('color_name', $oldColorName)
+                    ->update(['color_name' => $newColorName]);
+            }
+        }
+
+        // ===== จัดการอัปโหลดรูปภาพแบบ Per-Color =====
+        $colorImages = $request->file('color_images') ?? [];
+        $hasNewColorImage = false;
+
+        foreach ($colorNames as $i => $colorName) {
+            if (!empty($colorImages[$i]) && $colorImages[$i]->isValid()) {
+                // ถ้ามีรูปเก่าของสีนี้อยู่แล้ว ให้ลบออกก่อน
+                $existingForColor = ProductImage::where('product_id', $product->product_id)
+                    ->where('color_name', $colorName)
+                    ->first();
+                if ($existingForColor && Storage::disk('public')->exists($existingForColor->image_path)) {
+                    Storage::disk('public')->delete($existingForColor->image_path);
+                    $existingForColor->delete();
+                }
+
+                $path = $colorImages[$i]->store('products', 'public');
+                $isFirst = !$hasNewColorImage && ($i === 0);
+
+                ProductImage::create([
+                    'product_id' => $product->product_id,
+                    'image_path' => $path,
+                    'is_main'    => $isFirst,
+                    'color_name' => $colorName ?: null,
+                ]);
+
+                // ถ้าเป็นรูปสีแรก ให้เปลี่ยนรูปหลักเดิมให้ไม่ใช่ main
+                if ($isFirst) {
+                    ProductImage::where('product_id', $product->product_id)
+                        ->where('is_main', true)
+                        ->whereNull('color_name')
+                        ->update(['is_main' => false]);
+                }
+
+                $hasNewColorImage = true;
+            }
+        }
+
+        // Fallback: รูปเดี่ยว (legacy input หรือ URL) — ใช้เมื่อไม่มี color_images ส่งมาเลย
+        if (!$hasNewColorImage) {
+            $uploadedFile = $request->file('image') ?? $request->file('image_file');
+            if ($uploadedFile) {
+                $path = $uploadedFile->store('products', 'public');
+                ProductImage::where('product_id', $product->product_id)->update(['is_main' => false]);
+                ProductImage::create([
+                    'product_id' => $product->product_id,
+                    'image_path' => $path,
+                    'is_main'    => true,
+                ]);
+            } elseif (!empty($request->image_url)) {
+                ProductImage::where('product_id', $product->product_id)->update(['is_main' => false]);
+                ProductImage::create([
+                    'product_id' => $product->product_id,
+                    'image_path' => $request->image_url,
+                    'is_main'    => true,
+                ]);
+            }
         }
 
         return redirect()->route('owner.dresses.index')->with('success', 'บันทึกการแก้ไขชุดเรียบร้อยแล้ว');
@@ -250,5 +354,77 @@ class OwnerDressController extends Controller
 
         $statusText = $newStatus === 'available' ? 'พร้อมให้เช่า' : 'ปิดใช้งาน';
         return back()->with('success', "เปลี่ยนสถานะชุด {$product->product_name} เป็น \"{$statusText}\" แล้ว");
+    }
+
+    /**
+     * บันทึกหมวดหมู่ใหม่ลงฐานข้อมูล
+     */
+    public function storeCategory(Request $request)
+    {
+        $validated = $request->validate([
+            'category_name' => 'required|string|max:100|unique:categories,category_name',
+            'description'   => 'nullable|string|max:500',
+        ], [
+            'category_name.required' => 'กรุณากรอกชื่อหมวดหมู่',
+            'category_name.max'      => 'ชื่อหมวดหมู่ต้องไม่เกิน 100 ตัวอักษร',
+            'category_name.unique'   => 'มีชื่อหมวดหมู่นี้อยู่ในระบบแล้ว',
+        ]);
+
+        Category::create([
+            'category_name' => trim($validated['category_name']),
+            'description'   => !empty($validated['description']) ? trim($validated['description']) : null,
+            'status'        => 'active',
+        ]);
+
+        return redirect()
+            ->back()
+            ->with('success', 'เพิ่มหมวดหมู่ใหม่ "' . trim($validated['category_name']) . '" เรียบร้อยแล้ว');
+    }
+
+    /**
+     * อัปเดตข้อมูลหมวดหมู่
+     */
+    public function updateCategory(Request $request, $id)
+    {
+        $category = Category::findOrFail($id);
+
+        $validated = $request->validate([
+            'category_name' => 'required|string|max:100|unique:categories,category_name,' . $category->category_id . ',category_id',
+            'description'   => 'nullable|string|max:500',
+        ], [
+            'category_name.required' => 'กรุณากรอกชื่อหมวดหมู่',
+            'category_name.max'      => 'ชื่อหมวดหมู่ต้องไม่เกิน 100 ตัวอักษร',
+            'category_name.unique'   => 'มีชื่อหมวดหมู่นี้อยู่ในระบบแล้ว',
+        ]);
+
+        $category->update([
+            'category_name' => trim($validated['category_name']),
+            'description'   => !empty($validated['description']) ? trim($validated['description']) : null,
+        ]);
+
+        return redirect()
+            ->back()
+            ->with('success', 'แก้ไขชื่อหมวดหมู่เป็น "' . trim($validated['category_name']) . '" เรียบร้อยแล้ว');
+    }
+
+    /**
+     * ลบหมวดหมู่
+     */
+    public function destroyCategory($id)
+    {
+        $category = Category::findOrFail($id);
+
+        if ($category->products()->exists()) {
+            return redirect()
+                ->back()
+                ->with('error', 'ไม่สามารถลบหมวดหมู่ "' . $category->category_name . '" ได้ เนื่องจากยังมีชุดผูกอยู่');
+        }
+
+        $categoryName = $category->category_name;
+        $category->delete();
+
+        return redirect()
+            ->back()
+            ->with('success', 'ลบหมวดหมู่ "' . $categoryName . '" เรียบร้อยแล้ว');
     }
 }

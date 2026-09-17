@@ -59,7 +59,18 @@ class RentalController extends Controller
             }
 
             $rentalCode = 'KR-' . date('Ym') . '-' .
-                str_pad(Rental::count() + 1, 4, '0', STR_PAD_LEFT);
+                str_pad(
+                    Rental::count() + 1,
+                    4,
+                    '0',
+                    STR_PAD_LEFT
+                );
+
+            // คำนวณส่วนลดโปรโมชั่น
+            $promo = \App\Services\PromotionService::calculateDiscount(
+                $quantity,
+                $subtotal
+            );
 
             $rental = Rental::create([
                 'rental_code' => $rentalCode,
@@ -68,6 +79,8 @@ class RentalController extends Controller
                 'start_date' => $start->toDateString(),
                 'end_date' => $end->toDateString(),
                 'total_amount' => $subtotal,
+                'discount_amount' => $promo['discount_amount'],
+                'discount_reason' => $promo['discount_reason'],
                 'deposit_amount' => $depositTotal,
                 'status' => 'pending_payment',
                 'note' => $request->note,
@@ -115,22 +128,17 @@ class RentalController extends Controller
     {
         $customer = $this->getCustomer();
 
-        /*
-         * ดึง Rental ตาม ID ก่อน
-         * เพื่อไม่ให้ Laravel ส่ง 404 โดยไม่บอกสาเหตุ
-         */
+        // ดึงรายการเช่าจาก ID ก่อน
         $rental = Rental::with([
             'details.product.mainImage',
-            'payments'
+            'payments',
         ])->find($id);
 
         if (!$rental) {
             abort(404, 'ไม่พบรายการเช่า ID: ' . $id);
         }
 
-        /*
-         * ตรวจสอบว่ารายการเช่านี้เป็นของลูกค้าคนปัจจุบันหรือไม่
-         */
+        // ตรวจสอบว่า Rental เป็นของลูกค้าปัจจุบัน
         if ((int) $rental->customer_id !== (int) $customer->customer_id) {
             abort(
                 403,
@@ -145,8 +153,10 @@ class RentalController extends Controller
     {
         $customer = $this->getCustomer();
 
-        $rental = Rental::where('customer_id', $customer->customer_id)
-            ->findOrFail($id);
+        $rental = Rental::where(
+            'customer_id',
+            $customer->customer_id
+        )->findOrFail($id);
 
         $request->validate([
             'payment_method' => 'required|in:transfer,qr,cash,other',
@@ -214,11 +224,11 @@ class RentalController extends Controller
             ->whereNotIn('status', [
                 'returned',
                 'completed',
-                'cancelled'
+                'cancelled',
             ])
             ->with([
                 'details.product.mainImage',
-                'payments'
+                'payments',
             ])
             ->latest()
             ->get();
@@ -237,11 +247,11 @@ class RentalController extends Controller
             ->whereIn('status', [
                 'returned',
                 'completed',
-                'cancelled'
+                'cancelled',
             ])
             ->with([
                 'details.product.mainImage',
-                'payments'
+                'payments',
             ])
             ->latest()
             ->paginate(10);
@@ -259,7 +269,7 @@ class RentalController extends Controller
         )
             ->with([
                 'details.product.mainImage',
-                'payments'
+                'payments',
             ])
             ->findOrFail($id);
 
@@ -278,8 +288,7 @@ class RentalController extends Controller
         $rental = Rental::where(
             'customer_id',
             $customer->customer_id
-        )
-            ->findOrFail($id);
+        )->findOrFail($id);
 
         if (!in_array(
             $rental->status,
@@ -302,9 +311,11 @@ class RentalController extends Controller
 
         $returnNote = trim(
             ($data['return_method'] ?? '') .
-            ($returnTrackingNo
-                ? ' | เลขพัสดุส่งคืน: ' . $returnTrackingNo
-                : '')
+            (
+                $returnTrackingNo
+                    ? ' | เลขพัสดุส่งคืน: ' . $returnTrackingNo
+                    : ''
+            )
         );
 
         $note = $rental->note;

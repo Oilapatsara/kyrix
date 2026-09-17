@@ -171,18 +171,19 @@
     .product-img-wrap {
         position: relative;
         width: 100%;
-        height: 320px;
-        background: #eee;
+        height: 440px;
+        background: #f0ebe8;
         overflow: hidden;
     }
     .product-img-wrap img {
         width: 100%;
         height: 100%;
         object-fit: cover;
+        object-position: top center;
         transition: transform 0.4s ease;
     }
     .product-card:hover .product-img-wrap img {
-        transform: scale(1.06);
+        transform: scale(1.04);
     }
     .product-badges {
         position: absolute;
@@ -241,6 +242,7 @@
         font-size: 12px;
         color: var(--text-muted);
         margin-bottom: 14px;
+        flex-wrap: wrap;
     }
     .product-footer {
         margin-top: auto;
@@ -264,6 +266,44 @@
         margin-top: 40px;
         display: flex;
         justify-content: center;
+    }
+    .pagination {
+        display: flex;
+        padding-left: 0;
+        list-style: none;
+        gap: 6px;
+        align-items: center;
+    }
+    .page-item .page-link, .page-item span.page-link {
+        position: relative;
+        display: block;
+        padding: 8px 16px;
+        color: var(--primary);
+        text-decoration: none;
+        background-color: #fff;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        transition: all 0.2s;
+    }
+    .page-item.active .page-link {
+        z-index: 3;
+        color: #fff;
+        background-color: var(--primary);
+        border-color: var(--primary);
+    }
+    .page-item.disabled .page-link {
+        color: #999;
+        pointer-events: none;
+        background-color: #f9f9f9;
+        border-color: var(--border);
+    }
+    .page-link:hover {
+        z-index: 2;
+        color: #fff;
+        background-color: #a02a3a;
+        border-color: #a02a3a;
     }
 
     @media (max-width: 1024px) {
@@ -457,6 +497,7 @@
                         <div class="product-meta">
                             <span><i class="fa-solid fa-tag"></i> {{ $product->product_code }}</span>
                             <span><i class="fa-solid fa-ruler-combined"></i> {{ $product->size ?? 'M' }}</span>
+                            <span title="{{ $product->colors_text }}"><i class="fa-solid fa-palette"></i> {{ Str::limit($product->colors_text, 22) }}</span>
                             <span><i class="fa-solid fa-star" style="color: #f59e0b;"></i> {{ $product->average_rating }} ({{ $product->reviews_count }})</span>
                         </div>
                         <div class="product-footer">
@@ -482,7 +523,7 @@
 
         <!-- Pagination -->
         <div class="pagination-wrap">
-            {{ $products->links() }}
+            {{ $products->links('pagination::bootstrap-5') }}
         </div>
     </main>
 </div>

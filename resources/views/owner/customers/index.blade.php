@@ -88,65 +88,7 @@
         color: #fff;
     }
 
-    /* SEARCH BAR CARD */
-    .search-card {
-        background: #fff;
-        border: 1px solid var(--line);
-        border-radius: 14px;
-        padding: 18px 24px;
-        margin-bottom: 24px;
-        box-shadow: 0 3px 15px rgba(111, 26, 43, .03);
-    }
 
-    .search-input {
-        width: 100%;
-        height: 42px;
-        padding: 0 14px;
-        border: 1px solid var(--line);
-        border-radius: 9px;
-        font-size: 13.5px;
-        outline: none;
-        transition: .2s;
-    }
-
-    .search-input:focus {
-        border-color: var(--gold);
-        box-shadow: 0 0 0 3px rgba(199, 154, 92, 0.15);
-    }
-
-    .btn-search {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        height: 42px;
-        padding: 0 20px;
-        border-radius: 9px;
-        background: var(--maroon-900);
-        color: #fff;
-        font-size: 13px;
-        font-weight: 650;
-        border: none;
-        cursor: pointer;
-        transition: .2s;
-    }
-    .btn-search:hover { background: var(--maroon-800); }
-
-    .btn-reset {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        height: 42px;
-        padding: 0 18px;
-        border-radius: 9px;
-        background: #fff;
-        color: var(--muted);
-        border: 1px solid var(--line);
-        font-size: 13px;
-        font-weight: 650;
-        text-decoration: none;
-        transition: .2s;
-    }
-    .btn-reset:hover { background: var(--cream); color: var(--ink); }
 
     /* CONTENT CARD & TABLE */
     .content-card {
@@ -260,24 +202,21 @@
         </div>
     </div>
 
-    <!-- SEARCH BAR -->
-    <div class="search-card">
-        <form action="{{ route('owner.customers.index') }}" method="GET" style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-            <div style="flex: 1; min-width: 280px;">
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="ค้นหาด้วยชื่อ, เบอร์โทร หรืออีเมลลูกค้า..." class="search-input">
-            </div>
-            <div style="display: flex; gap: 8px;">
-                <button type="submit" class="btn-search">
-                    <i class="fa-solid fa-magnifying-glass"></i> ค้นหา
-                </button>
-                @if(request('search'))
-                    <a href="{{ route('owner.customers.index') }}" class="btn-reset">
-                        <i class="fa-solid fa-rotate-left"></i> ล้างคำค้น
-                    </a>
-                @endif
-            </div>
-        </form>
+    <!-- แสดงสถานะการค้นหา (เมื่อมีคำค้นหาจากแถบบน) -->
+    @if(request('search'))
+    <div style="display: flex; align-items: center; gap: 12px; background: #fdf2f4; border: 1px solid #ebdcd9; border-radius: 12px; padding: 11px 18px; margin-bottom: 18px; flex-wrap: wrap;">
+        <i class="fa-solid fa-magnifying-glass" style="color: var(--maroon-700); font-size: 14px;"></i>
+        <span style="font-size: 13.5px; color: var(--maroon-900); font-weight: 600;">
+            ผลการค้นหา: "<strong>{{ request('search') }}</strong>"
+            — พบ {{ $customers->total() }} รายการ
+        </span>
+        <a href="{{ route('owner.customers.index') }}"
+           style="margin-left: auto; display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 600; color: var(--muted); background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 5px 14px; text-decoration: none; transition: .2s;"
+           onmouseover="this.style.color='var(--maroon-900)'" onmouseout="this.style.color='var(--muted)'">
+            <i class="fa-solid fa-xmark"></i> ล้างคำค้น
+        </a>
     </div>
+    @endif
 
     <!-- TABLE CARD -->
     <div class="content-card">

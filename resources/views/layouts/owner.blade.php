@@ -76,6 +76,20 @@
             line-height: 1.5;
         }
 
+        /* Prevent unstyled giant Laravel pagination SVGs */
+        nav svg,
+        .pagination svg,
+        .pagination-wrap svg,
+        .payment-pagination svg {
+            width: 1.25rem !important;
+            height: 1.25rem !important;
+            max-width: 1.25rem !important;
+            max-height: 1.25rem !important;
+            display: inline-block !important;
+            vertical-align: middle !important;
+            flex-shrink: 0 !important;
+        }
+
         a {
             text-decoration: none;
             color: inherit;
@@ -836,9 +850,14 @@
                 <!-- RIGHT ACTIONS (ค้นหา, แจ้งเตือน, โปรไฟล์, ออกจากระบบ) -->
             <div class="admin-nav-actions">
                 
-                <!-- SEARCH INPUT BOX -->
-                <form action="{{ route('owner.dresses.index') }}" method="GET" class="admin-search-box">
-                    <input type="text" name="search" class="admin-search-input" placeholder="ค้นหาชุดสวย..." value="{{ request('search') }}">
+                <!-- SEARCH INPUT BOX (Context-Aware: customers or dresses) -->
+                @php
+                    $isCustomerPage = request()->routeIs('owner.customers.*');
+                    $searchAction   = $isCustomerPage ? route('owner.customers.index') : route('owner.dresses.index');
+                    $searchPlaceholder = $isCustomerPage ? 'ค้นหาลูกค้า...' : 'ค้นหาชุดสวย...';
+                @endphp
+                <form action="{{ $searchAction }}" method="GET" class="admin-search-box">
+                    <input type="text" name="search" class="admin-search-input" placeholder="{{ $searchPlaceholder }}" value="{{ request('search') }}">
                     <button type="submit" class="admin-search-btn" title="ค้นหา">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </button>

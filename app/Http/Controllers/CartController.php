@@ -142,6 +142,7 @@ class CartController extends Controller
         $rentalTotal = 0;
         $depositTotal = 0;
         $serviceTotal = 0;
+        $itemCount = count($cart);
 
         foreach ($cart as $item) {
             $rentalTotal += $item['subtotal'];
@@ -149,14 +150,23 @@ class CartController extends Controller
             $serviceTotal += $item['service_fee'];
         }
 
-        $grandTotal = $rentalTotal + $depositTotal + $serviceTotal;
+        $promo = \App\Services\PromotionService::calculateDiscount($itemCount, $rentalTotal);
+
+        $netRentalTotal = $promo['net_rental_total'];
+        $grandTotal = $netRentalTotal + $depositTotal + $serviceTotal;
 
         return [
-            'rental_total' => $rentalTotal,
-            'deposit_total' => $depositTotal,
-            'service_total' => $serviceTotal,
-            'grand_total' => $grandTotal,
-            'item_count' => count($cart),
+            'rental_total'       => $rentalTotal,
+            'discount_amount'    => $promo['discount_amount'],
+            'discount_percent'   => $promo['discount_percent'],
+            'discount_reason'    => $promo['discount_reason'],
+            'is_discounted'      => $promo['is_applied'],
+            'net_rental_total'   => $netRentalTotal,
+            'deposit_total'      => $depositTotal,
+            'service_total'      => $serviceTotal,
+            'grand_total'        => $grandTotal,
+            'item_count'         => $itemCount,
+            'hint_message'       => $promo['hint_message'],
         ];
     }
 }

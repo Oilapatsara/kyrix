@@ -281,14 +281,6 @@
                 <span>เข้าสู่ระบบด้วย Google</span>
             </a>
 
-
-            {{-- Facebook --}}
-
-            <a href="{{ route('social.redirect', ['provider' => 'facebook']) }}" class="social-btn">
-                <span class="social-icon facebook-icon">f</span>
-                <span>เข้าสู่ระบบด้วย Facebook</span>
-            </a>
-
         </div>
 
         {{-- Links --}}

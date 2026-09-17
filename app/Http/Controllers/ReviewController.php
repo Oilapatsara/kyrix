@@ -11,18 +11,43 @@ use Illuminate\Support\Facades\Auth;
 
 class ReviewController extends Controller
 {
+    /**
+     * ดึงข้อมูลลูกค้าปัจจุบันที่ล็อกอินผ่าน Session หรือ Auth
+     */
+    private function getCustomer(): Customer
+    {
+        $customerId = session('customer_id');
+
+        if ($customerId) {
+            $customer = Customer::find($customerId);
+            if ($customer) {
+                return $customer;
+            }
+        }
+
+        if (Auth::check()) {
+            $user = Auth::user();
+            $customer = $user->customer ?? Customer::where('user_id', $user->user_id)->first();
+            if ($customer) {
+                return $customer;
+            }
+        }
+
+        abort(403, 'ไม่พบข้อมูลลูกค้า กรุณาเข้าสู่ระบบใหม่');
+    }
+
     public function create($rentalId, $productId)
     {
-        $user = Auth::user();
-        $customer = $user->customer ?? Customer::firstOrCreate(['user_id' => $user->user_id]);
+        $customer = $this->getCustomer();
 
         $rental = Rental::where('customer_id', $customer->customer_id)->findOrFail($rentalId);
 
         if (!in_array($rental->status, ['returned', 'completed'])) {
-            return redirect()->route('rentals.show', $rentalId)->with('error', 'สามารถเขียนรีวิวได้หลังจากคืนชุดเรียบร้อยแล้วเท่านั้น');
+            return redirect()->route('rentals.show', $rentalId)
+                ->with('error', 'สามารถเขียนรีวิวได้หลังจากคืนชุดเรียบร้อยแล้วเท่านั้น');
         }
 
-        $product = Product::findOrFail($productId);
+        $product = Product::with(['images', 'category'])->findOrFail($productId);
 
         $existingReview = Review::where('rental_id', $rentalId)
             ->where('product_id', $productId)
@@ -35,44 +60,61 @@ class ReviewController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'rental_id' => 'required|exists:rentals,rental_id',
+            'rental_id'  => 'required|exists:rentals,rental_id',
             'product_id' => 'required|exists:products,product_id',
-            'rating' => 'required|integer|min:1|max:5',
-            'comment' => 'required|string|min:5|max:1000',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'rating'     => 'required|integer|min:1|max:5',
+            'comment'    => 'required|string|min:5|max:1000',
+            'image'      => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
         ], [
-            'rating.required' => 'กรุณาให้คะแนนความพึงพอใจ',
+            'rating.required'  => 'กรุณาให้คะแนนความพึงพอใจ',
             'comment.required' => 'กรุณาเขียนข้อความรีวิว',
-            'comment.min' => 'ข้อความรีวิวต้องมีอย่างน้อย 5 ตัวอักษร',
-            'image.image' => 'ไฟล์แนบต้องเป็นรูปภาพเท่านั้น',
+            'comment.min'      => 'ข้อความรีวิวต้องมีอย่างน้อย 5 ตัวอักษร',
+            'image.image'      => 'ไฟล์แนบต้องเป็นรูปภาพเท่านั้น',
         ]);
 
-        $user = Auth::user();
-        $customer = $user->customer ?? Customer::firstOrCreate(['user_id' => $user->user_id]);
+        $customer = $this->getCustomer();
 
-        $imagePath = null;
+        // ตรวจสอบว่ารายการเช่านี้เป็นของลูกค้าท่านนี้จริง
+        $rental = Rental::where('customer_id', $customer->customer_id)->findOrFail($request->rental_id);
+
+        // ดึงรีวิวเดิม (ถ้ามี) เพื่อเก็บ path รูปเก่ากรณีไม่ได้อัปโหลดรูปใหม่
+        $existingReview = Review::where('rental_id', $request->rental_id)
+            ->where('product_id', $request->product_id)
+            ->where('customer_id', $customer->customer_id)
+            ->first();
+
+        $imagePath = $existingReview?->image_path;
+
         if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $filename = 'review_' . time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads/reviews'), $filename);
+            // ลบรูปเก่าออกหากมี
+            if ($imagePath && file_exists(public_path($imagePath))) {
+                @unlink(public_path($imagePath));
+            }
+            $uploadDir = public_path('uploads/reviews');
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0755, true);
+            }
+            $file      = $request->file('image');
+            $filename  = 'review_' . time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->move($uploadDir, $filename);
             $imagePath = 'uploads/reviews/' . $filename;
         }
 
         Review::updateOrCreate(
             [
-                'rental_id' => $request->rental_id,
-                'product_id' => $request->product_id,
+                'rental_id'   => $request->rental_id,
+                'product_id'  => $request->product_id,
                 'customer_id' => $customer->customer_id,
             ],
             [
-                'rating' => $request->rating,
-                'comment' => $request->comment,
-                'image_path' => $imagePath ?? ($existingReview->image_path ?? null),
-                'status' => 'published',
+                'rating'     => $request->rating,
+                'comment'    => $request->comment,
+                'image_path' => $imagePath,
+                'status'     => 'published',
             ]
         );
 
         return redirect()->route('products.show', $request->product_id)
-            ->with('success', 'ขอบคุณสำหรับรีวิวของคุณ! ข้อความรีวิวจะถูกเผยแพร่ในหน้ารายละเอียดชุด');
+            ->with('success', '✨ ขอบคุณสำหรับรีวิวของคุณ! รีวิวปรากฏในหน้ารายละเอียดชุดแล้ว');
     }
 }

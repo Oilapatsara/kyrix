@@ -96,6 +96,9 @@ Route::post('/logout', [AuthController::class, 'logout'])
 Route::get('/auth/{provider}', [SocialAuthController::class, 'redirect'])
     ->name('social.redirect');
 
+Route::get('/auth/{provider}/callback', [SocialAuthController::class, 'callback'])
+    ->name('social.callback');
+
 
 /* =========================
    CUSTOMER
@@ -210,12 +213,31 @@ Route::middleware(['auth', 'owner'])
                     [OwnerDressController::class, 'store']
                 )->name('store');
 
+                /* Categories */
+                Route::post(
+                    '/categories/store',
+                    [OwnerDressController::class, 'storeCategory']
+                )->name('categories.store');
+
+                Route::match(
+                    ['post', 'put'],
+                    '/categories/{id}/update',
+                    [OwnerDressController::class, 'updateCategory']
+                )->name('categories.update');
+
+                Route::delete(
+                    '/categories/{id}/delete',
+                    [OwnerDressController::class, 'destroyCategory']
+                )->name('categories.destroy');
+
+                /* Item Operations */
                 Route::get(
                     '/{id}/edit',
                     [OwnerDressController::class, 'edit']
                 )->name('edit');
 
-                Route::post(
+                Route::match(
+                    ['post', 'put'],
                     '/{id}/update',
                     [OwnerDressController::class, 'update']
                 )->name('update');
@@ -230,6 +252,7 @@ Route::middleware(['auth', 'owner'])
                     [OwnerDressController::class, 'toggleStatus']
                 )->name('toggle-status');
             });
+
 
 
         /* ===== BOOKINGS / RENTALS ===== */

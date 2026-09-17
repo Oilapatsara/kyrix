@@ -18,32 +18,25 @@ class SocialAuthController extends Controller
         if (!in_array($provider, ['google'])) {
             abort(404);
         }
-
         return Socialite::driver($provider)->redirect();
     }
-
     public function callback(Request $request, $provider)
     {
         if (!in_array($provider, ['google'])) {
             abort(404);
         }
-
         try {
             $socialUser = Socialite::driver($provider)->user();
-
             DB::beginTransaction();
-
-            // ค้นหาจาก provider และ provider_id ก่อน
+            // ค้นหาผู้ใช้จาก provider และ provider_id ก่อน
             $user = User::where('provider', $provider)
                 ->where('provider_id', $socialUser->getId())
                 ->first();
-
             // ถ้ายังไม่เจอ ให้ค้นหาจากอีเมล
             if (!$user && $socialUser->getEmail()) {
                 $user = User::where('email', $socialUser->getEmail())
                     ->first();
             }
-
             // ถ้ายังไม่มีผู้ใช้ ให้สร้างใหม่ในตาราง users
             if (!$user) {
                 $user = User::create([
@@ -71,7 +64,7 @@ class SocialAuthController extends Controller
                 ]);
             }
 
-            // ค้นหาหรือสร้างข้อมูลในตาราง customers
+            // เตรียมชื่อสำหรับ Customer
             $rawName = trim(
                 $socialUser->getName()
                     ?: $socialUser->getNickname()
@@ -86,12 +79,14 @@ class SocialAuthController extends Controller
             $email = $socialUser->getEmail()
                 ?: ($provider . '_' . $socialUser->getId() . '@example.com');
 
-            // ค้นหา Customer จาก user_id
-            $customer = Customer::where('user_id', $user->user_id)->first();
+            // ค้นหา Customer จาก user_id ก่อน
+            $customer = Customer::where('user_id', $user->user_id)
+                ->first();
 
-            // ถ้าไม่เจอ ลองค้นหาจาก email
+            // ถ้ายังไม่เจอ ให้ค้นหาจาก email
             if (!$customer && $email) {
-                $customer = Customer::where('email', $email)->first();
+                $customer = Customer::where('email', $email)
+                    ->first();
             }
 
             // ถ้ายังไม่มี Customer ให้สร้างใหม่
@@ -134,7 +129,11 @@ class SocialAuthController extends Controller
             // ส่งไป Dashboard ลูกค้า
             return redirect()
                 ->intended(route('customer.dashboard'))
-                ->with('success', 'เข้าสู่ระบบด้วย Google สำเร็จแล้ว!');
+                ->with(
+                    'success',
+                    'เข้าสู่ระบบด้วย Google สำเร็จแล้ว!'
+                );
+
         } catch (\Exception $e) {
             DB::rollBack();
 

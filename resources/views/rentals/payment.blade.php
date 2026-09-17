@@ -106,6 +106,7 @@
             border: 1px solid var(--border);
             padding: 8px;
             background: #fff;
+            object-fit: contain;
         }
 
         .slip-box {
@@ -198,10 +199,13 @@
 @section('content')
 
     @php
-        $depositAmount = 100;
-        $serviceFee = (float) ($rental->service_fee ?? 0);
         $rentalAmount = (float) ($rental->total_amount ?? 0);
-        $grandTotal = $rentalAmount + $depositAmount + $serviceFee;
+        $discountAmount = (float) ($rental->discount_amount ?? 0);
+        $netRentalAmount = max(0, $rentalAmount - $discountAmount);
+        $depositAmount = (float) ($rental->deposit_amount ?? 0);
+        $serviceFee = (float) ($rental->service_fee ?? 0);
+        $grandTotal = $netRentalAmount + $depositAmount + $serviceFee;
+        $discountReason = $rental->discount_reason ?? 'ส่วนลดโปรโมชั่น';
     @endphp
 
     <div class="payment-page-wrap">
@@ -222,7 +226,6 @@
             <p style="color: var(--text-muted); font-size: 14px; margin-top: 4px;">
                 กรุณาเลือกวิธีการชำระเงินและอัปโหลดสลิปหลักฐานเพื่อยืนยันการจอง
             </p>
-
         </div>
 
         <div class="status-note-box">
@@ -230,12 +233,20 @@
                 <i class="fa-solid fa-circle-info"></i>
                 ขั้นตอนการตรวจสอบยอดชำระ:
             </strong>
+
             <br>
-            เมื่อแนบสลิปแล้ว สถานะจะเป็น <strong>"รอตรวจสอบ"</strong>
+
+            เมื่อแนบสลิปแล้ว สถานะจะเป็น
+            <strong>"รอตรวจสอบ"</strong>
+
             &rarr;
+
             เจ้าหน้าที่จะตรวจสอบสลิปภายใน 15-30 นาที
-            และเปลี่ยนเป็น <strong>"อนุมัติแล้ว"</strong>
-            หากสลิปไม่ถูกต้องจะแจ้งเป็น <strong>"ถูกปฏิเสธ"</strong>
+            และเปลี่ยนเป็น
+            <strong>"อนุมัติแล้ว"</strong>
+
+            หากสลิปไม่ถูกต้องจะแจ้งเป็น
+            <strong>"ถูกปฏิเสธ"</strong>
         </div>
 
         <div class="payment-card">
@@ -253,6 +264,7 @@
                             style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 14px; gap: 15px;">
 
                             <span>
+
                                 <strong style="color: var(--primary);">
                                     {{ $detail->product->product_name ?? 'ชุดเช่า' }}
                                 </strong>
@@ -260,10 +272,11 @@
                                 <span style="color: var(--text-muted); font-size: 12px;">
                                     ({{ $detail->quantity }} ชุด x {{ $detail->rental_days }} วัน)
                                 </span>
+
                             </span>
 
                             <span>
-                                ฿{{ number_format($detail->subtotal) }}
+                                ฿{{ number_format((float) $detail->subtotal, 2) }}
                             </span>
 
                         </div>
@@ -272,31 +285,68 @@
                 </div>
 
                 <div class="amount-row">
-                    <span>ค่าเช่าชุดเต็มจำนวน (100%):</span>
-                    <strong>฿{{ number_format($rentalAmount) }}</strong>
-                </div>
-
-                <div class="amount-row">
-                    <span>เงินมัดจำประกันชุด:</span>
-                    <strong style="color: #b45309;">
-                        ฿{{ number_format($depositAmount) }}
+                    <span>ค่าเช่าชุดก่อนหักส่วนลด:</span>
+                    <strong>
+                        ฿{{ number_format($rentalAmount, 2) }}
                     </strong>
                 </div>
 
-                @if ($serviceFee > 0)
+                @if ($discountAmount > 0)
+                    <div class="amount-row" style="color: #16a34a;">
+                        <span>
+                            <i class="fa-solid fa-tag"></i>
+                            {{ $discountReason }}:
+                        </span>
+
+                        <strong style="color: #16a34a;">
+                            -฿{{ number_format($discountAmount, 2) }}
+                        </strong>
+                    </div>
+
                     <div class="amount-row">
-                        <span>ค่าบริการเพิ่มเติม:</span>
+                        <span>ค่าเช่าสุทธิหลังหักส่วนลด:</span>
                         <strong>
-                            ฿{{ number_format($serviceFee) }}
+                            ฿{{ number_format($netRentalAmount, 2) }}
                         </strong>
                     </div>
                 @endif
 
-                <div class="amount-row total">
-                    <span>ยอดที่ต้องชำระสุทธิ:</span>
+                <div class="amount-row">
+
                     <span>
-                        ฿{{ number_format($grandTotal) }}
+                        เงินมัดจำประกันชุด:
                     </span>
+
+                    <strong style="color: #b45309;">
+                        ฿{{ number_format($depositAmount, 2) }}
+                    </strong>
+
+                </div>
+
+                @if ($serviceFee > 0)
+                    <div class="amount-row">
+
+                        <span>
+                            ค่าบริการเพิ่มเติม:
+                        </span>
+
+                        <strong>
+                            ฿{{ number_format($serviceFee, 2) }}
+                        </strong>
+
+                    </div>
+                @endif
+
+                <div class="amount-row total">
+
+                    <span>
+                        ยอดที่ต้องชำระสุทธิ:
+                    </span>
+
+                    <span>
+                        ฿{{ number_format($grandTotal, 2) }}
+                    </span>
+
                 </div>
 
                 <div class="payment-info-box payment-info-success">
@@ -304,15 +354,20 @@
                     <i class="fa-solid fa-shield-halved"></i>
 
                     <strong>
-                        เงินมัดจำประกันชุด ฿{{ number_format($depositAmount) }}
+                        เงินมัดจำประกันชุด
+                        ฿{{ number_format($depositAmount, 2) }}
                     </strong>
+
                     เท่านั้นที่จะได้รับคืน 100% ในวันที่ส่งคืนชุด
                     หากเจ้าหน้าที่ตรวจสภาพแล้วชุดไม่มีการเสียหาย
 
                     <br>
 
-                    ค่าเช่าชุด
-                    <strong>฿{{ number_format($rentalAmount) }}</strong>
+                    ค่าเช่าชุดสุทธิ
+                    <strong>
+                        ฿{{ number_format($netRentalAmount, 2) }}
+                    </strong>
+
                     เป็นค่าใช้จ่ายในการเช่าและ
                     <strong>จะไม่ได้รับคืน</strong>
 
@@ -341,6 +396,7 @@
                             style="accent-color: var(--primary);">
 
                         <div>
+
                             <strong style="display: block; font-size: 14px;">
                                 QR Code PromptPay
                             </strong>
@@ -348,6 +404,7 @@
                             <span style="font-size: 12px; color: var(--text-muted);">
                                 สแกนจ่ายง่ายผ่านทุกแอปธนาคาร
                             </span>
+
                         </div>
 
                     </label>
@@ -357,6 +414,7 @@
                         <input type="radio" name="payment_method" value="transfer" style="accent-color: var(--primary);">
 
                         <div>
+
                             <strong style="display: block; font-size: 14px;">
                                 โอนเงินผ่านบัญชีธนาคาร
                             </strong>
@@ -364,6 +422,7 @@
                             <span style="font-size: 12px; color: var(--text-muted);">
                                 ธ.ออมสิน
                             </span>
+
                         </div>
 
                     </label>
@@ -373,6 +432,7 @@
                         <input type="radio" name="payment_method" value="cash" style="accent-color: var(--primary);">
 
                         <div>
+
                             <strong style="display: block; font-size: 14px;">
                                 ชำระเงินสดที่หน้าร้าน
                             </strong>
@@ -380,6 +440,7 @@
                             <span style="font-size: 12px; color: var(--text-muted);">
                                 ชำระตอนมารับชุดที่ร้านทองหล่อ
                             </span>
+
                         </div>
 
                     </label>
@@ -389,6 +450,7 @@
                         <input type="radio" name="payment_method" value="other" style="accent-color: var(--primary);">
 
                         <div>
+
                             <strong style="display: block; font-size: 14px;">
                                 ช่องทางอื่นๆ
                             </strong>
@@ -396,6 +458,7 @@
                             <span style="font-size: 12px; color: var(--text-muted);">
                                 บัตรเครดิต หรือ TrueMoney
                             </span>
+
                         </div>
 
                     </label>
@@ -412,7 +475,7 @@
 
                             <div>
                                 <strong>ยอดชำระ:</strong>
-                                ฿{{ number_format($grandTotal) }}
+                                ฿{{ number_format($grandTotal, 2) }}
                             </div>
 
                             <div>
@@ -421,16 +484,21 @@
                             </div>
 
                             <div>
+
                                 <strong>เลขที่บัญชี:</strong>
+
                                 <span
                                     style="font-family: monospace; font-size: 16px; color: var(--primary); font-weight: 700;">
                                     020310925126
                                 </span>
+
                             </div>
 
                             <div>
+
                                 <strong>ชื่อบัญชี:</strong>
                                 บจก. ไคริกซ์ เดรส เรนทอล (KYRIX)
+
                             </div>
 
                         </div>
@@ -448,8 +516,7 @@
                     <div class="slip-box" onclick="document.getElementById('slipInput').click();">
 
                         <i class="fa-solid fa-cloud-arrow-up"
-                            style="font-size: 36px; color: var(--primary); margin-bottom: 10px;">
-                        </i>
+                            style="font-size: 36px; color: var(--primary); margin-bottom: 10px;"></i>
 
                         <div style="font-weight: 700; font-size: 14px;">
                             คลิกเพื่อเลือกไฟล์รูปภาพสลิป
@@ -468,10 +535,12 @@
 
                 </div>
 
-
                 <button type="submit" class="btn btn-primary btn-block" style="padding: 14px; font-size: 16px;">
+
                     <i class="fa-solid fa-check-circle"></i>
+
                     ยืนยันการชำระเงิน & ส่งสลิป
+
                 </button>
 
             </form>

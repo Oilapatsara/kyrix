@@ -9,7 +9,7 @@ class ProductImage extends Model
     protected $table = 'product_images';
     protected $primaryKey = 'image_id';
     public $timestamps = false;
-    protected $fillable = ['product_id', 'image_path', 'is_main', 'created_at'];
+    protected $fillable = ['product_id', 'image_path', 'is_main', 'color_name', 'created_at'];
 
     public function product()
     {

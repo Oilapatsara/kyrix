@@ -353,7 +353,40 @@
                     <i class="fa-solid fa-receipt"></i> ข้อมูลการชำระเงิน
                 </div>
                 <div class="info-row">
-                    <span class="info-label" style="font-weight: 750; color: var(--maroon-900);">ยอดรวมสุทธิ</span>
+                    <span class="info-label">ค่าเช่าชุดรวม</span>
+                    <span class="info-value">฿{{ number_format($rental->total_amount, 2) }}</span>
+                </div>
+
+                @if(!empty($rental->discount_amount) && $rental->discount_amount > 0)
+                <div class="info-row" style="background: #f0fdf4; border-radius: 8px; padding: 6px 10px; margin: 4px 0;">
+                    <span class="info-label" style="color: #16a34a; font-weight: 700;">
+                        <i class="fa-solid fa-gift"></i> ส่วนลดโปรโมชั่น (20%)
+                        @if($rental->discount_reason)
+                            <br><small style="font-size: 11px; font-weight: normal; color: #15803d;">{{ $rental->discount_reason }}</small>
+                        @endif
+                    </span>
+                    <span class="info-value" style="color: #16a34a; font-weight: 750;">-฿{{ number_format($rental->discount_amount, 2) }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">ค่าเช่าสุทธิหลังหักส่วนลด</span>
+                    <span class="info-value">฿{{ number_format($rental->net_rental_amount, 2) }}</span>
+                </div>
+                @endif
+
+                <div class="info-row">
+                    <span class="info-label">เงินมัดจำประกันชุด</span>
+                    <span class="info-value">฿{{ number_format($rental->deposit_amount ?: 100, 2) }}</span>
+                </div>
+
+                @if(!empty($rental->service_fee) && $rental->service_fee > 0)
+                <div class="info-row">
+                    <span class="info-label">ค่าบริการเสริม ({{ $rental->service_type }})</span>
+                    <span class="info-value">฿{{ number_format($rental->service_fee, 2) }}</span>
+                </div>
+                @endif
+
+                <div class="info-row" style="border-top: 1px solid var(--line); margin-top: 8px; padding-top: 8px;">
+                    <span class="info-label" style="font-weight: 750; color: var(--maroon-900);">ยอดรวมสุทธิที่ลูกค้าต้องชำระ</span>
                     <span class="info-value" style="font-size: 18px; font-weight: 800; color: var(--maroon-900);">฿{{ number_format($rental->grand_total, 2) }}</span>
                 </div>
 
