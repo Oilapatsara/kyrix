@@ -4,26 +4,6 @@
 
 @push('styles')
     <style>
-        .breadcrumb-wrap {
-            background: #fff;
-            border-bottom: 1px solid var(--border);
-            padding: 14px 24px;
-            font-size: 13px;
-        }
-
-        .breadcrumb {
-            max-width: 1280px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--text-muted);
-        }
-
-        .breadcrumb a:hover {
-            color: var(--primary);
-        }
-
         .detail-container {
             max-width: 1280px;
             margin: 40px auto 80px;
@@ -472,19 +452,6 @@
 @endpush
 
 @section('content')
-    <!-- Breadcrumbs -->
-    <div class="breadcrumb-wrap">
-        <div class="breadcrumb">
-            <a href="{{ route('home') }}">หน้าแรก</a>
-            <span>/</span>
-            <a href="{{ route('products.index') }}">ชุดทั้งหมด</a>
-            <span>/</span>
-            <a
-                href="{{ route('products.index', ['category_id' => $product->category_id]) }}">{{ $product->category->category_name ?? 'หมวดหมู่' }}</a>
-            <span>/</span>
-            <span style="color: var(--text-main);">{{ $product->product_name }}</span>
-        </div>
-    </div>
 
     <div class="detail-container">
         <!-- 1. Product Image Gallery -->
@@ -492,13 +459,19 @@
             @php
                 // สร้าง map: ชื่อสี => URL รูปภาพ สำหรับ JS auto-switch
                 $colorImageMap = [];
+
                 foreach ($product->colors_list as $colorName) {
                     // หารูปที่ color_name ตรงกับชื่อสี
-                    $matchImg = $product->images->first(fn($img) => $img->color_name && trim(mb_strtolower($img->color_name)) === trim(mb_strtolower($colorName)));
+                    $matchImg = $product->images->first(
+                        fn($img) => $img->color_name &&
+                            trim(mb_strtolower($img->color_name)) === trim(mb_strtolower($colorName)),
+                    );
+
                     if ($matchImg) {
                         $url = str_starts_with($matchImg->image_path, 'http')
                             ? $matchImg->image_path
                             : asset('storage/' . $matchImg->image_path);
+
                         $colorImageMap[$colorName] = $url;
                     } else {
                         // Fallback: ใช้รูปหลัก
@@ -517,6 +490,7 @@
                         @php
                             $thumbUrl = $colorImageMap[$colorLabel] ?? $product->main_image_url;
                         @endphp
+
                         <button type="button" class="thumb-btn {{ $idx === 0 ? 'active' : '' }}"
                             onclick="selectColorByThumb('{{ $colorLabel }}', this)">
                             <img src="{{ $thumbUrl }}" alt="{{ $colorLabel }}">
@@ -531,24 +505,29 @@
                     <i class="fa-solid fa-ruler-combined" style="color: var(--primary);"></i>
                     <span>ตารางสัดส่วนชุด (Measurements Guide)</span>
                 </div>
+
                 <div class="specs-grid">
                     <div class="spec-item">
                         <div class="spec-label">รอบอก (Bust)</div>
                         <div class="spec-val">{{ $product->bust ?? '32-35 นิ้ว' }}</div>
                     </div>
+
                     <div class="spec-item">
                         <div class="spec-label">รอบเอว (Waist)</div>
                         <div class="spec-val">{{ $product->waist ?? '25-28 นิ้ว' }}</div>
                     </div>
+
                     <div class="spec-item">
                         <div class="spec-label">สะโพก (Hips)</div>
                         <div class="spec-val">{{ $product->hips ?? '35-38 นิ้ว' }}</div>
                     </div>
+
                     <div class="spec-item">
                         <div class="spec-label">ความยาว (Length)</div>
                         <div class="spec-val">{{ $product->length ?? '145 ซม.' }}</div>
                     </div>
                 </div>
+
                 <p style="font-size: 12px; color: var(--text-muted); margin-top: 10px; text-align: center;">
                     * ทางร้านมีบริการปรับแก้ทรงชั่วคราวให้พอดีสัดส่วนฟรี โดยไม่ทำให้ผ้าเสียหาย
                 </p>
@@ -558,22 +537,47 @@
         <!-- 2. Product Info & Booking Form -->
         <div class="product-info">
             <div class="info-header">
-                <div class="info-cat">{{ $product->category->category_name ?? 'ชุดเช่าพรีเมียม' }}</div>
-                <h1 class="info-title">{{ $product->product_name }}</h1>
+                <div class="info-cat">
+                    {{ $product->category->category_name ?? 'ชุดเช่าพรีเมียม' }}
+                </div>
+
+                <h1 class="info-title">
+                    {{ $product->product_name }}
+                </h1>
+
                 <div class="info-meta-row" style="flex-wrap: wrap; gap: 14px;">
-                    <span class="info-code">รหัส: {{ $product->product_code }}</span>
-                    <span><i class="fa-solid fa-boxes-stacked"></i> จำนวนชุดที่มี: <strong>{{ $product->stock }}</strong>
-                        ชุด</span>
+                    <span class="info-code">
+                        รหัส: {{ $product->product_code }}
+                    </span>
+
+                    <span>
+                        <i class="fa-solid fa-boxes-stacked"></i>
+                        จำนวนชุดที่มี:
+                        <strong>{{ $product->stock }}</strong>
+                        ชุด
+                    </span>
+
                     <span>
                         @if ($product->status === 'available')
-                            <span class="badge badge-success"><i class="fa-solid fa-circle-check"></i> ว่าง
-                                (พร้อมเช่า)</span>
+                            <span class="badge badge-success">
+                                <i class="fa-solid fa-circle-check"></i>
+                                ว่าง (พร้อมเช่า)
+                            </span>
                         @elseif($product->status === 'rented')
-                            <span class="badge badge-warning"><i class="fa-solid fa-clock"></i> เช่าอยู่</span>
+                            <span class="badge badge-warning">
+                                <i class="fa-solid fa-clock"></i>
+                                เช่าอยู่
+                            </span>
                         @elseif($product->status === 'maintenance')
-                            <span class="badge badge-danger"><i class="fa-solid fa-wrench"></i> ซ่อม / ปรับปรุง</span>
+                            <span class="badge badge-danger">
+                                <i class="fa-solid fa-wrench"></i>
+                                ซ่อม / ปรับปรุง
+                            </span>
                         @else
-                            <span class="badge badge-secondary"><i class="fa-solid fa-ban"></i> ปิดใช้งาน</span>
+                            <span class="badge badge-secondary">
+                                <i class="fa-solid fa-ban"></i>
+                                ปิดใช้งาน
+                            </span>
                         @endif
                     </span>
                 </div>
@@ -582,31 +586,56 @@
             <!-- Price display -->
             <div class="price-box">
                 <div>
-                    <span style="font-size: 12px; color: var(--text-muted); display: block;">ราคาเช่า</span>
-                    <span class="price-main">฿{{ number_format($product->rental_price) }}</span>
-                    <span style="font-size: 14px; color: var(--text-muted);">/ วัน</span>
+                    <span style="font-size: 12px; color: var(--text-muted); display: block;">
+                        ราคาเช่า
+                    </span>
+
+                    <span class="price-main">
+                        ฿{{ number_format($product->rental_price) }}
+                    </span>
+
+                    <span style="font-size: 14px; color: var(--text-muted);">
+                        / วัน
+                    </span>
                 </div>
+
                 <div>
-                    <span class="deposit-badge"><i class="fa-solid fa-shield"></i> เงินมัดจำ
-                        ฿{{ number_format($product->deposit) }}</span>
+                    <span class="deposit-badge">
+                        <i class="fa-solid fa-shield"></i>
+                        เงินมัดจำ ฿{{ number_format($product->deposit) }}
+                    </span>
                 </div>
             </div>
 
             <!-- Description & Details -->
             <div>
-                <h4 style="font-size: 15px; font-weight: 700; margin-bottom: 8px;">รายละเอียดชุด</h4>
-                <p style="font-size: 14px; color: #555; line-height: 1.8; margin-bottom: 12px;">{{ $product->description }}
+                <h4 style="font-size: 15px; font-weight: 700; margin-bottom: 8px;">
+                    รายละเอียดชุด
+                </h4>
+
+                <p style="font-size: 14px; color: #555; line-height: 1.8; margin-bottom: 12px;">
+                    {{ $product->description }}
                 </p>
+
                 <div style="display: flex; gap: 20px; font-size: 13px; color: var(--text-muted);">
-                    <span><i class="fa-solid fa-ruler"></i> ไซซ์มาตรฐาน:
-                        <strong>{{ $product->size ?? 'M' }}</strong></span>
-                    <span><i class="fa-solid fa-palette"></i> สี: <strong>{{ $product->colors_text }}</strong></span>
+                    <span>
+                        <i class="fa-solid fa-ruler"></i>
+                        ไซซ์มาตรฐาน:
+                        <strong>{{ $product->size ?? 'M' }}</strong>
+                    </span>
+
+                    <span>
+                        <i class="fa-solid fa-palette"></i>
+                        สี:
+                        <strong>{{ $product->colors_text }}</strong>
+                    </span>
                 </div>
             </div>
 
             <!-- 3. Interactive Rental Booking Form -->
             <div class="rental-form-card">
                 @if ($product->status === 'available' && $product->stock > 0)
+
                     <form action="{{ route('rentals.book', $product->product_id) }}" method="POST" id="rentalBookingForm">
                         @csrf
 
@@ -617,7 +646,10 @@
 
                         <!-- Size Chooser -->
                         <div class="form-group">
-                            <label class="form-label">เลือกไซซ์ (Size):</label>
+                            <label class="form-label">
+                                เลือกไซซ์ (Size):
+                            </label>
+
                             <div class="options-row">
                                 @foreach ($product->sizes_list as $idx => $s)
                                     <button type="button" class="option-btn {{ $idx === 0 ? 'selected' : '' }}"
@@ -626,6 +658,7 @@
                                     </button>
                                 @endforeach
                             </div>
+
                             <input type="hidden" name="size" id="selectedSize"
                                 value="{{ $product->sizes_list[0] ?? 'M' }}">
                         </div>
@@ -633,17 +666,15 @@
                         <!-- Color Chooser -->
                         <div class="form-group">
                             <label class="form-label">
-                                เลือกสี (Color):
-                                <span id="currentColorLabel" style="font-weight: 700; color: var(--primary); margin-left: 6px;">{{ $product->colors_list[0] ?? $product->color }}</span>
+                                เลือกสี:
+                                <span id="currentColorLabel"
+                                    style="font-weight: 700; color: var(--primary); margin-left: 6px;">
+                                    {{ $product->colors_list[0] ?? $product->color }}
+                                </span>
                             </label>
+
                             <div class="options-row">
                                 @php
-                                    /**
-                                     * แผนที่ชื่อสี (ไทย/อังกฤษ) => รหัสสี HEX สำหรับจุดวงกลมหน้าตัวเลือกสี
-                                     * หมายเหตุ: อัปเดตให้ครอบคลุมสีทั้งหมดที่มีอยู่ใน seeder ปัจจุบัน (ก.ย. 2569)
-                                     * ถ้าเพิ่มสีใหม่ในอนาคตแล้วไม่มีใน map นี้ ระบบจะไม่ fallback เป็นสีเทาทื่อๆ อีกต่อไป
-                                     * แต่จะสุ่มสีจากชุดสีที่กำหนดไว้ (deterministic ตามชื่อ) แทน ดูฟังก์ชัน resolveDotColor() ด้านล่าง
-                                     */
                                     $colorMap = [
                                         // โทนดำ
                                         'ดำคลาสสิก' => '#1a1a1a',
@@ -652,6 +683,7 @@
                                         'ดำ' => '#1a1a1a',
                                         'black' => '#1a1a1a',
                                         'charcoal' => '#36454f',
+
                                         // โทนขาว/ครีม
                                         'ขาวออฟไวท์' => '#f5f5f0',
                                         'ขาวมุก' => '#f8f6f0',
@@ -667,6 +699,7 @@
                                         'เบจ' => '#f5f5dc',
                                         'นู้ด' => '#e3bc9a',
                                         'nude' => '#e3bc9a',
+
                                         // โทนทอง/เมทัลลิก
                                         'ทองแชมเปญ' => '#d4af37',
                                         'ทองเมทัลลิก' => '#d4af37',
@@ -686,6 +719,7 @@
                                         'metallic' => '#b8b8b8',
                                         'มุก' => '#f0ead6',
                                         'pearl' => '#f0ead6',
+
                                         // โทนแดง/ชมพู
                                         'แดงไวน์' => '#722f37',
                                         'แดงเบอร์กันดี' => '#6f1a2b',
@@ -699,6 +733,7 @@
                                         'pink' => '#f472b6',
                                         'โรสโกลด์' => '#b76e79',
                                         'rose gold' => '#b76e79',
+
                                         // โทนน้ำเงิน/เขียว/ม่วง
                                         'น้ำเงินมิดไนท์บลู' => '#0f172a',
                                         'มิดไนท์' => '#0f172a',
@@ -713,6 +748,7 @@
                                         'ฟ้าพีช' => '#a7c7e7',
                                         'ฟ้า' => '#38bdf8',
                                         'ม่วง' => '#7e22ce',
+
                                         // โทนน้ำตาล/ส้ม
                                         'น้ำตาล' => '#6b4226',
                                         'brown' => '#6b4226',
@@ -720,24 +756,33 @@
                                         'orange' => '#ea580c',
                                     ];
                                 @endphp
+
                                 @foreach ($product->colors_list as $idx => $c)
                                     @php
-                                        // 1) หา match แบบตรงคำก่อน (คำยาวสุดจะถูกจับก่อน เพราะ PHP วน array ตามลำดับ key ด้านบน)
                                         $dotColor = null;
+
                                         foreach ($colorMap as $nameKey => $hex) {
                                             if (mb_stripos($c, $nameKey) !== false) {
                                                 $dotColor = $hex;
                                                 break;
                                             }
                                         }
-                                        // 2) ถ้าไม่เจอใน map เลย ให้สุ่มสีแบบ deterministic จากชุดสีสำรอง
-                                        //    (กันไม่ให้ตกเป็นสีเทาทื่อๆ ทุกครั้งที่มีสีใหม่ที่ยังไม่ได้เพิ่มใน map)
+
                                         if ($dotColor === null) {
-                                            $fallbackPalette = ['#8b5e3c', '#5b7f6b', '#7a5c99', '#b5654a', '#4a6d8c', '#9c7a4a'];
+                                            $fallbackPalette = [
+                                                '#8b5e3c',
+                                                '#5b7f6b',
+                                                '#7a5c99',
+                                                '#b5654a',
+                                                '#4a6d8c',
+                                                '#9c7a4a',
+                                            ];
+
                                             $hashIndex = abs(crc32($c)) % count($fallbackPalette);
                                             $dotColor = $fallbackPalette[$hashIndex];
                                         }
                                     @endphp
+
                                     <button type="button" class="color-option-btn {{ $idx === 0 ? 'selected' : '' }}"
                                         onclick="selectColor('{{ $c }}', this)">
                                         <span class="color-circle" style="background-color: {{ $dotColor }};"></span>
@@ -745,26 +790,35 @@
                                     </button>
                                 @endforeach
                             </div>
+
                             <input type="hidden" name="color" id="selectedColor"
                                 value="{{ $product->colors_list[0] ?? $product->color }}">
                         </div>
 
                         <!-- Rental Dates -->
                         <div class="form-group">
-                            <label class="form-label">กำหนดวันที่เริ่มเช่า และ วันที่คืนชุด: *</label>
+                            <label class="form-label">
+                                กำหนดวันที่เริ่มเช่า และ วันที่คืนชุด:
+                            </label>
+
                             <div class="dates-grid">
                                 <div>
                                     <span
-                                        style="font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 4px;">วันที่เริ่มเช่า
-                                        (Start Date)</span>
+                                        style="font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 4px;">
+                                        วันที่เริ่มเช่า (Start Date)
+                                    </span>
+
                                     <input type="date" name="start_date" id="startDate" class="date-input"
                                         value="{{ date('Y-m-d') }}" min="{{ date('Y-m-d') }}" required
                                         onchange="calculateRental()">
                                 </div>
+
                                 <div>
                                     <span
-                                        style="font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 4px;">วันที่คืนชุด
-                                        (End Date)</span>
+                                        style="font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 4px;">
+                                        วันที่คืนชุด (End Date)
+                                    </span>
+
                                     <input type="date" name="end_date" id="endDate" class="date-input"
                                         value="{{ date('Y-m-d', strtotime('+2 days')) }}" min="{{ date('Y-m-d') }}"
                                         required onchange="calculateRental()">
@@ -774,19 +828,27 @@
 
                         <!-- Quantity -->
                         <div class="form-group">
-                            <label class="form-label">ระบุจำนวนชุดที่ต้องการเช่า: *</label>
+                            <label class="form-label">
+                                ระบุจำนวนชุดที่ต้องการเช่า:
+                            </label>
+
                             <div style="display: flex; align-items: center; gap: 10px;">
                                 <input type="number" name="quantity" id="rentalQty" value="1" min="1"
                                     max="{{ $product->stock }}" class="date-input" style="width: 110px;" required
                                     onchange="calculateRental()">
-                                <span style="font-size: 13px; color: var(--text-muted);">(มีในสต็อกทั้งหมด
-                                    {{ $product->stock }} ชุด)</span>
+
+                                <span style="font-size: 13px; color: var(--text-muted);">
+                                    (มีในสต็อกทั้งหมด {{ $product->stock }} ชุด)
+                                </span>
                             </div>
                         </div>
 
                         <!-- Note -->
                         <div class="form-group">
-                            <label class="form-label">เขียนหมายเหตุเพิ่มเติม (ถ้ามี):</label>
+                            <label class="form-label">
+                                เขียนหมายเหตุเพิ่มเติม (ถ้ามี):
+                            </label>
+
                             <input type="text" name="note" class="date-input"
                                 placeholder="เช่น ขอปรับขนาดเอวเข้า 1 นิ้ว, รับชุดช่วงบ่าย">
                         </div>
@@ -797,38 +859,64 @@
                                 <span>จำนวนวันที่เช่า:</span>
                                 <strong id="displayDays">3 วัน</strong>
                             </div>
+
                             <div class="calc-row">
-                                <span>ค่าเช่าชุด (฿{{ number_format($product->rental_price) }} x <span
-                                        id="displayDaysText">3</span> วัน x <span id="displayQtyText">1</span>
-                                    ชุด):</span>
-                                <span id="displayRentalSubtotal">฿{{ number_format($product->rental_price * 3) }}</span>
+                                <span>
+                                    ค่าเช่าชุด (฿{{ number_format($product->rental_price) }} x
+                                    <span id="displayDaysText">3</span> วัน x
+                                    <span id="displayQtyText">1</span> ชุด):
+                                </span>
+
+                                <span id="displayRentalSubtotal">
+                                    ฿{{ number_format($product->rental_price * 3) }}
+                                </span>
                             </div>
+
                             <div class="calc-row">
-                                <span>เงินมัดจำประกันชุด (<span id="displayQtyDepositText">1</span> ชุด):</span>
-                                <span id="displayDeposit">฿{{ number_format($product->deposit) }}</span>
+                                <span>
+                                    เงินมัดจำประกันชุด
+                                    (<span id="displayQtyDepositText">1</span> ชุด):
+                                </span>
+
+                                <span id="displayDeposit">
+                                    ฿{{ number_format($product->deposit) }}
+                                </span>
                             </div>
+
                             <div class="calc-row total">
                                 <span>ยอดที่ต้องจ่ายรวมทั้งหมด:</span>
-                                <span
-                                    id="displayGrandTotal">฿{{ number_format($product->rental_price * 3 + $product->deposit) }}</span>
+
+                                <span id="displayGrandTotal">
+                                    ฿{{ number_format($product->rental_price * 3 + $product->deposit) }}
+                                </span>
                             </div>
                         </div>
 
                         <!-- Submit Button -->
                         <button type="submit" class="btn btn-primary btn-block" style="padding: 14px; font-size: 16px;">
-                            <i class="fa-solid fa-calendar-check"></i> ยืนยันการเช่าชุด & ไปหน้าชำระเงิน
+                            <i class="fa-solid fa-calendar-check"></i>
+                            ยืนยันการเช่าชุด & ไปหน้าชำระเงิน
                         </button>
                     </form>
                 @else
                     <div style="text-align: center; padding: 30px 10px; color: var(--text-muted);">
                         <i class="fa-solid fa-circle-exclamation"
                             style="font-size: 38px; color: #dc2626; margin-bottom: 10px;"></i>
+
                         <h4 style="font-size: 16px; font-weight: 700; color: #b91c1c; margin-bottom: 6px;">
-                            ชุดนี้ไม่พร้อมให้เช่าในขณะนี้</h4>
-                        <p style="font-size: 13px;">สถานะ: {{ $product->status_label }}</p>
+                            ชุดนี้ไม่พร้อมให้เช่าในขณะนี้
+                        </h4>
+
+                        <p style="font-size: 13px;">
+                            สถานะ: {{ $product->status_label }}
+                        </p>
+
                         <a href="{{ route('products.index') }}" class="btn btn-secondary btn-sm"
-                            style="margin-top: 12px;">เลือกดูชุดอื่นๆ</a>
+                            style="margin-top: 12px;">
+                            เลือกดูชุดอื่นๆ
+                        </a>
                     </div>
+
                 @endif
             </div>
         </div>
@@ -838,15 +926,21 @@
     <section class="reviews-section" id="reviews">
         <div class="reviews-header-card">
             <div class="rating-big">
-                <div class="rating-num">{{ $product->average_rating }}</div>
+                <div class="rating-num">
+                    {{ $product->average_rating }}
+                </div>
+
                 <div>
                     <div class="rating-stars">
                         @for ($i = 1; $i <= 5; $i++)
                             <i class="fa-solid fa-star{{ $i <= round($product->average_rating) ? '' : '-o' }}"></i>
                         @endfor
                     </div>
+
                     <div style="font-size: 14px; color: var(--text-muted);">
-                        จากความประทับใจของลูกค้า <strong>{{ $product->reviews_count }}</strong> ท่าน
+                        จากความประทับใจของลูกค้า
+                        <strong>{{ $product->reviews_count }}</strong>
+                        ท่าน
                     </div>
                 </div>
             </div>
@@ -861,16 +955,9 @@
 
         @forelse($product->reviews as $review)
             @php
-                /**
-                 * หมายเหตุสำคัญ (แก้ตามฐานข้อมูลจริง kyrix.sql):
-                 * ตาราง `customers` เก็บชื่อลูกค้าไว้ที่คอลัมน์ `first_name` + `last_name`
-                 * โดยตรง ไม่ได้ผูกกับตาราง `users` (ตาราง users มีไว้สำหรับเจ้าของร้าน/แอดมินเท่านั้น
-                 * และ customers.user_id เป็น NULL ทุกแถวในระบบจริง)
-                 * ดังนั้นการอ้างอิง $review->customer->user->name จะเป็น null เสมอ
-                 * ต้องดึงจาก $review->customer->first_name / last_name แทน
-                 */
                 $customerFirstName = trim($review->customer->first_name ?? '');
                 $customerLastName = trim($review->customer->last_name ?? '');
+
                 $reviewerName = trim($customerFirstName . ' ' . $customerLastName);
 
                 if ($reviewerName === '') {
@@ -879,6 +966,7 @@
 
                 $reviewerInitial = $reviewerName === 'ลูกค้า KYRIX' ? 'K' : mb_substr($reviewerName, 0, 1);
             @endphp
+
             <div class="review-item">
                 <div class="review-user-row">
                     <div style="display: flex; align-items: center; gap: 10px;">
@@ -886,13 +974,18 @@
                             style="width: 38px; height: 38px; border-radius: 50%; background: var(--primary-soft); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700;">
                             {{ $reviewerInitial }}
                         </div>
+
                         <div>
                             <div style="font-weight: 700; font-size: 14px;">
-                                {{ $reviewerName }}</div>
+                                {{ $reviewerName }}
+                            </div>
+
                             <div style="font-size: 12px; color: var(--text-muted);">
-                                {{ $review->created_at->format('d/m/Y') }}</div>
+                                {{ $review->created_at->format('d/m/Y') }}
+                            </div>
                         </div>
                     </div>
+
                     <div style="color: #f59e0b; font-size: 14px;">
                         @for ($i = 1; $i <= 5; $i++)
                             <i class="fa-solid fa-star{{ $i <= $review->rating ? '' : '-o' }}"></i>
@@ -900,7 +993,9 @@
                     </div>
                 </div>
 
-                <p style="font-size: 14px; color: #444; line-height: 1.7; margin: 0;">{{ $review->comment }}</p>
+                <p style="font-size: 14px; color: #444; line-height: 1.7; margin: 0;">
+                    {{ $review->comment }}
+                </p>
 
                 @if ($review->image_path)
                     @php
@@ -908,6 +1003,7 @@
                             ? $review->image_path
                             : asset($review->image_path);
                     @endphp
+
                     <div>
                         <a href="{{ $revImg }}" target="_blank">
                             <img src="{{ $revImg }}" class="review-photo-preview" alt="รูปลูกค้าใส่ชุดจริง">
@@ -915,12 +1011,18 @@
                     </div>
                 @endif
             </div>
+
         @empty
+
             <div
                 style="background: #fff; padding: 40px; text-align: center; border-radius: var(--radius-md); border: 1px solid var(--border); color: var(--text-muted);">
                 <i class="fa-regular fa-comment-dots" style="font-size: 36px; margin-bottom: 12px; color: #cbd5e1;"></i>
-                <p>ยังไม่มีรีวิวสำหรับชุดนี้ ลูกค้าที่เช่าชุดนี้จะเป็นท่านแรกที่ได้เขียนรีวิวความประทับใจ!</p>
+
+                <p>
+                    ยังไม่มีรีวิวสำหรับชุดนี้ ลูกค้าที่เช่าชุดนี้จะเป็นท่านแรกที่ได้เขียนรีวิวความประทับใจ!
+                </p>
             </div>
+
         @endforelse
     </section>
 
@@ -930,46 +1032,73 @@
             const depositPrice = {{ (float) $product->deposit }};
             let currentServiceFee = 0;
 
-            // Color => image URL map (บันทึกจาก PHP)
+            // Color => image URL map
             const colorImageMap = @json($colorImageMap);
 
             function switchImage(src, btn) {
                 document.getElementById('mainProductImage').src = src;
-                document.querySelectorAll('.thumb-btn').forEach(b => b.classList.remove('active'));
-                if (btn) btn.classList.add('active');
+
+                document.querySelectorAll('.thumb-btn').forEach(b => {
+                    b.classList.remove('active');
+                });
+
+                if (btn) {
+                    btn.classList.add('active');
+                }
             }
 
             function selectSize(sz, btn) {
                 document.getElementById('selectedSize').value = sz;
-                btn.closest('.options-row').querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+
+                btn.closest('.options-row')
+                    .querySelectorAll('.option-btn')
+                    .forEach(b => b.classList.remove('selected'));
+
                 btn.classList.add('selected');
             }
 
             function selectColor(color, btn) {
                 document.getElementById('selectedColor').value = color;
+
                 const label = document.getElementById('currentColorLabel');
-                if (label) label.innerText = color;
-                btn.closest('.options-row').querySelectorAll('.color-option-btn').forEach(b => b.classList.remove('selected'));
+
+                if (label) {
+                    label.innerText = color;
+                }
+
+                btn.closest('.options-row')
+                    .querySelectorAll('.color-option-btn')
+                    .forEach(b => b.classList.remove('selected'));
+
                 btn.classList.add('selected');
 
                 // เปลี่ยนรูปหลักอัตโนมัติตามสีที่เลือก
                 const imgUrl = colorImageMap[color];
-                if (imgUrl) switchImage(imgUrl, null);
+
+                if (imgUrl) {
+                    switchImage(imgUrl, null);
+                }
 
                 // sync thumb active state
-                document.querySelectorAll('.thumb-btn').forEach((tb, i) => {
-                    tb.classList.toggle('active', tb.querySelector('img')?.alt === color);
+                document.querySelectorAll('.thumb-btn').forEach(tb => {
+                    tb.classList.toggle(
+                        'active',
+                        tb.querySelector('img')?.alt === color
+                    );
                 });
             }
 
             // เมื่อคลิก thumbnail → sync ทั้งรูปหลักและปุ่มเลือกสี
             function selectColorByThumb(color, thumbBtn) {
-                // สลับ active ที่ thumbnail
-                document.querySelectorAll('.thumb-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.thumb-btn').forEach(b => {
+                    b.classList.remove('active');
+                });
+
                 thumbBtn.classList.add('active');
 
                 // หาปุ่มสีที่ตรงกันแล้วกดแทน
                 const colorBtns = document.querySelectorAll('.color-option-btn');
+
                 colorBtns.forEach(btn => {
                     if (btn.innerText.trim() === color) {
                         selectColor(color, btn);
@@ -979,8 +1108,13 @@
 
             function setService(type, fee, labelElem) {
                 currentServiceFee = fee;
-                document.querySelectorAll('.service-radio-label').forEach(l => l.classList.remove('checked'));
+
+                document.querySelectorAll('.service-radio-label').forEach(l => {
+                    l.classList.remove('checked');
+                });
+
                 labelElem.classList.add('checked');
+
                 calculateRental();
             }
 
@@ -988,9 +1122,14 @@
                 const startInput = document.getElementById('startDate')?.value;
                 const endInput = document.getElementById('endDate')?.value;
                 const qtyInput = document.getElementById('rentalQty');
-                const qty = qtyInput ? Math.max(1, parseInt(qtyInput.value) || 1) : 1;
 
-                if (!startInput || !endInput) return;
+                const qty = qtyInput ?
+                    Math.max(1, parseInt(qtyInput.value) || 1) :
+                    1;
+
+                if (!startInput || !endInput) {
+                    return;
+                }
 
                 const start = new Date(startInput);
                 const end = new Date(endInput);
@@ -1002,24 +1141,46 @@
                 }
 
                 const diffTime = Math.abs(end - start);
-                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // inclusive days
+                const diffDays = Math.ceil(
+                    diffTime / (1000 * 60 * 60 * 24)
+                ) + 1;
+
                 const days = Math.max(1, diffDays);
 
                 const rentalSubtotal = dailyPrice * days * qty;
                 const depositTotal = depositPrice * qty;
                 const grandTotal = rentalSubtotal + depositTotal;
 
-                if (document.getElementById('displayDays')) document.getElementById('displayDays').innerText = days + ' วัน';
-                if (document.getElementById('displayDaysText')) document.getElementById('displayDaysText').innerText = days;
-                if (document.getElementById('displayQtyText')) document.getElementById('displayQtyText').innerText = qty;
-                if (document.getElementById('displayQtyDepositText')) document.getElementById('displayQtyDepositText')
-                    .innerText = qty;
-                if (document.getElementById('displayRentalSubtotal')) document.getElementById('displayRentalSubtotal')
-                    .innerText = '฿' + rentalSubtotal.toLocaleString();
-                if (document.getElementById('displayDeposit')) document.getElementById('displayDeposit').innerText = '฿' +
-                    depositTotal.toLocaleString();
-                if (document.getElementById('displayGrandTotal')) document.getElementById('displayGrandTotal').innerText = '฿' +
-                    grandTotal.toLocaleString();
+                if (document.getElementById('displayDays')) {
+                    document.getElementById('displayDays').innerText = days + ' วัน';
+                }
+
+                if (document.getElementById('displayDaysText')) {
+                    document.getElementById('displayDaysText').innerText = days;
+                }
+
+                if (document.getElementById('displayQtyText')) {
+                    document.getElementById('displayQtyText').innerText = qty;
+                }
+
+                if (document.getElementById('displayQtyDepositText')) {
+                    document.getElementById('displayQtyDepositText').innerText = qty;
+                }
+
+                if (document.getElementById('displayRentalSubtotal')) {
+                    document.getElementById('displayRentalSubtotal').innerText =
+                        '฿' + rentalSubtotal.toLocaleString();
+                }
+
+                if (document.getElementById('displayDeposit')) {
+                    document.getElementById('displayDeposit').innerText =
+                        '฿' + depositTotal.toLocaleString();
+                }
+
+                if (document.getElementById('displayGrandTotal')) {
+                    document.getElementById('displayGrandTotal').innerText =
+                        '฿' + grandTotal.toLocaleString();
+                }
             }
 
             document.addEventListener('DOMContentLoaded', () => {

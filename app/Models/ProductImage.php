@@ -15,4 +15,15 @@ class ProductImage extends Model
     {
         return $this->belongsTo(Product::class, 'product_id', 'product_id');
     }
+
+    public function getUrlAttribute()
+    {
+        if (empty($this->image_path)) {
+            return 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=800&auto=format&fit=crop&q=80';
+        }
+        if (str_starts_with($this->image_path, 'http://') || str_starts_with($this->image_path, 'https://')) {
+            return $this->image_path;
+        }
+        return asset('storage/' . $this->image_path);
+    }
 }

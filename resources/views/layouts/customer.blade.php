@@ -2,11 +2,8 @@
 <html lang="th">
 
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>
@@ -14,17 +11,13 @@
     </title>
 
     <!-- Google Fonts -->
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
-
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
     <link
         href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Prompt:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
 
     <!-- Font Awesome -->
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
@@ -48,18 +41,12 @@
             --shadow-lg: 0 20px 50px rgba(122, 31, 43, 0.12);
         }
 
-
-        /* ==============================
-           Reset
-        ============================== */
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        /* Prevent unstyled giant Laravel pagination SVGs */
         nav svg,
         .pagination svg,
         .pagination-wrap svg {
@@ -72,9 +59,6 @@
             flex-shrink: 0 !important;
         }
 
-        /* ==============================
-           Global Bootstrap-5 Pagination Style
-        ============================== */
         .pagination {
             display: flex;
             padding-left: 0;
@@ -84,6 +68,7 @@
             justify-content: center;
             flex-wrap: wrap;
         }
+
         .page-item .page-link {
             display: flex;
             align-items: center;
@@ -101,24 +86,28 @@
             transition: all 0.2s ease;
             white-space: nowrap;
         }
+
         .page-item.active .page-link {
             color: #fff;
             background-color: var(--primary);
             border-color: var(--primary);
             box-shadow: 0 4px 12px rgba(122, 31, 43, 0.3);
         }
+
         .page-item.disabled .page-link {
             color: #bbb;
             pointer-events: none;
             background-color: #fafafa;
             border-color: var(--border);
         }
+
         .page-item .page-link:hover:not(.active) {
             color: #fff;
             background-color: var(--primary);
             border-color: var(--primary);
             transform: translateY(-1px);
         }
+
         .pagination-wrap {
             margin-top: 36px;
             display: flex;
@@ -126,17 +115,16 @@
             align-items: center;
             gap: 12px;
         }
+
         .pagination-wrap p.text-sm {
             font-size: 13px;
             color: var(--text-muted);
         }
 
-
         html {
             scroll-behavior: smooth;
             scroll-padding-top: 90px;
         }
-
 
         body {
             font-family: 'Prompt', 'Plus Jakarta Sans', sans-serif;
@@ -148,17 +136,11 @@
             flex-direction: column;
         }
 
-
         a {
             text-decoration: none;
             color: inherit;
             transition: all 0.2s ease;
         }
-
-
-        /* ==============================
-           Top Notification Bar
-        ============================== */
 
         .top-banner {
             background: #2a2421;
@@ -170,16 +152,10 @@
             align-items: center;
         }
 
-
         .top-banner a {
             color: var(--gold);
             font-weight: 500;
         }
-
-
-        /* ==============================
-           Main Navigation
-        ============================== */
 
         .header {
             background: var(--surface);
@@ -189,7 +165,6 @@
             z-index: 100;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
         }
-
 
         .header-container {
             max-width: 1280px;
@@ -201,16 +176,10 @@
             gap: 20px;
         }
 
-
-        /* ==============================
-           Logo
-        ============================== */
-
         .logo-wrap {
             display: flex;
             flex-direction: column;
         }
-
 
         .logo {
             font-family: 'Plus Jakarta Sans', sans-serif;
@@ -221,7 +190,6 @@
             line-height: 1;
         }
 
-
         .logo-sub {
             font-size: 10px;
             letter-spacing: 3px;
@@ -231,11 +199,6 @@
             margin-top: 3px;
         }
 
-
-        /* ==============================
-           Navigation Menu
-        ============================== */
-
         .nav-links {
             display: flex;
             align-items: center;
@@ -243,7 +206,6 @@
             list-style: none;
             position: relative;
         }
-
 
         .nav-links a {
             font-size: 15px;
@@ -255,20 +217,13 @@
             transition: color 0.25s ease;
         }
 
-
         .nav-links a:hover {
             color: var(--primary);
         }
 
-
         .nav-links a.active {
             color: var(--primary);
         }
-
-
-        /* ==============================
-           Sliding Indicator
-        ============================== */
 
         .nav-indicator {
             position: absolute;
@@ -286,27 +241,16 @@
                 width 0.45s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-
-        /* ==============================
-           Header Actions
-        ============================== */
-
         .header-actions {
             display: flex;
             align-items: center;
             gap: 16px;
         }
 
-
-        /* ==============================
-           Search
-        ============================== */
-
         .search-box {
             position: relative;
             width: 220px;
         }
-
 
         .search-box input {
             width: 100%;
@@ -319,14 +263,12 @@
             transition: all 0.2s;
         }
 
-
         .search-box input:focus {
             outline: none;
             border-color: var(--primary);
             background: #fff;
             box-shadow: 0 0 0 3px rgba(122, 31, 43, 0.1);
         }
-
 
         .search-box button {
             position: absolute;
@@ -338,11 +280,6 @@
             color: var(--text-muted);
             cursor: pointer;
         }
-
-
-        /* ==============================
-           Cart
-        ============================== */
 
         .cart-btn {
             position: relative;
@@ -358,13 +295,11 @@
             transition: all 0.2s;
         }
 
-
         .cart-btn:hover {
             background: var(--primary);
             color: #fff;
             transform: translateY(-2px);
         }
-
 
         .cart-badge {
             position: absolute;
@@ -383,15 +318,9 @@
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
         }
 
-
-        /* ==============================
-           User Menu
-        ============================== */
-
         .user-menu {
             position: relative;
         }
-
 
         .user-trigger {
             display: flex;
@@ -408,14 +337,10 @@
             font-family: inherit;
         }
 
-
         .user-trigger:hover {
             border-color: var(--primary);
             background: var(--primary-soft);
         }
-
-
-        /* รูปโปรไฟล์ */
 
         .profile-avatar {
             width: 34px;
@@ -425,9 +350,6 @@
             display: block;
             border: 2px solid var(--primary-soft);
         }
-
-
-        /* ถ้ายังไม่มีรูป */
 
         .user-avatar {
             width: 34px;
@@ -443,6 +365,13 @@
             flex-shrink: 0;
         }
 
+        .user-avatar .header-profile-image {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover;
+            border-radius: 50%;
+        }
 
         .profile-name {
             max-width: 130px;
@@ -451,11 +380,6 @@
             text-overflow: ellipsis;
             font-weight: 500;
         }
-
-
-        /* ==============================
-           Dropdown
-        ============================== */
 
         .dropdown-menu {
             position: absolute;
@@ -471,11 +395,9 @@
             z-index: 200;
         }
 
-
         .user-menu:hover .dropdown-menu {
             display: block;
         }
-
 
         .dropdown-item {
             display: flex;
@@ -488,29 +410,21 @@
             transition: all 0.2s ease;
         }
 
-
         .dropdown-item:hover {
             background: var(--primary-soft);
             color: var(--primary);
         }
-
 
         .dropdown-item i {
             width: 18px;
             text-align: center;
         }
 
-
         .dropdown-divider {
             height: 1px;
             background: var(--border);
             margin: 6px 0;
         }
-
-
-        /* ==============================
-           Dropdown User Info
-        ============================== */
 
         .profile-dropdown-header {
             padding: 14px 18px;
@@ -520,24 +434,17 @@
             gap: 12px;
         }
 
-
         .profile-dropdown-name {
             font-size: 14px;
             font-weight: 600;
             color: var(--text-main);
         }
 
-
         .profile-dropdown-role {
             font-size: 12px;
             color: var(--text-muted);
             margin-top: 2px;
         }
-
-
-        /* ==============================
-           Buttons
-        ============================== */
 
         .btn {
             display: inline-flex;
@@ -555,12 +462,10 @@
             text-decoration: none;
         }
 
-
         .btn-primary {
             background: var(--primary);
             color: #fff;
         }
-
 
         .btn-primary:hover {
             background: var(--primary-dark);
@@ -568,30 +473,25 @@
             transform: translateY(-2px);
         }
 
-
         .btn-secondary {
             background: #fff;
             color: var(--primary);
             border: 1px solid var(--primary);
         }
 
-
         .btn-secondary:hover {
             background: var(--primary-soft);
         }
-
 
         .btn-gold {
             background: var(--gold);
             color: #fff;
         }
 
-
         .btn-gold:hover {
             background: #b58c3f;
             box-shadow: 0 8px 20px rgba(198, 156, 76, 0.3);
         }
-
 
         .btn-sm {
             padding: 7px 14px;
@@ -599,22 +499,15 @@
             border-radius: 8px;
         }
 
-
         .btn-block {
             width: 100%;
         }
-
-
-        /* ==============================
-           Flash Alerts
-        ============================== */
 
         .alerts-container {
             max-width: 1280px;
             margin: 20px auto 0;
             padding: 0 24px;
         }
-
 
         .alert {
             padding: 14px 20px;
@@ -628,13 +521,11 @@
             box-shadow: var(--shadow-sm);
         }
 
-
         .alert-success {
             background: #edfbf3;
             color: #1a7f47;
             border: 1px solid #b7ecd0;
         }
-
 
         .alert-error,
         .alert-danger {
@@ -643,26 +534,15 @@
             border: 1px solid #fecaca;
         }
 
-
         .alert-warning {
             background: #fffbeb;
             color: #b45309;
             border: 1px solid #fde68a;
         }
 
-
-        /* ==============================
-           Main Content
-        ============================== */
-
         .main-content {
             flex: 1;
         }
-
-
-        /* ==============================
-           Badges
-        ============================== */
 
         .badge {
             display: inline-flex;
@@ -674,64 +554,50 @@
             font-weight: 600;
         }
 
-
         .badge-warning {
             background: #fef3c7;
             color: #b45309;
         }
-
 
         .badge-info {
             background: #e0f2fe;
             color: #0369a1;
         }
 
-
         .badge-primary {
             background: var(--primary-soft);
             color: var(--primary);
         }
-
 
         .badge-indigo {
             background: #e0e7ff;
             color: #4338ca;
         }
 
-
         .badge-teal {
             background: #ccfbf1;
             color: #0f766e;
         }
-
 
         .badge-amber {
             background: #ffedd5;
             color: #c2410c;
         }
 
-
         .badge-success {
             background: #dcfce7;
             color: #15803d;
         }
-
 
         .badge-emerald {
             background: #d1fae5;
             color: #065f46;
         }
 
-
         .badge-danger {
             background: #fee2e2;
             color: #b91c1c;
         }
-
-
-        /* ==============================
-           Footer
-        ============================== */
 
         .footer {
             background: #1f1b19;
@@ -740,7 +606,6 @@
             padding-top: 60px;
             border-top: 3px solid var(--primary);
         }
-
 
         .footer-container {
             max-width: 1280px;
@@ -751,7 +616,6 @@
             gap: 40px;
         }
 
-
         .footer-col h4 {
             color: #fff;
             font-size: 17px;
@@ -759,7 +623,6 @@
             position: relative;
             padding-bottom: 8px;
         }
-
 
         .footer-col h4::after {
             content: '';
@@ -771,35 +634,29 @@
             background: var(--gold);
         }
 
-
         .footer-col p {
             font-size: 14px;
             line-height: 1.8;
             color: #a69e97;
         }
 
-
         .footer-links {
             list-style: none;
         }
 
-
         .footer-links li {
             margin-bottom: 10px;
         }
-
 
         .footer-links a {
             color: #a69e97;
             font-size: 14px;
         }
 
-
         .footer-links a:hover {
             color: var(--gold);
             padding-left: 5px;
         }
-
 
         .contact-info li {
             display: flex;
@@ -810,12 +667,10 @@
             color: #a69e97;
         }
 
-
         .contact-info i {
             color: var(--gold);
             margin-top: 4px;
         }
-
 
         .footer-bottom {
             border-top: 1px solid #332d29;
@@ -824,11 +679,6 @@
             font-size: 13px;
             color: #807771;
         }
-
-
-        /* ==============================
-           BACK TO TOP
-        ============================== */
 
         .back-to-top {
             position: fixed;
@@ -858,13 +708,11 @@
             box-shadow: 0 8px 22px rgba(122, 31, 43, 0.25);
         }
 
-
         .back-to-top.show {
             opacity: 1;
             visibility: visible;
             transform: translateY(0);
         }
-
 
         .back-to-top:hover {
             background: var(--primary-dark);
@@ -872,25 +720,17 @@
             box-shadow: 0 14px 30px rgba(122, 31, 43, 0.35);
         }
 
-
         .back-to-top:active {
             transform: translateY(-2px) scale(0.94);
         }
-
 
         .back-to-top i {
             transition: transform 0.25s ease;
         }
 
-
         .back-to-top:hover i {
             transform: translateY(-3px);
         }
-
-
-        /* ==============================
-           Mobile
-        ============================== */
 
         .mobile-menu-btn {
             display: none;
@@ -901,9 +741,7 @@
             cursor: pointer;
         }
 
-
         @media (max-width: 992px) {
-
             .nav-links {
                 display: none;
             }
@@ -921,9 +759,7 @@
             }
         }
 
-
         @media (max-width: 600px) {
-
             .footer-container {
                 grid-template-columns: 1fr;
             }
@@ -951,26 +787,16 @@
     </style>
 
     @stack('styles')
-
 </head>
 
-
 <body>
-
-
-    <!-- ==============================
-         Header Navigation
-    ============================== -->
 
     <header class="header">
 
         <div class="header-container">
 
-
             <!-- Logo -->
-
             <a href="{{ route('home') }}" class="logo-wrap">
-
                 <span class="logo">
                     KYRIX
                 </span>
@@ -978,21 +804,16 @@
                 <span class="logo-sub">
                     DRESS RENTAL
                 </span>
-
             </a>
 
-
             <!-- Navigation -->
-
             <ul class="nav-links">
-
 
                 <li>
                     <a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'active' : '' }}">
                         หน้าแรก
                     </a>
                 </li>
-
 
                 <li>
                     <a href="{{ route('products.index') }}"
@@ -1001,13 +822,11 @@
                     </a>
                 </li>
 
-
                 <li>
                     <a href="{{ route('home') }}#categories" class="js-hash-link" data-hash="categories">
                         ประเภทชุด
                     </a>
                 </li>
-
 
                 <li>
                     <a href="{{ route('home') }}#how-it-works" class="js-hash-link" data-hash="how-it-works">
@@ -1015,52 +834,38 @@
                     </a>
                 </li>
 
-
                 <li>
                     <a href="{{ route('home') }}#contact" class="js-hash-link" data-hash="contact">
                         ติดต่อร้าน
                     </a>
                 </li>
 
-
                 <!-- Sliding Indicator -->
-
                 <span class="nav-indicator" aria-hidden="true"></span>
 
             </ul>
 
-
-            <!-- ==============================
-                 Header Actions
-            ============================== -->
-
             <div class="header-actions">
 
-
                 <!-- Search -->
-
                 <form action="{{ route('products.index') }}" method="GET" class="search-box">
 
                     <input type="text" name="q" value="{{ request('q') }}" placeholder="ค้นหาชุดสวย...">
 
                     <button type="submit">
-
                         <i class="fa-solid fa-magnifying-glass"></i>
-
                     </button>
 
                 </form>
 
-
                 <!-- Cart -->
-
                 @php
                     $cart = session('cart', []);
+
                     $cartCount = collect($cart)->sum(function ($item) {
                         return (int) ($item['qty'] ?? 1);
                     });
                 @endphp
-
 
                 <a href="{{ route('cart.index') }}" class="cart-btn" title="ตะกร้าเช่าชุด">
 
@@ -1074,11 +879,6 @@
 
                 </a>
 
-
-                <!-- ==============================
-                     User / Guest
-                ============================== -->
-
                 @php
                     $customerId = session('customer_id');
                     $customerName = session('customer_name', 'ผู้ใช้งาน');
@@ -1089,55 +889,53 @@
                     }
                 @endphp
 
-
                 @if ($customer)
-                    <!-- ==============================
-                         Logged In Profile
-                    ============================== -->
 
                     <div class="user-menu">
 
-
                         <!-- Profile Button -->
-
                         <button type="button" class="user-trigger" aria-label="เมนูผู้ใช้งาน">
 
                             <div class="user-avatar">
-                                {{ mb_substr($customerName, 0, 1) }}
-                            </div>
 
+                                @if ($customer->profile_image)
+                                    <img src="{{ asset('storage/' . $customer->profile_image) }}" alt="รูปโปรไฟล์"
+                                        class="header-profile-image">
+                                @else
+                                    {{ mb_substr($customerName, 0, 1) }}
+                                @endif
+
+                            </div>
 
                             <span class="profile-name">
                                 {{ $customerName }}
                             </span>
 
-
                             <i class="fa-solid fa-chevron-down" style="font-size: 10px;"></i>
 
                         </button>
 
-
-                        <!-- ==============================
-                             Profile Dropdown
-                        ============================== -->
-
                         <div class="dropdown-menu">
 
-
                             <!-- User Info -->
-
                             <div class="profile-dropdown-header">
-
 
                                 <div class="user-avatar"
                                     style="
                                         width: 42px;
                                         height: 42px;
                                         font-size: 16px;
+                                        overflow: hidden;
                                     ">
-                                    {{ mb_substr($customerName, 0, 1) }}
-                                </div>
 
+                                    @if ($customer->profile_image)
+                                        <img src="{{ asset('storage/' . $customer->profile_image) }}" alt="รูปโปรไฟล์"
+                                            class="header-profile-image">
+                                    @else
+                                        {{ mb_substr($customerName, 0, 1) }}
+                                    @endif
+
+                                </div>
 
                                 <div>
 
@@ -1153,44 +951,45 @@
 
                             </div>
 
-
                             <!-- Dashboard -->
-
                             <a href="{{ route('customer.dashboard') }}" class="dropdown-item">
-                                <i class="fa-solid fa-gauge-high"></i>
-                                แดชบอร์ดของฉัน
-                            </a>
 
+                                <i class="fa-solid fa-gauge-high"></i>
+
+                                แดชบอร์ดของฉัน
+
+                            </a>
 
                             <!-- Rentals -->
-
                             <a href="{{ route('rentals.index') }}" class="dropdown-item">
-                                <i class="fa-solid fa-calendar-check"></i>
-                                การจองของฉัน
-                            </a>
 
+                                <i class="fa-solid fa-calendar-check"></i>
+
+                                การจองของฉัน
+
+                            </a>
 
                             <!-- Rental History -->
-
                             <a href="{{ route('rentals.history') }}" class="dropdown-item">
-                                <i class="fa-solid fa-clock-rotate-left"></i>
-                                ประวัติการเช่าชุด
-                            </a>
 
+                                <i class="fa-solid fa-clock-rotate-left"></i>
+
+                                ประวัติการเช่าชุด
+
+                            </a>
 
                             <!-- Profile -->
-
                             <a href="{{ route('profile.index') }}" class="dropdown-item">
-                                <i class="fa-solid fa-user-pen"></i>
-                                โปรไฟล์ของฉัน
-                            </a>
 
+                                <i class="fa-solid fa-user-pen"></i>
+
+                                โปรไฟล์ของฉัน
+
+                            </a>
 
                             <div class="dropdown-divider"></div>
 
-
                             <!-- Logout -->
-
                             <form action="{{ route('logout') }}" method="POST">
 
                                 @csrf
@@ -1214,33 +1013,31 @@
 
                             </form>
 
-
                         </div>
 
                     </div>
                 @else
-                    <!-- ==============================
-                         Guest
-                    ============================== -->
-
                     <div
                         style="
-                            display: flex;
-                            gap: 8px;
-                        ">
+                        display: flex;
+                        gap: 8px;
+                    ">
 
                         <a href="{{ route('login') }}" class="btn btn-secondary btn-sm">
+
                             เข้าสู่ระบบ
+
                         </a>
 
-
                         <a href="{{ route('register') }}" class="btn btn-primary btn-sm">
+
                             สมัครสมาชิก
+
                         </a>
 
                     </div>
-                @endif
 
+                @endif
 
             </div>
 
@@ -1248,15 +1045,12 @@
 
     </header>
 
-
-    <!-- ==============================
-         Flash Alerts
-    ============================== -->
-
+    {{-- =========================
+        ALERTS
+    ========================== --}}
     @if (session('success') || session('error') || session('warning'))
 
         <div class="alerts-container">
-
 
             @if (session('success'))
                 <div class="alert alert-success">
@@ -1264,12 +1058,11 @@
                     <i class="fa-solid fa-circle-check"></i>
 
                     <span>
-                        {{ session('success') }}
+                        {{ str_replace('resources/views/rentals/show.blade.php', '', session('success')) }}
                     </span>
 
                 </div>
             @endif
-
 
             @if (session('error'))
                 <div class="alert alert-error">
@@ -1283,7 +1076,6 @@
                 </div>
             @endif
 
-
             @if (session('warning'))
                 <div class="alert alert-warning">
 
@@ -1296,15 +1088,9 @@
                 </div>
             @endif
 
-
         </div>
 
     @endif
-
-
-    <!-- ==============================
-         Main Content
-    ============================== -->
 
     <main class="main-content">
 
@@ -1312,32 +1098,22 @@
 
     </main>
 
-
-    <!-- ==============================
-         Footer
-    ============================== -->
-
     <footer class="footer">
-
 
         <div class="footer-container">
 
-
             <!-- About -->
-
             <div class="footer-col">
-
 
                 <span class="logo" style="color: #fff;">
                     KYRIX
                 </span>
 
-
                 <p
                     style="
-                        margin-top: 14px;
-                        max-width: 320px;
-                    ">
+                    margin-top: 14px;
+                    max-width: 320px;
+                ">
                     ร้านเช่าชุดออนไลน์อันดับหนึ่ง
                     บริการเช่าชุดราตรี ชุดไทย
                     ชุดแต่งงาน และสูทสากล
@@ -1346,14 +1122,12 @@
                     พร้อมใช้งานสำหรับวันสำคัญของคุณ
                 </p>
 
-
                 <div
                     style="
-                        display: flex;
-                        gap: 12px;
-                        margin-top: 20px;
-                    ">
-
+                    display: flex;
+                    gap: 12px;
+                    margin-top: 20px;
+                ">
 
                     <a href="javascript:void(0)" title="Facebook — เร็วๆ นี้"
                         style="
@@ -1368,9 +1142,10 @@
                             opacity: 0.6;
                             cursor: default;
                         ">
-                        <i class="fa-brands fa-facebook-f"></i>
-                    </a>
 
+                        <i class="fa-brands fa-facebook-f"></i>
+
+                    </a>
 
                     <a href="javascript:void(0)" title="Instagram — เร็วๆ นี้"
                         style="
@@ -1385,9 +1160,10 @@
                             opacity: 0.6;
                             cursor: default;
                         ">
-                        <i class="fa-brands fa-instagram"></i>
-                    </a>
 
+                        <i class="fa-brands fa-instagram"></i>
+
+                    </a>
 
                     <a href="javascript:void(0)" title="Line — เร็วๆ นี้"
                         style="
@@ -1402,9 +1178,10 @@
                             opacity: 0.6;
                             cursor: default;
                         ">
-                        <i class="fa-brands fa-line"></i>
-                    </a>
 
+                        <i class="fa-brands fa-line"></i>
+
+                    </a>
 
                     <a href="javascript:void(0)" title="TikTok — เร็วๆ นี้"
                         style="
@@ -1419,28 +1196,23 @@
                             opacity: 0.6;
                             cursor: default;
                         ">
-                        <i class="fa-brands fa-tiktok"></i>
-                    </a>
 
+                        <i class="fa-brands fa-tiktok"></i>
+
+                    </a>
 
                 </div>
 
-
             </div>
 
-
             <!-- Footer Menu -->
-
             <div class="footer-col">
-
 
                 <h4>
                     เมนูลัด
                 </h4>
 
-
                 <ul class="footer-links">
-
 
                     <li>
                         <a href="{{ route('home') }}">
@@ -1448,13 +1220,11 @@
                         </a>
                     </li>
 
-
                     <li>
                         <a href="{{ route('products.index') }}">
                             ชุดทั้งหมด
                         </a>
                     </li>
-
 
                     <li>
                         <a href="{{ route('home') }}#how-it-works">
@@ -1462,13 +1232,11 @@
                         </a>
                     </li>
 
-
                     <li>
                         <a href="{{ route('cart.index') }}">
                             ตะกร้าเช่าชุด
                         </a>
                     </li>
-
 
                     <li>
                         <a href="{{ route('rentals.index') }}">
@@ -1476,79 +1244,76 @@
                         </a>
                     </li>
 
-
                 </ul>
-
 
             </div>
 
-
             <!-- Categories -->
-
             <div class="footer-col">
-
 
                 <h4>
                     ประเภทชุด
                 </h4>
 
-
                 <ul class="footer-links">
-
 
                     <li>
                         <a href="{{ route('products.index') }}?category_id=1">
-                            ชุดราตรียาว
+                            ชุดสายฝอ
                         </a>
                     </li>
-
 
                     <li>
                         <a href="{{ route('products.index') }}?category_id=2">
-                            เดรสค็อกเทล
+                            เดรสหวาน
                         </a>
                     </li>
-
 
                     <li>
                         <a href="{{ route('products.index') }}?category_id=3">
-                            ชุดไทยบรมพิมาน
+                            มินิเดรส
                         </a>
                     </li>
-
 
                     <li>
                         <a href="{{ route('products.index') }}?category_id=4">
-                            ชุดแต่งงาน / พรีเวดดิ้ง
+                            เสื้อ & ท็อปส์
                         </a>
                     </li>
-
 
                     <li>
                         <a href="{{ route('products.index') }}?category_id=6">
-                            สูททักซิโด้สากล
+                            กระโปรง
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('products.index') }}?category_id=6">
+                            กางเกง
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('products.index') }}?category_id=6">
+                            รองเท้า
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('products.index') }}?category_id=6">
+                            กระเป๋า
                         </a>
                     </li>
 
-
                 </ul>
-
 
             </div>
 
-
             <!-- Contact -->
-
             <div class="footer-col" id="contact">
-
 
                 <h4>
                     ติดต่อร้าน KYRIX
                 </h4>
 
-
                 <ul class="contact-info" style="list-style: none;">
-
 
                     <li>
 
@@ -1562,7 +1327,6 @@
 
                     </li>
 
-
                     <li>
 
                         <i class="fa-solid fa-phone"></i>
@@ -1573,7 +1337,6 @@
 
                     </li>
 
-
                     <li>
 
                         <i class="fa-solid fa-envelope"></i>
@@ -1583,7 +1346,6 @@
                         </span>
 
                     </li>
-
 
                     <li>
 
@@ -1596,13 +1358,11 @@
 
                     </li>
 
-
                 </ul>
 
             </div>
 
         </div>
-
 
         <div class="footer-bottom">
 
@@ -1614,411 +1374,305 @@
 
     </footer>
 
-
-    <!-- ==============================
-         Back To Top
-    ============================== -->
-
     <button type="button" class="back-to-top" id="backToTop" aria-label="กลับขึ้นด้านบน" title="กลับขึ้นด้านบน">
+
         <i class="fa-solid fa-arrow-up"></i>
+
     </button>
 
-
-    <!-- ==============================
-         JavaScript
-    ============================== -->
-
     <script>
-        document.addEventListener(
-            'DOMContentLoaded',
-            function() {
+        document.addEventListener('DOMContentLoaded', function() {
 
+            const nav =
+                document.querySelector('.nav-links');
 
-                /* =========================================
-                   Navigation Sliding Indicator
-                ========================================= */
+            const indicator =
+                document.querySelector('.nav-indicator');
 
-                const nav =
-                    document.querySelector(
-                        '.nav-links'
-                    );
+            const links =
+                document.querySelectorAll('.nav-links a');
 
-                const indicator =
-                    document.querySelector(
-                        '.nav-indicator'
-                    );
+            if (
+                nav &&
+                indicator &&
+                links.length
+            ) {
 
-                const links =
-                    document.querySelectorAll(
-                        '.nav-links a'
-                    );
-
-
-                if (
-                    nav &&
-                    indicator &&
-                    links.length
+                function moveIndicator(
+                    link,
+                    animate = true
                 ) {
 
+                    if (!link) {
 
-                    function moveIndicator(
-                        link,
-                        animate = true
-                    ) {
+                        indicator.style.width =
+                            '0px';
 
-                        if (!link) {
+                        return;
+                    }
 
-                            indicator.style.width =
-                                '0px';
+                    const navRect =
+                        nav.getBoundingClientRect();
 
-                            return;
+                    const linkRect =
+                        link.getBoundingClientRect();
 
-                        }
+                    const left =
+                        linkRect.left -
+                        navRect.left;
 
+                    const width =
+                        linkRect.width;
 
-                        const navRect =
-                            nav.getBoundingClientRect();
+                    if (!animate) {
 
-                        const linkRect =
-                            link.getBoundingClientRect();
+                        indicator.style.transition =
+                            'none';
 
+                    } else {
 
-                        const left =
-                            linkRect.left -
-                            navRect.left;
+                        indicator.style.transition =
+                            'transform 0.45s cubic-bezier(0.4, 0, 0.2, 1), width 0.45s cubic-bezier(0.4, 0, 0.2, 1)';
+                    }
 
+                    indicator.style.width =
+                        width + 'px';
 
-                        const width =
-                            linkRect.width;
+                    indicator.style.transform =
+                        `translateX(${left}px)`;
 
+                    if (!animate) {
 
-                        if (!animate) {
-
-                            indicator.style.transition =
-                                'none';
-
-                        } else {
+                        requestAnimationFrame(function() {
 
                             indicator.style.transition =
                                 'transform 0.45s cubic-bezier(0.4, 0, 0.2, 1), width 0.45s cubic-bezier(0.4, 0, 0.2, 1)';
 
-                        }
-
-
-                        indicator.style.width =
-                            width + 'px';
-
-
-                        indicator.style.transform =
-                            `translateX(${left}px)`;
-
-
-                        if (!animate) {
-
-                            requestAnimationFrame(
-                                function() {
-
-                                    indicator.style.transition =
-                                        'transform 0.45s cubic-bezier(0.4, 0, 0.2, 1), width 0.45s cubic-bezier(0.4, 0, 0.2, 1)';
-
-                                }
-                            );
-
-                        }
-
+                        });
                     }
+                }
 
+                function setActive(link) {
 
-                    function setActive(link) {
+                    links.forEach(function(item) {
 
-                        links.forEach(
-                            function(item) {
+                        item.classList.remove('active');
 
-                                item.classList.remove(
-                                    'active'
-                                );
+                    });
 
-                            }
-                        );
+                    if (link) {
 
-
-                        if (link) {
-
-                            link.classList.add(
-                                'active'
-                            );
-
-                            moveIndicator(
-                                link,
-                                true
-                            );
-
-                        }
-
-                    }
-
-
-                    let activeLink =
-                        document.querySelector(
-                            '.nav-links a.active'
-                        );
-
-
-                    const hash =
-                        window.location.hash;
-
-
-                    if (hash) {
-
-                        const hashLink =
-                            document.querySelector(
-                                `.nav-links a[data-hash="${hash.substring(1)}"]`
-                            );
-
-
-                        if (hashLink) {
-
-                            activeLink =
-                                hashLink;
-
-                        }
-
-                    }
-
-
-                    if (activeLink) {
+                        link.classList.add('active');
 
                         moveIndicator(
-                            activeLink,
-                            false
+                            link,
+                            true
                         );
-
-                        activeLink.classList.add(
-                            'active'
-                        );
-
                     }
+                }
 
+                let activeLink =
+                    document.querySelector(
+                        '.nav-links a.active'
+                    );
 
-                    links.forEach(
-                        function(link) {
+                const hash =
+                    window.location.hash;
 
-                            link.addEventListener(
-                                'click',
-                                function(e) {
+                if (hash) {
 
-                                    const href =
-                                        this.getAttribute(
-                                            'href'
-                                        ) || '';
+                    const hashLink =
+                        document.querySelector(
+                            `.nav-links a[data-hash="${hash.substring(1)}"]`
+                        );
 
+                    if (hashLink) {
 
-                                    if (
-                                        this.classList.contains(
-                                            'js-hash-link'
-                                        ) &&
-                                        href.includes('#')
-                                    ) {
+                        activeLink =
+                            hashLink;
+                    }
+                }
 
-                                        const isSamePage =
-                                            href.startsWith(
-                                                window.location.origin +
-                                                window.location.pathname +
-                                                '#'
-                                            ) ||
-                                            href.startsWith(
-                                                '#'
-                                            );
+                if (activeLink) {
 
+                    moveIndicator(
+                        activeLink,
+                        false
+                    );
 
-                                        if (isSamePage) {
+                    activeLink.classList.add(
+                        'active'
+                    );
+                }
 
-                                            e.preventDefault();
+                links.forEach(function(link) {
 
-                                            setActive(
-                                                this
-                                            );
+                    link.addEventListener(
+                        'click',
+                        function(e) {
 
+                            const href =
+                                this.getAttribute('href') || '';
 
-                                            const hashValue =
-                                                this.dataset.hash;
+                            if (
+                                this.classList.contains('js-hash-link') &&
+                                href.includes('#')
+                            ) {
 
+                                const isSamePage =
+                                    href.startsWith(
+                                        window.location.origin +
+                                        window.location.pathname +
+                                        '#'
+                                    ) ||
+                                    href.startsWith('#');
 
-                                            const section =
-                                                document.getElementById(
-                                                    hashValue
-                                                );
+                                if (isSamePage) {
 
-
-                                            if (section) {
-
-                                                section.scrollIntoView({
-                                                    behavior: 'smooth',
-                                                    block: 'start'
-                                                });
-
-                                            }
-
-
-                                            history.pushState(
-                                                null,
-                                                '',
-                                                '#' +
-                                                hashValue
-                                            );
-
-                                            return;
-
-                                        }
-
-                                    }
-
+                                    e.preventDefault();
 
                                     setActive(this);
 
-                                }
-                            );
+                                    const hashValue =
+                                        this.dataset.hash;
 
-                        }
-                    );
+                                    const section =
+                                        document.getElementById(
+                                            hashValue
+                                        );
 
+                                    if (section) {
 
-                    window.addEventListener(
-                        'resize',
-                        function() {
+                                        section.scrollIntoView({
+                                            behavior: 'smooth',
+                                            block: 'start'
+                                        });
+                                    }
 
-                            const current =
-                                document.querySelector(
-                                    '.nav-links a.active'
-                                );
-
-
-                            if (current) {
-
-                                moveIndicator(
-                                    current,
-                                    false
-                                );
-
-                            }
-
-                        }
-                    );
-
-
-                    window.addEventListener(
-                        'popstate',
-                        function() {
-
-                            const currentHash =
-                                window.location.hash;
-
-
-                            if (currentHash) {
-
-                                const hashLink =
-                                    document.querySelector(
-                                        `.nav-links a[data-hash="${currentHash.substring(1)}"]`
-                                    );
-
-
-                                if (hashLink) {
-
-                                    setActive(
-                                        hashLink
+                                    history.pushState(
+                                        null,
+                                        '',
+                                        '#' + hashValue
                                     );
 
                                     return;
-
                                 }
-
                             }
 
+                            setActive(this);
+                        }
+                    );
 
-                            const homeLink =
+                });
+
+                window.addEventListener(
+                    'resize',
+                    function() {
+
+                        const current =
+                            document.querySelector(
+                                '.nav-links a.active'
+                            );
+
+                        if (current) {
+
+                            moveIndicator(
+                                current,
+                                false
+                            );
+                        }
+                    }
+                );
+
+                window.addEventListener(
+                    'popstate',
+                    function() {
+
+                        const currentHash =
+                            window.location.hash;
+
+                        if (currentHash) {
+
+                            const hashLink =
                                 document.querySelector(
-                                    '.nav-links a[href="{{ route('home') }}"]'
+                                    `.nav-links a[data-hash="${currentHash.substring(1)}"]`
                                 );
 
-
-                            if (homeLink) {
+                            if (hashLink) {
 
                                 setActive(
-                                    homeLink
+                                    hashLink
                                 );
 
+                                return;
                             }
-
                         }
-                    );
 
+                        const homeLink =
+                            document.querySelector(
+                                '.nav-links a[href="{{ route('home') }}"]'
+                            );
+
+                        if (homeLink) {
+
+                            setActive(
+                                homeLink
+                            );
+                        }
+                    }
+                );
+            }
+
+            const backToTop =
+                document.getElementById(
+                    'backToTop'
+                );
+
+            if (backToTop) {
+
+                function toggleBackToTop() {
+
+                    if (
+                        window.scrollY >
+                        300
+                    ) {
+
+                        backToTop.classList.add(
+                            'show'
+                        );
+
+                    } else {
+
+                        backToTop.classList.remove(
+                            'show'
+                        );
+                    }
                 }
 
+                window.addEventListener(
+                    'scroll',
+                    toggleBackToTop, {
+                        passive: true
+                    }
+                );
 
-                /* =========================================
-                   Back To Top
-                ========================================= */
+                toggleBackToTop();
 
-                const backToTop =
-                    document.getElementById(
-                        'backToTop'
-                    );
+                backToTop.addEventListener(
+                    'click',
+                    function() {
 
-
-                if (backToTop) {
-
-
-                    function toggleBackToTop() {
-
-                        if (
-                            window.scrollY >
-                            300
-                        ) {
-
-                            backToTop.classList.add(
-                                'show'
-                            );
-
-                        } else {
-
-                            backToTop.classList.remove(
-                                'show'
-                            );
-
-                        }
+                        window.scrollTo({
+                            top: 0,
+                            behavior: 'smooth'
+                        });
 
                     }
-
-
-                    window.addEventListener(
-                        'scroll',
-                        toggleBackToTop, {
-                            passive: true
-                        }
-                    );
-
-
-                    toggleBackToTop();
-
-
-                    backToTop.addEventListener(
-                        'click',
-                        function() {
-
-                            window.scrollTo({
-                                top: 0,
-                                behavior: 'smooth'
-                            });
-
-                        }
-                    );
-
-                }
-
+                );
             }
-        );
-    </script>
 
+        });
+    </script>
 
     @stack('scripts')
 
