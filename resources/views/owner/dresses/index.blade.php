@@ -45,10 +45,6 @@
             box-sizing: border-box;
         }
 
-        /* =======================================================
-           HEADER
-        ======================================================= */
-
         .page-head {
             display: flex;
             align-items: flex-end;
@@ -150,10 +146,6 @@
         .add-dress-btn i {
             font-size: 11px;
         }
-
-        /* =======================================================
-           MODAL
-        ======================================================= */
 
         .modal-backdrop {
             position: fixed;
@@ -440,10 +432,6 @@
             transform: translateY(-1px);
         }
 
-        /* =======================================================
-           FLASH
-        ======================================================= */
-
         .flash {
             display: flex;
             align-items: center;
@@ -468,10 +456,6 @@
             color: var(--red);
             border-color: #eecfcc;
         }
-
-        /* =======================================================
-           STAT BAR
-        ======================================================= */
 
         .stat-bar {
             display: grid;
@@ -539,10 +523,6 @@
             letter-spacing: -.8px;
         }
 
-        /* =======================================================
-           WORKSPACE
-        ======================================================= */
-
         .workspace {
             background: var(--surface);
             border: 1px solid var(--border);
@@ -550,10 +530,6 @@
             overflow: hidden;
             box-shadow: var(--shadow-sm);
         }
-
-        /* =======================================================
-           TOOLBAR
-        ======================================================= */
 
         .toolbar {
             display: flex;
@@ -656,10 +632,6 @@
         .category-reset:hover {
             color: var(--p);
         }
-
-        /* =======================================================
-           TABLE
-        ======================================================= */
 
         .table-wrap {
             overflow-x: auto;
@@ -869,10 +841,6 @@
             border-color: rgba(158, 56, 48, .4);
         }
 
-        /* =======================================================
-           EMPTY
-        ======================================================= */
-
         .empty-box {
             padding: 64px 20px;
             text-align: center;
@@ -903,10 +871,6 @@
             color: var(--muted);
             font-size: 13px;
         }
-
-        /* =======================================================
-           PAGINATION
-        ======================================================= */
 
         .pagination-wrap {
             padding: 16px 20px 18px;
@@ -954,8 +918,7 @@
             text-decoration: none;
             font-size: 13px;
             font-weight: 600;
-            transition:
-                background .16s ease,
+            transition: background .16s ease,
                 border-color .16s ease,
                 color .16s ease,
                 transform .16s ease,
@@ -999,10 +962,6 @@
             font-size: 13px;
             font-weight: 600;
         }
-
-        /* =======================================================
-           RESPONSIVE
-        ======================================================= */
 
         @media (max-width: 900px) {
             .stat-bar {
@@ -1071,16 +1030,15 @@
     </style>
 @endpush
 
-
 @section('content')
     <div class="kyrix-page">
 
-        {{-- =====================================================
-         HEADER
-    ====================================================== --}}
+        <!-- HEADER -->
         <div class="page-head">
             <div>
-                <span class="page-eyebrow">KYRIX RENTAL · DRESSES</span>
+                <span class="page-eyebrow">
+                    KYRIX RENTAL · DRESSES
+                </span>
 
                 <h1 class="page-title">
                     คลังชุด
@@ -1104,10 +1062,7 @@
             </div>
         </div>
 
-
-        {{-- =====================================================
-         FLASH MESSAGE
-    ====================================================== --}}
+        <!-- FLASH MESSAGE -->
         @if (session('success'))
             <div class="flash flash-success">
                 <i class="fa-solid fa-circle-check"></i>
@@ -1122,15 +1077,15 @@
             </div>
         @endif
 
-
-        {{-- =====================================================
-         STAT BAR
-    ====================================================== --}}
+        <!-- STAT BAR -->
         <div class="stat-bar">
 
             <a href="{{ route('owner.dresses.index', request()->except(['status', 'category_id', 'page'])) }}"
                 class="stat-cell {{ !request('status') && !request('category_id') ? 'active' : '' }}">
-                <span class="stat-cell-label">ชุดทั้งหมด</span>
+                <span class="stat-cell-label">
+                    ชุดทั้งหมด
+                </span>
+
                 <span class="stat-cell-number">
                     {{ number_format($summary['total'] ?? $products->total()) }}
                 </span>
@@ -1141,7 +1096,10 @@
                 array_merge(request()->except(['status', 'category_id', 'page']), ['status' => 'active']),
             ) }}"
                 class="stat-cell {{ request('status') === 'active' ? 'active' : '' }}">
-                <span class="stat-cell-label">พร้อมให้เช่า</span>
+                <span class="stat-cell-label">
+                    พร้อมให้เช่า
+                </span>
+
                 <span class="stat-cell-number">
                     {{ number_format($summary['available'] ?? 0) }}
                 </span>
@@ -1152,7 +1110,10 @@
                 array_merge(request()->except(['status', 'category_id', 'page']), ['status' => 'rented']),
             ) }}"
                 class="stat-cell {{ request('status') === 'rented' ? 'active' : '' }}">
-                <span class="stat-cell-label">กำลังเช่า</span>
+                <span class="stat-cell-label">
+                    กำลังเช่า
+                </span>
+
                 <span class="stat-cell-number">
                     {{ number_format($summary['rented'] ?? 0) }}
                 </span>
@@ -1163,7 +1124,10 @@
                 array_merge(request()->except(['status', 'category_id', 'page']), ['status' => 'inactive']),
             ) }}"
                 class="stat-cell {{ request('status') === 'inactive' ? 'active' : '' }}">
-                <span class="stat-cell-label">ปิดใช้งาน</span>
+                <span class="stat-cell-label">
+                    ปิดใช้งาน
+                </span>
+
                 <span class="stat-cell-number">
                     {{ number_format($summary['inactive'] ?? 0) }}
                 </span>
@@ -1171,20 +1135,17 @@
 
         </div>
 
-
-        {{-- =====================================================
-         WORKSPACE
-    ====================================================== --}}
+        <!-- WORKSPACE -->
         <div class="workspace">
 
-            {{-- =================================================
-             TOOLBAR
-        ================================================== --}}
+            <!-- TOOLBAR -->
             <div class="toolbar">
 
                 <div class="result-summary">
                     พบ
-                    <strong>{{ number_format($products->total()) }}</strong>
+                    <strong>
+                        {{ number_format($products->total()) }}
+                    </strong>
                     รายการ
                 </div>
 
@@ -1194,12 +1155,14 @@
                         <input type="hidden" name="status" value="{{ request('status') }}">
                     @endif
 
-                    {{-- CATEGORY DROPDOWN --}}
+                    <!-- CATEGORY -->
                     <div class="select-wrap">
+
                         <i class="fa-solid fa-layer-group"></i>
 
                         <select name="category_id" id="category_id" class="toolbar-select" aria-label="กรองตามหมวดหมู่"
                             onchange="this.form.submit()">
+
                             <option value="">
                                 ทุกหมวดหมู่
                             </option>
@@ -1207,15 +1170,19 @@
                             @foreach ($categories as $category)
                                 @php
                                     $categoryId = $category->category_id ?? $category->id;
+
                                     $categoryName = $category->category_name ?? $category->name;
                                 @endphp
 
                                 <option value="{{ $categoryId }}"
                                     {{ (string) request('category_id') === (string) $categoryId ? 'selected' : '' }}>
-                                    {{ $categoryName }}{{ isset($category->products_count) ? ' (' . $category->products_count . ')' : '' }}
+                                    {{ $categoryName }}
+                                    {{ isset($category->products_count) ? ' (' . $category->products_count . ')' : '' }}
                                 </option>
                             @endforeach
+
                         </select>
+
                     </div>
 
                     @if (request('category_id'))
@@ -1226,12 +1193,14 @@
                         </a>
                     @endif
 
-                    {{-- SORT DROPDOWN --}}
+                    <!-- SORT -->
                     <div class="select-wrap">
+
                         <i class="fa-solid fa-arrow-down-wide-short"></i>
 
                         <select name="sort" id="sort" class="toolbar-select" aria-label="เรียงลำดับ"
                             onchange="this.form.submit()">
+
                             <option value="latest" {{ request('sort', 'latest') === 'latest' ? 'selected' : '' }}>
                                 ล่าสุด
                             </option>
@@ -1247,49 +1216,115 @@
                             <option value="price_high" {{ request('sort') === 'price_high' ? 'selected' : '' }}>
                                 ราคา สูง → ต่ำ
                             </option>
+
                         </select>
+
                     </div>
 
                 </form>
+
             </div>
 
-
-            {{-- =================================================
-             TABLE
-        ================================================== --}}
+            <!-- TABLE -->
             <div class="table-wrap">
+
                 <table class="dress-table">
 
                     <thead>
+
                         <tr>
-                            <th style="width:10%;">รหัส</th>
-                            <th style="width:33%;">ชุด</th>
-                            <th style="width:16%;">หมวดหมู่</th>
-                            <th style="width:12%; text-align:right;">ราคาเช่า</th>
-                            <th style="width:13%;">สถานะ</th>
-                            <th style="width:16%; text-align:right;">จัดการ</th>
+                            <th style="width:10%;">
+                                รหัส
+                            </th>
+
+                            <th style="width:33%;">
+                                ชุด
+                            </th>
+
+                            <th style="width:16%;">
+                                หมวดหมู่
+                            </th>
+
+                            <th style="width:12%; text-align:right;">
+                                ราคาเช่า
+                            </th>
+
+                            <th style="width:13%;">
+                                สถานะ
+                            </th>
+
+                            <th style="width:16%; text-align:right;">
+                                จัดการ
+                            </th>
                         </tr>
+
                     </thead>
 
                     <tbody>
 
                         @forelse($products as $product)
+
                             @php
-                                $image = $product->main_image_url;
+
+                                /*
+                                 * =====================================================
+                                 * รูปภาพ
+                                 * =====================================================
+                                 *
+                                 * ดึงรูปจาก product_images โดยตรง
+                                 * โดยเลือก:
+                                 * 1. รูปที่ is_main = true
+                                 * 2. ถ้าไม่มี ให้ใช้รูปแรกของ product
+                                 *
+                                 * ถ้า image_path เป็น URL GitHub / URL ออนไลน์
+                                 * จะใช้ URL นั้นตรง ๆ
+                                 *
+                                 * ถ้าเป็น path เก่า เช่น products/xxx.jpg
+                                 * จะเรียกจาก storage ตามระบบเดิม
+                                 */
+
+                                $mainImageObject = $product->images->firstWhere('is_main', true);
+
+                                if (!$mainImageObject) {
+                                    $mainImageObject = $product->images->first();
+                                }
+
+                                $image = null;
+
+                                if ($mainImageObject && $mainImageObject->image_path) {
+                                    $imagePath = trim($mainImageObject->image_path);
+
+                                    if (
+                                        str_starts_with($imagePath, 'http://') ||
+                                        str_starts_with($imagePath, 'https://')
+                                    ) {
+                                        $image = $imagePath;
+                                    } else {
+                                        $image = asset('storage/' . ltrim($imagePath, '/'));
+                                    }
+                                }
+
                                 $productId = $product->product_id ?? $product->id;
+
                                 $status = strtolower($product->status ?? 'available');
 
                                 $statusText = match ($status) {
                                     'active', 'available' => 'พร้อมให้เช่า',
+
                                     'rented', 'busy' => 'กำลังเช่า',
+
                                     'maintenance' => 'ซ่อมบำรุง',
+
                                     'inactive' => 'ปิดใช้งาน',
+
                                     default => $product->status ?? '-',
                                 };
 
                                 $statusClass = match ($status) {
                                     'active', 'available' => 'available',
+
                                     'rented', 'busy' => 'rented',
+
                                     default => 'inactive',
                                 };
 
@@ -1299,15 +1334,18 @@
 
                             <tr>
 
-                                {{-- CODE --}}
+                                <!-- CODE -->
                                 <td>
+
                                     <span class="dress-code">
                                         {{ $product->product_code }}
                                     </span>
+
                                 </td>
 
-                                {{-- DRESS --}}
+                                <!-- DRESS -->
                                 <td>
+
                                     <div class="dress-info">
 
                                         @if ($image)
@@ -1315,11 +1353,14 @@
                                                 class="dress-image">
                                         @else
                                             <div class="dress-image-empty">
+
                                                 <i class="fa-solid fa-shirt"></i>
+
                                             </div>
                                         @endif
 
                                         <div>
+
                                             <div class="dress-name">
                                                 {{ $product->product_name }}
                                             </div>
@@ -1327,13 +1368,16 @@
                                             <div class="dress-meta">
                                                 รายการ #{{ $productId }}
                                             </div>
+
                                         </div>
 
                                     </div>
+
                                 </td>
 
-                                {{-- CATEGORY --}}
+                                <!-- CATEGORY -->
                                 <td>
+
                                     @if ($productCategoryName)
                                         <span class="category-tag">
                                             {{ $productCategoryName }}
@@ -1343,44 +1387,56 @@
                                             ไม่ระบุหมวดหมู่
                                         </span>
                                     @endif
+
                                 </td>
 
-                                {{-- PRICE --}}
+                                <!-- PRICE -->
                                 <td style="text-align:right;">
+
                                     <span class="price">
                                         ฿{{ number_format($product->rental_price, 2) }}
                                     </span>
+
                                 </td>
 
-                                {{-- STATUS --}}
+                                <!-- STATUS -->
                                 <td>
+
                                     <span class="status {{ $statusClass }}">
                                         {{ $statusText }}
                                     </span>
+
                                 </td>
 
-                                {{-- ACTION --}}
+                                <!-- ACTION -->
                                 <td>
+
                                     <div class="action-group">
 
-                                        <a href="{{ route('owner.dresses.edit', $productId) }}" class="edit-btn">
+                                        <a href="{{ route('owner.dresses.edit', $productId) }}"
+                                            class="edit-btn">
                                             <i class="fa-regular fa-pen-to-square"></i>
                                             แก้ไข
                                         </a>
 
-                                        <form action="{{ route('owner.dresses.destroy', $productId) }}" method="POST"
-                                            style="margin:0;"
+                                        <form
+                                            action="{{ route('owner.dresses.destroy', $productId) }}"
+                                            method="POST" style="margin:0;"
                                             onsubmit="return confirm('ยืนยันการลบชุด {{ $product->product_code }} ใช่หรือไม่?');">
+
                                             @csrf
+
                                             @method('DELETE')
 
                                             <button type="submit" class="delete-btn">
                                                 <i class="fa-regular fa-trash-can"></i>
                                                 ลบ
                                             </button>
+
                                         </form>
 
                                     </div>
+
                                 </td>
 
                             </tr>
@@ -1388,6 +1444,7 @@
                         @empty
 
                             <tr>
+
                                 <td colspan="6">
 
                                     <div class="empty-box">
@@ -1407,21 +1464,22 @@
                                     </div>
 
                                 </td>
+
                             </tr>
                         @endforelse
 
                     </tbody>
+
                 </table>
+
             </div>
 
-
-            {{-- =================================================
-             CUSTOM PAGINATION
-        ================================================== --}}
+            <!-- PAGINATION -->
             @if ($products->hasPages())
 
                 @php
                     $currentPage = $products->currentPage();
+
                     $lastPage = $products->lastPage();
                 @endphp
 
@@ -1429,7 +1487,6 @@
 
                     <div class="pagination-inner">
 
-                        {{-- INFO --}}
                         <div class="pagination-info">
 
                             แสดง
@@ -1454,11 +1511,8 @@
 
                         </div>
 
-
-                        {{-- NAVIGATION --}}
                         <div class="pagination-nav">
 
-                            {{-- PREVIOUS --}}
                             @if ($products->onFirstPage())
                                 <span class="pagination-btn disabled" aria-disabled="true">
                                     <i class="fa-solid fa-chevron-left"></i>
@@ -1470,8 +1524,6 @@
                                 </a>
                             @endif
 
-
-                            {{-- PAGE NUMBERS --}}
                             @for ($page = 1; $page <= $lastPage; $page++)
                                 @if ($page === 1 || $page === $lastPage || abs($page - $currentPage) <= 1)
                                     @if ($page === $currentPage)
@@ -1484,19 +1536,17 @@
                                             {{ $page }}
                                         </a>
                                     @endif
-                                @elseif($page === 2 && $currentPage > 3)
+                                @elseif ($page === 2 && $currentPage > 3)
                                     <span class="pagination-dots">
                                         ...
                                     </span>
-                                @elseif($page === $lastPage - 1 && $currentPage < $lastPage - 2)
+                                @elseif ($page === $lastPage - 1 && $currentPage < $lastPage - 2)
                                     <span class="pagination-dots">
                                         ...
                                     </span>
                                 @endif
                             @endfor
 
-
-                            {{-- NEXT --}}
                             @if ($products->hasMorePages())
                                 <a href="{{ request()->fullUrlWithQuery(['page' => $currentPage + 1]) }}"
                                     class="pagination-btn" aria-label="หน้าถัดไป">
@@ -1511,23 +1561,20 @@
                         </div>
 
                     </div>
+
                 </div>
 
             @endif
 
         </div>
+
     </div>
 
-
-    {{-- =====================================================
-     CATEGORY MODAL
-====================================================== --}}
-
+    <!-- CATEGORY MODAL -->
     <div id="categoryModal" class="modal-backdrop" style="display:none;">
 
         <div class="modal-card">
 
-            {{-- MODAL HEADER --}}
             <div class="modal-header">
 
                 <h3 class="modal-title" id="modalTitle">
@@ -1541,8 +1588,6 @@
 
             </div>
 
-
-            {{-- MODAL TABS --}}
             <div class="modal-tabs">
 
                 <button type="button" class="modal-tab-btn active" id="tabAddBtn" onclick="switchCategoryTab('add')">
@@ -1552,13 +1597,13 @@
 
                 <button type="button" class="modal-tab-btn" id="tabManageBtn" onclick="switchCategoryTab('manage')">
                     <i class="fa-solid fa-list-check"></i>
-                    แก้ไข / รายการหมวดหมู่ ({{ $categories->count() }})
+                    แก้ไข / รายการหมวดหมู่
+                    ({{ $categories->count() }})
                 </button>
 
             </div>
 
-
-            {{-- TAB 1 : ADD --}}
+            <!-- ADD -->
             <div id="tabAddContent">
 
                 <form action="{{ route('owner.dresses.categories.store') }}" method="POST">
@@ -1580,7 +1625,6 @@
 
                         </div>
 
-
                         <div class="form-group-custom">
 
                             <label for="description_input" class="form-label-custom">
@@ -1593,7 +1637,6 @@
                         </div>
 
                     </div>
-
 
                     <div class="modal-footer">
 
@@ -1609,10 +1652,10 @@
                     </div>
 
                 </form>
+
             </div>
 
-
-            {{-- TAB 2 : MANAGE --}}
+            <!-- MANAGE -->
             <div id="tabManageContent" style="display:none;">
 
                 <div class="modal-body">
@@ -1622,7 +1665,9 @@
                         @foreach ($categories as $cat)
                             @php
                                 $cId = $cat->category_id ?? $cat->id;
+
                                 $cName = $cat->category_name ?? $cat->name;
+
                                 $cDesc = $cat->description ?? '';
                             @endphp
 
@@ -1642,28 +1687,32 @@
 
                                 </div>
 
-
                                 <div class="cat-item-actions">
 
                                     <button type="button" class="btn-icon-edit"
                                         onclick='startEditCategory(
-                                        @json($cId),
-                                        @json($cName),
-                                        @json($cDesc)
-                                    )'>
+                                            @json($cId),
+                                            @json($cName),
+                                            @json($cDesc)
+                                        )'>
                                         <i class="fa-regular fa-pen-to-square"></i>
                                         แก้ไข
                                     </button>
 
-                                    <form action="{{ route('owner.dresses.categories.destroy', $cId) }}" method="POST"
-                                        style="margin:0;" onsubmit="return confirm(@json('ยืนยันการลบหมวดหมู่ ' . $cName . ' ใช่หรือไม่?'));">
+                                    <form
+                                        action="{{ route('owner.dresses.categories.destroy', $cId) }}"
+                                        method="POST" style="margin:0;"
+                                        onsubmit="return confirm(@json('ยืนยันการลบหมวดหมู่ ' . $cName . ' ใช่หรือไม่?'));">
+
                                         @csrf
+
                                         @method('DELETE')
 
                                         <button type="submit" class="btn-icon-delete">
                                             <i class="fa-regular fa-trash-can"></i>
                                             ลบ
                                         </button>
+
                                     </form>
 
                                 </div>
@@ -1675,7 +1724,6 @@
 
                 </div>
 
-
                 <div class="modal-footer">
 
                     <button type="button" class="btn-cancel" onclick="closeCategoryModal()">
@@ -1686,8 +1734,7 @@
 
             </div>
 
-
-            {{-- TAB 3 : EDIT --}}
+            <!-- EDIT -->
             <div id="tabEditContent" style="display:none;">
 
                 <form id="editCategoryForm" method="POST" action="">
@@ -1698,18 +1745,17 @@
 
                         <div
                             style="
-                            margin-bottom:14px;
-                            color:var(--accent);
-                            font-size:13px;
-                            font-weight:600;
-                            display:flex;
-                            align-items:center;
-                            gap:6px;
-                        ">
+                                margin-bottom:14px;
+                                color:var(--accent);
+                                font-size:13px;
+                                font-weight:600;
+                                display:flex;
+                                align-items:center;
+                                gap:6px;
+                            ">
                             <i class="fa-solid fa-pen-to-square"></i>
                             แก้ไขชื่อหมวดหมู่ในฐานข้อมูล
                         </div>
-
 
                         <div class="form-group-custom">
 
@@ -1723,7 +1769,6 @@
 
                         </div>
 
-
                         <div class="form-group-custom">
 
                             <label for="edit_description_input" class="form-label-custom">
@@ -1735,7 +1780,6 @@
                         </div>
 
                     </div>
-
 
                     <div class="modal-footer">
 
@@ -1758,11 +1802,13 @@
 
     </div>
 
-
     @push('scripts')
         <script>
             function openCategoryModal(tab = 'add') {
-                const modal = document.getElementById('categoryModal');
+                const modal =
+                    document.getElementById(
+                        'categoryModal'
+                    );
 
                 if (modal) {
                     modal.style.display = 'flex';
@@ -1770,37 +1816,59 @@
                 }
             }
 
-
             function closeCategoryModal() {
-                const modal = document.getElementById('categoryModal');
+                const modal =
+                    document.getElementById(
+                        'categoryModal'
+                    );
 
                 if (modal) {
                     modal.style.display = 'none';
                 }
             }
 
-
             function switchCategoryTab(tab) {
-                const addContent = document.getElementById('tabAddContent');
-                const manageContent = document.getElementById('tabManageContent');
-                const editContent = document.getElementById('tabEditContent');
 
-                const addBtn = document.getElementById('tabAddBtn');
-                const manageBtn = document.getElementById('tabManageBtn');
+                const addContent =
+                    document.getElementById(
+                        'tabAddContent'
+                    );
+
+                const manageContent =
+                    document.getElementById(
+                        'tabManageContent'
+                    );
+
+                const editContent =
+                    document.getElementById(
+                        'tabEditContent'
+                    );
+
+                const addBtn =
+                    document.getElementById(
+                        'tabAddBtn'
+                    );
+
+                const manageBtn =
+                    document.getElementById(
+                        'tabManageBtn'
+                    );
 
                 if (tab === 'add') {
 
-                    
                     if (addContent) {
-                        addContent.style.display = 'block';
+                        addContent.style.display =
+                            'block';
                     }
 
                     if (manageContent) {
-                        manageContent.style.display = 'none';
+                        manageContent.style.display =
+                            'none';
                     }
 
                     if (editContent) {
-                        editContent.style.display = 'none';
+                        editContent.style.display =
+                            'none';
                     }
 
                     if (addBtn) {
@@ -1808,106 +1876,161 @@
                     }
 
                     if (manageBtn) {
-                        manageBtn.classList.remove('active');
+                        manageBtn.classList.remove(
+                            'active'
+                        );
                     }
 
-                    const input = document.getElementById('category_name_input');
+                    const input =
+                        document.getElementById(
+                            'category_name_input'
+                        );
 
                     if (input) {
-                        setTimeout(() => input.focus(), 50);
+                        setTimeout(
+                            () => input.focus(),
+                            50
+                        );
                     }
 
                 } else if (tab === 'manage') {
 
                     if (addContent) {
-                        addContent.style.display = 'none';
+                        addContent.style.display =
+                            'none';
                     }
 
                     if (manageContent) {
-                        manageContent.style.display = 'block';
+                        manageContent.style.display =
+                            'block';
                     }
 
                     if (editContent) {
-                        editContent.style.display = 'none';
+                        editContent.style.display =
+                            'none';
                     }
 
                     if (addBtn) {
-                        addBtn.classList.remove('active');
+                        addBtn.classList.remove(
+                            'active'
+                        );
                     }
 
                     if (manageBtn) {
-                        manageBtn.classList.add('active');
+                        manageBtn.classList.add(
+                            'active'
+                        );
                     }
 
                 } else if (tab === 'edit') {
 
                     if (addContent) {
-                        addContent.style.display = 'none';
+                        addContent.style.display =
+                            'none';
                     }
 
                     if (manageContent) {
-                        manageContent.style.display = 'none';
+                        manageContent.style.display =
+                            'none';
                     }
 
                     if (editContent) {
-                        editContent.style.display = 'block';
+                        editContent.style.display =
+                            'block';
                     }
 
                     if (addBtn) {
-                        addBtn.classList.remove('active');
+                        addBtn.classList.remove(
+                            'active'
+                        );
                     }
 
                     if (manageBtn) {
-                        manageBtn.classList.remove('active');
+                        manageBtn.classList.remove(
+                            'active'
+                        );
                     }
                 }
             }
 
+            function startEditCategory(
+                id,
+                name,
+                description
+            ) {
 
-            function startEditCategory(id, name, description) {
+                const form =
+                    document.getElementById(
+                        'editCategoryForm'
+                    );
 
-                const form = document.getElementById('editCategoryForm');
-                const nameInput = document.getElementById('edit_category_name_input');
-                const descInput = document.getElementById('edit_description_input');
+                const nameInput =
+                    document.getElementById(
+                        'edit_category_name_input'
+                    );
+
+                const descInput =
+                    document.getElementById(
+                        'edit_description_input'
+                    );
 
                 if (form) {
-                    form.action = '/owner/dresses/categories/' + id + '/update';
+                    form.action =
+                        '/owner/dresses/categories/' +
+                        id +
+                        '/update';
                 }
 
                 if (nameInput) {
-                    nameInput.value = name || '';
+                    nameInput.value =
+                        name || '';
                 }
 
                 if (descInput) {
-                    descInput.value = description || '';
+                    descInput.value =
+                        description || '';
                 }
 
                 switchCategoryTab('edit');
 
                 if (nameInput) {
-                    setTimeout(() => nameInput.focus(), 50);
+                    setTimeout(
+                        () => nameInput.focus(),
+                        50
+                    );
                 }
             }
 
+            document.addEventListener(
+                'keydown',
+                function(e) {
 
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    closeCategoryModal();
+                    if (e.key === 'Escape') {
+                        closeCategoryModal();
+                    }
+
                 }
-            });
+            );
 
+            document.addEventListener(
+                'click',
+                function(e) {
 
-            document.addEventListener('click', function(e) {
-                const modal = document.getElementById('categoryModal');
+                    const modal =
+                        document.getElementById(
+                            'categoryModal'
+                        );
 
-                if (!modal) {
-                    return;
+                    if (!modal) {
+                        return;
+                    }
+
+                    if (e.target === modal) {
+                        closeCategoryModal();
+                    }
+
                 }
-
-                if (e.target === modal) {
-                    closeCategoryModal();
-                }
-            });
+            );
         </script>
     @endpush
 
