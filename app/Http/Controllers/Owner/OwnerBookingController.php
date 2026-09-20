@@ -46,38 +46,38 @@ class OwnerBookingController extends Controller
                     'like',
                     "%{$search}%"
                 )
-                    ->orWhere(
-                        'rental_id',
+                ->orWhere(
+                    'rental_id',
+                    'like',
+                    "%{$search}%"
+                )
+                ->orWhere(
+                    'recipient_phone',
+                    'like',
+                    "%{$search}%"
+                )
+                ->orWhereHas('customer', function ($cq) use ($search) {
+                    $cq->where(
+                        'first_name',
                         'like',
                         "%{$search}%"
                     )
                     ->orWhere(
-                        'recipient_phone',
+                        'last_name',
                         'like',
                         "%{$search}%"
                     )
-                    ->orWhereHas('customer', function ($cq) use ($search) {
-                        $cq->where(
-                            'first_name',
-                            'like',
-                            "%{$search}%"
-                        )
-                            ->orWhere(
-                                'last_name',
-                                'like',
-                                "%{$search}%"
-                            )
-                            ->orWhere(
-                                'phone',
-                                'like',
-                                "%{$search}%"
-                            )
-                            ->orWhere(
-                                'email',
-                                'like',
-                                "%{$search}%"
-                            );
-                    });
+                    ->orWhere(
+                        'phone',
+                        'like',
+                        "%{$search}%"
+                    )
+                    ->orWhere(
+                        'email',
+                        'like',
+                        "%{$search}%"
+                    );
+                });
             });
         }
 
@@ -145,117 +145,93 @@ class OwnerBookingController extends Controller
     }
 
     /**
-     * อัปเดตสถานะ + ข้อมูลการจัดส่ง + กำหนดคืนชุด
+     * อัปเดตสถานะ
+     * ข้อมูลจัดส่งจากร้านไปลูกค้า
+     * ข้อมูลส่งคืนจากลูกค้ามาร้าน
      */
     public function updateStatus(
         Request $request,
         $id
     ) {
         $data = $request->validate([
-            /*
-            |--------------------------------------------------------------------------
-            | สถานะการเช่า
-            |--------------------------------------------------------------------------
-            */
+            // สถานะการเช่า
             'status' => [
                 'required',
                 'in:pending,pending_payment,pending_verification,confirmed,ready_pickup,renting,pending_return,returned,completed',
             ],
 
-            /*
-            |--------------------------------------------------------------------------
-            | ข้อมูลพัสดุ
-            |--------------------------------------------------------------------------
-            */
+            // ข้อมูลพัสดุขาไป
             'tracking_number' => [
                 'nullable',
                 'string',
                 'max:100',
             ],
 
-            'return_tracking_no' => [
-                'nullable',
-                'string',
-                'max:100',
-            ],
-
-            /*
-            |--------------------------------------------------------------------------
-            | ข้อมูลบริษัทขนส่ง
-            |--------------------------------------------------------------------------
-            */
             'shipping_carrier' => [
                 'nullable',
                 'string',
                 'max:100',
             ],
 
-            /*
-            |--------------------------------------------------------------------------
-            | สถานะการจัดส่ง
-            |--------------------------------------------------------------------------
-            */
             'shipping_status' => [
                 'nullable',
                 'string',
                 'max:100',
             ],
 
-            /*
-            |--------------------------------------------------------------------------
-            | ลิงก์ติดตามพัสดุ
-            |--------------------------------------------------------------------------
-            */
-            'tracking_url' => [
-                'nullable',
-                'url',
-                'max:1000',
-            ],
-
-            /*
-            |--------------------------------------------------------------------------
-            | วันที่และเวลาส่งพัสดุ
-            |--------------------------------------------------------------------------
-            */
             'shipped_at' => [
                 'nullable',
                 'date',
             ],
 
-            /*
-            |--------------------------------------------------------------------------
-            | วันที่และเวลาคาดว่าจะถึง
-            |--------------------------------------------------------------------------
-            */
             'estimated_delivery_at' => [
                 'nullable',
                 'date',
             ],
 
-            /*
-            |--------------------------------------------------------------------------
-            | วันและเวลาที่ต้องคืนชุด
-            |--------------------------------------------------------------------------
-            */
+            // กำหนดคืนชุด
             'return_due_at' => [
                 'nullable',
                 'date',
             ],
 
-            /*
-            |--------------------------------------------------------------------------
-            | หมายเหตุ
-            |--------------------------------------------------------------------------
-            */
+            // ข้อมูลพัสดุขากลับ
+            'return_tracking_no' => [
+                'nullable',
+                'string',
+                'max:100',
+            ],
+
+            'return_shipping_carrier' => [
+                'nullable',
+                'string',
+                'max:100',
+            ],
+
+            'return_shipping_status' => [
+                'nullable',
+                'string',
+                'max:100',
+            ],
+
+            'return_shipped_at' => [
+                'nullable',
+                'date',
+            ],
+
+            'return_estimated_delivery_at' => [
+                'nullable',
+                'date',
+            ],
+
+            // หมายเหตุ
             'note' => [
                 'nullable',
                 'string',
             ],
         ], [
-            'status.required' => 'กรุณาเลือกสถานะการเช่า',
-
-            'tracking_url.url' =>
-                'ลิงก์ติดตามพัสดุไม่ถูกต้อง กรุณาใส่ลิงก์ที่ขึ้นต้นด้วย http:// หรือ https://',
+            'status.required' =>
+                'กรุณาเลือกสถานะการเช่า',
 
             'shipped_at.date' =>
                 'วันที่และเวลาส่งพัสดุไม่ถูกต้อง',
@@ -265,59 +241,39 @@ class OwnerBookingController extends Controller
 
             'return_due_at.date' =>
                 'วันและเวลาที่ต้องคืนชุดไม่ถูกต้อง',
+
+            'return_shipped_at.date' =>
+                'วันที่และเวลาส่งคืนชุดไม่ถูกต้อง',
+
+            'return_estimated_delivery_at.date' =>
+                'วันที่และเวลาพัสดุส่งคืนคาดว่าจะถึงไม่ถูกต้อง',
         ]);
 
         try {
-
-            /*
-            |--------------------------------------------------------------------------
-            | ใช้ Transaction เพื่อป้องกันข้อมูลผิดพลาด
-            |--------------------------------------------------------------------------
-            */
             $rental = DB::transaction(function () use (
                 $data,
                 $id
             ) {
-
-                /*
-                |--------------------------------------------------------------------------
-                | Lock รายการเช่า
-                |--------------------------------------------------------------------------
-                */
+                // Lock รายการเช่า
                 $rental = Rental::with('details.product')
                     ->lockForUpdate()
                     ->findOrFail($id);
 
                 $oldStatus = $rental->status;
-
                 $newStatus = $data['status'];
 
-                /*
-                |--------------------------------------------------------------------------
-                | ถ้าถูกยกเลิกแล้ว
-                |--------------------------------------------------------------------------
-                */
+                // ถ้าถูกยกเลิกแล้ว
                 if ($oldStatus === 'cancelled') {
-
                     throw new \RuntimeException(
                         'รายการนี้ถูกยกเลิกโดยลูกค้าแล้ว ไม่สามารถเปลี่ยนสถานะหรือแก้ไขข้อมูลได้'
                     );
                 }
 
-                /*
-                |--------------------------------------------------------------------------
-                | UPDATE ข้อมูลรายการเช่า
-                |--------------------------------------------------------------------------
-                */
+                // อัปเดตข้อมูลรายการเช่า
                 $rental->update([
-
                     'status' => $newStatus,
 
-                    /*
-                    |--------------------------------------------------------------------------
-                    | เลขพัสดุ
-                    |--------------------------------------------------------------------------
-                    */
+                    // พัสดุขาไป
                     'tracking_number' =>
                         array_key_exists(
                             'tracking_number',
@@ -326,24 +282,6 @@ class OwnerBookingController extends Controller
                             ? $data['tracking_number']
                             : $rental->tracking_number,
 
-                    /*
-                    |--------------------------------------------------------------------------
-                    | เลขพัสดุส่งคืน
-                    |--------------------------------------------------------------------------
-                    */
-                    'return_tracking_no' =>
-                        array_key_exists(
-                            'return_tracking_no',
-                            $data
-                        )
-                            ? $data['return_tracking_no']
-                            : $rental->return_tracking_no,
-
-                    /*
-                    |--------------------------------------------------------------------------
-                    | บริษัทขนส่ง
-                    |--------------------------------------------------------------------------
-                    */
                     'shipping_carrier' =>
                         array_key_exists(
                             'shipping_carrier',
@@ -352,11 +290,6 @@ class OwnerBookingController extends Controller
                             ? $data['shipping_carrier']
                             : $rental->shipping_carrier,
 
-                    /*
-                    |--------------------------------------------------------------------------
-                    | สถานะการจัดส่ง
-                    |--------------------------------------------------------------------------
-                    */
                     'shipping_status' =>
                         array_key_exists(
                             'shipping_status',
@@ -365,63 +298,73 @@ class OwnerBookingController extends Controller
                             ? $data['shipping_status']
                             : $rental->shipping_status,
 
-                    /*
-                    |--------------------------------------------------------------------------
-                    | ลิงก์ติดตาม
-                    |--------------------------------------------------------------------------
-                    */
-                    'tracking_url' =>
-                        array_key_exists(
-                            'tracking_url',
-                            $data
-                        )
-                            ? $data['tracking_url']
-                            : $rental->tracking_url,
-
-                    /*
-                    |--------------------------------------------------------------------------
-                    | วันที่ส่ง
-                    |--------------------------------------------------------------------------
-                    */
                     'shipped_at' =>
                         array_key_exists(
                             'shipped_at',
                             $data
-                        ) && $data['shipped_at']
+                        )
                             ? $data['shipped_at']
                             : $rental->shipped_at,
 
-                    /*
-                    |--------------------------------------------------------------------------
-                    | วันที่คาดว่าจะถึง
-                    |--------------------------------------------------------------------------
-                    */
                     'estimated_delivery_at' =>
                         array_key_exists(
                             'estimated_delivery_at',
                             $data
-                        ) && $data['estimated_delivery_at']
+                        )
                             ? $data['estimated_delivery_at']
                             : $rental->estimated_delivery_at,
 
-                    /*
-                    |--------------------------------------------------------------------------
-                    | วันและเวลาที่ต้องคืนชุด
-                    |--------------------------------------------------------------------------
-                    */
+                    // กำหนดคืน
                     'return_due_at' =>
                         array_key_exists(
                             'return_due_at',
                             $data
-                        ) && $data['return_due_at']
+                        )
                             ? $data['return_due_at']
                             : $rental->return_due_at,
 
-                    /*
-                    |--------------------------------------------------------------------------
-                    | หมายเหตุ
-                    |--------------------------------------------------------------------------
-                    */
+                    // พัสดุขากลับ
+                    'return_tracking_no' =>
+                        array_key_exists(
+                            'return_tracking_no',
+                            $data
+                        )
+                            ? $data['return_tracking_no']
+                            : $rental->return_tracking_no,
+
+                    'return_shipping_carrier' =>
+                        array_key_exists(
+                            'return_shipping_carrier',
+                            $data
+                        )
+                            ? $data['return_shipping_carrier']
+                            : $rental->return_shipping_carrier,
+
+                    'return_shipping_status' =>
+                        array_key_exists(
+                            'return_shipping_status',
+                            $data
+                        )
+                            ? $data['return_shipping_status']
+                            : $rental->return_shipping_status,
+
+                    'return_shipped_at' =>
+                        array_key_exists(
+                            'return_shipped_at',
+                            $data
+                        )
+                            ? $data['return_shipped_at']
+                            : $rental->return_shipped_at,
+
+                    'return_estimated_delivery_at' =>
+                        array_key_exists(
+                            'return_estimated_delivery_at',
+                            $data
+                        )
+                            ? $data['return_estimated_delivery_at']
+                            : $rental->return_estimated_delivery_at,
+
+                    // หมายเหตุ
                     'note' =>
                         array_key_exists(
                             'note',
@@ -431,17 +374,7 @@ class OwnerBookingController extends Controller
                             : $rental->note,
                 ]);
 
-                /*
-                |--------------------------------------------------------------------------
-                | RETURN / COMPLETED
-                |--------------------------------------------------------------------------
-                |
-                | เมื่อเปลี่ยนเป็น returned หรือ completed
-                | ระบบจะตรวจรับสินค้าและคืน stock
-                |
-                |--------------------------------------------------------------------------
-                */
-
+                // ตรวจว่ารายการเพิ่งเปลี่ยนเป็นคืนแล้วหรือเสร็จสิ้น
                 $isNowReturned = in_array(
                     $newStatus,
                     [
@@ -464,14 +397,8 @@ class OwnerBookingController extends Controller
                     $isNowReturned &&
                     !$wasPreviouslyReturned
                 ) {
-
-                    /*
-                    |--------------------------------------------------------------------------
-                    | บันทึกข้อมูลตรวจรับ
-                    |--------------------------------------------------------------------------
-                    */
+                    // บันทึกข้อมูลตรวจรับ
                     if (!$rental->inspected_at) {
-
                         $rental->update([
                             'inspected_at' => now(),
 
@@ -496,13 +423,8 @@ class OwnerBookingController extends Controller
                         ]);
                     }
 
-                    /*
-                    |--------------------------------------------------------------------------
-                    | คืน Stock หลังคืนชุด
-                    |--------------------------------------------------------------------------
-                    */
+                    // คืน Stock หลังคืนชุด
                     foreach ($rental->details as $detail) {
-
                         if (!$detail->product) {
                             continue;
                         }
@@ -516,11 +438,7 @@ class OwnerBookingController extends Controller
 
                         $product = $detail->product;
 
-                        /*
-                        |--------------------------------------------------------------------------
-                        | เพิ่ม Stock
-                        |--------------------------------------------------------------------------
-                        */
+                        // เพิ่ม Stock
                         $product->increment(
                             'stock',
                             $quantity
@@ -528,12 +446,8 @@ class OwnerBookingController extends Controller
 
                         $product->refresh();
 
-                        /*
-                        |--------------------------------------------------------------------------
-                        | ถ้ามี Stock แล้ว
-                        | เปลี่ยน rented / busy -> available
-                        |--------------------------------------------------------------------------
-                        */
+                        // ถ้ามี Stock แล้ว
+                        // เปลี่ยน rented / busy -> available
                         if (
                             $product->stock > 0 &&
                             in_array(
@@ -545,7 +459,6 @@ class OwnerBookingController extends Controller
                                 true
                             )
                         ) {
-
                             $product->update([
                                 'status' => 'available',
                             ]);
@@ -553,47 +466,23 @@ class OwnerBookingController extends Controller
                     }
                 }
 
-                /*
-                |--------------------------------------------------------------------------
-                | คืนค่า Rental
-                |--------------------------------------------------------------------------
-                */
                 return $rental->fresh();
             });
 
-            /*
-            |--------------------------------------------------------------------------
-            | สำเร็จ
-            |--------------------------------------------------------------------------
-            */
             return redirect()
                 ->back()
                 ->with(
                     'success',
                     "อัปเดตข้อมูลรายการเช่า {$rental->formatted_code} เรียบร้อยแล้ว"
                 );
-
         } catch (\RuntimeException $e) {
-
-            /*
-            |--------------------------------------------------------------------------
-            | Error จากระบบที่เรากำหนดเอง
-            |--------------------------------------------------------------------------
-            */
             return redirect()
                 ->back()
                 ->with(
                     'error',
                     $e->getMessage()
                 );
-
         } catch (\Throwable $e) {
-
-            /*
-            |--------------------------------------------------------------------------
-            | Error อื่น ๆ
-            |--------------------------------------------------------------------------
-            */
             return redirect()
                 ->back()
                 ->with(
