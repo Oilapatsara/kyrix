@@ -19,7 +19,13 @@ class OwnerDashboardController extends Controller
         $startOfMonth = Carbon::now()->startOfMonth();
         $endOfMonth = Carbon::now()->endOfMonth();
 
-        // 1. Revenue calculations
+        /*
+        |--------------------------------------------------------------------------
+        | 1. Revenue calculations
+        |--------------------------------------------------------------------------
+        | ตาราง payments ใช้คอลัมน์ amount
+        */
+
         $todayRevenue = (float) Payment::where('status', 'approved')
             ->whereDate('paid_at', $today)
             ->sum('amount');
@@ -31,14 +37,24 @@ class OwnerDashboardController extends Controller
             ])
             ->sum('amount');
 
-        // Fallback: if no payments dated today/this month,
-        // calculate from all approved payments.
+        /*
+        |--------------------------------------------------------------------------
+        | Fallback
+        |--------------------------------------------------------------------------
+        | ถ้าเดือนนี้ยังไม่มีรายได้ ให้ใช้ยอดรวม approved ทั้งหมด
+        */
+
         if ($monthlyRevenue == 0) {
             $monthlyRevenue = (float) Payment::where('status', 'approved')
                 ->sum('amount');
         }
 
-        // 2. Booking Counts
+        /*
+        |--------------------------------------------------------------------------
+        | 2. Booking Counts
+        |--------------------------------------------------------------------------
+        */
+
         $totalBookings = Rental::count();
 
         $activeRentals = Rental::whereIn('status', [
@@ -52,7 +68,12 @@ class OwnerDashboardController extends Controller
             'pending_verification',
         ])->count();
 
-        // 3. Dress & Customer Counts
+        /*
+        |--------------------------------------------------------------------------
+        | 3. Dress & Customer Counts
+        |--------------------------------------------------------------------------
+        */
+
         $availableDresses = Product::where(
             'status',
             'available'
@@ -61,6 +82,12 @@ class OwnerDashboardController extends Controller
         $totalDresses = Product::count();
 
         $totalCustomers = Customer::count();
+
+        /*
+        |--------------------------------------------------------------------------
+        | Dashboard Stats
+        |--------------------------------------------------------------------------
+        */
 
         $stats = [
             'monthly_revenue' => $monthlyRevenue,
@@ -73,7 +100,12 @@ class OwnerDashboardController extends Controller
             'total_customers' => $totalCustomers,
         ];
 
-        // 4. Recent Bookings (latest 6)
+        /*
+        |--------------------------------------------------------------------------
+        | 4. Recent Bookings
+        |--------------------------------------------------------------------------
+        */
+
         $recentBookings = Rental::with([
             'customer',
             'details.product',
@@ -82,7 +114,12 @@ class OwnerDashboardController extends Controller
             ->take(6)
             ->get();
 
-        // 5. Upcoming Returns
+        /*
+        |--------------------------------------------------------------------------
+        | 5. Upcoming Returns
+        |--------------------------------------------------------------------------
+        */
+
         $upcomingReturns = Rental::with([
             'customer',
             'details.product',
@@ -95,7 +132,13 @@ class OwnerDashboardController extends Controller
             ->take(5)
             ->get();
 
-        // If none currently renting, show latest rentals
+        /*
+        |--------------------------------------------------------------------------
+        | ถ้ายังไม่มีรายการที่กำลังเช่า
+        | ให้แสดงรายการเช่าล่าสุดแทน
+        |--------------------------------------------------------------------------
+        */
+
         if ($upcomingReturns->isEmpty()) {
             $upcomingReturns = Rental::with([
                 'customer',
@@ -106,7 +149,12 @@ class OwnerDashboardController extends Controller
                 ->get();
         }
 
-        // 6. Pending Payments
+        /*
+        |--------------------------------------------------------------------------
+        | 6. Pending Payments
+        |--------------------------------------------------------------------------
+        */
+
         $pendingPayments = Payment::with([
             'rental.customer',
         ])
@@ -115,7 +163,12 @@ class OwnerDashboardController extends Controller
             ->take(5)
             ->get();
 
-        // 7. Popular Dresses
+        /*
+        |--------------------------------------------------------------------------
+        | 7. Popular Dresses
+        |--------------------------------------------------------------------------
+        */
+
         $popularDresses = Product::with([
             'images',
             'category',
@@ -124,7 +177,12 @@ class OwnerDashboardController extends Controller
             ->take(6)
             ->get();
 
-        // 8. Monthly Revenue Chart
+        /*
+        |--------------------------------------------------------------------------
+        | 8. Monthly Revenue Chart
+        |--------------------------------------------------------------------------
+        */
+
         $monthlyLabels = [
             'ม.ค.',
             'ก.พ.',
@@ -143,6 +201,13 @@ class OwnerDashboardController extends Controller
         $monthlyData = array_fill(0, 12, 0.0);
 
         $currentYear = Carbon::now()->year;
+
+        /*
+        |--------------------------------------------------------------------------
+        | สำคัญ:
+        | payments ใช้ amount ไม่ใช่ total_amount
+        |--------------------------------------------------------------------------
+        */
 
         $paymentsByMonth = Payment::where(
             'status',
@@ -163,8 +228,13 @@ class OwnerDashboardController extends Controller
             }
         }
 
-        // If no chart data this year,
-        // show current month's revenue.
+        /*
+        |--------------------------------------------------------------------------
+        | ถ้าไม่มีข้อมูลกราฟปีนี้
+        | ให้แสดงยอดเดือนปัจจุบัน
+        |--------------------------------------------------------------------------
+        */
+
         if (
             array_sum($monthlyData) == 0 &&
             $monthlyRevenue > 0
@@ -174,10 +244,16 @@ class OwnerDashboardController extends Controller
             ] = $monthlyRevenue;
         }
 
+        /*
+        |--------------------------------------------------------------------------
+        | Return Dashboard
+        |--------------------------------------------------------------------------
+        */
+
         return view(
             'owner.dashboard',
             compact(
-                'stats',
+                'stats', 
                 'recentBookings',
                 'upcomingReturns',
                 'pendingPayments',

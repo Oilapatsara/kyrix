@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class Product extends Model
 {
     protected $table = 'products';
+
     protected $primaryKey = 'product_id';
+
     protected $fillable = [
         'category_id',
         'product_code',
@@ -40,38 +42,71 @@ class Product extends Model
             'is_featured' => 'boolean',
             'is_popular' => 'boolean',
             'is_new' => 'boolean',
+            'views_count' => 'integer',
+            'rental_count' => 'integer',
         ];
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | Relationships
+    |--------------------------------------------------------------------------
+    */
+
     public function category()
     {
-        return $this->belongsTo(Category::class, 'category_id', 'category_id');
+        return $this->belongsTo(
+            Category::class,
+            'category_id',
+            'category_id'
+        );
     }
 
     public function images()
     {
-        return $this->hasMany(ProductImage::class, 'product_id', 'product_id')
-                    ->orderBy('is_main', 'desc')
-                    ->latest('image_id');
+        return $this->hasMany(
+            ProductImage::class,
+            'product_id',
+            'product_id'
+        )
+        ->orderByDesc('is_main')
+        ->orderByDesc('image_id');
     }
 
     public function mainImage()
     {
-        return $this->hasOne(ProductImage::class, 'product_id', 'product_id')
-                    ->where('is_main', true)
-                    ->latest('image_id');
+        return $this->hasOne(
+            ProductImage::class,
+            'product_id',
+            'product_id'
+        )
+        ->where('is_main', 1)
+        ->orderByDesc('image_id');
     }
 
     public function reviews()
     {
-        return $this->hasMany(Review::class, 'product_id', 'product_id')
-                    ->where('status', 'published')
-                    ->latest();
+        return $this->hasMany(
+            Review::class,
+            'product_id',
+            'product_id'
+        )
+        ->where('status', 'published')
+        ->latest();
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Accessors
+    |--------------------------------------------------------------------------
+    */
 
     public function getAverageRatingAttribute()
     {
-        return round($this->reviews()->avg('rating') ?: 5, 1);
+        return round(
+            $this->reviews()->avg('rating') ?: 5,
+            1
+        );
     }
 
     public function getReviewsCountAttribute()
@@ -79,54 +114,73 @@ class Product extends Model
         return $this->reviews()->count();
     }
 
+    /**
+     * URL รูปหลักของสินค้า
+     */
     public function getMainImageUrlAttribute()
     {
-        $allImages = $this->images;
-        
-        // Try mainImage first if valid
+        // 1. รูปที่กำหนดเป็นรูปหลัก
         $main = $this->mainImage;
+
         if ($main && !empty($main->image_path)) {
-            $path = $main->image_path;
-            if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
-                return $path;
-            }
-            if (file_exists(public_path('storage/' . $path)) || file_exists(storage_path('app/public/' . $path))) {
-                return asset('storage/' . $path);
-            }
+            return $main->url;
         }
 
-        // Search for any other valid image in the relation
-        foreach ($allImages as $img) {
-            if (!empty($img->image_path)) {
-                $path = $img->image_path;
-                if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
-                    return $path;
-                }
-                if (file_exists(public_path('storage/' . $path)) || file_exists(storage_path('app/public/' . $path))) {
-                    return asset('storage/' . $path);
-                }
-            }
+        // 2. ถ้าไม่มีรูปหลัก ให้ใช้รูปแรก
+        $firstImage = $this->images->first();
+
+        if ($firstImage && !empty($firstImage->image_path)) {
+            return $firstImage->url;
         }
 
-        return 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=800&auto=format&fit=crop&q=80';
+        // 3. ไม่มีรูปเลย
+        return 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=800&q=80';
     }
 
     public function getSizesListAttribute()
     {
         if (!empty($this->available_sizes)) {
-            return array_map('trim', explode(',', $this->available_sizes));
+            return array_values(
+                array_filter(
+                    array_map(
+                        'trim',
+                        explode(',', $this->available_sizes)
+                    )
+                )
+            );
         }
-        return !empty($this->size) ? [$this->size] : ['S', 'M', 'L'];
+
+        if (!empty($this->size)) {
+            return [$this->size];
+        }
+
+        return ['S', 'M', 'L'];
     }
 
     public function getColorsListAttribute()
     {
         if (!empty($this->available_colors)) {
-            return array_values(array_filter(array_map('trim', explode(',', $this->available_colors))));
+            return array_values(
+                array_filter(
+                    array_map(
+                        'trim',
+                        explode(',', $this->available_colors)
+                    )
+                )
+            );
         }
+
         if (!empty($this->color)) {
-            return array_values(array_filter(array_map('trim', explode(',', $this->color))));
+            return array_values(
+                array_filter(
+                    array_map(
+                        'trim',
+                        explode(',', $this->color)
+                    )
+                )
+            );
         }
+
         return ['Classic Burgundy'];
     }
 
@@ -135,6 +189,7 @@ class Product extends Model
         if (!empty($this->available_colors)) {
             return $this->available_colors;
         }
+
         return $this->color ?: 'ตามแบบ';
     }
 
