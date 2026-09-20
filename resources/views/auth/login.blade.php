@@ -10,6 +10,11 @@
 
     <title>เข้าสู่ระบบ | KYRIX</title>
 
+    <!-- นำเข้าฟอนต์ Prompt จาก Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
     <style>
         * {
             box-sizing: border-box;
@@ -18,7 +23,7 @@
         }
 
         body {
-            font-family: Arial, "Tahoma", sans-serif;
+            font-family: 'Prompt', sans-serif;
             background: #faf7f4;
             min-height: 100vh;
             display: flex;
@@ -26,6 +31,11 @@
             justify-content: center;
             color: #302a27;
             padding: 20px;
+        }
+
+        /* บังคับให้ input และ button ใช้ฟอนต์ Prompt ด้วย (เพื่อความเต็มระบบ) */
+        input, button, a {
+            font-family: 'Prompt', sans-serif;
         }
 
         .box {

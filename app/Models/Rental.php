@@ -26,7 +26,7 @@ class Rental extends Model
         'delivery_address',
         'recipient_phone',
 
-        // ข้อมูลการจัดส่ง
+        // ข้อมูลการจัดส่งจากร้านไปลูกค้า
         'tracking_number',
         'shipping_carrier',
         'shipping_status',
@@ -37,8 +37,12 @@ class Rental extends Model
         // กำหนดคืนชุด
         'return_due_at',
 
-        // การส่งคืนสินค้า
+        // ข้อมูลการส่งคืนจากลูกค้ามาร้าน
         'return_tracking_no',
+        'return_shipping_carrier',
+        'return_shipping_status',
+        'return_shipped_at',
+        'return_estimated_delivery_at',
 
         'status',
         'note',
@@ -65,6 +69,10 @@ class Rental extends Model
 
         // วันและเวลาที่ต้องคืนชุด
         'return_due_at' => 'datetime',
+
+        // ข้อมูลวันที่และเวลาการส่งคืน
+        'return_shipped_at' => 'datetime',
+        'return_estimated_delivery_at' => 'datetime',
     ];
 
     /**
@@ -270,6 +278,7 @@ class Rental extends Model
             'approved' => 'ชำระแล้ว',
             'pending' => 'รอตรวจสอบ',
             'rejected' => 'สลิปถูกปฏิเสธ',
+
             default => ucfirst($payment->status),
         };
     }
@@ -289,6 +298,7 @@ class Rental extends Model
             'approved' => 'badge-success',
             'pending' => 'badge-warning',
             'rejected' => 'badge-danger',
+
             default => 'badge-secondary',
         };
     }
@@ -304,12 +314,13 @@ class Rental extends Model
             'กำลังขนส่ง' => 'กำลังขนส่ง',
             'กำลังนำจ่าย' => 'กำลังนำจ่าย',
             'จัดส่งสำเร็จ' => 'จัดส่งสำเร็จ',
+
             default => 'ยังไม่มีข้อมูล',
         };
     }
 
     /**
-     * Accessor: สร้างลิงก์ติดตามพัสดุอัตโนมัติ
+     * Accessor: สร้างลิงก์ติดตามพัสดุขาไปอัตโนมัติ
      * จากบริษัทขนส่ง + เลขพัสดุ
      */
     public function getTrackingUrlAttribute($value): ?string
@@ -345,11 +356,11 @@ class Rental extends Model
             'kex',
             'kerry',
             'kerry express' =>
-                'https://th.kex-express.com/en/track-parcel',
+                'https://th.kex-express.com/th/track-parcel',
 
             'ninja van',
             'ninjavan' =>
-                'https://www.ninjavan.co/en-th/tracking',
+                'https://www.ninjavan.co/th-th/tracking',
 
             'dhl',
             'dhl express' =>
@@ -359,8 +370,77 @@ class Rental extends Model
             'best' =>
                 'https://www.best-inc.co.th/',
 
-            default =>
-                $value ?: null,
+            default => $value ?: null,
+        };
+    }
+
+    /**
+     * Accessor: สถานะการส่งคืนภาษาไทย
+     */
+    public function getReturnShippingStatusLabelAttribute(): string
+    {
+        return match ($this->return_shipping_status) {
+            'ลูกค้ายังไม่ได้ส่งคืน' => 'ลูกค้ายังไม่ได้ส่งคืน',
+            'ส่งพัสดุแล้ว' => 'ส่งพัสดุแล้ว',
+            'กำลังขนส่ง' => 'กำลังขนส่ง',
+            'กำลังนำจ่าย' => 'กำลังนำจ่าย',
+            'ถึงร้านแล้ว' => 'ถึงร้านแล้ว',
+            default => 'ยังไม่มีข้อมูล',
+        };
+    }
+
+    /**
+     * Accessor: สร้างลิงก์ติดตามพัสดุส่งคืนอัตโนมัติ
+     * จากบริษัทขนส่งขากลับ + เลขพัสดุ
+     */
+    public function getReturnTrackingUrlAttribute(): ?string
+    {
+        $trackingNumber = trim(
+            (string) ($this->return_tracking_no ?? '')
+        );
+
+        if ($trackingNumber === '') {
+            return null;
+        }
+
+        $number = rawurlencode($trackingNumber);
+
+        $carrier = strtolower(
+            trim((string) ($this->return_shipping_carrier ?? ''))
+        );
+
+        return match ($carrier) {
+            'ไปรษณีย์ไทย',
+            'thailand post',
+            'thai post' =>
+                'https://track.thailandpost.co.th/?trackNumber=' . $number,
+
+            'j&t express',
+            'j&t' =>
+                'https://www.jtexpress.co.th/service/track?waybillNo=' . $number,
+
+            'flash express',
+            'flash' =>
+                'https://flashexpress.com/fle/tracking',
+
+            'kex',
+            'kerry',
+            'kerry express' =>
+                'https://th.kex-express.com/th/track-parcel',
+
+            'ninja van',
+            'ninjavan' =>
+                'https://www.ninjavan.co/th-th/tracking',
+
+            'dhl',
+            'dhl express' =>
+                'https://www.dhl.com/th-th/home/tracking.html',
+
+            'best express',
+            'best' =>
+                'https://www.best-inc.co.th/',
+
+            default => null,
         };
     }
 

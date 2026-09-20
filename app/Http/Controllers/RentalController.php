@@ -43,7 +43,6 @@ class RentalController extends Controller
         $start = Carbon::parse($request->start_date);
         $end = Carbon::parse($request->end_date);
 
-        // นับจำนวนวันแบบรวมวันเริ่มและวันสิ้นสุด
         $days = max(1, $start->diffInDays($end) + 1);
 
         $quantity = (int) $request->quantity;
@@ -55,7 +54,6 @@ class RentalController extends Controller
         DB::beginTransaction();
 
         try {
-            // Lock product ป้องกัน stock ชนกัน
             $product = Product::where('product_id', $productId)
                 ->lockForUpdate()
                 ->firstOrFail();
@@ -69,7 +67,6 @@ class RentalController extends Controller
                 );
             }
 
-            // สร้างรหัสรายการเช่า
             $rentalCode = 'KR-' . date('Ym') . '-' .
                 str_pad(
                     Rental::count() + 1,
@@ -78,13 +75,11 @@ class RentalController extends Controller
                     STR_PAD_LEFT
                 );
 
-            // คำนวณโปรโมชั่น
             $promo = \App\Services\PromotionService::calculateDiscount(
                 $quantity,
                 $subtotal
             );
 
-            // สร้างรายการเช่า
             $rental = Rental::create([
                 'rental_code' => $rentalCode,
                 'customer_id' => $customer->customer_id,
@@ -99,7 +94,6 @@ class RentalController extends Controller
                 'note' => $request->note,
             ]);
 
-            // รายละเอียดชุด
             RentalDetail::create([
                 'rental_id' => $rental->rental_id,
                 'product_id' => $product->product_id,
@@ -111,13 +105,10 @@ class RentalController extends Controller
                 'rental_days' => $days,
             ]);
 
-            // ตัด Stock
             $product->decrement('stock', $quantity);
 
-            // เพิ่มจำนวนครั้งเช่า
             $product->increment('rental_count');
 
-            // ถ้า stock หมด ให้เปลี่ยนสถานะเป็น rented
             if ($product->fresh()->stock <= 0) {
                 $product->update([
                     'status' => 'rented',
@@ -170,7 +161,6 @@ class RentalController extends Controller
             );
         }
 
-        // ถ้ายกเลิกแล้ว ไม่ควรเข้าสู่ขั้นตอนชำระเงิน
         if ($rental->status === 'cancelled') {
             return redirect()
                 ->route('rentals.history')
@@ -180,9 +170,9 @@ class RentalController extends Controller
                 );
         }
 
-        // คำนวณยอดชำระ
         $rentalAmount = (float) ($rental->total_amount ?? 0);
         $discountAmount = (float) ($rental->discount_amount ?? 0);
+
         $netRentalAmount = max(
             0,
             $rentalAmount - $discountAmount
@@ -198,7 +188,6 @@ class RentalController extends Controller
             2
         );
 
-        // PromptPay
         $promptPayPhone = preg_replace(
             '/\D/',
             '',
@@ -242,7 +231,6 @@ class RentalController extends Controller
             $customer->customer_id
         )->findOrFail($id);
 
-        // ชำระเงินได้เฉพาะรายการที่ยังรอชำระ
         if ($rental->status !== 'pending_payment') {
             return back()->with(
                 'error',
@@ -261,15 +249,6 @@ class RentalController extends Controller
             'slip_image.max' => 'ขนาดไฟล์รูปภาพต้องไม่เกิน 5MB',
         ]);
 
-        /*
-         * คำนวณยอดที่ต้องชำระให้ตรงกับหน้า Payment
-         *
-         * ค่าเช่าสุทธิ
-         * = total_amount - discount_amount
-         *
-         * ยอดชำระ
-         * = ค่าเช่าสุทธิ + deposit_amount + service_fee
-         */
         $rentalAmount = (float) ($rental->total_amount ?? 0);
         $discountAmount = (float) ($rental->discount_amount ?? 0);
         $depositAmount = (float) ($rental->deposit_amount ?? 0);
@@ -287,14 +266,12 @@ class RentalController extends Controller
             2
         );
 
-        // สร้างโฟลเดอร์เก็บสลิป
         $uploadDir = public_path('uploads/slips');
 
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0755, true);
         }
 
-        // รับไฟล์สลิป
         $file = $request->file('slip_image');
 
         $filename =
@@ -314,21 +291,13 @@ class RentalController extends Controller
             'uploads/slips/' .
             $filename;
 
-        // บันทึก Payment ลงฐานข้อมูล
         Payment::create([
             'rental_id' => $rental->rental_id,
-
-            // ชื่อตรงกับ column จริงในตาราง payments
             'amount' => $paymentAmount,
-
             'paid_at' => now(),
-
             'payment_method' => $request->payment_method,
-
             'slip_image' => $slipPath,
-
             'status' => 'pending',
-
             'note' => $request->note ??
                 'ชำระเงินค่าเช่าชุด (ค่าเช่า ฿' .
                 number_format($netRentalAmount, 2) .
@@ -339,7 +308,6 @@ class RentalController extends Controller
                 ')',
         ]);
 
-        // เปลี่ยนสถานะรายการเช่า
         $rental->update([
             'status' => 'pending_verification',
         ]);
@@ -480,22 +448,84 @@ class RentalController extends Controller
             );
         }
 
+        /*
+         * รับข้อมูลจากฟอร์มลูกค้า
+         *
+         * return_method
+         * = วิธีการคืนชุด
+         *
+         * return_shipping_carrier
+         * = บริษัทขนส่ง
+         *
+         * return_tracking_no
+         * = เลขพัสดุ
+         */
         $data = $request->validate([
-            'return_method' => 'nullable|string|max:100',
-            'return_tracking_no' => 'nullable|string|max:100',
+            'return_method' => 'required|string|max:100',
+
+            'return_shipping_carrier' =>
+                'nullable|string|max:100',
+
+            'return_tracking_no' =>
+                'nullable|string|max:100',
+        ], [
+            'return_method.required' =>
+                'กรุณาเลือกวิธีการคืนชุด',
+
+            'return_shipping_carrier.max' =>
+                'ชื่อบริษัทขนส่งต้องไม่เกิน 100 ตัวอักษร',
+
+            'return_tracking_no.max' =>
+                'เลขพัสดุต้องไม่เกิน 100 ตัวอักษร',
         ]);
 
-        $returnTrackingNo =
-            $data['return_tracking_no'] ?? null;
+        $returnMethod =
+            trim($data['return_method'] ?? '');
 
-        $returnNote = trim(
-            ($data['return_method'] ?? '') .
-            (
-                $returnTrackingNo
-                    ? ' | เลขพัสดุส่งคืน: ' .
-                        $returnTrackingNo
-                    : ''
-            )
+        $returnCarrier =
+            !empty($data['return_shipping_carrier'])
+                ? trim($data['return_shipping_carrier'])
+                : null;
+
+        $returnTrackingNo =
+            !empty($data['return_tracking_no'])
+                ? trim($data['return_tracking_no'])
+                : null;
+
+        /*
+         * ถ้ามีเลขพัสดุ
+         * ให้ถือว่าลูกค้าส่งพัสดุแล้ว
+         */
+        if ($returnTrackingNo) {
+            $returnShippingStatus = 'ส่งพัสดุแล้ว';
+            $returnShippedAt = now();
+        } else {
+            $returnShippingStatus = 'ลูกค้ายังไม่ได้ส่งคืน';
+            $returnShippedAt = null;
+        }
+
+        /*
+         * สร้างข้อความสำหรับเก็บประวัติลง note
+         */
+        $returnNoteParts = [];
+
+        if ($returnMethod !== '') {
+            $returnNoteParts[] = $returnMethod;
+        }
+
+        if ($returnCarrier) {
+            $returnNoteParts[] =
+                'ขนส่ง: ' . $returnCarrier;
+        }
+
+        if ($returnTrackingNo) {
+            $returnNoteParts[] =
+                'เลขพัสดุส่งคืน: ' . $returnTrackingNo;
+        }
+
+        $returnNote = implode(
+            ' | ',
+            $returnNoteParts
         );
 
         $note = $rental->note;
@@ -509,13 +539,61 @@ class RentalController extends Controller
                     $returnNote;
         }
 
-        $rental->update([
+        /*
+         * ข้อมูลที่ต้องอัปเดต
+         */
+        $updateData = [
             'status' => 'pending_return',
-            'return_tracking_no' =>
-                $returnTrackingNo ??
-                $rental->return_tracking_no,
+
             'note' => $note,
-        ]);
+        ];
+
+        /*
+         * ถ้าเป็นการส่งพัสดุ
+         * ให้บันทึกข้อมูลขนส่งทั้งหมด
+         */
+        if ($returnMethod === 'ส่งพัสดุ') {
+
+            $updateData[
+                'return_shipping_carrier'
+            ] = $returnCarrier;
+
+            $updateData[
+                'return_tracking_no'
+            ] = $returnTrackingNo;
+
+            $updateData[
+                'return_shipping_status'
+            ] = $returnShippingStatus;
+
+            $updateData[
+                'return_shipped_at'
+            ] = $returnShippedAt;
+
+        } else {
+
+            /*
+             * กรณีนำมาคืนหน้าร้านหรือแมสเซนเจอร์
+             * ยังไม่มีเลขพัสดุไปรษณีย์
+             */
+            $updateData[
+                'return_shipping_carrier'
+            ] = null;
+
+            $updateData[
+                'return_tracking_no'
+            ] = $returnTrackingNo;
+
+            $updateData[
+                'return_shipping_status'
+            ] = $returnShippingStatus;
+
+            $updateData[
+                'return_shipped_at'
+            ] = $returnShippedAt;
+        }
+
+        $rental->update($updateData);
 
         return back()->with(
             'success',
@@ -527,13 +605,6 @@ class RentalController extends Controller
      * ลูกค้าขอยกเลิกรายการเช่า
      *
      * ยกเลิกได้เฉพาะรายการที่ยังไม่ได้ชำระเงิน
-     *
-     * เมื่อยกเลิก:
-     * - rentals.status = cancelled
-     * - rentals.note เก็บเหตุผล
-     * - คืน stock
-     * - ลด rental_count
-     * - ไม่ต้องให้ Owner อนุมัติ
      */
     public function cancel(Request $request, $id)
     {
@@ -542,8 +613,11 @@ class RentalController extends Controller
         $data = $request->validate([
             'cancel_reason' => 'required|string|max:500',
         ], [
-            'cancel_reason.required' => 'กรุณาระบุเหตุผลในการยกเลิก',
-            'cancel_reason.max' => 'เหตุผลในการยกเลิกต้องไม่เกิน 500 ตัวอักษร',
+            'cancel_reason.required' =>
+                'กรุณาระบุเหตุผลในการยกเลิก',
+
+            'cancel_reason.max' =>
+                'เหตุผลในการยกเลิกต้องไม่เกิน 500 ตัวอักษร',
         ]);
 
         try {
@@ -552,7 +626,6 @@ class RentalController extends Controller
                 $id,
                 $data
             ) {
-                // Lock รายการเช่าเพื่อป้องกันข้อมูลชนกัน
                 $rental = Rental::where(
                     'customer_id',
                     $customer->customer_id
@@ -561,15 +634,14 @@ class RentalController extends Controller
                     ->lockForUpdate()
                     ->findOrFail($id);
 
-                // อนุญาตเฉพาะรายการที่ยังไม่ได้ชำระ
                 if ($rental->status !== 'pending_payment') {
                     throw new \RuntimeException(
                         'รายการนี้ไม่สามารถยกเลิกได้ เนื่องจากรายการได้เข้าสู่ขั้นตอนชำระเงินหรือขั้นตอนถัดไปแล้ว'
                     );
                 }
 
-                // คืน Stock กลับให้สินค้า
                 foreach ($rental->details as $detail) {
+
                     $product = Product::where(
                         'product_id',
                         $detail->product_id
@@ -586,19 +658,17 @@ class RentalController extends Controller
                         (int) ($detail->quantity ?? 1)
                     );
 
-                    // คืน stock
                     $product->increment(
                         'stock',
                         $quantity
                     );
 
-                    // ลดจำนวนครั้งเช่า
                     $product->rental_count = max(
                         0,
-                        (int) ($product->rental_count ?? 0) - $quantity
+                        (int) ($product->rental_count ?? 0) -
+                        $quantity
                     );
 
-                    // ถ้า Stock กลับมาแล้ว
                     if (
                         (int) $product->stock > 0 &&
                         in_array(
@@ -613,7 +683,6 @@ class RentalController extends Controller
                     $product->save();
                 }
 
-                // เก็บประวัติการยกเลิกลงใน note
                 $cancelNote =
                     'ยกเลิกโดยลูกค้าเมื่อ ' .
                     now()->format('d/m/Y H:i') .
@@ -626,14 +695,12 @@ class RentalController extends Controller
                     ? $note . "\n" . $cancelNote
                     : $cancelNote;
 
-                // เปลี่ยนสถานะเป็น cancelled
                 $rental->update([
                     'status' => 'cancelled',
                     'note' => $note,
                 ]);
             });
 
-            // หลังยกเลิกสำเร็จ → ไปหน้าประวัติการเช่า
             return redirect()
                 ->route('rentals.history')
                 ->with(
