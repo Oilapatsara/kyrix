@@ -20,15 +20,19 @@ use App\Http\Controllers\Owner\OwnerReturnController;
 use App\Http\Controllers\Owner\OwnerCustomerController;
 use App\Http\Controllers\Owner\OwnerReportController;
 
+
 /*
 |--------------------------------------------------------------------------
 | KYRIX Dress Rental
 |--------------------------------------------------------------------------
 */
 
-/* =========================
-   PUBLIC
-========================= */
+
+/*
+|--------------------------------------------------------------------------
+| PUBLIC
+|--------------------------------------------------------------------------
+*/
 
 Route::get('/', [HomeController::class, 'index'])
     ->name('home');
@@ -40,32 +44,38 @@ Route::get('/dresses/{id}', [ProductController::class, 'show'])
     ->name('products.show');
 
 
-/* =========================
-   CART
-========================= */
+/*
+|--------------------------------------------------------------------------
+| CART
+|--------------------------------------------------------------------------
+*/
 
-Route::prefix('cart')->name('cart.')->group(function () {
+Route::prefix('cart')
+    ->name('cart.')
+    ->group(function () {
 
-    Route::get('/', [CartController::class, 'index'])
-        ->name('index');
+        Route::get('/', [CartController::class, 'index'])
+            ->name('index');
 
-    Route::post('/add', [CartController::class, 'add'])
-        ->name('add');
+        Route::post('/add', [CartController::class, 'add'])
+            ->name('add');
 
-    Route::post('/update/{itemKey}', [CartController::class, 'update'])
-        ->name('update');
+        Route::post('/update/{itemKey}', [CartController::class, 'update'])
+            ->name('update');
 
-    Route::post('/remove/{itemKey}', [CartController::class, 'remove'])
-        ->name('remove');
+        Route::post('/remove/{itemKey}', [CartController::class, 'remove'])
+            ->name('remove');
 
-    Route::post('/clear', [CartController::class, 'clear'])
-        ->name('clear');
-});
+        Route::post('/clear', [CartController::class, 'clear'])
+            ->name('clear');
+    });
 
 
-/* =========================
-   AUTH
-========================= */
+/*
+|--------------------------------------------------------------------------
+| AUTH
+|--------------------------------------------------------------------------
+*/
 
 Route::get('/login', [AuthController::class, 'showLogin'])
     ->name('login');
@@ -89,9 +99,11 @@ Route::post('/logout', [AuthController::class, 'logout'])
     ->name('logout');
 
 
-/* =========================
-   SOCIAL LOGIN
-========================= */
+/*
+|--------------------------------------------------------------------------
+| SOCIAL LOGIN
+|--------------------------------------------------------------------------
+*/
 
 Route::get('/auth/{provider}', [SocialAuthController::class, 'redirect'])
     ->name('social.redirect');
@@ -100,45 +112,73 @@ Route::get('/auth/{provider}/callback', [SocialAuthController::class, 'callback'
     ->name('social.callback');
 
 
-/* =========================
-   CUSTOMER
-========================= */
+/*
+|--------------------------------------------------------------------------
+| CUSTOMER
+|--------------------------------------------------------------------------
+*/
 
 Route::middleware('customer')->group(function () {
+
+    /*
+    |--------------------------------------------------------------------------
+    | CUSTOMER DASHBOARD
+    |--------------------------------------------------------------------------
+    */
 
     Route::get('/customer/dashboard', function () {
         return view('customer.dashboard');
     })->name('customer.dashboard');
 
 
-    /* ===== RENTAL ===== */
+    /*
+    |--------------------------------------------------------------------------
+    | RENTAL
+    |--------------------------------------------------------------------------
+    */
 
+    // สร้างรายการเช่า
     Route::post('/dresses/{id}/book', [RentalController::class, 'book'])
         ->name('rentals.book');
 
+    // หน้า Payment
     Route::get('/rentals/{id}/payment', [RentalController::class, 'payment'])
         ->name('rentals.payment');
 
+    // ส่งหลักฐานการชำระเงิน
     Route::post('/rentals/{id}/payment', [RentalController::class, 'submitPayment'])
         ->name('rentals.payment.submit');
 
+    // รายการเช่าของลูกค้า
     Route::get('/my-rentals', [RentalController::class, 'index'])
         ->name('rentals.index');
 
+    // รายละเอียดรายการเช่า
     Route::get('/my-rentals/{id}', [RentalController::class, 'show'])
         ->name('rentals.show');
 
+    // ยกเลิกรายการเช่า
+    Route::post('/my-rentals/{id}/cancel', [RentalController::class, 'cancel'])
+        ->name('rentals.cancel');
+
+    // อัปโหลดสลิป
     Route::post('/my-rentals/{id}/slip', [RentalController::class, 'uploadSlip'])
         ->name('rentals.upload-slip');
 
+    // แจ้งคืนชุด
     Route::post('/my-rentals/{id}/return', [RentalController::class, 'requestReturn'])
         ->name('rentals.request-return');
 
+    // ประวัติการเช่า
     Route::get('/rental-history', [RentalController::class, 'history'])
         ->name('rentals.history');
 
 
-    /* ===== CHECKOUT ===== */
+    /*
+    |--------------------------------------------------------------------------
+    | CHECKOUT
+    |--------------------------------------------------------------------------
+    */
 
     Route::get('/checkout', [CheckoutController::class, 'index'])
         ->name('checkout.index');
@@ -147,7 +187,11 @@ Route::middleware('customer')->group(function () {
         ->name('checkout.process');
 
 
-    /* ===== PROFILE ===== */
+    /*
+    |--------------------------------------------------------------------------
+    | PROFILE
+    |--------------------------------------------------------------------------
+    */
 
     Route::get('/profile', [ProfileController::class, 'index'])
         ->name('profile.index');
@@ -158,8 +202,15 @@ Route::middleware('customer')->group(function () {
     Route::post('/profile/password', [ProfileController::class, 'updatePassword'])
         ->name('profile.password');
 
+    Route::post('/profile/image', [ProfileController::class, 'updateProfileImage'])
+        ->name('profile.image.update');
 
-    /* ===== REVIEW ===== */
+
+    /*
+    |--------------------------------------------------------------------------
+    | REVIEW
+    |--------------------------------------------------------------------------
+    */
 
     Route::get(
         '/rentals/{rental}/products/{product}/review',
@@ -173,10 +224,12 @@ Route::middleware('customer')->group(function () {
 });
 
 
-/* =========================
-   OWNER / ADMIN PANEL
-   ใช้ Laravel Auth + OwnerMiddleware
-========================= */
+/*
+|--------------------------------------------------------------------------
+| OWNER / ADMIN PANEL
+| ใช้ Laravel Auth + OwnerMiddleware
+|--------------------------------------------------------------------------
+*/
 
 Route::middleware(['auth', 'owner'])
     ->prefix('owner')
@@ -184,7 +237,11 @@ Route::middleware(['auth', 'owner'])
     ->group(function () {
 
 
-        /* ===== DASHBOARD ===== */
+        /*
+        |--------------------------------------------------------------------------
+        | DASHBOARD
+        |--------------------------------------------------------------------------
+        */
 
         Route::get(
             '/dashboard',
@@ -192,7 +249,11 @@ Route::middleware(['auth', 'owner'])
         )->name('dashboard');
 
 
-        /* ===== DRESSES MANAGEMENT ===== */
+        /*
+        |--------------------------------------------------------------------------
+        | DRESSES MANAGEMENT
+        |--------------------------------------------------------------------------
+        */
 
         Route::prefix('dresses')
             ->name('dresses.')
@@ -213,7 +274,13 @@ Route::middleware(['auth', 'owner'])
                     [OwnerDressController::class, 'store']
                 )->name('store');
 
-                /* Categories */
+
+                /*
+                |--------------------------------------------------------------------------
+                | Categories
+                |--------------------------------------------------------------------------
+                */
+
                 Route::post(
                     '/categories/store',
                     [OwnerDressController::class, 'storeCategory']
@@ -230,7 +297,13 @@ Route::middleware(['auth', 'owner'])
                     [OwnerDressController::class, 'destroyCategory']
                 )->name('categories.destroy');
 
-                /* Item Operations */
+
+                /*
+                |--------------------------------------------------------------------------
+                | Item Operations
+                |--------------------------------------------------------------------------
+                */
+
                 Route::get(
                     '/{id}/edit',
                     [OwnerDressController::class, 'edit']
@@ -254,8 +327,11 @@ Route::middleware(['auth', 'owner'])
             });
 
 
-
-        /* ===== BOOKINGS / RENTALS ===== */
+        /*
+        |--------------------------------------------------------------------------
+        | BOOKINGS / RENTALS
+        |--------------------------------------------------------------------------
+        */
 
         Route::prefix('bookings')
             ->name('bookings.')
@@ -278,7 +354,11 @@ Route::middleware(['auth', 'owner'])
             });
 
 
-        /* ===== PAYMENTS ===== */
+        /*
+        |--------------------------------------------------------------------------
+        | PAYMENTS
+        |--------------------------------------------------------------------------
+        */
 
         Route::prefix('payments')
             ->name('payments.')
@@ -301,7 +381,11 @@ Route::middleware(['auth', 'owner'])
             });
 
 
-        /* ===== RETURNS ===== */
+        /*
+        |--------------------------------------------------------------------------
+        | RETURNS
+        |--------------------------------------------------------------------------
+        */
 
         Route::prefix('returns')
             ->name('returns.')
@@ -319,7 +403,11 @@ Route::middleware(['auth', 'owner'])
             });
 
 
-        /* ===== CUSTOMERS ===== */
+        /*
+        |--------------------------------------------------------------------------
+        | CUSTOMERS
+        |--------------------------------------------------------------------------
+        */
 
         Route::prefix('customers')
             ->name('customers.')
@@ -362,7 +450,11 @@ Route::middleware(['auth', 'owner'])
             });
 
 
-        /* ===== REPORTS ===== */
+        /*
+        |--------------------------------------------------------------------------
+        | REPORTS
+        |--------------------------------------------------------------------------
+        */
 
         Route::prefix('reports')
             ->name('reports.')

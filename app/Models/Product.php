@@ -81,20 +81,33 @@ class Product extends Model
 
     public function getMainImageUrlAttribute()
     {
-        $img = $this->mainImage;
-        if ($img) {
-            if (str_starts_with($img->image_path, 'http://') || str_starts_with($img->image_path, 'https://')) {
-                return $img->image_path;
+        $allImages = $this->images;
+        
+        // Try mainImage first if valid
+        $main = $this->mainImage;
+        if ($main && !empty($main->image_path)) {
+            $path = $main->image_path;
+            if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+                return $path;
             }
-            return asset('storage/' . $img->image_path);
-        }
-        $first = $this->images()->first();
-        if ($first) {
-            if (str_starts_with($first->image_path, 'http://') || str_starts_with($first->image_path, 'https://')) {
-                return $first->image_path;
+            if (file_exists(public_path('storage/' . $path)) || file_exists(storage_path('app/public/' . $path))) {
+                return asset('storage/' . $path);
             }
-            return asset('storage/' . $first->image_path);
         }
+
+        // Search for any other valid image in the relation
+        foreach ($allImages as $img) {
+            if (!empty($img->image_path)) {
+                $path = $img->image_path;
+                if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+                    return $path;
+                }
+                if (file_exists(public_path('storage/' . $path)) || file_exists(storage_path('app/public/' . $path))) {
+                    return asset('storage/' . $path);
+                }
+            }
+        }
+
         return 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=800&auto=format&fit=crop&q=80';
     }
 

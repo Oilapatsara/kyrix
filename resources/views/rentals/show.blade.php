@@ -36,7 +36,6 @@
             gap: 20px;
         }
 
-        /* 8-Stage Tracker Timeline */
         .timeline-wrap {
             margin: 24px 0 32px;
             padding: 20px;
@@ -123,7 +122,6 @@
             font-weight: 700;
         }
 
-        /* Items Table */
         .items-table {
             width: 100%;
             border-collapse: collapse;
@@ -146,7 +144,6 @@
             font-size: 14px;
         }
 
-        /* Summary Grid */
         .breakdown-grid {
             display: grid;
             grid-template-columns: 1.2fr 0.8fr;
@@ -198,56 +195,768 @@
 
         .slip-img-card {
             max-width: 180px;
+            max-height: 180px;
+            object-fit: contain;
             border-radius: 8px;
             border: 1px solid var(--border);
             cursor: pointer;
+        }
+
+        /* =========================================================
+               SHIPPING / RETURN TRACKING
+            ========================================================= */
+        .shipping-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .shipping-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+            padding: 10px 0;
+            border-bottom: 1px dashed var(--border);
+        }
+
+        .shipping-row:last-child {
+            border-bottom: none;
+        }
+
+        .shipping-label {
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        .shipping-value {
+            text-align: right;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .shipping-status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 11px;
+            border-radius: 999px;
+            background: #fff7ed;
+            color: #9a3412;
+            border: 1px solid #fed7aa;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .tracking-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 40px;
+            padding: 0 16px;
+            border-radius: 9px;
+            background: var(--primary);
+            color: #fff !important;
+            text-decoration: none !important;
+            font-size: 12.5px;
+            font-weight: 700;
+            transition: .18s ease;
+        }
+
+        .tracking-btn:hover {
+            filter: brightness(.95);
+            transform: translateY(-1px);
+        }
+
+        .return-due-box {
+            margin-top: 2px;
+            padding: 15px 16px;
+            border-radius: 10px;
+            background: #faf8f5;
+            border: 1px solid var(--border);
+        }
+
+        .return-due-box.overdue {
+            background: #fff1f2;
+            border-color: #fecdd3;
+        }
+
+        .return-due-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+            color: var(--primary);
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .return-due-box.overdue .return-due-title {
+            color: #b42318;
+        }
+
+        .return-due-time {
+            font-size: 19px;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .return-due-box.overdue .return-due-time {
+            color: #b42318;
+        }
+
+        .return-due-note {
+            margin-top: 5px;
+            font-size: 11.5px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        @media (max-width: 600px) {
+            .shipping-row {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .shipping-value {
+                text-align: left;
+            }
+
+            .tracking-btn {
+                width: 100%;
+            }
+        }
+
+        /* =========================================================
+               PRINT RECEIPT
+            ========================================================= */
+        .print-receipt {
+            display: none;
+        }
+
+        /* =========================================================
+               CANCEL RENTAL
+            ========================================================= */
+        .cancel-rental-box {
+            margin-top: 24px;
+            padding: 18px 20px;
+            background: #fff8f7;
+            border: 1px solid #f0d0cc;
+            border-radius: var(--radius-md);
+        }
+
+        .cancel-rental-content {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .cancel-rental-icon {
+            width: 42px;
+            height: 42px;
+            min-width: 42px;
+            border-radius: 50%;
+            background: #fdeceb;
+            color: #b42318;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cancel-rental-text {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .cancel-rental-text h3 {
+            margin: 0 0 3px;
+            color: #5f161e;
+            font-size: 15px;
+            font-weight: 800;
+        }
+
+        .cancel-rental-text p {
+            margin: 0;
+            color: #7c6f6a;
+            font-size: 12.5px;
+        }
+
+        .cancel-payment-note {
+            margin-top: 5px !important;
+            color: #9a5b08 !important;
+        }
+
+        .cancel-payment-note i {
+            margin-right: 3px;
+        }
+
+        .cancel-rental-btn {
+            height: 40px;
+            padding: 0 18px;
+            border: 1px solid #dfb0ab;
+            border-radius: 9px;
+            background: #fff;
+            color: #b42318;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all .18s ease;
+        }
+
+        .cancel-rental-btn:hover {
+            background: #b42318;
+            border-color: #b42318;
+            color: #fff;
+            box-shadow: 0 5px 15px rgba(180, 35, 24, .18);
+        }
+
+        .cancel-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .cancel-modal-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(32, 18, 20, .58);
+            backdrop-filter: blur(4px);
+        }
+
+        .cancel-modal-card {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 520px;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, .22);
+            overflow: hidden;
+            animation: cancelModalIn .2s ease;
+        }
+
+        @keyframes cancelModalIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px) scale(.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .cancel-modal-header {
+            padding: 18px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .cancel-modal-title-wrap {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+        }
+
+        .cancel-modal-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: #fdeceb;
+            color: #b42318;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cancel-modal-header h3 {
+            margin: 0;
+            color: #2a2421;
+            font-size: 16px;
+            font-weight: 800;
+        }
+
+        .cancel-modal-header p {
+            margin: 2px 0 0;
+            color: #8a817b;
+            font-size: 11px;
+        }
+
+        .cancel-modal-close {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            color: #8a817b;
+            font-size: 22px;
+            cursor: pointer;
+        }
+
+        .cancel-modal-close:hover {
+            background: #f8f3f1;
+            color: #5f171f;
+        }
+
+        .cancel-modal-body {
+            padding: 20px;
+        }
+
+        .cancel-warning {
+            display: flex;
+            gap: 10px;
+            padding: 13px 14px;
+            margin-bottom: 18px;
+            background: #fff8e8;
+            border: 1px solid #f0dfad;
+            border-radius: 10px;
+            color: #805b13;
+        }
+
+        .cancel-warning>i {
+            margin-top: 2px;
+        }
+
+        .cancel-warning strong {
+            display: block;
+            font-size: 13px;
+        }
+
+        .cancel-warning p {
+            margin: 3px 0 0;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .cancel-form-group label {
+            display: block;
+            margin-bottom: 7px;
+            color: #2a2421;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .cancel-form-group label span {
+            color: #b42318;
+        }
+
+        .cancel-reason-textarea {
+            margin-top: 10px;
+            resize: vertical;
+            min-height: 90px;
+        }
+
+        .cancel-modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            padding: 14px 20px;
+            background: #faf8f5;
+            border-top: 1px solid var(--border);
+        }
+
+        .cancel-back-btn,
+        .cancel-confirm-btn {
+            height: 40px;
+            padding: 0 17px;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .cancel-back-btn {
+            background: #fff;
+            color: #736b66;
+            border: 1px solid var(--border-strong, #d5cdc6);
+        }
+
+        .cancel-back-btn:hover {
+            background: #f5f1ee;
+        }
+
+        .cancel-confirm-btn {
+            border: 1px solid #b42318;
+            background: #b42318;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(180, 35, 24, .18);
+        }
+
+        .cancel-confirm-btn:hover {
+            background: #941b12;
+            border-color: #941b12;
+        }
+
+        @media (max-width: 600px) {
+            .cancel-rental-content {
+                align-items: flex-start;
+                flex-wrap: wrap;
+            }
+
+            .cancel-rental-btn {
+                width: 100%;
+                margin-left: 56px;
+            }
+
+            .cancel-modal {
+                padding: 12px;
+            }
+
+            .cancel-modal-footer {
+                flex-direction: column-reverse;
+            }
+
+            .cancel-back-btn,
+            .cancel-confirm-btn {
+                width: 100%;
+            }
+        }
+
+        /* =========================================================
+               PRINT
+            ========================================================= */
+        @media print {
+            @page {
+                size: A4 portrait;
+                margin: 8mm;
+            }
+
+            html,
+            body {
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 100% !important;
+                min-height: 0 !important;
+                background: #fff !important;
+            }
+
+            body.printing>* {
+                display: none !important;
+            }
+
+            body.printing>.print-receipt {
+                display: block !important;
+            }
+
+            .print-receipt {
+                position: static !important;
+                width: 100% !important;
+                max-width: none !important;
+                height: auto !important;
+                min-height: 0 !important;
+                max-height: none !important;
+                overflow: visible !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                background: #fff !important;
+                color: #111 !important;
+                font-family: Arial, Tahoma, sans-serif !important;
+                font-size: 10px !important;
+                line-height: 1.35 !important;
+                box-sizing: border-box !important;
+                page-break-after: avoid !important;
+                break-after: avoid !important;
+            }
+
+            .print-receipt * {
+                box-sizing: border-box !important;
+            }
+
+            .print-header {
+                text-align: center;
+                padding-bottom: 8px;
+                margin-bottom: 9px;
+                border-bottom: 2px solid #7a1f2b;
+            }
+
+            .print-logo {
+                font-size: 26px;
+                font-weight: 900;
+                color: #7a1f2b;
+                letter-spacing: 2px;
+            }
+
+            .print-subtitle {
+                font-size: 8px;
+                letter-spacing: 2px;
+                color: #777;
+                margin-top: 1px;
+            }
+
+            .print-title {
+                font-size: 16px;
+                font-weight: 800;
+                margin-top: 6px;
+            }
+
+            .print-code {
+                color: #7a1f2b;
+                font-size: 13px;
+                font-weight: 800;
+                margin-top: 2px;
+            }
+
+            .print-info-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 7px;
+                margin-bottom: 8px;
+            }
+
+            .print-info-box {
+                border: 1px solid #d7d7d7;
+                border-radius: 5px;
+                padding: 7px 8px;
+            }
+
+            .print-section-title {
+                color: #7a1f2b;
+                font-size: 10px;
+                font-weight: 800;
+                margin-bottom: 4px;
+            }
+
+            .print-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin: 5px 0 8px;
+            }
+
+            .print-table th {
+                background: #f3f1ef;
+                border: 1px solid #d5d5d5;
+                padding: 4px 5px;
+                font-size: 9px;
+                text-align: left;
+            }
+
+            .print-table td {
+                border: 1px solid #d5d5d5;
+                padding: 5px;
+                font-size: 9px;
+            }
+
+            .print-center {
+                text-align: center !important;
+            }
+
+            .print-right {
+                text-align: right !important;
+            }
+
+            .print-summary {
+                width: 300px;
+                margin-left: auto;
+                border: 1px solid #d5d5d5;
+                border-radius: 5px;
+                padding: 7px 9px;
+            }
+
+            .print-summary-row {
+                display: flex;
+                justify-content: space-between;
+                gap: 15px;
+                margin-bottom: 3px;
+            }
+
+            .print-summary-final {
+                display: flex;
+                justify-content: space-between;
+                gap: 15px;
+                margin-top: 5px;
+                padding-top: 6px;
+                border-top: 2px solid #7a1f2b;
+                color: #7a1f2b;
+                font-size: 13px;
+                font-weight: 900;
+            }
+
+            .print-payment {
+                margin-top: 8px;
+                border: 1px solid #d5d5d5;
+                border-radius: 5px;
+                padding: 7px 9px;
+            }
+
+            .print-status {
+                display: inline-block;
+                padding: 2px 7px;
+                border-radius: 10px;
+                background: #fff7ed;
+                border: 1px solid #fed7aa;
+                color: #9a3412;
+                font-weight: 700;
+                font-size: 9px;
+            }
+
+            .print-note {
+                margin-top: 7px;
+                background: #faf8f5;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                padding: 6px 8px;
+                font-size: 8.5px;
+            }
+
+            .print-footer {
+                margin-top: 7px;
+                padding-top: 6px;
+                border-top: 1px solid #ddd;
+                text-align: center;
+                color: #777;
+                font-size: 8px;
+            }
+        }
+
+        @media (max-width: 800px) {
+            .breakdown-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .invoice-box {
+                padding: 24px;
+            }
+
+            .items-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .order-detail-wrap {
+                padding: 0 14px;
+            }
+
+            .top-actions {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+            }
+
+            .top-actions>div {
+                text-align: right;
+            }
+
+            .invoice-box {
+                padding: 18px;
+            }
+
+            .invoice-header {
+                flex-direction: column;
+            }
         }
     </style>
 @endpush
 
 @section('content')
+
     <div class="order-detail-wrap">
+
+        {{-- TOP ACTIONS --}}
         <div class="top-actions">
+
             <a href="{{ route('rentals.index') }}" class="btn btn-secondary btn-sm">
-                <i class="fa-solid fa-arrow-left"></i> กลับไปหน้ารายการการเช่า
+                <i class="fa-solid fa-arrow-left"></i>
+                กลับไปหน้ารายการการเช่า
             </a>
+
             <div>
-                <button type="button" onclick="window.print()" class="btn btn-secondary btn-sm">
-                    <i class="fa-solid fa-print"></i> พิมพ์ใบเสร็จ
+                <button type="button" id="printReceiptButton" class="btn btn-secondary btn-sm">
+                    <i class="fa-solid fa-print"></i>
+                    พิมพ์ใบเสร็จ
                 </button>
             </div>
+
         </div>
 
         <div class="invoice-box">
-            <!-- Header -->
+
+            {{-- HEADER --}}
             <div class="invoice-header">
+
                 <div>
-                    <span class="logo" style="font-size: 24px;">KYRIX</span>
+
+                    <span class="logo" style="font-size: 24px;">
+                        KYRIX
+                    </span>
+
                     <div
-                        style="font-size: 12px; color: var(--gold); font-weight: 600; letter-spacing: 2px; margin-bottom: 12px;">
-                        DRESS RENTAL BOUTIQUE</div>
-                    <div style="font-size: 13px; color: var(--text-muted);">
-                        77 ตำบลในเมือง อำเภอเมือง จังหวัดนครราชสีมา 30000 | โทร: 0652599072
+                        style="
+                            font-size: 12px;
+                            color: var(--gold);
+                            font-weight: 600;
+                            letter-spacing: 2px;
+                            margin-bottom: 12px;
+                        ">
+                        DRESS RENTAL BOUTIQUE
                     </div>
+
+                    <div
+                        style="
+                            font-size: 13px;
+                            color: var(--text-muted);
+                        ">
+                        77 ตำบลในเมือง อำเภอเมือง จังหวัดนครราชสีมา 30000
+                        | โทร: 0652599072
+                    </div>
+
                 </div>
 
                 <div style="text-align: right;">
-                    <span style="font-size: 12px; color: var(--text-muted);">เลขที่การเช่า (Rental Code)</span>
+
+                    <span
+                        style="
+                            font-size: 12px;
+                            color: var(--text-muted);
+                        ">
+                        เลขที่การเช่า (Rental Code)
+                    </span>
+
                     <h2
-                        style="font-family: 'Plus Jakarta Sans', monospace; font-size: 24px; color: var(--primary); font-weight: 800; margin: 2px 0;">
+                        style="
+                            font-family: 'Plus Jakarta Sans', monospace;
+                            font-size: 24px;
+                            color: var(--primary);
+                            font-weight: 800;
+                            margin: 2px 0;
+                        ">
                         {{ $rental->rental_code ?? 'KR-2026-' . $rental->rental_id }}
                     </h2>
+
                     <div style="margin-top: 6px;">
-                        <span class="badge {{ $rental->status_badge_class }}" style="font-size: 13px; padding: 6px 14px;">
-                            <i class="fa-solid fa-circle-dot"></i> {{ $rental->status_label }}
+
+                        <span class="badge {{ $rental->status_badge_class }}"
+                            style="
+                                font-size: 13px;
+                                padding: 6px 14px;
+                            ">
+                            <i class="fa-solid fa-circle-dot"></i>
+                            {{ $rental->status_label }}
                         </span>
+
                     </div>
+
                 </div>
+
             </div>
 
-            <!-- 7-Stage Tracker Timeline -->
+            {{-- TIMELINE --}}
             @php
+
                 $step = $rental->step_index;
+
                 $progressPercent = match ($step) {
                     1 => 0,
                     2 => 17,
@@ -258,280 +967,1642 @@
                     7 => 100,
                     default => 0,
                 };
+
                 $stages = [
-                    1 => ['num' => '1', 'label' => 'รอชำระ', 'icon' => 'fa-credit-card'],
-                    2 => ['num' => '2', 'label' => 'รอตรวจสอบ', 'icon' => 'fa-receipt'],
-                    3 => ['num' => '3', 'label' => 'ยืนยันการเช่า', 'icon' => 'fa-check'],
-                    4 => ['num' => '4', 'label' => 'รอรับชุด', 'icon' => 'fa-box'],
-                    5 => ['num' => '5', 'label' => 'กำลังเช่า', 'icon' => 'fa-person-dress'],
-                    6 => ['num' => '6', 'label' => 'คืนแล้ว', 'icon' => 'fa-shield-heart'],
-                    7 => ['num' => '7', 'label' => 'เสร็จสิ้น', 'icon' => 'fa-circle-check'],
+                    1 => [
+                        'label' => 'รอชำระ',
+                        'icon' => 'fa-credit-card',
+                    ],
+                    2 => [
+                        'label' => 'รอตรวจสอบ',
+                        'icon' => 'fa-receipt',
+                    ],
+                    3 => [
+                        'label' => 'ยืนยันการเช่า',
+                        'icon' => 'fa-check',
+                    ],
+                    4 => [
+                        'label' => 'รอรับชุด',
+                        'icon' => 'fa-box',
+                    ],
+                    5 => [
+                        'label' => 'กำลังเช่า',
+                        'icon' => 'fa-person-dress',
+                    ],
+                    6 => [
+                        'label' => 'คืนแล้ว',
+                        'icon' => 'fa-shield-heart',
+                    ],
+                    7 => [
+                        'label' => 'เสร็จสิ้น',
+                        'icon' => 'fa-circle-check',
+                    ],
                 ];
+
             @endphp
+
             <div class="timeline-wrap">
+
                 <div class="timeline-steps">
+
                     <div class="timeline-line"></div>
+
                     <div class="timeline-progress" style="width: {{ $progressPercent }}%;"></div>
+
                     @foreach ($stages as $stageNum => $stage)
                         @php
                             $isCompleted = $step > $stageNum;
                             $isActive = $step === $stageNum;
                         @endphp
+
                         <div class="step-node {{ $isCompleted ? 'completed' : ($isActive ? 'active' : '') }}">
+
                             <div class="step-circle">
+
                                 @if ($isCompleted)
                                     <i class="fa-solid fa-check"></i>
                                 @else
                                     <i class="fa-solid {{ $stage['icon'] }}"></i>
                                 @endif
+
                             </div>
-                            <div class="step-label">{{ $stage['label'] }}</div>
+
+                            <div class="step-label">
+                                {{ $stage['label'] }}
+                            </div>
+
                         </div>
                     @endforeach
+
                 </div>
+
             </div>
 
-            <!-- Dates Highlight -->
+            {{-- DATES --}}
             <div
-                style="background: #faf8f5; padding: 16px 20px; border-radius: 10px; display: flex; justify-content: space-around; text-align: center; border: 1px solid var(--border); margin-bottom: 24px; flex-wrap: wrap; gap: 14px;">
+                style="
+                    background: #faf8f5;
+                    padding: 16px 20px;
+                    border-radius: 10px;
+                    display: flex;
+                    justify-content: space-around;
+                    text-align: center;
+                    border: 1px solid var(--border);
+                    margin-bottom: 24px;
+                    flex-wrap: wrap;
+                    gap: 14px;
+                ">
+
                 <div>
-                    <span style="font-size: 12px; color: var(--text-muted); display: block;">วันที่ทำรายการ</span>
-                    <strong>{{ $rental->rental_date ? date('d/m/Y', strtotime($rental->rental_date)) : $rental->created_at->format('d/m/Y') }}</strong>
+
+                    <span
+                        style="
+                            font-size: 12px;
+                            color: var(--text-muted);
+                            display: block;
+                        ">
+                        วันที่ทำรายการ
+                    </span>
+
+                    <strong>
+                        {{ $rental->rental_date ? date('d/m/Y', strtotime($rental->rental_date)) : $rental->created_at->format('d/m/Y') }}
+                    </strong>
+
                 </div>
+
                 <div>
-                    <span style="font-size: 12px; color: var(--text-muted); display: block;">วันเริ่มรับชุด</span>
-                    <strong style="color: var(--primary);">{{ date('d/m/Y', strtotime($rental->start_date)) }}</strong>
+
+                    <span
+                        style="
+                            font-size: 12px;
+                            color: var(--text-muted);
+                            display: block;
+                        ">
+                        วันเริ่มรับชุด
+                    </span>
+
+                    <strong style="color: var(--primary);">
+                        {{ date('d/m/Y', strtotime($rental->start_date)) }}
+                    </strong>
+
                 </div>
+
                 <div>
-                    <span style="font-size: 12px; color: var(--text-muted); display: block;">วันกำหนดส่งคืนชุด</span>
-                    <strong style="color: #b91c1c;">{{ date('d/m/Y', strtotime($rental->end_date)) }}</strong>
+
+                    <span
+                        style="
+                            font-size: 12px;
+                            color: var(--text-muted);
+                            display: block;
+                        ">
+                        วันกำหนดส่งคืนชุด
+                    </span>
+
+                    <strong style="color: #b91c1c;">
+                        {{ date('d/m/Y', strtotime($rental->end_date)) }}
+                    </strong>
+
                 </div>
+
                 <div>
-                    <span style="font-size: 12px; color: var(--text-muted); display: block;">วิธีรับชุด</span>
-                    <strong>{{ $rental->delivery_method === 'delivery' ? 'จัดส่งถึงที่อยู่' : 'รับที่หน้าร้าน KYRIX' }}</strong>
+
+                    <span
+                        style="
+                            font-size: 12px;
+                            color: var(--text-muted);
+                            display: block;
+                        ">
+                        วิธีรับชุด
+                    </span>
+
+                    <strong>
+                        {{ $rental->delivery_method === 'delivery' ? 'จัดส่งถึงที่อยู่' : 'รับที่หน้าร้าน KYRIX' }}
+                    </strong>
+
                 </div>
+
             </div>
 
-            <!-- Rented Items Table -->
+            {{-- RENTAL ITEMS --}}
             <table class="items-table">
+
                 <thead>
+
                     <tr>
+
                         <th>ชุดที่เช่า</th>
+
                         <th>ขนาด / สี</th>
+
                         <th>ระยะเวลา</th>
+
                         <th>ค่าเช่า / วัน</th>
-                        <th style="text-align: right;">ยอดรวม</th>
+
+                        <th style="text-align: right;">
+                            ยอดรวม
+                        </th>
+
                         @if ($rental->can_review)
-                            <th style="text-align: center;">รีวิว</th>
+                            <th style="text-align: center;">
+                                รีวิว
+                            </th>
                         @endif
+
                     </tr>
+
                 </thead>
+
                 <tbody>
+
                     @foreach ($rental->details as $detail)
                         <tr>
+
                             <td>
-                                <div style="display: flex; align-items: center; gap: 12px;">
+
+                                <div
+                                    style="
+                                        display: flex;
+                                        align-items: center;
+                                        gap: 12px;
+                                    ">
+
                                     <img src="{{ $detail->product->main_image_url ?? '' }}"
-                                        style="width: 50px; height: 60px; border-radius: 6px; object-fit: cover;"
+                                        style="
+                                            width: 50px;
+                                            height: 60px;
+                                            border-radius: 6px;
+                                            object-fit: cover;
+                                        "
                                         alt="dress">
+
                                     <div>
+
                                         <a href="{{ route('products.show', $detail->product_id) }}"
-                                            style="font-weight: 700; color: var(--text-main);">
+                                            style="
+                                                font-weight: 700;
+                                                color: var(--text-main);
+                                            ">
                                             {{ $detail->product->product_name ?? 'ชุดเช่า' }}
                                         </a>
-                                        <div style="font-size: 11px; color: var(--text-muted);">
-                                            รหัสชุด: {{ $detail->product->product_code ?? '-' }}
+
+                                        <div
+                                            style="
+                                                font-size: 11px;
+                                                color: var(--text-muted);
+                                            ">
+                                            รหัสชุด:
+                                            {{ $detail->product->product_code ?? '-' }}
                                         </div>
+
                                     </div>
+
                                 </div>
+
                             </td>
+
                             <td>
-                                <div>ไซซ์: <strong>{{ $detail->selected_size ?? 'M' }}</strong></div>
-                                <div style="font-size: 12px; color: var(--text-muted);">สี:
-                                    {{ $detail->selected_color ?? 'ตามแบบ' }}</div>
+
+                                <div>
+                                    ไซซ์:
+                                    <strong>
+                                        {{ $detail->selected_size ?? 'M' }}
+                                    </strong>
+                                </div>
+
+                                <div
+                                    style="
+                                        font-size: 12px;
+                                        color: var(--text-muted);
+                                    ">
+                                    สี:
+                                    {{ $detail->selected_color ?? 'ตามแบบ' }}
+                                </div>
+
                             </td>
-                            <td>{{ $detail->rental_days ?? 1 }} วัน</td>
-                            <td>฿{{ number_format($detail->price) }}</td>
-                            <td style="text-align: right; font-weight: 700; color: var(--primary);">
-                                ฿{{ number_format($detail->subtotal) }}
+
+                            <td>
+                                {{ $detail->rental_days ?? 1 }} วัน
                             </td>
+
+                            <td>
+                                ฿{{ number_format($detail->price, 2) }}
+                            </td>
+
+                            <td
+                                style="
+                                    text-align: right;
+                                    font-weight: 700;
+                                    color: var(--primary);
+                                ">
+                                ฿{{ number_format($detail->subtotal, 2) }}
+                            </td>
+
                             @if ($rental->can_review)
                                 <td style="text-align: center;">
-                                    <a href="{{ route('reviews.create', ['rental' => $rental->rental_id, 'product' => $detail->product_id]) }}"
+
+                                    <a href="{{ route('reviews.create', [
+                                        'rental' => $rental->rental_id,
+                                        'product' => $detail->product_id,
+                                    ]) }}"
                                         class="btn btn-gold btn-sm">
-                                        <i class="fa-solid fa-star"></i> เขียนรีวิว
+                                        <i class="fa-solid fa-star"></i>
+                                        เขียนรีวิว
                                     </a>
+
                                 </td>
                             @endif
+
                         </tr>
                     @endforeach
+
                 </tbody>
+
             </table>
 
-            <!-- Summary & Details Grid -->
+            {{-- DETAILS --}}
             <div class="breakdown-grid">
-                <!-- Left Info -->
-                <div style="display: flex; flex-direction: column; gap: 16px;">
+
+                {{-- DELIVERY --}}
+                <div
+                    style="
+                        display: flex;
+                        flex-direction: column;
+                        gap: 16px;
+                    ">
+
                     <div class="info-card">
-                        <h4><i class="fa-solid fa-truck"></i> ข้อมูลการจัดส่ง / รับชุด</h4>
-                        <div><strong>ผู้รับ:</strong> {{ $rental->customer->user->name ?? 'ลูกค้า' }}</div>
-                        <div><strong>เบอร์โทรติดต่อ:</strong>
-                            {{ $rental->recipient_phone ?? ($rental->customer->phone ?? '-') }}</div>
-                        <div><strong>สถานที่รับ/จัดส่ง:</strong> {{ $rental->delivery_address }}</div>
-                        @if ($rental->tracking_number)
-                            <div style="margin-top: 8px; color: var(--primary); font-weight: 700;">
-                                <i class="fa-solid fa-barcode"></i> เลขพัสดุจัดส่ง: {{ $rental->tracking_number }}
+
+                        <h4>
+                            <i class="fa-solid fa-truck"></i>
+                            ข้อมูลการจัดส่ง / ติดตามพัสดุ
+                        </h4>
+
+                        <div class="shipping-panel">
+
+                            <div class="shipping-row">
+                                <div class="shipping-label">
+                                    ผู้รับ
+                                </div>
+
+                                <div class="shipping-value">
+                                    {{ $rental->customer->user->name ?? 'ลูกค้า' }}
+                                </div>
                             </div>
-                        @endif
-                        @if ($rental->return_tracking_no)
-                            <div style="margin-top: 4px; color: #166534; font-weight: 700;">
-                                <i class="fa-solid fa-box"></i> เลขพัสดุส่งคืนชุด: {{ $rental->return_tracking_no }}
+
+                            <div class="shipping-row">
+                                <div class="shipping-label">
+                                    เบอร์โทรติดต่อ
+                                </div>
+
+                                <div class="shipping-value">
+                                    {{ $rental->recipient_phone ?? ($rental->customer->phone ?? '-') }}
+                                </div>
                             </div>
-                        @endif
+
+                            <div class="shipping-row">
+                                <div class="shipping-label">
+                                    สถานที่รับ/จัดส่ง
+                                </div>
+
+                                <div class="shipping-value">
+                                    {{ $rental->delivery_address ?: 'รับที่หน้าร้าน KYRIX' }}
+                                </div>
+                            </div>
+
+                            @if ($rental->shipping_carrier)
+                                <div class="shipping-row">
+                                    <div class="shipping-label">
+                                        บริษัทขนส่ง
+                                    </div>
+
+                                    <div class="shipping-value">
+                                        {{ $rental->shipping_carrier }}
+                                    </div>
+                                </div>
+                            @endif
+
+                            @if ($rental->tracking_number)
+                                <div class="shipping-row">
+                                    <div class="shipping-label">
+                                        เลขพัสดุจัดส่ง
+                                    </div>
+
+                                    <div class="shipping-value" style="color:var(--primary);">
+                                        <i class="fa-solid fa-barcode"></i>
+                                        {{ $rental->tracking_number }}
+                                    </div>
+                                </div>
+                            @endif
+
+                            @if ($rental->shipping_status)
+                                <div class="shipping-row">
+                                    <div class="shipping-label">
+                                        สถานะการจัดส่ง
+                                    </div>
+
+                                    <div class="shipping-value">
+                                        <span class="shipping-status-badge">
+                                            @if ($rental->shipping_status === 'กำลังเตรียมสินค้า')
+                                                <i class="fa-solid fa-box"></i>
+                                            @elseif ($rental->shipping_status === 'ส่งพัสดุแล้ว')
+                                                <i class="fa-solid fa-box-open"></i>
+                                            @elseif ($rental->shipping_status === 'กำลังขนส่ง')
+                                                <i class="fa-solid fa-truck-fast"></i>
+                                            @elseif ($rental->shipping_status === 'กำลังนำจ่าย')
+                                                <i class="fa-solid fa-location-dot"></i>
+                                            @elseif ($rental->shipping_status === 'จัดส่งสำเร็จ')
+                                                <i class="fa-solid fa-circle-check"></i>
+                                            @else
+                                                <i class="fa-solid fa-circle-info"></i>
+                                            @endif
+
+                                            {{ $rental->shipping_status_label }}
+                                        </span>
+                                    </div>
+                                </div>
+                            @endif
+
+                            @if ($rental->shipped_at)
+                                <div class="shipping-row">
+                                    <div class="shipping-label">
+                                        วันที่ส่งพัสดุ
+                                    </div>
+
+                                    <div class="shipping-value">
+                                        {{ $rental->shipped_at->format('d/m/Y H:i') }} น.
+                                    </div>
+                                </div>
+                            @endif
+
+                            @if ($rental->estimated_delivery_at)
+                                <div class="shipping-row">
+                                    <div class="shipping-label">
+                                        คาดว่าจะได้รับ
+                                    </div>
+
+                                    <div class="shipping-value" style="color:var(--primary);">
+                                        {{ $rental->estimated_delivery_at->format('d/m/Y H:i') }} น.
+                                    </div>
+                                </div>
+                            @endif
+
+                            @if ($rental->tracking_url && $rental->tracking_number)
+                                <div style="margin-top:4px;">
+                                    <a href="{{ $rental->tracking_url }}" target="_blank" rel="noopener noreferrer"
+                                        class="tracking-btn">
+                                        <i class="fa-solid fa-location-arrow"></i>
+                                        ติดตามพัสดุ
+                                    </a>
+                                </div>
+                            @elseif ($rental->tracking_number)
+                                <div
+                                    style="
+                                        margin-top:4px;
+                                        font-size:11.5px;
+                                        color:var(--text-muted);
+                                        line-height:1.6;
+                                    ">
+                                    <i class="fa-solid fa-circle-info"></i>
+                                    ร้านยังไม่ได้ระบุลิงก์สำหรับติดตามพัสดุ
+                                </div>
+                            @endif
+
+                            @if ($rental->return_tracking_no)
+                                <div
+                                    style="
+                                        margin-top:4px;
+                                        padding-top:12px;
+                                        border-top:1px dashed var(--border);
+                                        color:#166534;
+                                        font-weight:700;
+                                        font-size:12.5px;
+                                    ">
+                                    <i class="fa-solid fa-box"></i>
+                                    เลขพัสดุส่งคืนชุด: {{ $rental->return_tracking_no }}
+                                </div>
+                            @endif
+
+                        </div>
+
                     </div>
 
-                    <!-- Payments Info / Slip -->
+                    {{-- RETURN DUE --}}
                     <div class="info-card">
-                        <h4><i class="fa-solid fa-receipt"></i> ข้อมูลการชำระเงิน & สลิป</h4>
-                        @if ($rental->payments->count() > 0)
-                            @foreach ($rental->payments as $payment)
-                                <div
-                                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px dashed #ddd;">
-                                    <div>
-                                        <span>ยอด: <strong>฿{{ number_format($payment->payment_amount) }}</strong></span>
-                                        <span
-                                            style="font-size: 11px; color: #888;">({{ $payment->payment_date ? $payment->payment_date->format('d/m/Y H:i') : '-' }})</span>
-                                        <div style="font-size: 11px;">
-                                            สถานะ:
-                                            @if ($payment->status === 'approved')
-                                                <span style="color: #166534; font-weight: 700;">ตรวจสอบอนุมัติแล้ว</span>
-                                            @else
-                                                <span style="color: #b45309; font-weight: 700;">รอเจ้าหน้าที่ตรวจสลิป</span>
-                                            @endif
-                                        </div>
-                                    </div>
-                                    @if ($payment->slip_url)
-                                        <a href="{{ $payment->slip_url }}" target="_blank">
-                                            <img src="{{ $payment->slip_url }}" class="slip-img-card" alt="สลิป">
-                                        </a>
+
+                        <h4>
+                            <i class="fa-solid fa-calendar-check"></i>
+                            กำหนดคืนชุด
+                        </h4>
+
+                        @if ($rental->return_due_at)
+
+                            <div class="return-due-box {{ $rental->is_return_overdue ? 'overdue' : '' }}">
+
+                                <div class="return-due-title">
+                                    @if ($rental->is_return_overdue)
+                                        <i class="fa-solid fa-triangle-exclamation"></i>
+                                        เกินกำหนดคืนชุด
+                                    @else
+                                        <i class="fa-solid fa-clock"></i>
+                                        ต้องคืนชุดภายใน
                                     @endif
                                 </div>
-                            @endforeach
+
+                                <div class="return-due-time">
+                                    {{ $rental->return_due_at->format('d/m/Y') }}
+                                    เวลา
+                                    {{ $rental->return_due_at->format('H:i') }} น.
+                                </div>
+
+                                <div class="return-due-note">
+                                    กรุณาส่งคืนชุดภายในวันและเวลาที่ร้านกำหนด
+                                </div>
+
+                            </div>
                         @else
-                            <p style="color: var(--text-muted); margin: 0;">ยังไม่มีข้อมูลการชำระเงินหรือแนบสลิป</p>
+                            <div
+                                style="
+                                    padding:14px 0;
+                                    color:var(--text-muted);
+                                    font-size:12.5px;
+                                ">
+                                <i class="fa-solid fa-calendar-xmark"></i>
+                                ร้านยังไม่ได้กำหนดวันและเวลาคืนชุด
+                            </div>
+
                         @endif
+
                     </div>
+
+                    {{-- PAYMENT --}}
+                    <div class="info-card">
+
+                        <h4>
+                            <i class="fa-solid fa-receipt"></i>
+                            ข้อมูลการชำระเงิน & สลิป
+                        </h4>
+
+                        @php
+                            $latestPayment = $rental->payments->sortByDesc('payment_id')->first();
+                        @endphp
+
+                        @if ($latestPayment)
+
+                            <div
+                                style="
+                                    display: flex;
+                                    justify-content: space-between;
+                                    align-items: center;
+                                    gap: 20px;
+                                    padding: 8px 0;
+                                ">
+
+                                <div>
+
+                                    <div>
+
+                                        ยอด:
+
+                                        <strong>
+                                            ฿{{ number_format($latestPayment->payment_amount, 2) }}
+                                        </strong>
+
+                                        <span
+                                            style="
+                                                font-size: 11px;
+                                                color: #888;
+                                            ">
+                                            (
+                                            {{ $latestPayment->payment_date ? $latestPayment->payment_date->format('d/m/Y H:i') : '-' }}
+                                            )
+                                        </span>
+
+                                    </div>
+
+                                    <div
+                                        style="
+                                            font-size: 11px;
+                                            margin-top: 4px;
+                                        ">
+
+                                        สถานะ:
+
+                                        @if ($latestPayment->status === 'approved')
+                                            <span
+                                                style="
+                                                    color: #166534;
+                                                    font-weight: 700;
+                                                ">
+                                                ตรวจสอบอนุมัติแล้ว
+                                            </span>
+                                        @elseif ($latestPayment->status === 'rejected')
+                                            <span
+                                                style="
+                                                    color: #b91c1c;
+                                                    font-weight: 700;
+                                                ">
+                                                ปฏิเสธการชำระเงิน
+                                            </span>
+                                        @else
+                                            <span
+                                                style="
+                                                    color: #b45309;
+                                                    font-weight: 700;
+                                                ">
+                                                รอเจ้าหน้าที่ตรวจสลิป
+                                            </span>
+                                        @endif
+
+                                    </div>
+
+                                </div>
+
+                                @if ($latestPayment->slip_url)
+                                    <a href="{{ $latestPayment->slip_url }}" target="_blank">
+                                        <img src="{{ $latestPayment->slip_url }}" class="slip-img-card" alt="สลิป">
+                                    </a>
+                                @endif
+
+                            </div>
+                        @else
+                            <p
+                                style="
+                                    color: var(--text-muted);
+                                    margin: 0;
+                                ">
+                                ยังไม่มีข้อมูลการชำระเงินหรือแนบสลิป
+                            </p>
+
+                        @endif
+
+                    </div>
+
                 </div>
 
-                <!-- Right Totals -->
+                {{-- TOTALS --}}
                 <div class="totals-box">
+
                     <h4
-                        style="font-size: 16px; font-weight: 800; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border);">
+                        style="
+                            font-size: 16px;
+                            font-weight: 800;
+                            margin-bottom: 16px;
+                            padding-bottom: 8px;
+                            border-bottom: 1px solid var(--border);
+                        ">
                         แจกแจงค่าใช้จ่าย
                     </h4>
+
                     <div class="totals-row">
-                        <span>ค่าเช่าชุดรวม:</span>
-                        <strong>฿{{ number_format($rental->total_amount) }}</strong>
+
+                        <span>
+                            ค่าเช่าชุดรวม:
+                        </span>
+
+                        <strong>
+                            ฿{{ number_format($rental->total_amount, 2) }}
+                        </strong>
+
                     </div>
-                    @if(!empty($rental->discount_amount) && $rental->discount_amount > 0)
-                    <div class="totals-row" style="color: #16a34a;">
-                        <span><i class="fa-solid fa-tag"></i> ส่วนลดโปรโมชั่น (20%):</span>
-                        <strong style="color: #16a34a;">-฿{{ number_format($rental->discount_amount) }}</strong>
-                    </div>
-                    <div class="totals-row" style="font-size: 13px;">
-                        <span>ค่าเช่าสุทธิหลังหักส่วนลด:</span>
-                        <strong>฿{{ number_format($rental->net_rental_amount) }}</strong>
-                    </div>
+
+                    @if (!empty($rental->discount_amount) && $rental->discount_amount > 0)
+                        <div class="totals-row" style="color: #16a34a;">
+
+                            <span>
+                                <i class="fa-solid fa-tag"></i>
+                                {{ $rental->discount_reason ?? 'ส่วนลดโปรโมชั่น' }}:
+                            </span>
+
+                            <strong style="color: #16a34a;">
+                                -฿{{ number_format($rental->discount_amount, 2) }}
+                            </strong>
+
+                        </div>
+
+                        <div class="totals-row" style="font-size: 13px;">
+
+                            <span>
+                                ค่าเช่าสุทธิหลังหักส่วนลด:
+                            </span>
+
+                            <strong>
+                                ฿{{ number_format($rental->net_rental_amount, 2) }}
+                            </strong>
+
+                        </div>
                     @endif
+
                     <div class="totals-row">
-                        <span>เงินมัดจำประกันชุด:</span>
-                        <strong style="color: #b45309;">฿{{ number_format($rental->deposit_amount ?: 100) }}</strong>
+
+                        <span>
+                            เงินมัดจำประกันชุด:
+                        </span>
+
+                        <strong style="color: #b45309;">
+                            ฿{{ number_format($rental->deposit_amount ?: 0, 2) }}
+                        </strong>
+
                     </div>
+
                     <div class="totals-row">
-                        <span>บริการเสริม ({{ $rental->service_type ?? 'มาตรฐาน' }}):</span>
-                        <strong>฿{{ number_format($rental->service_fee) }}</strong>
+
+                        <span>
+                            บริการเสริม
+                            ({{ $rental->service_type ?? 'มาตรฐาน' }}):
+                        </span>
+
+                        <strong>
+                            ฿{{ number_format($rental->service_fee ?? 0, 2) }}
+                        </strong>
+
                     </div>
+
                     <div class="totals-row final">
-                        <span>ยอดรวมสุทธิ:</span>
-                        <span>฿{{ number_format($rental->grand_total) }}</span>
+
+                        <span>
+                            ยอดรวมสุทธิ:
+                        </span>
+
+                        <span>
+                            ฿{{ number_format($rental->grand_total, 2) }}
+                        </span>
+
                     </div>
 
                     <div
-                        style="background: var(--gold-light); padding: 10px; border-radius: 8px; font-size: 12px; color: #855d14; margin-top: 14px;">
-                        <i class="fa-solid fa-shield"></i> เงินมัดจำ
-                        <strong>฿100</strong>
+                        style="
+                            background: var(--gold-light);
+                            padding: 10px;
+                            border-radius: 8px;
+                            font-size: 12px;
+                            color: #855d14;
+                            margin-top: 14px;
+                        ">
+                        <i class="fa-solid fa-shield"></i>
+
+                        เงินมัดจำ
+
+                        <strong>
+                            ฿{{ number_format($rental->deposit_amount ?: 0, 2) }}
+                        </strong>
+
                         จะถูกโอนคืนเต็มจำนวนหลังตรวจสภาพชุดเรียบร้อย
                     </div>
+
                 </div>
+
             </div>
 
-            <!-- Action: Upload Slip Form (if pending_payment) -->
+            {{-- =====================================================
+                 CANCEL RENTAL
+            ====================================================== --}}
+            @if ($rental->status === 'pending_payment')
+                <div class="cancel-rental-box" id="cancelRentalSection">
+
+                    <div class="cancel-rental-content">
+
+                        <div class="cancel-rental-icon">
+                            <i class="fa-solid fa-ban"></i>
+                        </div>
+
+                        <div class="cancel-rental-text">
+
+                            <h3>
+                                ต้องการยกเลิกรายการเช่า?
+                            </h3>
+
+                            <p>
+                                รายการนี้ยังไม่ได้ชำระเงิน
+                                คุณสามารถยกเลิกการเช่าได้ในขั้นตอนนี้
+                            </p>
+
+                        </div>
+
+                        <button type="button" class="cancel-rental-btn" onclick="openCancelRentalModal()">
+                            <i class="fa-solid fa-ban"></i>
+                            ยกเลิกการเช่า
+                        </button>
+
+                    </div>
+
+                </div>
+
+                {{-- CANCEL MODAL --}}
+                <div id="cancelRentalModal" class="cancel-modal" style="display:none;" aria-hidden="true">
+
+                    <div class="cancel-modal-backdrop"></div>
+
+                    <div class="cancel-modal-card" role="dialog" aria-modal="true" aria-labelledby="cancelModalTitle">
+
+                        {{-- HEADER --}}
+                        <div class="cancel-modal-header">
+
+                            <div class="cancel-modal-title-wrap">
+
+                                <div class="cancel-modal-icon">
+                                    <i class="fa-solid fa-triangle-exclamation"></i>
+                                </div>
+
+                                <div>
+
+                                    <h3 id="cancelModalTitle">
+                                        ยืนยันการยกเลิก
+                                    </h3>
+
+                                    <p>
+                                        {{ $rental->rental_code ?? 'รายการเช่า' }}
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                            <button type="button" class="cancel-modal-close" onclick="closeCancelRentalModal()"
+                                aria-label="ปิด">
+                                &times;
+                            </button>
+
+                        </div>
+
+                        {{-- FORM --}}
+                        <form action="{{ route('rentals.cancel', $rental->rental_id) }}" method="POST">
+
+                            @csrf
+
+                            <div class="cancel-modal-body">
+
+                                <div class="cancel-warning">
+
+                                    <i class="fa-solid fa-circle-exclamation"></i>
+
+                                    <div>
+
+                                        <strong>
+                                            คุณกำลังจะยกเลิกรายการเช่านี้
+                                        </strong>
+
+                                        <p>
+                                            รายการนี้ยังไม่ได้ชำระเงิน
+                                            เมื่อยืนยันแล้ว
+                                            สถานะจะเปลี่ยนเป็น
+                                            <strong>ยกเลิกแล้ว</strong>
+                                            และระบบจะคืนจำนวนชุดกลับเข้าสต็อก
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+                                {{-- REASON --}}
+                                <div class="cancel-form-group">
+
+                                    <label for="cancel_reason_select">
+                                        เหตุผลในการยกเลิก
+                                        <span>*</span>
+                                    </label>
+
+                                    <select id="cancel_reason_select" class="input-field"
+                                        onchange="handleCancelReasonChange()">
+
+                                        <option value="">
+                                            -- เลือกเหตุผล --
+                                        </option>
+
+                                        <option value="เปลี่ยนใจ">
+                                            เปลี่ยนใจ
+                                        </option>
+
+                                        <option value="ไม่สะดวกใช้ชุดแล้ว">
+                                            ไม่สะดวกใช้ชุดแล้ว
+                                        </option>
+
+                                        <option value="เปลี่ยนวันเช่า">
+                                            ต้องการเปลี่ยนวันเช่า
+                                        </option>
+
+                                        <option value="พบชุดที่ต้องการใหม่">
+                                            พบชุดที่ต้องการใหม่
+                                        </option>
+
+                                        <option value="อื่น ๆ">
+                                            อื่น ๆ
+                                        </option>
+
+                                    </select>
+
+                                    <textarea name="cancel_reason" id="cancel_reason" class="input-field cancel-reason-textarea" rows="3"
+                                        placeholder="ระบุเหตุผลในการยกเลิก" required></textarea>
+
+                                </div>
+
+                            </div>
+
+                            {{-- FOOTER --}}
+                            <div class="cancel-modal-footer">
+
+                                <button type="button" class="cancel-back-btn" onclick="closeCancelRentalModal()">
+                                    ย้อนกลับ
+                                </button>
+
+                                <button type="submit" class="cancel-confirm-btn" onclick="return confirmCancelRental()">
+                                    <i class="fa-solid fa-ban"></i>
+                                    ยืนยันการยกเลิก
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                </div>
+            @endif
+
+            {{-- UPLOAD SLIP --}}
             @if ($rental->status === 'pending_payment')
                 <div id="slipSection"
-                    style="margin-top: 36px; padding: 26px; border: 2px dashed var(--primary); border-radius: var(--radius-md); background: var(--primary-soft);">
-                    <h3 style="font-size: 18px; font-weight: 800; color: var(--primary); margin-bottom: 8px;">
-                        <i class="fa-solid fa-cloud-arrow-up"></i> แนบสลิปโอนเงินสำหรับรายการนี้
+                    style="
+                        margin-top: 36px;
+                        padding: 26px;
+                        border: 2px dashed var(--primary);
+                        border-radius: var(--radius-md);
+                        background: var(--primary-soft);
+                    ">
+
+                    <h3
+                        style="
+                            font-size: 18px;
+                            font-weight: 800;
+                            color: var(--primary);
+                            margin-bottom: 8px;
+                        ">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        แนบสลิปโอนเงินสำหรับรายการนี้
                     </h3>
-                    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 18px;">
-                        โอนเงินเข้าบัญชี ออมสิน 020310925126 (บจก. ไคริกซ์ เดรส เรนทอล) ยอดรวม
-                        ฿{{ number_format($rental->grand_total) }} แล้วแนบสลิปด้านล่าง
+
+                    <p
+                        style="
+                            font-size: 13px;
+                            color: var(--text-muted);
+                            margin-bottom: 18px;
+                        ">
+                        โอนเงินเข้าบัญชี ออมสิน
+                        020310925126
+                        (นางสาว อภัสรา แคะมะดัน)
+                        ยอดรวม
+                        ฿{{ number_format($rental->grand_total, 2) }}
+                        แล้วแนบสลิปด้านล่าง
                     </p>
 
                     <form action="{{ route('rentals.upload-slip', $rental->rental_id) }}" method="POST"
                         enctype="multipart/form-data">
+
                         @csrf
+
                         <input type="hidden" name="payment_method" value="qr">
-                        <div style="display: flex; gap: 14px; align-items: center; flex-wrap: wrap;">
+
+                        <div
+                            style="
+                                display: flex;
+                                gap: 14px;
+                                align-items: center;
+                                flex-wrap: wrap;
+                            ">
+
                             <input type="file" name="slip_image" accept="image/*" required style="font-size: 14px;">
+
                             <button type="submit" class="btn btn-primary">
-                                <i class="fa-solid fa-upload"></i> อัปโหลดสลิปยืนยันการชำระ
+                                <i class="fa-solid fa-upload"></i>
+                                อัปโหลดสลิปยืนยันการชำระ
                             </button>
+
                         </div>
+
                     </form>
+
                 </div>
             @endif
 
-            <!-- Action: Request Return Form (if renting or ready_pickup) -->
+            {{-- REQUEST RETURN --}}
             @if (in_array($rental->status, ['renting', 'ready_pickup', 'confirmed']))
                 <div id="returnSection"
-                    style="margin-top: 36px; padding: 26px; border: 1px solid var(--border); border-radius: var(--radius-md); background: #faf8f5;">
-                    <h3 style="font-size: 18px; font-weight: 800; color: var(--text-main); margin-bottom: 8px;">
-                        <i class="fa-solid fa-arrow-rotate-left" style="color: var(--primary);"></i> แจ้งส่งคืนชุด (Return
-                        Request)
+                    style="
+                        margin-top: 36px;
+                        padding: 26px;
+                        border: 1px solid var(--border);
+                        border-radius: var(--radius-md);
+                        background: #faf8f5;
+                    ">
+
+                    <h3
+                        style="
+                            font-size: 18px;
+                            font-weight: 800;
+                            color: var(--text-main);
+                            margin-bottom: 8px;
+                        ">
+                        <i class="fa-solid fa-arrow-rotate-left" style="color: var(--primary);"></i>
+
+                        แจ้งส่งคืนชุด
+                        (Return Request)
                     </h3>
-                    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 18px;">
-                        หากใช้งานชุดเสร็จเรียบร้อยแล้ว หรือจัดส่งพัสดุคืนแล้ว
+
+                    <p
+                        style="
+                            font-size: 13px;
+                            color: var(--text-muted);
+                            margin-bottom: 18px;
+                        ">
+                        หากใช้งานชุดเสร็จเรียบร้อยแล้ว
+                        หรือจัดส่งพัสดุคืนแล้ว
                         สามารถแจ้งข้อมูลการส่งคืนให้ทางร้านทราบได้ที่นี่
                     </p>
 
                     <form action="{{ route('rentals.request-return', $rental->rental_id) }}" method="POST">
+
                         @csrf
-                        <div style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 14px; align-items: end;">
+
+                        <div
+                            style="
+                                display: grid;
+                                grid-template-columns: 1fr 1fr auto;
+                                gap: 14px;
+                                align-items: end;
+                            ">
+
                             <div>
+
                                 <label
-                                    style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 4px;">วิธีการคืนชุด:</label>
+                                    style="
+                                        font-size: 13px;
+                                        font-weight: 600;
+                                        display: block;
+                                        margin-bottom: 4px;
+                                    ">
+                                    วิธีการคืนชุด:
+                                </label>
+
                                 <select name="return_method" class="input-field" style="margin-top: 0;" required>
-                                    <option value="นำมาคืนที่หน้าร้านทองหล่อ">นำมาคืนที่หน้าร้าน KYRIX (โคราช)</option>
-                                    <option value="ส่งพัสดุ (EMS / Flash / Kerry)">ส่งพัสดุไปรษณีย์ (EMS / Flash / Kerry)
+
+                                    <option value="นำมาคืนที่หน้าร้าน KYRIX (โคราช)">
+                                        นำมาคืนที่หน้าร้าน KYRIX (โคราช)
                                     </option>
-                                    <option value="ส่งผ่านแมสเซนเจอร์ (Grab / Lineman)">ส่งผ่านแมสเซนเจอร์ (Grab / Lineman)
+
+                                    <option value="ส่งพัสดุ (EMS / Flash / Kerry)">
+                                        ส่งพัสดุไปรษณีย์ (EMS / Flash / Kerry)
                                     </option>
+
+                                    <option value="ส่งผ่านแมสเซนเจอร์ (Grab / Lineman)">
+                                        ส่งผ่านแมสเซนเจอร์ (Grab / Lineman)
+                                    </option>
+
                                 </select>
+
                             </div>
+
                             <div>
+
                                 <label
-                                    style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 4px;">เลขพัสดุส่งคืน
-                                    (ถ้ามี):</label>
+                                    style="
+                                        font-size: 13px;
+                                        font-weight: 600;
+                                        display: block;
+                                        margin-bottom: 4px;
+                                    ">
+                                    เลขพัสดุส่งคืน (ถ้ามี):
+                                </label>
+
                                 <input type="text" name="return_tracking_no" class="input-field"
                                     style="margin-top: 0;" placeholder="เช่น TH123456789">
+
                             </div>
+
                             <button type="submit" class="btn btn-secondary" style="height: 44px;">
                                 บันทึกการแจ้งส่งคืน
                             </button>
+
                         </div>
+
                     </form>
+
                 </div>
             @endif
+
         </div>
+
     </div>
+
+    {{-- =========================================================
+         PRINT RECEIPT
+    ========================================================= --}}
+    @php
+
+        $printRentalAmount = (float) ($rental->total_amount ?? 0);
+
+        $printDiscount = (float) ($rental->discount_amount ?? 0);
+
+        $printNetRental = max(0, $printRentalAmount - $printDiscount);
+
+        $printDeposit = (float) ($rental->deposit_amount ?? 0);
+
+        $printServiceFee = (float) ($rental->service_fee ?? 0);
+
+        $printGrandTotal = $printNetRental + $printDeposit + $printServiceFee;
+
+        $latestPrintPayment = $rental->payments->sortByDesc('payment_id')->first();
+
+    @endphp
+
+    <div class="print-receipt" id="printReceipt">
+
+        {{-- HEADER --}}
+        <div class="print-header">
+
+            <div class="print-logo">
+                KYRIX
+            </div>
+
+            <div class="print-subtitle">
+                DRESS RENTAL BOUTIQUE
+            </div>
+
+            <div class="print-title">
+                ใบเสร็จรับเงิน / สรุปการเช่าชุด
+            </div>
+
+            <div class="print-code">
+                {{ $rental->rental_code ?? 'KR-' . $rental->rental_id }}
+            </div>
+
+        </div>
+
+        {{-- BASIC INFO --}}
+        <div class="print-info-grid">
+
+            <div class="print-info-box">
+
+                <div class="print-section-title">
+                    ข้อมูลการเช่า
+                </div>
+
+                <div>
+                    <strong>เลขที่การเช่า:</strong>
+                    {{ $rental->rental_code ?? '-' }}
+                </div>
+
+                <div>
+                    <strong>วันที่ทำรายการ:</strong>
+                    {{ $rental->rental_date ? date('d/m/Y', strtotime($rental->rental_date)) : '-' }}
+                </div>
+
+                <div>
+                    <strong>วันเริ่มเช่า:</strong>
+                    {{ date('d/m/Y', strtotime($rental->start_date)) }}
+                </div>
+
+                <div>
+                    <strong>วันคืนชุด:</strong>
+                    {{ date('d/m/Y', strtotime($rental->end_date)) }}
+                </div>
+
+            </div>
+
+            <div class="print-info-box">
+
+                <div class="print-section-title">
+                    ข้อมูลลูกค้า
+                </div>
+
+                <div>
+                    <strong>ชื่อ:</strong>
+                    {{ $rental->customer->user->name ?? 'ลูกค้า' }}
+                </div>
+
+                <div>
+                    <strong>โทร:</strong>
+                    {{ $rental->recipient_phone ?? ($rental->customer->phone ?? '-') }}
+                </div>
+
+                <div>
+                    <strong>รับชุด:</strong>
+                    {{ $rental->delivery_method === 'delivery' ? 'จัดส่งถึงที่อยู่' : 'รับที่หน้าร้าน KYRIX' }}
+                </div>
+
+            </div>
+
+        </div>
+
+        {{-- ITEMS --}}
+        <div class="print-section-title">
+            รายการเช่า
+        </div>
+
+        <table class="print-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        รายการ
+                    </th>
+
+                    <th class="print-center">
+                        จำนวน
+                    </th>
+
+                    <th class="print-center">
+                        วัน
+                    </th>
+
+                    <th class="print-right">
+                        ยอดรวม
+                    </th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                @foreach ($rental->details as $detail)
+                    <tr>
+
+                        <td>
+
+                            <strong>
+                                {{ $detail->product->product_name ?? 'ชุดเช่า' }}
+                            </strong>
+
+                            <br>
+
+                            <span
+                                style="
+                                    font-size: 8px;
+                                    color: #777;
+                                ">
+                                {{ $detail->product->product_code ?? '-' }}
+                                /
+                                {{ $detail->selected_size ?? 'M' }}
+                                /
+                                {{ $detail->selected_color ?? 'ตามแบบ' }}
+                            </span>
+
+                        </td>
+
+                        <td class="print-center">
+                            {{ $detail->quantity }}
+                        </td>
+
+                        <td class="print-center">
+                            {{ $detail->rental_days ?? 1 }}
+                        </td>
+
+                        <td class="print-right">
+                            ฿{{ number_format((float) $detail->subtotal, 2) }}
+                        </td>
+
+                    </tr>
+                @endforeach
+
+            </tbody>
+
+        </table>
+
+        {{-- SUMMARY --}}
+        <div class="print-summary">
+
+            <div class="print-section-title">
+                สรุปยอดเงิน
+            </div>
+
+            <div class="print-summary-row">
+
+                <span>
+                    ค่าเช่าชุดรวม
+                </span>
+
+                <strong>
+                    ฿{{ number_format($printRentalAmount, 2) }}
+                </strong>
+
+            </div>
+
+            @if ($printDiscount > 0)
+                <div class="print-summary-row">
+
+                    <span>
+                        ส่วนลด
+                    </span>
+
+                    <strong style="color:#16803b;">
+                        -฿{{ number_format($printDiscount, 2) }}
+                    </strong>
+
+                </div>
+
+                <div class="print-summary-row">
+
+                    <span>
+                        ค่าเช่าสุทธิ
+                    </span>
+
+                    <strong>
+                        ฿{{ number_format($printNetRental, 2) }}
+                    </strong>
+
+                </div>
+            @endif
+
+            <div class="print-summary-row">
+
+                <span>
+                    เงินมัดจำ
+                </span>
+
+                <strong>
+                    ฿{{ number_format($printDeposit, 2) }}
+                </strong>
+
+            </div>
+
+            @if ($printServiceFee > 0)
+                <div class="print-summary-row">
+
+                    <span>
+                        บริการเสริม
+                    </span>
+
+                    <strong>
+                        ฿{{ number_format($printServiceFee, 2) }}
+                    </strong>
+
+                </div>
+            @endif
+
+            <div class="print-summary-final">
+
+                <span>
+                    ยอดรวมสุทธิ
+                </span>
+
+                <span>
+                    ฿{{ number_format($printGrandTotal, 2) }}
+                </span>
+
+            </div>
+
+        </div>
+
+        {{-- PAYMENT --}}
+        <div class="print-payment">
+
+            <div class="print-section-title">
+                ข้อมูลการชำระเงิน
+            </div>
+
+            @if ($latestPrintPayment)
+
+                <div>
+
+                    <strong>
+                        วิธีชำระ:
+                    </strong>
+
+                    {{ $latestPrintPayment->payment_method === 'qr'
+                        ? 'QR Code PromptPay'
+                        : ($latestPrintPayment->payment_method === 'transfer'
+                            ? 'โอนเงินผ่านบัญชีธนาคาร'
+                            : '-') }}
+
+                </div>
+
+                <div>
+
+                    <strong>
+                        ยอดชำระ:
+                    </strong>
+
+                    ฿{{ number_format((float) $latestPrintPayment->payment_amount, 2) }}
+
+                </div>
+
+                <div>
+
+                    <strong>
+                        วันที่ชำระ:
+                    </strong>
+
+                    {{ $latestPrintPayment->payment_date ? $latestPrintPayment->payment_date->format('d/m/Y H:i') : '-' }}
+
+                </div>
+
+                <div>
+
+                    <strong>
+                        สถานะ:
+                    </strong>
+
+                    <span class="print-status">
+
+                        @if ($latestPrintPayment->status === 'approved')
+                            ตรวจสอบอนุมัติแล้ว
+                        @elseif ($latestPrintPayment->status === 'rejected')
+                            ปฏิเสธการชำระเงิน
+                        @else
+                            รอเจ้าหน้าที่ตรวจสลิป
+                        @endif
+
+                    </span>
+
+                </div>
+            @else
+                <div>
+                    ยังไม่มีข้อมูลการชำระเงิน
+                </div>
+
+            @endif
+
+        </div>
+
+        {{-- NOTE --}}
+        <div class="print-note">
+
+            <strong>
+                หมายเหตุ:
+            </strong>
+
+            เงินมัดจำจะได้รับคืนตามเงื่อนไขของร้าน
+            หลังจากส่งคืนชุดและตรวจสอบสภาพเรียบร้อยแล้ว
+
+        </div>
+
+        {{-- FOOTER --}}
+        <div class="print-footer">
+
+            <strong>
+                KYRIX DRESS RENTAL BOUTIQUE
+            </strong>
+
+            <br>
+
+            77 ตำบลในเมือง อำเภอเมือง จังหวัดนครราชสีมา 30000
+            | โทร: 065-259-9072
+
+            <br>
+
+            ขอบคุณที่ใช้บริการ KYRIX
+
+        </div>
+
+    </div>
+
+    @push('scripts')
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+
+                /* =====================================================
+                   PRINT RECEIPT
+                ====================================================== */
+
+                const printButton =
+                    document.getElementById('printReceiptButton');
+
+                const printReceipt =
+                    document.getElementById('printReceipt');
+
+                if (printButton && printReceipt) {
+
+                    const originalParent =
+                        printReceipt.parentNode;
+
+                    const originalNextSibling =
+                        printReceipt.nextSibling;
+
+                    printButton.addEventListener('click', function() {
+
+                        document.body.appendChild(
+                            printReceipt
+                        );
+
+                        document.body.classList.add(
+                            'printing'
+                        );
+
+                        window.print();
+                    });
+
+                    window.addEventListener(
+                        'afterprint',
+                        function() {
+
+                            document.body.classList.remove(
+                                'printing'
+                            );
+
+                            if (
+                                originalNextSibling &&
+                                originalNextSibling.parentNode === originalParent
+                            ) {
+
+                                originalParent.insertBefore(
+                                    printReceipt,
+                                    originalNextSibling
+                                );
+
+                            } else {
+
+                                originalParent.appendChild(
+                                    printReceipt
+                                );
+
+                            }
+
+                        }
+                    );
+                }
+
+                /* =====================================================
+                   CANCEL RENTAL MODAL
+                ====================================================== */
+
+                window.openCancelRentalModal = function() {
+
+                    const modal =
+                        document.getElementById('cancelRentalModal');
+
+                    if (!modal) {
+                        return;
+                    }
+
+                    modal.style.display = 'flex';
+
+                    modal.setAttribute(
+                        'aria-hidden',
+                        'false'
+                    );
+
+                    document.body.style.overflow = 'hidden';
+                };
+
+                window.closeCancelRentalModal = function() {
+
+                    const modal =
+                        document.getElementById('cancelRentalModal');
+
+                    if (!modal) {
+                        return;
+                    }
+
+                    modal.style.display = 'none';
+
+                    modal.setAttribute(
+                        'aria-hidden',
+                        'true'
+                    );
+
+                    document.body.style.overflow = '';
+                };
+
+                window.handleCancelReasonChange = function() {
+
+                    const select =
+                        document.getElementById('cancel_reason_select');
+
+                    const textarea =
+                        document.getElementById('cancel_reason');
+
+                    if (!select || !textarea) {
+                        return;
+                    }
+
+                    if (select.value === 'อื่น ๆ') {
+
+                        textarea.value = '';
+
+                        textarea.placeholder =
+                            'กรุณาระบุเหตุผลในการยกเลิก';
+
+                        textarea.focus();
+
+                        return;
+                    }
+
+                    textarea.value =
+                        select.value;
+
+                    textarea.placeholder =
+                        select.value !== '' ?
+                        'ระบุเหตุผลเพิ่มเติมได้' :
+                        'ระบุเหตุผลในการยกเลิก';
+                };
+
+                window.confirmCancelRental = function() {
+
+                    const reason =
+                        document.getElementById('cancel_reason');
+
+                    if (!reason || !reason.value.trim()) {
+
+                        alert(
+                            'กรุณาระบุเหตุผลในการยกเลิก'
+                        );
+
+                        if (reason) {
+                            reason.focus();
+                        }
+
+                        return false;
+                    }
+
+                    return confirm(
+                        'ยืนยันการยกเลิกรายการเช่านี้ใช่หรือไม่?\n\n' +
+                        'รายการนี้ยังไม่ได้ชำระเงิน\n' +
+                        'เมื่อยืนยันแล้ว สถานะจะเปลี่ยนเป็น "ยกเลิกแล้ว" และระบบจะคืนชุดเข้าสต็อก'
+                    );
+                };
+
+                /* ปุ่ม ESC สำหรับปิด Modal */
+                document.addEventListener(
+                    'keydown',
+                    function(e) {
+
+                        if (e.key === 'Escape') {
+                            closeCancelRentalModal();
+                        }
+
+                    }
+                );
+
+                /* คลิกพื้นที่ด้านหลัง Modal เพื่อปิด */
+                document.addEventListener(
+                    'click',
+                    function(e) {
+
+                        const modal =
+                            document.getElementById('cancelRentalModal');
+
+                        if (!modal) {
+                            return;
+                        }
+
+                        const backdrop =
+                            modal.querySelector(
+                                '.cancel-modal-backdrop'
+                            );
+
+                        if (
+                            backdrop &&
+                            e.target === backdrop
+                        ) {
+                            closeCancelRentalModal();
+                        }
+
+                    }
+                );
+
+            });
+        </script>
+    @endpush
+
 @endsection
