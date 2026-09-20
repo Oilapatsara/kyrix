@@ -253,7 +253,7 @@ class OwnerDashboardController extends Controller
         return view(
             'owner.dashboard',
             compact(
-                'stats',
+                'stats', 
                 'recentBookings',
                 'upcomingReturns',
                 'pendingPayments',
