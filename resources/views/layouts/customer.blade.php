@@ -77,14 +77,12 @@
 
 *        ============================== */
 
-        \* {
-
+        *,
+        *::before,
+        *::after {
             margin: 0;
-
             padding: 0;
-
             box-sizing: border-box;
-
         }
 
 
@@ -192,21 +190,15 @@
 
 
         .header-container {
-
             max-width: 1280px;
-
             margin: 0 auto;
-
             padding: 14px 24px;
-
             display: flex;
-
             align-items: center;
-
             justify-content: space-between;
-
             gap: 20px;
-
+            flex-wrap: nowrap;
+            min-width: 0;
         }
 
 
@@ -270,17 +262,13 @@
 *        ============================== */
 
         .nav-links {
-
             display: flex;
-
             align-items: center;
-
             gap: 28px;
-
             list-style: none;
-
             position: relative;
-
+            flex-shrink: 1;
+            min-width: 0;
         }
 
 
@@ -294,193 +282,104 @@
             color: var(--text-main);
 
             padding: 6px 0;
-
             position: relative;
-
             display: block;
-
+            white-space: nowrap;
             transition: color 0.25s ease;
-
         }
-
-
 
         .nav-links a:hover {
-
             color: var(--primary);
-
         }
-
-
 
         .nav-links a.active {
-
             color: var(--primary);
-
         }
 
-
-
         /* ==============================*
-
 *           Sliding Indicator*
-
 *        ============================== */
-
         .nav-indicator {
-
             position: absolute;
-
             left: 0;
-
             bottom: -1px;
-
             width: 0;
-
             height: 2px;
-
             background: var(--primary);
-
             border-radius: 2px;
-
             pointer-events: none;
-
             margin: 0;
-
             padding: 0;
-
             transition:
-
                 transform 0.45s cubic-bezier(0.4, 0, 0.2, 1),
-
                 width 0.45s cubic-bezier(0.4, 0, 0.2, 1);
-
         }
 
-
-
         /* ==============================*
-
 *           Header Actions*
-
 *        ============================== */
-
         .header-actions {
-
             display: flex;
-
             align-items: center;
-
             gap: 16px;
-
+            flex-shrink: 0;
         }
-
-
 
         /* ==============================*
-
 *           Search*
-
 *        ============================== */
-
         .search-box {
-
             position: relative;
-
             width: 220px;
-
+            flex-shrink: 0;
         }
-
-
 
         .search-box input {
-
             width: 100%;
-
+            box-sizing: border-box;
             padding: 9px 36px 9px 14px;
-
             border-radius: 30px;
-
             border: 1px solid var(--border);
-
             background: #faf8f5;
-
             font-family: inherit;
-
             font-size: 13px;
-
             transition: all 0.2s;
-
         }
-
-
 
         .search-box input:focus {
-
             outline: none;
-
             border-color: var(--primary);
-
             background: #fff;
-
             box-shadow: 0 0 0 3px rgba(122, 31, 43, 0.1);
-
         }
-
-
 
         .search-box button {
-
             position: absolute;
-
             right: 12px;
-
             top: 50%;
-
             transform: translateY(-50%);
-
             border: none;
-
             background: none;
-
             color: var(--text-muted);
-
             cursor: pointer;
-
         }
 
-
-
         /* ==============================*
-
 *           Cart*
-
 *        ============================== */
-
         .cart-btn {
-
             position: relative;
-
             background: var(--primary-soft);
-
             color: var(--primary);
-
             width: 42px;
-
             height: 42px;
-
             border-radius: 50%;
-
             display: flex;
-
             align-items: center;
-
             justify-content: center;
-
             font-size: 18px;
-
             transition: all 0.2s;
-
+            flex-shrink: 0;
         }
 
 
@@ -1656,281 +1555,130 @@
 
 
                 <a href="{{ route('cart.index') }}" class="cart-btn" title="ตะกร้าเช่าชุด">
-
                     <i class="fa-solid fa-bag-shopping"></i>
-
                     @if ($cartCount > 0)
                         <span class="cart-badge">
-
                             {{ $cartCount }}
-
                         </span>
                     @endif
-
                 </a>
 
-
-
-
-
-
-
                 @php
-
+                    $isLoggedIn = (bool) (session('customer_logged_in') || auth()->check());
                     $customerId = session('customer_id');
-
-                    $customerName = session('customer_name', 'ผู้ใช้งาน');
-
                     $customer = null;
-
                     if ($customerId) {
                         $customer = \App\Models\Customer::find($customerId);
                     }
-
+                    $displayName = session('customer_name')
+                        ?: ($customer ? $customer->name : (auth()->check() ? auth()->user()->name : 'ลูกค้า'));
+                    $displayInitial = mb_substr($displayName ?: 'ค', 0, 1);
                 @endphp
 
-
-
-                @if ($customer)
-
+                @if ($isLoggedIn)
                     <!-- ==============================
-
-*                         Logged In Profile*
-
-*                    ============================== -->
-
-                    @if (session('customer_logged_in') || auth()->check())
-                        @php
-
-                            $displayName =
-                                session('customer_name') ?: (auth()->check() ? auth()->user()->name : 'ลูกค้า');
-
-                        @endphp
-
-
-
-                        <div class="user-menu">
-
-
-
-                            <!-- Profile Button -->
-
-                            <button type="button" class="user-trigger" aria-label="เมนูผู้ใช้งาน">
-
-                                <div class="user-avatar">
-
-                                    {{ mb_substr($customerName, 0, 1) }}
-
-                                </div>
-
-
-
-                                <span class="profile-name">
-
-                                    {{ $customerName }}
-
-
-
-                                    {{ mb_substr($displayName, 0, 1) }}
-
-                        </div>
-
-
-
-                        <span>
-
-                            {{ $displayName }}
-
-                        </span>
-
-
-
-                        <i class="fa-solid fa-chevron-down" style="font-size: 10px;"></i>
-
-                        </button>
-
-
-
-                        <!-- ==============================
-
-*                             Profile Dropdown*
-
-*                        ============================== -->
-
-                        <div class="dropdown-menu">
-
-
-
-                            <!-- User Info -->
-
-                            <div class="profile-dropdown-header">
-
-
-
-                                <div class="user-avatar"
-                                    style="
-
-                                        width: 42px;
-
-                                        height: 42px;
-
-                                        font-size: 16px;
-
-                                    ">
-
-                                    {{ mb_substr($customerName, 0, 1) }}
-
-                                </div>
-
-
-
-                                <div>
-
-                                    <div class="profile-dropdown-name">
-
-                                        {{ $customerName }}
-
-                                    </div>
-
-                                    <div class="profile-dropdown-role">
-
-                                        สมาชิก KYRIX
-
-                                    </div>
-
-                                </div>
-
+                         Logged In Profile
+                    ============================== -->
+                    <div class="user-menu">
+                        <!-- Profile Button -->
+                        <button type="button" class="user-trigger" aria-label="เมนูผู้ใช้งาน">
+                            <div class="user-avatar">
+                                {{ $displayInitial }}
                             </div>
 
+                            <span class="profile-name">
+                                {{ $displayName }}
+                            </span>
 
+                            <i class="fa-solid fa-chevron-down" style="font-size: 10px;"></i>
+                        </button>
+
+                        <!-- ==============================
+                             Profile Dropdown
+                        ============================== -->
+                        <div class="dropdown-menu">
+                            <!-- User Info -->
+                            <div class="profile-dropdown-header">
+                                <div class="user-avatar"
+                                    style="
+                                        width: 42px;
+                                        height: 42px;
+                                        font-size: 16px;
+                                    ">
+                                    {{ $displayInitial }}
+                                </div>
+
+                                <div>
+                                    <div class="profile-dropdown-name">
+                                        {{ $displayName }}
+                                    </div>
+                                    <div class="profile-dropdown-role">
+                                        สมาชิก KYRIX
+                                    </div>
+                                </div>
+                            </div>
 
                             <!-- Dashboard -->
-
                             <a href="{{ route('customer.dashboard') }}" class="dropdown-item">
-
                                 <i class="fa-solid fa-gauge-high"></i>
-
                                 แดชบอร์ดของฉัน
-
                             </a>
-
-
 
                             <!-- Rentals -->
-
                             <a href="{{ route('rentals.index') }}" class="dropdown-item">
-
                                 <i class="fa-solid fa-calendar-check"></i>
-
                                 การจองของฉัน
-
                             </a>
-
-
 
                             <!-- Rental History -->
-
                             <a href="{{ route('rentals.history') }}" class="dropdown-item">
-
                                 <i class="fa-solid fa-clock-rotate-left"></i>
-
                                 ประวัติการเช่าชุด
-
                             </a>
-
-
 
                             <!-- Profile -->
-
                             <a href="{{ route('profile.index') }}" class="dropdown-item">
-
                                 <i class="fa-solid fa-user-pen"></i>
-
                                 โปรไฟล์ของฉัน
-
                             </a>
-
-
 
                             <div class="dropdown-divider"></div>
 
-
-
                             <!-- Logout -->
-
                             <form action="{{ route('logout') }}" method="POST">
-
                                 @csrf
-
                                 <button type="submit" class="dropdown-item"
                                     style="
-
                                         width: 100%;
-
                                         border: none;
-
                                         background: none;
-
                                         cursor: pointer;
-
                                         text-align: left;
-
                                         color: #dc2626;
-
                                         font-family: inherit;
-
                                     ">
-
                                     <i class="fa-solid fa-right-from-bracket"></i>
-
                                     ออกจากระบบ
-
                                 </button>
-
                             </form>
-
-
-
                         </div>
+                    </div>
+                @else
+                    <!-- ==============================
+                         Guest
+                    ============================== -->
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <a href="{{ route('login') }}" class="btn btn-secondary btn-sm">
+                            เข้าสู่ระบบ
+                        </a>
+
+                        <a href="{{ route('register') }}" class="btn btn-primary btn-sm">
+                            สมัครสมาชิก
+                        </a>
+                    </div>
+                @endif
 
             </div>
-        @else
-            <!-- ==============================
-
-*                         Guest*
-
-*                    ============================== -->
-
-            <div
-                style="
-
-                            display: flex;
-
-                            gap: 8px;
-
-                        ">
-
-                <a href="{{ route('login') }}" class="btn btn-secondary btn-sm">
-
-                    เข้าสู่ระบบ
-
-                </a>
-
-
-
-                <a href="{{ route('register') }}" class="btn btn-primary btn-sm">
-
-                    สมัครสมาชิก
-
-                </a>
-
-            </div>
-            @endif
-            @endif
-
-
-
-        </div>
 
         </div>
 
