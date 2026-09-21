@@ -1680,7 +1680,17 @@
                         </h4>
 
                         @php
-                            $latestPayment = $rental->payments->sortByDesc('payment_id')->first();
+                            // ดึงรายการชำระเงินล่าสุด
+                            $latestPayment = collect($rental->payments ?? [])
+                                ->sortByDesc('payment_id')
+                                ->first();
+
+                            // ยอดที่ควรแสดง = ยอดที่ชำระจริง หากมีค่า
+                            // ถ้ายังไม่มี/เป็น 0 ให้ใช้ยอดรวมรายการเช่าแทน
+                            // เพื่อไม่ให้หน้าเว็บแสดง ฿0.00 ทั้งที่ลูกค้าต้องโอนเงินจริง
+                            $displayPaymentAmount = $latestPayment && (float) $latestPayment->payment_amount > 0
+                                ? (float) $latestPayment->payment_amount
+                                : (float) ($rental->grand_total ?? 0);
                         @endphp
 
                         @if ($latestPayment)
@@ -1700,8 +1710,8 @@
 
                                         ยอด:
 
-                                        <strong>
-                                            ฿{{ number_format($latestPayment->payment_amount, 2) }}
+                                        <strong style="color:var(--primary); font-size:16px;">
+                                            ฿{{ number_format($displayPaymentAmount, 2) }}
                                         </strong>
 
                                         <span
@@ -2304,7 +2314,15 @@
 
         $printGrandTotal = $printNetRental + $printDeposit + $printServiceFee;
 
-        $latestPrintPayment = $rental->payments->sortByDesc('payment_id')->first();
+        $latestPrintPayment = collect($rental->payments ?? [])
+            ->sortByDesc('payment_id')
+            ->first();
+
+        // ยอดชำระสำหรับใบพิมพ์: ใช้ payment_amount หากมีค่า
+        // หากเป็น 0/ไม่มีค่า ให้ใช้ยอดรวมรายการเช่า เพื่อไม่ให้ใบเสร็จแสดง ฿0.00
+        $printPaymentAmount = $latestPrintPayment && (float) $latestPrintPayment->payment_amount > 0
+            ? (float) $latestPrintPayment->payment_amount
+            : (float) ($rental->grand_total ?? $printGrandTotal);
 
     @endphp
 
@@ -2578,7 +2596,7 @@
                         ยอดชำระ:
                     </strong>
 
-                    ฿{{ number_format((float) $latestPrintPayment->payment_amount, 2) }}
+                    ฿{{ number_format($printPaymentAmount, 2) }}
 
                 </div>
 
