@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="th">
 
 <head>
@@ -11,10 +10,9 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>
-
         @yield('title', 'KYRIX | ร้านเช่าชุดสายฝอ สายหวาน ชุดออกงาน')
-
     </title>
+
 
     <!-- Google Fonts -->
 
@@ -26,173 +24,129 @@
         href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Prompt:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
 
+
     <!-- Font Awesome -->
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
+
     <style>
         :root {
-
             --primary: #7a1f2b;
-
             --primary-dark: #58141d;
-
             --primary-light: #9c2e3d;
-
             --primary-soft: #fbf0f2;
 
             --gold: #c69c4c;
-
             --gold-light: #f7eedb;
 
             --bg: #faf8f5;
-
             --surface: #ffffff;
 
             --text-main: #2a2421;
-
             --text-muted: #736b66;
 
             --border: #ede8e3;
 
             --radius-sm: 8px;
-
             --radius-md: 14px;
-
             --radius-lg: 20px;
 
-            --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.03);
+            --shadow-sm:
+                0 4px 12px rgba(0, 0, 0, 0.03);
 
-            --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.06);
+            --shadow-md:
+                0 10px 30px rgba(0, 0, 0, 0.06);
 
-            --shadow-lg: 0 20px 50px rgba(122, 31, 43, 0.12);
-
+            --shadow-lg:
+                0 20px 50px rgba(122, 31, 43, 0.12);
         }
 
 
+        /* ==============================
+           Reset
+        ============================== */
 
-        /* ==============================*
-
-*           Reset*
-
-*        ============================== */
-
-        \* {
-
+        * {
             margin: 0;
-
             padding: 0;
-
             box-sizing: border-box;
-
         }
-
 
 
         html {
-
             scroll-behavior: smooth;
-
             scroll-padding-top: 90px;
-
         }
-
 
 
         body {
-
-            font-family: 'Prompt', 'Plus Jakarta Sans', sans-serif;
+            font-family:
+                'Prompt',
+                'Plus Jakarta Sans',
+                sans-serif;
 
             background-color: var(--bg);
-
             color: var(--text-main);
 
             line-height: 1.6;
-
             min-height: 100vh;
 
             display: flex;
-
             flex-direction: column;
-
         }
-
 
 
         a {
-
             text-decoration: none;
-
             color: inherit;
-
             transition: all 0.2s ease;
-
         }
 
 
-
-        /* ==============================*
-
-*           Top Notification Bar*
-
-*        ============================== */
+        /* ==============================
+           Top Notification Bar
+        ============================== */
 
         .top-banner {
-
             background: #2a2421;
-
             color: #e5dfd8;
 
             font-size: 13px;
-
             padding: 8px 30px;
 
             display: flex;
-
             justify-content: space-between;
-
             align-items: center;
-
         }
-
 
 
         .top-banner a {
-
             color: var(--gold);
-
             font-weight: 500;
-
         }
 
 
-
-        /* ==============================*
-
-*           Main Navigation*
-
-*        ============================== */
+        /* ==============================
+           Main Navigation
+        ============================== */
 
         .header {
-
             background: var(--surface);
 
             border-bottom: 1px solid var(--border);
 
             position: sticky;
-
             top: 0;
 
             z-index: 100;
 
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
-
+            box-shadow:
+                0 2px 10px rgba(0, 0, 0, 0.03);
         }
 
 
-
         .header-container {
-
             max-width: 1280px;
 
             margin: 0 auto;
@@ -200,39 +154,30 @@
             padding: 14px 24px;
 
             display: flex;
-
             align-items: center;
-
             justify-content: space-between;
 
             gap: 20px;
-
         }
 
 
-
-        /* ==============================*
-
-*           Logo*
-
-*        ============================== */
+        /* ==============================
+           Logo
+        ============================== */
 
         .logo-wrap {
-
             display: flex;
-
             flex-direction: column;
-
+            flex-shrink: 0;
         }
-
 
 
         .logo {
-
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-family:
+                'Plus Jakarta Sans',
+                sans-serif;
 
             font-size: 28px;
-
             font-weight: 800;
 
             letter-spacing: 2px;
@@ -240,15 +185,11 @@
             color: var(--primary);
 
             line-height: 1;
-
         }
 
 
-
         .logo-sub {
-
             font-size: 10px;
-
             letter-spacing: 3px;
 
             color: var(--gold);
@@ -258,21 +199,15 @@
             text-transform: uppercase;
 
             margin-top: 3px;
-
         }
 
 
-
-        /* ==============================*
-
-*           Navigation Menu*
-
-*        ============================== */
+        /* ==============================
+           Navigation Menu
+        ============================== */
 
         .nav-links {
-
             display: flex;
-
             align-items: center;
 
             gap: 28px;
@@ -280,15 +215,11 @@
             list-style: none;
 
             position: relative;
-
         }
 
 
-
         .nav-links a {
-
             font-size: 15px;
-
             font-weight: 500;
 
             color: var(--text-main);
@@ -299,44 +230,32 @@
 
             display: block;
 
-            transition: color 0.25s ease;
-
+            transition:
+                color 0.25s ease;
         }
-
 
 
         .nav-links a:hover {
-
             color: var(--primary);
-
         }
-
 
 
         .nav-links a.active {
-
             color: var(--primary);
-
         }
 
 
-
-        /* ==============================*
-
-*           Sliding Indicator*
-
-*        ============================== */
+        /* ==============================
+           Sliding Indicator
+        ============================== */
 
         .nav-indicator {
-
             position: absolute;
 
             left: 0;
-
             bottom: -1px;
 
             width: 0;
-
             height: 2px;
 
             background: var(--primary);
@@ -346,98 +265,78 @@
             pointer-events: none;
 
             margin: 0;
-
             padding: 0;
 
             transition:
-
                 transform 0.45s cubic-bezier(0.4, 0, 0.2, 1),
-
                 width 0.45s cubic-bezier(0.4, 0, 0.2, 1);
-
         }
 
 
-
-        /* ==============================*
-
-*           Header Actions*
-
-*        ============================== */
+        /* ==============================
+           Header Actions
+        ============================== */
 
         .header-actions {
-
             display: flex;
-
             align-items: center;
 
             gap: 16px;
 
+            flex-shrink: 0;
         }
 
 
-
-        /* ==============================*
-
-*           Search*
-
-*        ============================== */
+        /* ==============================
+           Search
+        ============================== */
 
         .search-box {
-
             position: relative;
-
             width: 220px;
-
         }
-
 
 
         .search-box input {
-
             width: 100%;
 
-            padding: 9px 36px 9px 14px;
+            padding:
+                9px 36px 9px 14px;
 
             border-radius: 30px;
 
-            border: 1px solid var(--border);
+            border:
+                1px solid var(--border);
 
             background: #faf8f5;
 
             font-family: inherit;
-
             font-size: 13px;
 
             transition: all 0.2s;
-
         }
 
 
-
         .search-box input:focus {
-
             outline: none;
 
             border-color: var(--primary);
 
             background: #fff;
 
-            box-shadow: 0 0 0 3px rgba(122, 31, 43, 0.1);
-
+            box-shadow:
+                0 0 0 3px rgba(122, 31, 43, 0.1);
         }
 
 
-
         .search-box button {
-
             position: absolute;
 
             right: 12px;
-
             top: 50%;
 
-            transform: translateY(-50%);
+            transform:
+                translateY(-50%);
 
             border: none;
 
@@ -446,63 +345,52 @@
             color: var(--text-muted);
 
             cursor: pointer;
-
         }
 
 
-
-        /* ==============================*
-
-*           Cart*
-
-*        ============================== */
+        /* ==============================
+           Cart
+        ============================== */
 
         .cart-btn {
-
             position: relative;
 
-            background: var(--primary-soft);
+            background:
+                var(--primary-soft);
 
-            color: var(--primary);
+            color:
+                var(--primary);
 
             width: 42px;
-
             height: 42px;
 
             border-radius: 50%;
 
             display: flex;
-
             align-items: center;
-
             justify-content: center;
 
             font-size: 18px;
 
             transition: all 0.2s;
 
+            flex-shrink: 0;
         }
-
 
 
         .cart-btn:hover {
-
             background: var(--primary);
-
             color: #fff;
 
-            transform: translateY(-2px);
-
+            transform:
+                translateY(-2px);
         }
 
 
-
         .cart-badge {
-
             position: absolute;
 
             top: -4px;
-
             right: -4px;
 
             background: var(--gold);
@@ -510,56 +398,46 @@
             color: #fff;
 
             font-size: 11px;
-
             font-weight: 700;
 
             width: 20px;
-
             height: 20px;
 
             border-radius: 50%;
 
             display: flex;
-
             align-items: center;
-
             justify-content: center;
 
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-
+            box-shadow:
+                0 2px 6px rgba(0, 0, 0, 0.15);
         }
 
 
-
-        /* ==============================*
-
-*           User Menu*
-
-*        ============================== */
+        /* ==============================
+           User Menu
+        ============================== */
 
         .user-menu {
-
             position: relative;
-
         }
-
 
 
         .user-trigger {
-
             display: flex;
-
             align-items: center;
 
             gap: 8px;
 
-            padding: 5px 10px 5px 5px;
+            padding:
+                5px 10px 5px 5px;
 
             border-radius: 30px;
 
             background: #fff;
 
-            border: 1px solid var(--border);
+            border:
+                1px solid var(--border);
 
             cursor: pointer;
 
@@ -570,27 +448,20 @@
             transition: all 0.2s ease;
 
             font-family: inherit;
-
         }
-
 
 
         .user-trigger:hover {
+            border-color:
+                var(--primary);
 
-            border-color: var(--primary);
-
-            background: var(--primary-soft);
-
+            background:
+                var(--primary-soft);
         }
 
 
-
-        /* รูปโปรไฟล์ */
-
         .profile-avatar {
-
             width: 34px;
-
             height: 34px;
 
             border-radius: 50%;
@@ -599,44 +470,34 @@
 
             display: block;
 
-            border: 2px solid var(--primary-soft);
-
+            border:
+                2px solid var(--primary-soft);
         }
 
 
-
-        /* ถ้ายังไม่มีรูป */
-
         .user-avatar {
-
             width: 34px;
-
             height: 34px;
 
             border-radius: 50%;
 
-            background: var(--primary);
+            background:
+                var(--primary);
 
             color: #fff;
 
             display: flex;
-
             align-items: center;
-
             justify-content: center;
 
             font-size: 13px;
-
             font-weight: 700;
 
             flex-shrink: 0;
-
         }
 
 
-
         .profile-name {
-
             max-width: 130px;
 
             white-space: nowrap;
@@ -646,57 +507,49 @@
             text-overflow: ellipsis;
 
             font-weight: 500;
-
         }
 
 
-
-        /* ==============================*
-
-*           Dropdown*
-
-*        ============================== */
+        /* ==============================
+           Dropdown
+        ============================== */
 
         .dropdown-menu {
-
             position: absolute;
 
             right: 0;
 
-            top: calc(100% + 8px);
+            top:
+                calc(100% + 8px);
 
             background: #fff;
 
             min-width: 260px;
 
-            border-radius: var(--radius-md);
+            border-radius:
+                var(--radius-md);
 
-            box-shadow: var(--shadow-md);
+            box-shadow:
+                var(--shadow-md);
 
-            border: 1px solid var(--border);
+            border:
+                1px solid var(--border);
 
             padding: 8px 0;
 
             display: none;
 
             z-index: 200;
-
         }
-
 
 
         .user-menu:hover .dropdown-menu {
-
             display: block;
-
         }
 
 
-
         .dropdown-item {
-
             display: flex;
-
             align-items: center;
 
             gap: 10px;
@@ -710,101 +563,76 @@
             width: 100%;
 
             transition: all 0.2s ease;
-
         }
-
 
 
         .dropdown-item:hover {
+            background:
+                var(--primary-soft);
 
-            background: var(--primary-soft);
-
-            color: var(--primary);
-
+            color:
+                var(--primary);
         }
-
 
 
         .dropdown-item i {
-
             width: 18px;
-
             text-align: center;
-
         }
-
 
 
         .dropdown-divider {
-
             height: 1px;
 
-            background: var(--border);
+            background:
+                var(--border);
 
             margin: 6px 0;
-
         }
 
 
-
-        /* ==============================*
-
-*           Dropdown User Info*
-
-*        ============================== */
+        /* ==============================
+           Dropdown User Info
+        ============================== */
 
         .profile-dropdown-header {
-
             padding: 14px 18px;
 
-            border-bottom: 1px solid var(--border);
+            border-bottom:
+                1px solid var(--border);
 
             display: flex;
-
             align-items: center;
 
             gap: 12px;
-
         }
-
 
 
         .profile-dropdown-name {
-
             font-size: 14px;
-
             font-weight: 600;
 
             color: var(--text-main);
-
         }
 
 
-
         .profile-dropdown-role {
-
             font-size: 12px;
 
             color: var(--text-muted);
 
             margin-top: 2px;
-
         }
 
 
-
-        /* ==============================*
-
-*           Buttons*
-
-*        ============================== */
+        /* ==============================
+           Buttons
+        ============================== */
 
         .btn {
-
             display: inline-flex;
 
             align-items: center;
-
             justify-content: center;
 
             gap: 8px;
@@ -823,124 +651,105 @@
 
             border: none;
 
-            transition: all 0.25s ease;
+            transition:
+                all 0.25s ease;
 
             text-decoration: none;
-
         }
-
 
 
         .btn-primary {
-
-            background: var(--primary);
+            background:
+                var(--primary);
 
             color: #fff;
-
         }
-
 
 
         .btn-primary:hover {
+            background:
+                var(--primary-dark);
 
-            background: var(--primary-dark);
+            box-shadow:
+                0 8px 20px rgba(122, 31, 43, 0.25);
 
-            box-shadow: 0 8px 20px rgba(122, 31, 43, 0.25);
-
-            transform: translateY(-2px);
-
+            transform:
+                translateY(-2px);
         }
-
 
 
         .btn-secondary {
-
             background: #fff;
 
-            color: var(--primary);
+            color:
+                var(--primary);
 
-            border: 1px solid var(--primary);
-
+            border:
+                1px solid var(--primary);
         }
-
 
 
         .btn-secondary:hover {
-
-            background: var(--primary-soft);
-
+            background:
+                var(--primary-soft);
         }
-
 
 
         .btn-gold {
-
-            background: var(--gold);
+            background:
+                var(--gold);
 
             color: #fff;
-
         }
-
 
 
         .btn-gold:hover {
+            background:
+                #b58c3f;
 
-            background: #b58c3f;
-
-            box-shadow: 0 8px 20px rgba(198, 156, 76, 0.3);
-
+            box-shadow:
+                0 8px 20px rgba(198, 156, 76, 0.3);
         }
 
 
-
         .btn-sm {
-
-            padding: 7px 14px;
+            padding:
+                7px 14px;
 
             font-size: 13px;
 
             border-radius: 8px;
-
         }
-
 
 
         .btn-block {
-
             width: 100%;
-
         }
 
 
-
-        /* ==============================*
-
-*           Flash Alerts*
-
-*        ============================== */
+        /* ==============================
+           Flash Alerts
+        ============================== */
 
         .alerts-container {
-
             max-width: 1280px;
 
             margin: 20px auto 0;
 
-            padding: 0 24px;
-
+            padding:
+                0 24px;
         }
 
 
-
         .alert {
-
             padding: 14px 20px;
 
-            border-radius: var(--radius-md);
+            border-radius:
+                var(--radius-md);
 
             margin-bottom: 16px;
 
             display: flex;
-
             align-items: center;
 
             gap: 12px;
@@ -949,188 +758,132 @@
 
             font-weight: 500;
 
-            box-shadow: var(--shadow-sm);
-
+            box-shadow:
+                var(--shadow-sm);
         }
-
 
 
         .alert-success {
-
             background: #edfbf3;
-
             color: #1a7f47;
 
-            border: 1px solid #b7ecd0;
-
+            border:
+                1px solid #b7ecd0;
         }
-
 
 
         .alert-error,
-
         .alert-danger {
-
             background: #fdf2f2;
-
             color: #b91c1c;
 
-            border: 1px solid #fecaca;
-
+            border:
+                1px solid #fecaca;
         }
-
 
 
         .alert-warning {
-
             background: #fffbeb;
-
             color: #b45309;
 
-            border: 1px solid #fde68a;
-
+            border:
+                1px solid #fde68a;
         }
 
 
-
-        /* ==============================*
-
-*           Main Content*
-
-*        ============================== */
+        /* ==============================
+           Main Content
+        ============================== */
 
         .main-content {
-
             flex: 1;
-
         }
 
 
-
-        /* ==============================*
-
-*           Badges*
-
-*        ============================== */
+        /* ==============================
+           Badges
+        ============================== */
 
         .badge {
-
             display: inline-flex;
 
             align-items: center;
 
             gap: 6px;
 
-            padding: 4px 10px;
+            padding:
+                4px 10px;
 
             border-radius: 20px;
 
             font-size: 12px;
 
             font-weight: 600;
-
         }
-
 
 
         .badge-warning {
-
             background: #fef3c7;
-
             color: #b45309;
-
         }
-
 
 
         .badge-info {
-
             background: #e0f2fe;
-
             color: #0369a1;
-
         }
-
 
 
         .badge-primary {
+            background:
+                var(--primary-soft);
 
-            background: var(--primary-soft);
-
-            color: var(--primary);
-
+            color:
+                var(--primary);
         }
-
 
 
         .badge-indigo {
-
             background: #e0e7ff;
-
             color: #4338ca;
-
         }
-
 
 
         .badge-teal {
-
             background: #ccfbf1;
-
             color: #0f766e;
-
         }
-
 
 
         .badge-amber {
-
             background: #ffedd5;
-
             color: #c2410c;
-
         }
-
 
 
         .badge-success {
-
             background: #dcfce7;
-
             color: #15803d;
-
         }
-
 
 
         .badge-emerald {
-
             background: #d1fae5;
-
             color: #065f46;
-
         }
-
 
 
         .badge-danger {
-
             background: #fee2e2;
-
             color: #b91c1c;
-
         }
 
 
-
-        /* ==============================*
-
-*           Footer*
-
-*        ============================== */
+        /* ==============================
+           Footer
+        ============================== */
 
         .footer {
-
             background: #1f1b19;
 
             color: #d1c8c1;
@@ -1139,32 +892,29 @@
 
             padding-top: 60px;
 
-            border-top: 3px solid var(--primary);
-
+            border-top:
+                3px solid var(--primary);
         }
 
 
-
         .footer-container {
-
             max-width: 1280px;
 
             margin: 0 auto;
 
-            padding: 0 24px 50px;
+            padding:
+                0 24px 50px;
 
             display: grid;
 
-            grid-template-columns: 2fr 1fr 1fr 1.5fr;
+            grid-template-columns:
+                2fr 1fr 1fr 1.5fr;
 
             gap: 40px;
-
         }
 
 
-
         .footer-col h4 {
-
             color: #fff;
 
             font-size: 17px;
@@ -1174,81 +924,59 @@
             position: relative;
 
             padding-bottom: 8px;
-
         }
 
 
-
         .footer-col h4::after {
-
             content: '';
 
             position: absolute;
 
             bottom: 0;
-
             left: 0;
 
             width: 35px;
-
             height: 2px;
 
-            background: var(--gold);
-
+            background:
+                var(--gold);
         }
 
 
-
         .footer-col p {
-
             font-size: 14px;
 
             line-height: 1.8;
 
             color: #a69e97;
-
         }
-
 
 
         .footer-links {
-
             list-style: none;
-
         }
-
 
 
         .footer-links li {
-
             margin-bottom: 10px;
-
         }
-
 
 
         .footer-links a {
-
             color: #a69e97;
 
             font-size: 14px;
-
         }
-
 
 
         .footer-links a:hover {
-
             color: var(--gold);
 
             padding-left: 5px;
-
         }
 
 
-
         .contact-info li {
-
             display: flex;
 
             align-items: flex-start;
@@ -1260,67 +988,55 @@
             font-size: 14px;
 
             color: #a69e97;
-
         }
-
 
 
         .contact-info i {
-
             color: var(--gold);
 
             margin-top: 4px;
-
         }
 
 
-
         .footer-bottom {
+            border-top:
+                1px solid #332d29;
 
-            border-top: 1px solid #332d29;
-
-            padding: 20px 24px;
+            padding:
+                20px 24px;
 
             text-align: center;
 
             font-size: 13px;
 
             color: #807771;
-
         }
 
 
-
-        /* ==============================*
-
-*           BACK TO TOP*
-
-*        ============================== */
+        /* ==============================
+           BACK TO TOP
+        ============================== */
 
         .back-to-top {
-
             position: fixed;
 
             right: 24px;
-
             bottom: 24px;
 
             width: 50px;
-
             height: 50px;
 
             border: none;
 
             border-radius: 50%;
 
-            background: var(--primary);
+            background:
+                var(--primary);
 
             color: #fff;
 
             display: flex;
-
             align-items: center;
-
             justify-content: center;
 
             font-size: 17px;
@@ -1328,87 +1044,70 @@
             cursor: pointer;
 
             opacity: 0;
-
             visibility: hidden;
 
-            transform: translateY(25px);
+            transform:
+                translateY(25px);
 
             transition:
-
                 opacity 0.3s ease,
-
                 visibility 0.3s ease,
-
                 transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-
                 background 0.25s ease,
-
                 box-shadow 0.25s ease;
 
             z-index: 99999;
 
-            box-shadow: 0 8px 22px rgba(122, 31, 43, 0.25);
-
+            box-shadow:
+                0 8px 22px rgba(122, 31, 43, 0.25);
         }
 
 
-
         .back-to-top.show {
-
             opacity: 1;
 
             visibility: visible;
 
-            transform: translateY(0);
-
+            transform:
+                translateY(0);
         }
-
 
 
         .back-to-top:hover {
+            background:
+                var(--primary-dark);
 
-            background: var(--primary-dark);
+            transform:
+                translateY(-7px);
 
-            transform: translateY(-7px);
-
-            box-shadow: 0 14px 30px rgba(122, 31, 43, 0.35);
-
+            box-shadow:
+                0 14px 30px rgba(122, 31, 43, 0.35);
         }
-
 
 
         .back-to-top:active {
-
-            transform: translateY(-2px) scale(0.94);
-
+            transform:
+                translateY(-2px) scale(0.94);
         }
-
 
 
         .back-to-top i {
-
-            transition: transform 0.25s ease;
-
+            transition:
+                transform 0.25s ease;
         }
-
 
 
         .back-to-top:hover i {
-
-            transform: translateY(-3px);
-
+            transform:
+                translateY(-3px);
         }
 
 
-
-        /* ==============================*
-
-*           Mobile*
-
-*        ============================== */
+        /* ==============================
+           Mobile
+        ============================== */
 
         .mobile-menu-btn {
-
             display: none;
 
             background: none;
@@ -1420,104 +1119,113 @@
             color: var(--text-main);
 
             cursor: pointer;
-
         }
-
 
 
         @media (max-width: 992px) {
 
             .nav-links {
-
                 display: none;
-
             }
 
             .mobile-menu-btn {
-
                 display: block;
-
             }
 
             .search-box {
-
                 display: none;
-
             }
 
             .footer-container {
+                grid-template-columns:
+                    1fr 1fr;
+            }
 
-                grid-template-columns: 1fr 1fr;
-
+            .header-actions {
+                gap: 10px;
             }
 
         }
-
 
 
         @media (max-width: 600px) {
 
             .footer-container {
-
-                grid-template-columns: 1fr;
-
+                grid-template-columns:
+                    1fr;
             }
 
             .top-banner {
-
                 display: none;
-
             }
 
             .profile-name {
-
                 display: none;
-
             }
 
             .back-to-top {
-
                 width: 44px;
-
                 height: 44px;
 
                 right: 16px;
-
                 bottom: 16px;
-
             }
 
             .dropdown-menu {
-
                 right: -20px;
-
                 min-width: 240px;
+            }
 
+            .header-container {
+                padding:
+                    12px 16px;
+
+                gap: 10px;
+            }
+
+            .logo {
+                font-size: 24px;
+            }
+
+            .logo-sub {
+                font-size: 8px;
+            }
+
+            /*
+            ปุ่มเข้าสู่ระบบ/สมัครสมาชิก
+            ยังแสดงบนมือถือ
+            */
+
+            .guest-actions {
+                gap: 5px;
+            }
+
+            .guest-actions .btn-sm {
+                padding:
+                    6px 9px;
+
+                font-size: 11px;
             }
 
         }
     </style>
+
 
     @stack('styles')
 
 </head>
 
 
-
 <body>
 
 
-
     <!-- ==============================
-
-*         Header Navigation*
-
-*    ============================== -->
+         Header Navigation
+    ============================== -->
 
     <header class="header">
 
         <div class="header-container">
-
 
 
             <!-- Logo -->
@@ -1525,19 +1233,14 @@
             <a href="{{ route('home') }}" class="logo-wrap">
 
                 <span class="logo">
-
                     KYRIX
-
                 </span>
 
                 <span class="logo-sub">
-
                     DRESS RENTAL
-
                 </span>
 
             </a>
-
 
 
             <!-- Navigation -->
@@ -1545,66 +1248,50 @@
             <ul class="nav-links">
 
 
-
                 <li>
 
                     <a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'active' : '' }}">
-
                         หน้าแรก
-
                     </a>
 
                 </li>
-
 
 
                 <li>
 
                     <a href="{{ route('products.index') }}"
-                        class="{{ request()->routeIs('products.\*') ? 'active' : '' }}">
-
+                        class="{{ request()->routeIs('products.*') ? 'active' : '' }}">
                         ชุดทั้งหมด
-
                     </a>
 
                 </li>
-
 
 
                 <li>
 
                     <a href="{{ route('home') }}#categories" class="js-hash-link" data-hash="categories">
-
                         ประเภทชุด
-
                     </a>
 
                 </li>
-
 
 
                 <li>
 
                     <a href="{{ route('home') }}#how-it-works" class="js-hash-link" data-hash="how-it-works">
-
                         วิธีการเช่า
-
                     </a>
 
                 </li>
-
 
 
                 <li>
 
                     <a href="{{ route('home') }}#contact" class="js-hash-link" data-hash="contact">
-
                         ติดต่อร้าน
-
                     </a>
 
                 </li>
-
 
 
                 <!-- Sliding Indicator -->
@@ -1614,15 +1301,11 @@
             </ul>
 
 
-
             <!-- ==============================
-
-*                 Header Actions*
-
-*            ============================== -->
+                 Header Actions
+            ============================== -->
 
             <div class="header-actions">
-
 
 
                 <!-- Search -->
@@ -1640,7 +1323,6 @@
                 </form>
 
 
-
                 <!-- Cart -->
 
                 @php
@@ -1650,9 +1332,7 @@
                     $cartCount = collect($cart)->sum(function ($item) {
                         return (int) ($item['qty'] ?? 1);
                     });
-
                 @endphp
-
 
 
                 <a href="{{ route('cart.index') }}" class="cart-btn" title="ตะกร้าเช่าชุด">
@@ -1670,16 +1350,15 @@
                 </a>
 
 
-
-
-
-
+                <!-- ===================================================== -->
+                <!-- ตรวจสอบสถานะผู้ใช้งาน -->
+                <!-- ===================================================== -->
 
                 @php
 
                     $customerId = session('customer_id');
 
-                    $customerName = session('customer_name', 'ผู้ใช้งาน');
+                    $customerName = session('customer_name');
 
                     $customer = null;
 
@@ -1687,110 +1366,98 @@
                         $customer = \App\Models\Customer::find($customerId);
                     }
 
+                    /*
+                    |--------------------------------------------------------------------------
+                    | ตรวจสอบว่าล็อกอินแล้วหรือไม่
+                    |--------------------------------------------------------------------------
+                    */
+
+                    $isLoggedIn = session('customer_logged_in', false) || auth()->check();
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | กำหนดชื่อที่ใช้แสดง
+                    |--------------------------------------------------------------------------
+                    */
+
+                    if (!empty($customerName)) {
+                        $displayName = $customerName;
+                    } elseif ($customer) {
+                        $displayName = trim(($customer->first_name ?? '') . ' ' . ($customer->last_name ?? ''));
+                    } elseif (auth()->check()) {
+                        $displayName = auth()->user()->name ?? 'ลูกค้า';
+                    } else {
+                        $displayName = 'ลูกค้า';
+                    }
+
+                    if (empty($displayName)) {
+                        $displayName = 'ลูกค้า';
+                    }
                 @endphp
 
 
+                @if ($isLoggedIn)
+                    <!-- ================================================= -->
+                    <!-- Logged In Profile -->
+                    <!-- ================================================= -->
 
-                @if ($customer)
-
-                    <!-- ==============================
-
-*                         Logged In Profile*
-
-*                    ============================== -->
-
-                    @if (session('customer_logged_in') || auth()->check())
-                        @php
-
-                            $displayName =
-                                session('customer_name') ?: (auth()->check() ? auth()->user()->name : 'ลูกค้า');
-
-                        @endphp
+                    <div class="user-menu">
 
 
+                        <!-- Profile Button -->
 
-                        <div class="user-menu">
+                        <button type="button" class="user-trigger" aria-label="เมนูผู้ใช้งาน">
 
+                            <div class="user-avatar">
 
+                                {{ mb_substr($displayName, 0, 1, 'UTF-8') }}
 
-                            <!-- Profile Button -->
-
-                            <button type="button" class="user-trigger" aria-label="เมนูผู้ใช้งาน">
-
-                                <div class="user-avatar">
-
-                                    {{ mb_substr($customerName, 0, 1) }}
-
-                                </div>
+                            </div>
 
 
+                            <span class="profile-name">
 
-                                <span class="profile-name">
+                                {{ $displayName }}
 
-                                    {{ $customerName }}
-
-
-
-                                    {{ mb_substr($displayName, 0, 1) }}
-
-                        </div>
+                            </span>
 
 
-
-                        <span>
-
-                            {{ $displayName }}
-
-                        </span>
-
-
-
-                        <i class="fa-solid fa-chevron-down" style="font-size: 10px;"></i>
+                            <i class="fa-solid fa-chevron-down" style="font-size:10px;"></i>
 
                         </button>
 
 
-
-                        <!-- ==============================
-
-*                             Profile Dropdown*
-
-*                        ============================== -->
+                        <!-- ================================================= -->
+                        <!-- Profile Dropdown -->
+                        <!-- ================================================= -->
 
                         <div class="dropdown-menu">
-
 
 
                             <!-- User Info -->
 
                             <div class="profile-dropdown-header">
 
-
-
                                 <div class="user-avatar"
                                     style="
-
-                                        width: 42px;
-
-                                        height: 42px;
-
-                                        font-size: 16px;
-
+                                        width:42px;
+                                        height:42px;
+                                        font-size:16px;
                                     ">
 
-                                    {{ mb_substr($customerName, 0, 1) }}
+                                    {{ mb_substr($displayName, 0, 1, 'UTF-8') }}
 
                                 </div>
-
 
 
                                 <div>
 
                                     <div class="profile-dropdown-name">
 
-                                        {{ $customerName }}
+                                        {{ $displayName }}
 
                                     </div>
+
 
                                     <div class="profile-dropdown-role">
 
@@ -1801,7 +1468,6 @@
                                 </div>
 
                             </div>
-
 
 
                             <!-- Dashboard -->
@@ -1815,7 +1481,6 @@
                             </a>
 
 
-
                             <!-- Rentals -->
 
                             <a href="{{ route('rentals.index') }}" class="dropdown-item">
@@ -1825,7 +1490,6 @@
                                 การจองของฉัน
 
                             </a>
-
 
 
                             <!-- Rental History -->
@@ -1839,7 +1503,6 @@
                             </a>
 
 
-
                             <!-- Profile -->
 
                             <a href="{{ route('profile.index') }}" class="dropdown-item">
@@ -1851,9 +1514,7 @@
                             </a>
 
 
-
                             <div class="dropdown-divider"></div>
-
 
 
                             <!-- Logout -->
@@ -1864,21 +1525,13 @@
 
                                 <button type="submit" class="dropdown-item"
                                     style="
-
-                                        width: 100%;
-
-                                        border: none;
-
-                                        background: none;
-
-                                        cursor: pointer;
-
-                                        text-align: left;
-
-                                        color: #dc2626;
-
-                                        font-family: inherit;
-
+                                        width:100%;
+                                        border:none;
+                                        background:none;
+                                        cursor:pointer;
+                                        text-align:left;
+                                        color:#dc2626;
+                                        font-family:inherit;
                                     ">
 
                                     <i class="fa-solid fa-right-from-bracket"></i>
@@ -1889,65 +1542,52 @@
 
                             </form>
 
-
-
                         </div>
 
-            </div>
-        @else
-            <!-- ==============================
+                    </div>
+                @else
+                    <!-- ================================================= -->
+                    <!-- Guest -->
+                    <!-- ================================================= -->
 
-*                         Guest*
-
-*                    ============================== -->
-
-            <div
-                style="
-
-                            display: flex;
-
-                            gap: 8px;
-
+                    <div class="guest-actions"
+                        style="
+                            display:flex;
+                            align-items:center;
+                            gap:8px;
                         ">
 
-                <a href="{{ route('login') }}" class="btn btn-secondary btn-sm">
+                        <a href="{{ route('login') }}" class="btn btn-secondary btn-sm">
 
-                    เข้าสู่ระบบ
+                            เข้าสู่ระบบ
 
-                </a>
+                        </a>
 
 
+                        <a href="{{ route('register') }}" class="btn btn-primary btn-sm">
 
-                <a href="{{ route('register') }}" class="btn btn-primary btn-sm">
+                            สมัครสมาชิก
 
-                    สมัครสมาชิก
+                        </a>
 
-                </a>
+                    </div>
+                @endif
+
 
             </div>
-            @endif
-            @endif
-
-
-
-        </div>
 
         </div>
 
     </header>
 
 
-
     <!-- ==============================
-
-*         Flash Alerts*
-
-*    ============================== -->
+         Flash Alerts
+    ============================== -->
 
     @if (session('success') || session('error') || session('warning'))
 
         <div class="alerts-container">
-
 
 
             @if (session('success'))
@@ -1956,14 +1596,11 @@
                     <i class="fa-solid fa-circle-check"></i>
 
                     <span>
-
                         {{ session('success') }}
-
                     </span>
 
                 </div>
             @endif
-
 
 
             @if (session('error'))
@@ -1972,14 +1609,11 @@
                     <i class="fa-solid fa-circle-exclamation"></i>
 
                     <span>
-
                         {{ session('error') }}
-
                     </span>
 
                 </div>
             @endif
-
 
 
             @if (session('warning'))
@@ -1988,14 +1622,11 @@
                     <i class="fa-solid fa-triangle-exclamation"></i>
 
                     <span>
-
                         {{ session('warning') }}
-
                     </span>
 
                 </div>
             @endif
-
 
 
         </div>
@@ -2003,12 +1634,9 @@
     @endif
 
 
-
     <!-- ==============================
-
-*         Main Content*
-
-*    ============================== -->
+         Main Content
+    ============================== -->
 
     <main class="main-content">
 
@@ -2017,275 +1645,200 @@
     </main>
 
 
-
     <!-- ==============================
-
-*         Footer*
-
-*    ============================== -->
+         Footer
+    ============================== -->
 
     <footer class="footer">
 
 
-
         <div class="footer-container">
-
 
 
             <!-- About -->
 
             <div class="footer-col">
 
-
-
-                <span class="logo" style="color: #fff;">
-
+                <span class="logo" style="color:#fff;">
                     KYRIX
-
                 </span>
-
 
 
                 <p
                     style="
-
-                        margin-top: 14px;
-
-                        max-width: 320px;
-
+                        margin-top:14px;
+                        max-width:320px;
                     ">
 
                     ร้านเช่าชุดออนไลน์อันดับหนึ่ง
 
-                    บริการเช่าชุดสายฝอ สายหวาน ชุดออกงาน
+                    บริการเช่าชุดสายฝอ
+                    สายหวาน
+                    ชุดออกงาน
 
                     เกรดพรีเมียม
 
-                    คัตติ้งเนี้ยบ สะอาด หอม
+                    คัตติ้งเนี้ยบ
+                    สะอาด
+                    หอม
 
                     พร้อมใช้งานสำหรับวันสำคัญของคุณ
 
                 </p>
 
-
-
-
-
-
-
             </div>
-
 
 
             <!-- Footer Menu -->
 
             <div class="footer-col">
 
-
-
                 <h4>
-
                     เมนูลัด
-
                 </h4>
-
 
 
                 <ul class="footer-links">
 
 
-
                     <li>
 
                         <a href="{{ route('home') }}">
-
                             หน้าแรก
-
                         </a>
 
                     </li>
-
 
 
                     <li>
 
                         <a href="{{ route('products.index') }}">
-
                             ชุดทั้งหมด
-
                         </a>
 
                     </li>
-
 
 
                     <li>
 
                         <a href="{{ route('home') }}#how-it-works">
-
                             ขั้นตอนการเช่าชุด
-
                         </a>
 
                     </li>
-
 
 
                     <li>
 
                         <a href="{{ route('cart.index') }}">
-
                             ตะกร้าเช่าชุด
-
                         </a>
 
                     </li>
-
 
 
                     <li>
 
                         <a href="{{ route('rentals.index') }}">
-
                             ติดตามสถานะการจอง
-
                         </a>
 
                     </li>
 
-
-
                 </ul>
 
-
-
             </div>
-
 
 
             <!-- Categories -->
 
             <div class="footer-col">
 
-
-
                 <h4>
-
                     ประเภทชุด
-
                 </h4>
-
 
 
                 <ul class="footer-links">
 
 
-
                     <li>
 
                         <a href="{{ route('products.index') }}?category_id=1">
-
                             ชุดสายฝอ
-
                         </a>
 
                     </li>
-
 
 
                     <li>
 
                         <a href="{{ route('products.index') }}?category_id=2">
-
                             ชุดสายหวาน
-
                         </a>
 
                     </li>
-
 
 
                     <li>
 
                         <a href="{{ route('products.index') }}?category_id=3">
-
                             ชุดออกงาน
-
                         </a>
 
                     </li>
-
 
 
                     <li>
 
                         <a href="{{ route('products.index') }}?category_id=4">
-
                             มินิเดรส
-
                         </a>
 
                     </li>
 
 
-
                     <li>
 
                         <a href="{{ route('products.index') }}?category_id=6">
-
                             เสื้อ & ท็อปส์
-
                         </a>
 
                     </li>
 
+
                     <li>
 
                         <a href="{{ route('products.index') }}?category_id=6">
-
                             กระโปรง
-
                         </a>
 
                     </li>
+
 
                     <li>
 
                         <a href="{{ route('products.index') }}?category_id=6">
-
                             กางเกง
-
                         </a>
 
                     </li>
-
-
-
 
                 </ul>
 
-
-
             </div>
-
 
 
             <!-- Contact -->
 
             <div class="footer-col" id="contact">
 
-
-
                 <h4>
-
                     ติดต่อร้าน KYRIX
-
                 </h4>
 
 
-
-                <ul class="contact-info" style="list-style: none;">
-
+                <ul class="contact-info" style="list-style:none;">
 
 
                     <li>
@@ -2305,19 +1858,15 @@
                     </li>
 
 
-
                     <li>
 
                         <i class="fa-solid fa-phone"></i>
 
                         <span>
-
                             06525990723
-
                         </span>
 
                     </li>
-
 
 
                     <li>
@@ -2325,13 +1874,10 @@
                         <i class="fa-solid fa-envelope"></i>
 
                         <span>
-
                             apatsara1a@gmail.com
-
                         </span>
 
                     </li>
-
 
 
                     <li>
@@ -2348,14 +1894,12 @@
 
                     </li>
 
-
-
                 </ul>
 
             </div>
 
-        </div>
 
+        </div>
 
 
         <div class="footer-bottom">
@@ -2371,12 +1915,9 @@
     </footer>
 
 
-
     <!-- ==============================
-
-*         Back To Top*
-
-*    ============================== -->
+         Back To Top
+    ============================== -->
 
     <button type="button" class="back-to-top" id="backToTop" aria-label="กลับขึ้นด้านบน" title="กลับขึ้นด้านบน">
 
@@ -2385,151 +1926,106 @@
     </button>
 
 
-
     <!-- ==============================
-
-*         JavaScript*
-
-*    ============================== -->
+         JavaScript
+    ============================== -->
 
     <script>
         document.addEventListener(
-
             'DOMContentLoaded',
-
             function() {
 
 
-
-                /* =========================================*
-
-        *                   Navigation Sliding Indicator*
-
-        *                ========================================= */
+                /* =========================================
+                   Navigation Sliding Indicator
+                ========================================= */
 
                 const nav =
-
                     document.querySelector(
-
                         '.nav-links'
-
                     );
+
 
                 const indicator =
-
                     document.querySelector(
-
                         '.nav-indicator'
-
                     );
+
 
                 const links =
-
                     document.querySelectorAll(
-
                         '.nav-links a'
-
                     );
-
 
 
                 if (
-
                     nav &&
-
                     indicator &&
-
                     links.length
-
                 ) {
 
 
-
                     function moveIndicator(
-
-                        *
-                        link * ,
-
-                        * animate * = true
-
+                        link,
+                        animate = true
                     ) {
 
                         if (!link) {
 
                             indicator.style.width =
-
                                 '0px';
 
                             return;
-
                         }
 
 
-
                         const navRect =
-
                             nav.getBoundingClientRect();
 
-                        const linkRect =
 
+                        const linkRect =
                             link.getBoundingClientRect();
 
 
-
                         const left =
-
                             linkRect.left -
-
                             navRect.left;
 
 
-
                         const width =
-
                             linkRect.width;
-
 
 
                         if (!animate) {
 
                             indicator.style.transition =
-
                                 'none';
 
                         } else {
 
                             indicator.style.transition =
-
                                 'transform 0.45s cubic-bezier(0.4, 0, 0.2, 1), width 0.45s cubic-bezier(0.4, 0, 0.2, 1)';
 
                         }
 
 
-
                         indicator.style.width =
-
                             width + 'px';
 
 
-
                         indicator.style.transform =
-
                             `translateX(${left}px)`;
-
 
 
                         if (!animate) {
 
                             requestAnimationFrame(
-
                                 function() {
 
                                     indicator.style.transition =
-
                                         'transform 0.45s cubic-bezier(0.4, 0, 0.2, 1), width 0.45s cubic-bezier(0.4, 0, 0.2, 1)';
 
                                 }
-
                             );
 
                         }
@@ -2537,39 +2033,29 @@
                     }
 
 
-
-                    function setActive( * link * ) {
+                    function setActive(link) {
 
                         links.forEach(
-
-                            function( * item * ) {
+                            function(item) {
 
                                 item.classList.remove(
-
                                     'active'
-
                                 );
 
                             }
-
                         );
-
 
 
                         if (link) {
 
                             link.classList.add(
-
                                 'active'
-
                             );
 
+
                             moveIndicator(
-
                                 link,
-
                                 true
-
                             );
 
                         }
@@ -2577,39 +2063,27 @@
                     }
 
 
-
                     let activeLink =
-
                         document.querySelector(
-
                             '.nav-links a.active'
-
                         );
 
 
-
                     const hash =
-
                         window.location.hash;
-
 
 
                     if (hash) {
 
                         const hashLink =
-
                             document.querySelector(
-
                                 `.nav-links a[data-hash="${hash.substring(1)}"]`
-
                             );
-
 
 
                         if (hashLink) {
 
                             activeLink =
-
                                 hashLink;
 
                         }
@@ -2617,132 +2091,90 @@
                     }
 
 
-
                     if (activeLink) {
 
                         moveIndicator(
-
                             activeLink,
-
                             false
-
                         );
 
+
                         activeLink.classList.add(
-
                             'active'
-
                         );
 
                     }
 
 
-
                     links.forEach(
-
-                        function( * link * ) {
+                        function(link) {
 
                             link.addEventListener(
-
                                 'click',
-
-                                function( * e * ) {
+                                function(e) {
 
                                     const href =
-
                                         this.getAttribute(
-
                                             'href'
-
                                         ) || '';
 
 
-
                                     if (
-
                                         this.classList.contains(
-
                                             'js-hash-link'
-
                                         ) &&
-
                                         href.includes('#')
-
                                     ) {
 
                                         const isSamePage =
-
                                             href.startsWith(
-
                                                 window.location.origin +
-
                                                 window.location.pathname +
-
                                                 '#'
-
                                             ) ||
-
                                             href.startsWith(
-
                                                 '#'
-
                                             );
-
 
 
                                         if (isSamePage) {
 
                                             e.preventDefault();
 
+
                                             setActive(
-
                                                 this
-
                                             );
 
 
-
                                             const hashValue =
-
                                                 this.dataset.hash;
 
 
-
                                             const section =
-
                                                 document.getElementById(
-
                                                     hashValue
-
                                                 );
-
 
 
                                             if (section) {
 
                                                 section.scrollIntoView({
-
                                                     behavior: 'smooth',
 
                                                     block: 'start'
-
                                                 });
 
                                             }
 
 
-
                                             history.pushState(
-
                                                 null,
-
                                                 '',
-
                                                 '#' +
-
                                                 hashValue
-
                                             );
+
 
                                             return;
 
@@ -2751,83 +2183,58 @@
                                     }
 
 
-
                                     setActive(this);
 
                                 }
-
                             );
 
                         }
-
                     );
 
 
-
                     window.addEventListener(
-
                         'resize',
-
                         function() {
 
                             const current =
-
                                 document.querySelector(
-
                                     '.nav-links a.active'
-
                                 );
-
 
 
                             if (current) {
 
                                 moveIndicator(
-
                                     current,
-
                                     false
-
                                 );
 
                             }
 
                         }
-
                     );
 
 
-
                     window.addEventListener(
-
                         'popstate',
-
                         function() {
 
                             const currentHash =
-
                                 window.location.hash;
-
 
 
                             if (currentHash) {
 
                                 const hashLink =
-
                                     document.querySelector(
-
                                         `.nav-links a[data-hash="${currentHash.substring(1)}"]`
-
                                     );
-
 
 
                                 if (hashLink) {
 
                                     setActive(
-
                                         hashLink
-
                                     );
 
                                     return;
@@ -2837,77 +2244,54 @@
                             }
 
 
-
                             const homeLink =
-
                                 document.querySelector(
-
                                     '.nav-links a[href="{{ route('home') }}"]'
-
                                 );
-
 
 
                             if (homeLink) {
 
                                 setActive(
-
                                     homeLink
-
                                 );
 
                             }
 
                         }
-
                     );
 
                 }
 
 
-
-                /* =========================================*
-
-        *                   Back To Top*
-
-        *                ========================================= */
+                /* =========================================
+                   Back To Top
+                ========================================= */
 
                 const backToTop =
-
                     document.getElementById(
-
                         'backToTop'
-
                     );
-
 
 
                 if (backToTop) {
 
 
-
                     function toggleBackToTop() {
 
                         if (
-
                             window.scrollY >
-
                             300
-
                         ) {
 
                             backToTop.classList.add(
-
                                 'show'
-
                             );
 
                         } else {
 
                             backToTop.classList.remove(
-
                                 'show'
-
                             );
 
                         }
@@ -2915,50 +2299,34 @@
                     }
 
 
-
                     window.addEventListener(
-
                         'scroll',
-
                         toggleBackToTop, {
-
                             passive: true
-
                         }
-
                     );
-
 
 
                     toggleBackToTop();
 
 
-
                     backToTop.addEventListener(
-
                         'click',
-
                         function() {
 
                             window.scrollTo({
-
                                 top: 0,
-
                                 behavior: 'smooth'
-
                             });
 
                         }
-
                     );
 
                 }
 
             }
-
         );
     </script>
-
 
 
     @stack('scripts')

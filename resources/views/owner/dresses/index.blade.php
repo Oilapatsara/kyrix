@@ -2,1301 +2,818 @@
 
 @section('title', 'คลังชุด | KYRIX Rental')
 
-@push('styles')
+@section('content')
+
     <style>
-        .kyrix-page {
-            --p: #7a1f2b;
-            --p-dark: #58141d;
-            --p-soft: #fbf0f2;
-            --p-hover: #f6e4e8;
-            --gold: #c69c4c;
-            --gold-bg: #fdf6e8;
-            --bg: #faf8f5;
-            --surface: #ffffff;
-            --surface-alt: #f9f7f5;
-            --ink: #2a2421;
-            --heading: #2a2421;
-            --muted: #736b66;
-            --faint: #b0a89e;
-            --border: #ede8e3;
-            --border-strong: #d5cdc6;
-            --accent: var(--p);
-            --accent-ink: #ffffff;
-            --accent-soft: var(--p-soft);
-            --green: #2a6b47;
-            --green-bg: #e8f5ee;
-            --amber: #8c5e0a;
-            --amber-bg: #fef3df;
-            --red: #9e3830;
-            --red-bg: #fcecea;
-            --radius: 10px;
-            --shadow-sm: 0 2px 8px rgba(0, 0, 0, .05);
-            --shadow-md: 0 8px 24px rgba(122, 31, 43, .08);
-        }
-
-        .kyrix-page {
-            color: var(--ink);
-            font-family: 'Prompt', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            font-size: 14px;
-            line-height: 1.6;
-        }
-
-        .kyrix-page * {
+        * {
             box-sizing: border-box;
         }
 
-        .page-head {
+        .dresses-page {
+            padding: 28px;
+            background: #f8f7f5;
+            min-height: calc(100vh - 70px);
+        }
+
+        .page-header {
             display: flex;
-            align-items: flex-end;
+            align-items: flex-start;
             justify-content: space-between;
             gap: 20px;
-            margin-bottom: 24px;
-            flex-wrap: wrap;
+            margin-bottom: 26px;
         }
 
-        .page-eyebrow {
-            display: inline-block;
-            color: #a97f45;
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-bottom: 6px;
+        .page-header-left h1 {
+            margin: 0 0 6px;
+            font-size: 30px;
+            font-weight: 800;
+            color: #211c19;
+            letter-spacing: -0.5px;
         }
 
-        .page-title {
+        .page-header-left p {
             margin: 0;
-            font-family: 'Prompt', sans-serif;
-            font-size: 28px;
-            line-height: 1.25;
-            font-weight: 700;
-            color: #430d17;
-            letter-spacing: -.3px;
-        }
-
-        .page-description {
-            margin: 6px 0 0;
-            color: var(--muted);
+            color: #8d847e;
             font-size: 13px;
-            font-weight: 400;
         }
 
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-shrink: 0;
-        }
-
-        .add-category-btn {
+        .add-product-btn {
             display: inline-flex;
             align-items: center;
-            gap: 7px;
-            height: 40px;
-            padding: 0 18px;
-            border-radius: var(--radius);
-            background: var(--surface);
-            border: 1px solid var(--border-strong);
-            color: var(--muted);
-            font-size: 13px;
-            font-weight: 500;
-            font-family: inherit;
-            cursor: pointer;
-            transition: all .18s ease;
-            flex-shrink: 0;
-            box-shadow: var(--shadow-sm);
-        }
-
-        .add-category-btn:hover {
-            background: var(--p-soft);
-            border-color: var(--p);
-            color: var(--p);
-            box-shadow: 0 4px 14px rgba(122, 31, 43, .12);
-        }
-
-        .add-category-btn i {
-            font-size: 12px;
-        }
-
-        .add-dress-btn {
-            display: inline-flex;
-            align-items: center;
+            justify-content: center;
             gap: 8px;
-            height: 40px;
-            padding: 0 20px;
-            border-radius: var(--radius);
-            background: linear-gradient(135deg, var(--p) 0%, var(--p-dark) 100%);
-            color: #fff;
+            min-height: 42px;
+            padding: 0 17px;
+            border-radius: 10px;
+            background: #1f1b19;
+            color: #fff !important;
             text-decoration: none;
-            font-size: 13px;
-            font-weight: 600;
-            font-family: inherit;
-            transition: all .18s ease;
-            flex-shrink: 0;
-            box-shadow: 0 4px 14px rgba(122, 31, 43, .28);
-        }
-
-        .add-dress-btn:hover {
-            background: linear-gradient(135deg, var(--p-dark) 0%, #3e0e17 100%);
-            color: #fff;
-            box-shadow: 0 6px 20px rgba(122, 31, 43, .38);
-            transform: translateY(-1px);
-        }
-
-        .add-dress-btn i {
-            font-size: 11px;
-        }
-
-        .modal-backdrop {
-            position: fixed;
-            inset: 0;
-            background: rgba(30, 15, 18, .55);
-            backdrop-filter: blur(5px);
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .modal-card {
-            background: var(--surface);
-            border-radius: 16px;
-            width: 100%;
-            max-width: 560px;
-            box-shadow: 0 24px 60px rgba(0, 0, 0, .18);
-            overflow: hidden;
-            animation: modalFadeIn .22s cubic-bezier(.34, 1.26, .64, 1);
-            font-family: 'Prompt', sans-serif;
-        }
-
-        .modal-tabs {
-            display: flex;
-            background: var(--surface-alt);
-            border-bottom: 1px solid var(--border);
-            padding: 0 20px;
-            gap: 4px;
-        }
-
-        .modal-tab-btn {
-            padding: 13px 16px;
-            background: none;
-            border: none;
-            border-bottom: 2px solid transparent;
-            font-size: 13px;
-            font-weight: 600;
-            font-family: inherit;
-            color: var(--muted);
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            transition: all .15s ease;
-        }
-
-        .modal-tab-btn.active {
-            color: var(--p);
-            border-bottom-color: var(--p);
-        }
-
-        .category-manage-list {
-            max-height: 300px;
-            overflow-y: auto;
-            padding-right: 4px;
-        }
-
-        .category-list-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 11px 14px;
-            background: var(--surface-alt);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            margin-bottom: 8px;
-            gap: 10px;
-            transition: border-color .15s ease;
-        }
-
-        .category-list-item:hover {
-            border-color: var(--border-strong);
-        }
-
-        .cat-item-info {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .cat-item-name {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--ink);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .cat-item-desc {
             font-size: 12px;
-            color: var(--muted);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            margin-top: 2px;
-        }
-
-        .cat-item-actions {
-            display: flex;
-            gap: 6px;
-            flex-shrink: 0;
-        }
-
-        .btn-icon-edit {
-            padding: 5px 12px;
-            background: var(--p-soft);
-            color: var(--p);
-            border: 1px solid rgba(122, 31, 43, .25);
-            border-radius: 7px;
-            font-size: 12px;
-            font-weight: 600;
-            font-family: inherit;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            transition: all .15s ease;
-        }
-
-        .btn-icon-edit:hover {
-            background: var(--p);
-            color: #fff;
-            border-color: var(--p);
-        }
-
-        .btn-icon-delete {
-            padding: 5px 12px;
-            background: var(--red-bg);
-            color: var(--red);
-            border: 1px solid rgba(158, 56, 48, .25);
-            border-radius: 7px;
-            font-size: 12px;
-            font-weight: 600;
-            font-family: inherit;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            transition: all .15s ease;
-        }
-
-        .btn-icon-delete:hover {
-            background: var(--red);
-            color: #fff;
-            border-color: var(--red);
-        }
-
-        @keyframes modalFadeIn {
-            from {
-                opacity: 0;
-                transform: scale(.96) translateY(-8px);
-            }
-
-            to {
-                opacity: 1;
-                transform: scale(1) translateY(0);
-            }
-        }
-
-        .modal-header {
-            padding: 18px 22px;
-            background: linear-gradient(135deg, var(--p-soft) 0%, #fff 100%);
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .modal-title {
-            font-size: 16px;
             font-weight: 700;
-            color: var(--p);
-            margin: 0;
-            display: flex;
-            align-items: center;
-            gap: 9px;
+            transition: .2s ease;
+            white-space: nowrap;
         }
 
-        .modal-close {
-            background: none;
-            border: none;
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            font-size: 20px;
-            color: var(--muted);
-            cursor: pointer;
-            line-height: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background .15s ease;
-        }
-
-        .modal-close:hover {
-            background: var(--p-hover);
-            color: var(--p);
-        }
-
-        .modal-body {
-            padding: 22px;
-        }
-
-        .form-group-custom {
-            margin-bottom: 16px;
-        }
-
-        .form-label-custom {
-            display: block;
-            font-size: 12.5px;
-            font-weight: 600;
-            margin-bottom: 7px;
-            color: var(--ink);
-            letter-spacing: .1px;
-        }
-
-        .form-control-custom {
-            width: 100%;
-            padding: 10px 13px;
-            border: 1.5px solid var(--border);
-            border-radius: var(--radius);
-            font-size: 14px;
-            font-family: 'Prompt', inherit;
-            color: var(--ink);
-            background: var(--surface);
-            outline: none;
-            transition: border-color .18s ease, box-shadow .18s ease;
-        }
-
-        .form-control-custom:focus {
-            border-color: var(--p);
-            box-shadow: 0 0 0 3px rgba(122, 31, 43, .1);
-        }
-
-        .modal-footer {
-            padding: 14px 22px;
-            background: var(--surface-alt);
-            border-top: 1px solid var(--border);
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-        }
-
-        .btn-cancel {
-            padding: 9px 18px;
-            background: transparent;
-            border: 1.5px solid var(--border-strong);
-            border-radius: var(--radius);
-            font-size: 13px;
-            font-weight: 600;
-            font-family: inherit;
-            color: var(--muted);
-            cursor: pointer;
-            transition: all .15s ease;
-        }
-
-        .btn-cancel:hover {
-            background: #f0ece8;
-            color: var(--ink);
-        }
-
-        .btn-submit {
-            padding: 9px 20px;
-            background: linear-gradient(135deg, var(--p) 0%, var(--p-dark) 100%);
-            color: #fff;
-            border: none;
-            border-radius: var(--radius);
-            font-size: 13px;
-            font-weight: 600;
-            font-family: inherit;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 7px;
-            transition: all .18s ease;
-            box-shadow: 0 4px 12px rgba(122, 31, 43, .25);
-        }
-
-        .btn-submit:hover {
-            background: linear-gradient(135deg, var(--p-dark) 0%, #3e0e17 100%);
-            box-shadow: 0 6px 18px rgba(122, 31, 43, .35);
+        .add-product-btn:hover {
+            background: #3a322d;
             transform: translateY(-1px);
         }
 
-        .flash {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 18px;
-            padding: 12px 16px;
-            border-radius: var(--radius);
-            font-size: 13px;
-            font-weight: 500;
-            border: 1px solid transparent;
-            box-shadow: var(--shadow-sm);
-        }
-
-        .flash-success {
-            background: var(--green-bg);
-            color: var(--green);
-            border-color: #c3dfd0;
-        }
-
-        .flash-error {
-            background: var(--red-bg);
-            color: var(--red);
-            border-color: #eecfcc;
-        }
-
-        .stat-bar {
+        .summary-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 15px;
             margin-bottom: 20px;
         }
 
-        .stat-cell {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            gap: 5px;
-            padding: 18px 22px;
-            text-decoration: none;
-            color: inherit;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow-sm);
-            transition: background .15s ease, border-color .15s ease, box-shadow .15s ease;
-            overflow: hidden;
+        .summary-card {
+            background: #fff;
+            border: 1px solid #ece7e3;
+            border-radius: 14px;
+            padding: 18px 20px;
         }
 
-        .stat-cell:last-child {
-            border-right: 1px solid var(--border);
+        .summary-label {
+            color: #918983;
+            font-size: 11px;
+            margin-bottom: 7px;
         }
 
-        .stat-cell:hover {
-            background: var(--surface-alt);
-            border-color: var(--border-strong);
+        .summary-value {
+            color: #211c19;
+            font-size: 27px;
+            font-weight: 800;
+            line-height: 1;
         }
 
-        .stat-cell.active {
-            background: var(--surface);
-            border-color: var(--p);
-            box-shadow: 0 0 0 3px rgba(122, 31, 43, .07), var(--shadow-sm);
+        .summary-card.warning .summary-value {
+            color: #b26a1f;
         }
 
-        .stat-cell.active::after {
-            content: "";
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 3px;
-            background: linear-gradient(180deg, var(--p) 0%, var(--p-dark) 100%);
-            border-radius: 0 2px 2px 0;
-        }
-
-        .stat-cell-label {
-            color: var(--muted);
-            font-size: 11.5px;
-            font-weight: 500;
-            letter-spacing: .2px;
-            text-transform: uppercase;
-        }
-
-        .stat-cell-number {
-            color: var(--heading);
-            font-size: 26px;
-            font-weight: 700;
-            line-height: 1.1;
-            letter-spacing: -.8px;
-        }
-
-        .workspace {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            overflow: hidden;
-            box-shadow: var(--shadow-sm);
+        .summary-card.danger .summary-value {
+            color: #b83d36;
         }
 
         .toolbar {
+            background: #fff;
+            border: 1px solid #ece7e3;
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 18px;
+        }
+
+        .toolbar-form {
+            display: grid;
+            grid-template-columns: minmax(240px, 1fr) 180px 180px auto;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .search-input,
+        .filter-select {
+            width: 100%;
+            height: 42px;
+            border: 1px solid #e5dfda;
+            border-radius: 9px;
+            background: #fff;
+            color: #332d29;
+            font-size: 12px;
+            padding: 0 13px;
+            outline: none;
+        }
+
+        .search-input:focus,
+        .filter-select:focus {
+            border-color: #c9a184;
+            box-shadow: 0 0 0 3px rgba(201, 161, 132, .10);
+        }
+
+        .search-btn {
+            height: 42px;
+            border: 0;
+            border-radius: 9px;
+            background: #1f1b19;
+            color: #fff;
+            padding: 0 16px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .reset-btn {
+            height: 42px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 15px;
+            border-radius: 9px;
+            border: 1px solid #e5dfda;
+            background: #fff;
+            color: #695f59;
+            font-size: 12px;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .reset-btn:hover {
+            background: #faf8f6;
+        }
+
+        .table-card {
+            background: #fff;
+            border: 1px solid #ece7e3;
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .table-top {
+            padding: 18px 20px;
+            border-bottom: 1px solid #f0ece9;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            flex-wrap: wrap;
             gap: 14px;
-            padding: 14px 18px;
-            background: var(--surface-alt);
-            border-bottom: 1px solid var(--border);
         }
 
-        .result-summary {
-            color: var(--muted);
-            font-size: 13px;
-            white-space: nowrap;
+        .table-title {
+            margin: 0;
+            font-size: 15px;
+            font-weight: 800;
+            color: #2a2420;
         }
 
-        .result-summary strong {
-            color: var(--heading);
-            font-weight: 700;
-        }
-
-        .filter-group {
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .select-wrap {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-
-        .select-wrap i {
-            position: absolute;
-            left: 12px;
+        .table-count {
+            color: #9b918a;
             font-size: 11px;
-            color: var(--faint);
-            pointer-events: none;
-            z-index: 1;
         }
 
-        .toolbar-select {
-            height: 36px;
-            min-width: 155px;
-            padding: 0 32px 0 33px;
-            border: 1.5px solid var(--border);
-            border-radius: 999px;
-            background-color: var(--surface);
-            color: var(--ink);
-            font-family: 'Prompt', inherit;
-            font-size: 12.5px;
-            font-weight: 500;
-            outline: none;
-            cursor: pointer;
-            appearance: none;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23736b66' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 12px center;
-            background-size: 13px 13px;
-            transition: border-color .15s ease, box-shadow .15s ease;
-        }
-
-        .toolbar-select:hover {
-            border-color: var(--border-strong);
-        }
-
-        .toolbar-select:focus {
-            border-color: var(--p);
-            box-shadow: 0 0 0 3px rgba(122, 31, 43, .1);
-        }
-
-        #category_id.toolbar-select {
-            min-width: 215px;
-        }
-
-        .category-reset {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            height: 36px;
-            padding: 0 8px;
-            color: var(--muted);
-            font-size: 12px;
-            text-decoration: none;
-            white-space: nowrap;
-            transition: color .12s ease;
-            font-weight: 500;
-        }
-
-        .category-reset i {
-            font-size: 9px;
-        }
-
-        .category-reset:hover {
-            color: var(--p);
-        }
-
-        .table-wrap {
+        .table-wrapper {
             overflow-x: auto;
         }
 
-        .dress-table {
+        table {
             width: 100%;
-            min-width: 960px;
+            min-width: 1080px;
             border-collapse: collapse;
         }
 
-        .dress-table thead th {
-            position: sticky;
-            top: 0;
-            z-index: 1;
-            padding: 11px 16px;
-            background: var(--surface-alt);
-            color: var(--muted);
-            border-bottom: 1px solid var(--border);
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: .5px;
-            text-transform: uppercase;
+        thead th {
+            background: #fbfaf9;
+            color: #8c837d;
+            font-size: 10px;
+            font-weight: 700;
             text-align: left;
+            padding: 13px 14px;
+            border-bottom: 1px solid #eeeae7;
             white-space: nowrap;
         }
 
-        .dress-table td {
-            padding: 12px 16px;
-            border-bottom: 1px solid var(--border);
+        tbody td {
+            padding: 14px;
+            border-bottom: 1px solid #f2efed;
             vertical-align: middle;
-            font-size: 13.5px;
+            font-size: 12px;
+            color: #514943;
         }
 
-        .dress-table tbody tr:last-child td {
-            border-bottom: none;
+        tbody tr:last-child td {
+            border-bottom: 0;
         }
 
-        .dress-table tbody tr {
-            transition: background .12s ease;
+        tbody tr:hover {
+            background: #fcfbfa;
         }
 
-        .dress-table tbody tr:hover {
-            background: var(--surface-alt);
-        }
-
-        .dress-code {
-            color: var(--muted);
-            font-size: 11.5px;
-            font-weight: 600;
-            font-variant-numeric: tabular-nums;
-            letter-spacing: .3px;
-        }
-
-        .dress-info {
+        .product-cell {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 11px;
+            min-width: 260px;
         }
 
-        .dress-image,
-        .dress-image-empty {
-            width: 48px;
-            height: 64px;
-            min-width: 48px;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            object-fit: contain;
-            background: #faf8f7;
-        }
-
-        .dress-image-empty {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--faint);
-            font-size: 16px;
-        }
-
-        .dress-name {
-            color: var(--ink);
-            font-size: 13.5px;
-            font-weight: 600;
-            line-height: 1.4;
-        }
-
-        .dress-meta {
-            margin-top: 2px;
-            color: var(--faint);
-            font-size: 11px;
-        }
-
-        .category-tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            padding: 3px 10px;
-            background: var(--gold-bg);
-            color: #7a5e20;
-            border-radius: 999px;
-            font-size: 12px;
-            font-weight: 600;
-            border: 1px solid rgba(198, 156, 76, .25);
-        }
-
-        .category-empty {
-            color: var(--faint);
-            font-size: 12px;
-            font-style: italic;
-        }
-
-        .price {
-            color: var(--heading);
-            font-size: 13.5px;
-            font-weight: 700;
-            font-variant-numeric: tabular-nums;
-        }
-
-        .status {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            height: 25px;
-            padding: 0 10px;
-            border-radius: 999px;
-            font-size: 11.5px;
-            font-weight: 600;
-            white-space: nowrap;
-        }
-
-        .status::before {
-            content: "";
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
+        .dress-image {
+            width: 58px;
+            height: 70px;
+            object-fit: cover;
+            object-position: center;
+            border-radius: 9px;
+            background: #f3f0ee;
+            display: block;
             flex-shrink: 0;
+            border: 1px solid #eee8e4;
         }
 
-        .status.available {
-            background: var(--green-bg);
-            color: var(--green);
-        }
-
-        .status.available::before {
-            background: var(--green);
-        }
-
-        .status.rented {
-            background: var(--amber-bg);
-            color: var(--amber);
-        }
-
-        .status.rented::before {
-            background: var(--amber);
-        }
-
-        .status.inactive {
-            background: var(--red-bg);
-            color: var(--red);
-        }
-
-        .status.inactive::before {
-            background: var(--red);
-        }
-
-        .action-group {
+        .dress-image-empty {
+            width: 58px;
+            height: 70px;
+            border-radius: 9px;
+            background: #f3f0ee;
+            color: #b2aaa4;
             display: flex;
-            justify-content: flex-end;
-            gap: 6px;
-        }
-
-        .edit-btn,
-        .delete-btn {
-            display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 5px;
-            height: 30px;
-            padding: 0 12px;
-            border-radius: 7px;
+            flex-shrink: 0;
+            border: 1px solid #eee8e4;
+            font-size: 18px;
+        }
+
+        .product-info {
+            min-width: 0;
+        }
+
+        .product-name {
+            color: #29231f;
             font-size: 12px;
-            font-weight: 600;
-            font-family: inherit;
-            transition: all .14s ease;
-            cursor: pointer;
-            border: 1.5px solid var(--border);
-            background: var(--surface);
+            font-weight: 800;
+            line-height: 1.45;
+            margin-bottom: 4px;
         }
 
-        .edit-btn {
-            color: var(--ink);
-            text-decoration: none;
-        }
-
-        .edit-btn:hover {
-            border-color: var(--p);
-            background: var(--p-soft);
-            color: var(--p);
-        }
-
-        .delete-btn {
-            color: var(--red);
-        }
-
-        .delete-btn:hover {
-            background: var(--red-bg);
-            border-color: rgba(158, 56, 48, .4);
-        }
-
-        .empty-box {
-            padding: 64px 20px;
-            text-align: center;
-        }
-
-        .empty-icon {
-            width: 52px;
-            height: 52px;
-            margin: 0 auto 14px;
-            border-radius: 14px;
-            background: var(--surface-alt);
-            border: 1.5px solid var(--border);
-            color: var(--faint);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-        }
-
-        .empty-title {
-            color: var(--heading);
-            font-size: 14px;
-            font-weight: 700;
-        }
-
-        .empty-text {
-            margin-top: 5px;
-            color: var(--muted);
-            font-size: 13px;
-        }
-
-        .pagination-wrap {
-            padding: 16px 20px 18px;
-            background: var(--surface-alt);
-            border-top: 1px solid var(--border);
-        }
-
-        .pagination-inner {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .pagination-info {
-            color: var(--muted);
-            font-size: 12.5px;
-            line-height: 1.5;
-        }
-
-        .pagination-info strong {
-            color: var(--heading);
-            font-weight: 700;
-        }
-
-        .pagination-nav {
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            gap: 6px;
-            margin-left: auto;
-        }
-
-        .pagination-btn {
-            width: 36px;
-            height: 36px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--surface);
-            border: 1px solid var(--border-strong);
-            border-radius: 8px;
-            color: var(--ink);
-            text-decoration: none;
-            font-size: 13px;
-            font-weight: 600;
-            transition: background .16s ease,
-                border-color .16s ease,
-                color .16s ease,
-                transform .16s ease,
-                box-shadow .16s ease;
-        }
-
-        .pagination-btn:hover {
-            background: var(--p-soft);
-            border-color: var(--p);
-            color: var(--p);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 10px rgba(122, 31, 43, .10);
-        }
-
-        .pagination-btn.active {
-            background: var(--p);
-            border-color: var(--p);
-            color: #fff;
-            box-shadow: 0 4px 12px rgba(122, 31, 43, .20);
-        }
-
-        .pagination-btn.disabled {
-            color: #c3bbb5;
-            background: #f6f3f0;
-            border-color: var(--border);
-            cursor: not-allowed;
-            pointer-events: none;
-        }
-
-        .pagination-btn i {
+        .product-id {
+            color: #a39a94;
             font-size: 10px;
         }
 
-        .pagination-dots {
-            width: 30px;
-            height: 36px;
+        .sku {
+            color: #5c544e;
+            font-size: 11px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .gender-badge {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            color: var(--faint);
+            min-height: 28px;
+            padding: 0 9px;
+            border-radius: 999px;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .gender-female {
+            background: #fbecf0;
+            color: #a9506b;
+        }
+
+        .gender-male {
+            background: #edf3f8;
+            color: #4c6f89;
+        }
+
+        .gender-other {
+            background: #f2f0ee;
+            color: #736b65;
+        }
+
+        .variant-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .variant-line {
+            color: #6c625c;
+            font-size: 10px;
+            line-height: 1.4;
+        }
+
+        .variant-empty {
+            color: #aaa19b;
+            font-size: 10px;
+        }
+
+        .stock-number {
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+        .stock-normal {
+            color: #3d6c4d;
+        }
+
+        .stock-low {
+            color: #a96a1c;
+        }
+
+        .stock-out {
+            color: #b63b36;
+        }
+
+        .stock-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            min-height: 26px;
+            padding: 0 9px;
+            border-radius: 999px;
+            font-size: 10px;
+            font-weight: 700;
+            margin-top: 5px;
+        }
+
+        .stock-badge.normal {
+            background: #edf7f0;
+            color: #4d805d;
+        }
+
+        .stock-badge.low {
+            background: #fff5e7;
+            color: #a9691b;
+        }
+
+        .stock-badge.out {
+            background: #fcebea;
+            color: #b63e38;
+        }
+
+        .price {
+            color: #29231f;
             font-size: 13px;
-            font-weight: 600;
+            font-weight: 800;
+            white-space: nowrap;
         }
 
-        @media (max-width: 900px) {
-            .stat-bar {
-                grid-template-columns: repeat(2, 1fr);
+        .action-buttons {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .action-btn {
+            width: 34px;
+            height: 34px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            border: 1px solid #e4ded9;
+            background: #fff;
+            color: #6f665f;
+            text-decoration: none;
+            transition: .18s ease;
+        }
+
+        .action-btn:hover {
+            background: #faf7f5;
+            border-color: #d5c3b7;
+        }
+
+        .action-btn.edit {
+            color: #725b4d;
+        }
+
+        .action-btn.delete {
+            color: #a64a44;
+        }
+
+        .delete-form {
+            display: inline;
+        }
+
+        .empty-row {
+            text-align: center;
+            padding: 65px 20px !important;
+            color: #9b928c !important;
+        }
+
+        .empty-icon {
+            width: 58px;
+            height: 58px;
+            border-radius: 16px;
+            background: #f5f1ee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            color: #aaa19b;
+            font-size: 21px;
+        }
+
+        .empty-title {
+            color: #544c46;
+            font-size: 14px;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+
+        .empty-text {
+            color: #9d948e;
+            font-size: 11px;
+        }
+
+        .pagination-wrap {
+            padding: 18px 20px;
+            border-top: 1px solid #f0ece9;
+        }
+
+        .pagination-wrap nav {
+            display: flex;
+            justify-content: center;
+        }
+
+        .alert-success {
+            margin-bottom: 16px;
+            border: 1px solid #cfe5d4;
+            background: #f2faf4;
+            color: #4b7758;
+            padding: 11px 14px;
+            border-radius: 10px;
+            font-size: 12px;
+        }
+
+        .alert-error {
+            margin-bottom: 16px;
+            border: 1px solid #efd0cc;
+            background: #fdf4f3;
+            color: #a54b44;
+            padding: 11px 14px;
+            border-radius: 10px;
+            font-size: 12px;
+        }
+
+        @media (max-width: 1050px) {
+            .summary-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .toolbar-form {
+                grid-template-columns: 1fr 1fr;
             }
         }
 
-        @media (max-width: 640px) {
-            .stat-bar {
+        @media (max-width: 700px) {
+            .dresses-page {
+                padding: 18px 14px;
+            }
+
+            .page-header {
+                flex-direction: column;
+            }
+
+            .summary-grid {
                 grid-template-columns: 1fr;
-                gap: 8px;
             }
 
-            .page-head {
-                flex-direction: column;
-                align-items: flex-start;
+            .toolbar-form {
+                grid-template-columns: 1fr;
             }
 
-            .header-actions {
+            .add-product-btn {
                 width: 100%;
-                flex-direction: column;
-            }
-
-            .add-category-btn,
-            .add-dress-btn {
-                width: 100%;
-                justify-content: center;
-            }
-
-            .toolbar {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .filter-group {
-                width: 100%;
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .select-wrap {
-                width: 100%;
-            }
-
-            .toolbar-select,
-            #category_id.toolbar-select {
-                flex: 1;
-                min-width: 0;
-                width: 100%;
-            }
-
-            .category-reset {
-                justify-content: flex-start;
-                width: fit-content;
-            }
-
-            .pagination-inner {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .pagination-nav {
-                margin-left: 0;
             }
         }
     </style>
-@endpush
 
-@section('content')
-    <div class="kyrix-page">
+    <div class="dresses-page">
 
-        <!-- HEADER -->
-        <div class="page-head">
-            <div>
-                <span class="page-eyebrow">
-                    KYRIX RENTAL · DRESSES
-                </span>
-
-                <h1 class="page-title">
-                    คลังชุด
-                </h1>
-
-                <p class="page-description">
-                    จัดการชุดเช่าทั้งหมด ตรวจสอบหมวดหมู่ ราคา และสถานะการใช้งาน
-                </p>
-            </div>
-
-            <div class="header-actions">
-                <button type="button" class="add-category-btn" onclick="openCategoryModal('manage')">
-                    <i class="fa-solid fa-folder-gear"></i>
-                    จัดการ / เพิ่มหมวดหมู่
-                </button>
-
-                <a href="{{ route('owner.dresses.create') }}" class="add-dress-btn">
-                    <i class="fa-solid fa-plus"></i>
-                    เพิ่มชุด
-                </a>
-            </div>
-        </div>
-
-        <!-- FLASH MESSAGE -->
+        {{-- =========================================================
+         ALERT
+    ========================================================== --}}
         @if (session('success'))
-            <div class="flash flash-success">
+            <div class="alert-success">
                 <i class="fa-solid fa-circle-check"></i>
                 {{ session('success') }}
             </div>
         @endif
 
         @if (session('error'))
-            <div class="flash flash-error">
+            <div class="alert-error">
                 <i class="fa-solid fa-circle-exclamation"></i>
                 {{ session('error') }}
             </div>
         @endif
 
-        <!-- STAT BAR -->
-        <div class="stat-bar">
 
-            <a href="{{ route('owner.dresses.index', request()->except(['status', 'category_id', 'page'])) }}"
-                class="stat-cell {{ !request('status') && !request('category_id') ? 'active' : '' }}">
-                <span class="stat-cell-label">
-                    ชุดทั้งหมด
-                </span>
+        {{-- =========================================================
+         HEADER
+    ========================================================== --}}
+        <div class="page-header">
 
-                <span class="stat-cell-number">
-                    {{ number_format($summary['total'] ?? $products->total()) }}
-                </span>
-            </a>
+            <div class="page-header-left">
+                <h1>คลังชุด</h1>
 
-            <a href="{{ route(
-                'owner.dresses.index',
-                array_merge(request()->except(['status', 'category_id', 'page']), ['status' => 'active']),
-            ) }}"
-                class="stat-cell {{ request('status') === 'active' ? 'active' : '' }}">
-                <span class="stat-cell-label">
-                    พร้อมให้เช่า
-                </span>
+                <p>
+                    จัดการข้อมูลชุดและตรวจสอบจำนวนสินค้าคงเหลือของร้าน
+                </p>
+            </div>
 
-                <span class="stat-cell-number">
-                    {{ number_format($summary['available'] ?? 0) }}
-                </span>
-            </a>
-
-            <a href="{{ route(
-                'owner.dresses.index',
-                array_merge(request()->except(['status', 'category_id', 'page']), ['status' => 'rented']),
-            ) }}"
-                class="stat-cell {{ request('status') === 'rented' ? 'active' : '' }}">
-                <span class="stat-cell-label">
-                    กำลังเช่า
-                </span>
-
-                <span class="stat-cell-number">
-                    {{ number_format($summary['rented'] ?? 0) }}
-                </span>
-            </a>
-
-            <a href="{{ route(
-                'owner.dresses.index',
-                array_merge(request()->except(['status', 'category_id', 'page']), ['status' => 'inactive']),
-            ) }}"
-                class="stat-cell {{ request('status') === 'inactive' ? 'active' : '' }}">
-                <span class="stat-cell-label">
-                    ปิดใช้งาน
-                </span>
-
-                <span class="stat-cell-number">
-                    {{ number_format($summary['inactive'] ?? 0) }}
-                </span>
-            </a>
+            @if (Route::has('products.create'))
+                <a href="{{ route('products.create') }}" class="add-product-btn">
+                    <i class="fa-solid fa-plus"></i>
+                    เพิ่มสินค้า
+                </a>
+            @endif
 
         </div>
 
-        <!-- WORKSPACE -->
-        <div class="workspace">
 
-            <!-- TOOLBAR -->
-            <div class="toolbar">
+        {{-- =========================================================
+         SUMMARY
+    ========================================================== --}}
+        @php
 
-                <div class="result-summary">
-                    พบ
-                    <strong>
-                        {{ number_format($products->total()) }}
-                    </strong>
-                    รายการ
+            $allProducts = $products ?? collect();
+
+            $totalProducts = method_exists($allProducts, 'total') ? $allProducts->total() : $allProducts->count();
+
+            $totalStock = 0;
+            $lowStockProducts = 0;
+            $outOfStockProducts = 0;
+
+            foreach ($allProducts as $summaryProduct) {
+                $summaryStock = 0;
+
+                foreach ($summaryProduct->variants ?? collect() as $summaryVariant) {
+                    $summaryStock +=
+                        (int) ($summaryVariant->stock_quantity ??
+                            ($summaryVariant->stock ?? ($summaryVariant->quantity ?? 0)));
+                }
+
+                $totalStock += $summaryStock;
+
+                if ($summaryStock <= 0) {
+                    $outOfStockProducts++;
+                } elseif ($summaryStock <= 3) {
+                    $lowStockProducts++;
+                }
+            }
+
+        @endphp
+
+
+        <div class="summary-grid">
+
+            <div class="summary-card">
+
+                <div class="summary-label">
+                    สินค้าทั้งหมด
                 </div>
 
-                <form action="{{ route('owner.dresses.index') }}" method="GET" class="filter-group">
-
-                    @if (request('status'))
-                        <input type="hidden" name="status" value="{{ request('status') }}">
-                    @endif
-
-                    <!-- CATEGORY -->
-                    <div class="select-wrap">
-
-                        <i class="fa-solid fa-layer-group"></i>
-
-                        <select name="category_id" id="category_id" class="toolbar-select" aria-label="กรองตามหมวดหมู่"
-                            onchange="this.form.submit()">
-
-                            <option value="">
-                                ทุกหมวดหมู่
-                            </option>
-
-                            @foreach ($categories as $category)
-                                @php
-                                    $categoryId = $category->category_id ?? $category->id;
-
-                                    $categoryName = $category->category_name ?? $category->name;
-                                @endphp
-
-                                <option value="{{ $categoryId }}"
-                                    {{ (string) request('category_id') === (string) $categoryId ? 'selected' : '' }}>
-                                    {{ $categoryName }}
-                                    {{ isset($category->products_count) ? ' (' . $category->products_count . ')' : '' }}
-                                </option>
-                            @endforeach
-
-                        </select>
-
-                    </div>
-
-                    @if (request('category_id'))
-                        <a href="{{ route('owner.dresses.index', request()->except(['category_id', 'page'])) }}"
-                            class="category-reset">
-                            <i class="fa-solid fa-xmark"></i>
-                            ล้างตัวกรอง
-                        </a>
-                    @endif
-
-                    <!-- SORT -->
-                    <div class="select-wrap">
-
-                        <i class="fa-solid fa-arrow-down-wide-short"></i>
-
-                        <select name="sort" id="sort" class="toolbar-select" aria-label="เรียงลำดับ"
-                            onchange="this.form.submit()">
-
-                            <option value="latest" {{ request('sort', 'latest') === 'latest' ? 'selected' : '' }}>
-                                ล่าสุด
-                            </option>
-
-                            <option value="name_asc" {{ request('sort') === 'name_asc' ? 'selected' : '' }}>
-                                ชื่อ A-Z
-                            </option>
-
-                            <option value="price_low" {{ request('sort') === 'price_low' ? 'selected' : '' }}>
-                                ราคา ต่ำ → สูง
-                            </option>
-
-                            <option value="price_high" {{ request('sort') === 'price_high' ? 'selected' : '' }}>
-                                ราคา สูง → ต่ำ
-                            </option>
-
-                        </select>
-
-                    </div>
-
-                </form>
+                <div class="summary-value">
+                    {{ number_format($totalProducts) }}
+                </div>
 
             </div>
 
-            <!-- TABLE -->
-            <div class="table-wrap">
 
-                <table class="dress-table">
+            <div class="summary-card">
+
+                <div class="summary-label">
+                    จำนวนคงเหลือรวม
+                </div>
+
+                <div class="summary-value">
+                    {{ number_format($totalStock) }}
+                </div>
+
+            </div>
+
+
+            <div class="summary-card warning">
+
+                <div class="summary-label">
+                    ใกล้หมด
+                </div>
+
+                <div class="summary-value">
+                    {{ number_format($lowStockProducts) }}
+                </div>
+
+            </div>
+
+
+            <div class="summary-card danger">
+
+                <div class="summary-label">
+                    หมดสต็อก
+                </div>
+
+                <div class="summary-value">
+                    {{ number_format($outOfStockProducts) }}
+                </div>
+
+            </div>
+
+        </div>
+
+
+        {{-- =========================================================
+         TOOLBAR
+    ========================================================== --}}
+        <div class="toolbar">
+
+            <form method="GET" action="{{ url()->current() }}" class="toolbar-form">
+
+                <input type="text" name="search" value="{{ request('search') }}" class="search-input"
+                    placeholder="ค้นหาชื่อสินค้า หรือ SKU...">
+
+
+                <select name="gender" class="filter-select">
+
+                    <option value="">
+                        ทุกเพศ
+                    </option>
+
+                    <option value="female" {{ request('gender') === 'female' ? 'selected' : '' }}>
+                        ผู้หญิง
+                    </option>
+
+                    <option value="male" {{ request('gender') === 'male' ? 'selected' : '' }}>
+                        ผู้ชาย
+                    </option>
+
+                </select>
+
+
+                <select name="stock" class="filter-select">
+
+                    <option value="">
+                        ทุกสถานะสต็อก
+                    </option>
+
+                    <option value="out" {{ request('stock') === 'out' ? 'selected' : '' }}>
+                        หมดสต็อก
+                    </option>
+
+                    <option value="low" {{ request('stock') === 'low' ? 'selected' : '' }}>
+                        ใกล้หมด
+                    </option>
+
+                    <option value="normal" {{ request('stock') === 'normal' ? 'selected' : '' }}>
+                        มีสต็อกปกติ
+                    </option>
+
+                </select>
+
+
+                <div style="display:flex;gap:8px;">
+
+                    <button type="submit" class="search-btn">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        ค้นหา
+                    </button>
+
+                    <a href="{{ url()->current() }}" class="reset-btn">
+                        ล้าง
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+
+        {{-- =========================================================
+         TABLE
+    ========================================================== --}}
+        <div class="table-card">
+
+            <div class="table-top">
+
+                <div>
+                    <h2 class="table-title">
+                        รายการชุดทั้งหมด
+                    </h2>
+                </div>
+
+                <div class="table-count">
+
+                    @if (method_exists($products ?? collect(), 'total'))
+                        {{ number_format($products->total()) }} รายการ
+                    @else
+                        {{ number_format(($products ?? collect())->count()) }} รายการ
+                    @endif
+
+                </div>
+
+            </div>
+
+
+            <div class="table-wrapper">
+
+                <table>
 
                     <thead>
 
                         <tr>
-                            <th style="width:10%;">
-                                รหัส
+
+                            <th>
+                                สินค้า
                             </th>
 
-                            <th style="width:33%;">
-                                ชุด
+                            <th>
+                                SKU
                             </th>
 
-                            <th style="width:16%;">
-                                หมวดหมู่
+                            <th>
+                                ประเภท
                             </th>
 
-                            <th style="width:12%; text-align:right;">
-                                ราคาเช่า
+                            <th>
+                                ตัวเลือก
                             </th>
 
-                            <th style="width:13%;">
-                                สถานะ
+                            <th>
+                                จำนวนคงเหลือ
                             </th>
 
-                            <th style="width:16%; text-align:right;">
+                            <th>
+                                ราคา
+                            </th>
+
+                            <th>
                                 จัดการ
                             </th>
+
                         </tr>
 
                     </thead>
 
+
                     <tbody>
 
-                        @forelse($products as $product)
+                        @forelse($products ?? [] as $product)
 
                             @php
 
                                 /*
-                                 * =====================================================
-                                 * รูปภาพ
-                                 * =====================================================
-                                 *
-                                 * ดึงรูปจาก product_images โดยตรง
-                                 * โดยเลือก:
-                                 * 1. รูปที่ is_main = true
-                                 * 2. ถ้าไม่มี ให้ใช้รูปแรกของ product
-                                 *
-                                 * ถ้า image_path เป็น URL GitHub / URL ออนไลน์
-                                 * จะใช้ URL นั้นตรง ๆ
-                                 *
-                                 * ถ้าเป็น path เก่า เช่น products/xxx.jpg
-                                 * จะเรียกจาก storage ตามระบบเดิม
-                                 */
-
-                                $mainImageObject = $product->images->firstWhere('is_main', true);
-
-                                if (!$mainImageObject) {
-                                    $mainImageObject = $product->images->first();
-                                }
+                            |--------------------------------------------------------------------------
+                            | รูปภาพสินค้า
+                            |--------------------------------------------------------------------------
+                            | ใช้รูปใน product_images ที่ is_main = 1 ก่อน
+                            | ถ้าไม่มี ให้ใช้รูปแรก
+                            | ถ้าเป็น URL เช่น GitHub ให้ใช้ URL โดยตรง
+                            | ถ้าเป็น path ให้แปลงด้วย asset()
+                            | ถ้าไม่มี ให้ fallback ไป products.image_url
+                            |--------------------------------------------------------------------------
+                            */
 
                                 $image = null;
 
-                                if ($mainImageObject && $mainImageObject->image_path) {
-                                    $imagePath = trim($mainImageObject->image_path);
+                                $images = $product->images ?? collect();
+
+                                $mainImageObject = $images->firstWhere('is_main', 1);
+
+                                if (!$mainImageObject) {
+                                    $mainImageObject = $images->first();
+                                }
+
+                                /*
+                            |--------------------------------------------------------------------------
+                            | จาก product_images
+                            |--------------------------------------------------------------------------
+                            */
+
+                                if ($mainImageObject && !empty($mainImageObject->image_path)) {
+                                    $imagePath = trim((string) $mainImageObject->image_path);
 
                                     if (
-                                        str_starts_with($imagePath, 'http://') ||
-                                        str_starts_with($imagePath, 'https://')
+                                        filter_var($imagePath, FILTER_VALIDATE_URL) ||
+                                        str_starts_with($imagePath, '//')
                                     ) {
                                         $image = $imagePath;
                                     } else {
@@ -1304,53 +821,122 @@
                                     }
                                 }
 
-                                $productId = $product->product_id ?? $product->id;
+                                /*
+                            |--------------------------------------------------------------------------
+                            | fallback ไป products.image_url
+                            |--------------------------------------------------------------------------
+                            */
 
-                                $status = strtolower($product->status ?? 'available');
+                                if (empty($image) && !empty($product->image_url)) {
+                                    $productImage = trim((string) $product->image_url);
 
-                                $statusText = match ($status) {
-                                    'active', 'available' => 'พร้อมให้เช่า',
+                                    if (
+                                        filter_var($productImage, FILTER_VALIDATE_URL) ||
+                                        str_starts_with($productImage, '//')
+                                    ) {
+                                        $image = $productImage;
+                                    } else {
+                                        $image = asset(ltrim($productImage, '/'));
+                                    }
+                                }
 
-                                    'rented', 'busy' => 'กำลังเช่า',
+                                /*
+                            |--------------------------------------------------------------------------
+                            | Variants
+                            |--------------------------------------------------------------------------
+                            */
 
-                                    'maintenance' => 'ซ่อมบำรุง',
+                                $variants = $product->variants ?? collect();
 
-                                    'inactive' => 'ปิดใช้งาน',
+                                $stockTotal = 0;
 
-                                    default => $product->status ?? '-',
-                                };
+                                $sizes = [];
+                                $colors = [];
 
-                                $statusClass = match ($status) {
-                                    'active', 'available' => 'available',
+                                foreach ($variants as $variant) {
+                                    $stockTotal +=
+                                        (int) ($variant->stock_quantity ??
+                                            ($variant->stock ?? ($variant->quantity ?? 0)));
 
-                                    'rented', 'busy' => 'rented',
+                                    $sizeValue = $variant->size ?? ($variant->size_name ?? null);
 
-                                    default => 'inactive',
-                                };
+                                    if ($sizeValue !== null && $sizeValue !== '') {
+                                        $sizes[] = $sizeValue;
+                                    }
 
-                                $productCategoryName =
-                                    $product->category->category_name ?? ($product->category->name ?? null);
+                                    $colorValue = $variant->color ?? ($variant->color_name ?? null);
+
+                                    if ($colorValue !== null && $colorValue !== '') {
+                                        $colors[] = $colorValue;
+                                    }
+                                }
+
+                                $sizes = array_values(array_unique($sizes));
+
+                                $colors = array_values(array_unique($colors));
+
+                                /*
+                            |--------------------------------------------------------------------------
+                            | stock status
+                            |--------------------------------------------------------------------------
+                            */
+
+                                if ($stockTotal <= 0) {
+                                    $stockClass = 'stock-out';
+                                    $stockBadge = 'out';
+                                    $stockText = 'หมดสต็อก';
+                                } elseif ($stockTotal <= 3) {
+                                    $stockClass = 'stock-low';
+                                    $stockBadge = 'low';
+                                    $stockText = 'ใกล้หมด';
+                                } else {
+                                    $stockClass = 'stock-normal';
+                                    $stockBadge = 'normal';
+                                    $stockText = 'มีสต็อก';
+                                }
+
+                                /*
+                            |--------------------------------------------------------------------------
+                            | Gender
+                            |--------------------------------------------------------------------------
+                            */
+
+                                $gender = strtolower(trim((string) ($product->gender ?? '')));
+
+                                if ($gender === 'female') {
+                                    $genderClass = 'gender-female';
+
+                                    $genderText = 'ผู้หญิง';
+                                } elseif ($gender === 'male') {
+                                    $genderClass = 'gender-male';
+
+                                    $genderText = 'ผู้ชาย';
+                                } else {
+                                    $genderClass = 'gender-other';
+
+                                    $genderText = $product->gender ?: 'ไม่ระบุ';
+                                }
                             @endphp
+
 
                             <tr>
 
-                                <!-- CODE -->
+                                {{-- =================================================
+                                 PRODUCT
+                            ================================================== --}}
                                 <td>
 
-                                    <span class="dress-code">
-                                        {{ $product->product_code }}
-                                    </span>
+                                    <div class="product-cell">
 
-                                </td>
-
-                                <!-- DRESS -->
-                                <td>
-
-                                    <div class="dress-info">
 
                                         @if ($image)
                                             <img src="{{ $image }}" alt="{{ $product->product_name }}"
-                                                class="dress-image">
+                                                class="dress-image" loading="lazy"
+                                                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+
+                                            <div class="dress-image-empty" style="display:none;">
+                                                <i class="fa-solid fa-shirt"></i>
+                                            </div>
                                         @else
                                             <div class="dress-image-empty">
 
@@ -1359,14 +945,18 @@
                                             </div>
                                         @endif
 
-                                        <div>
 
-                                            <div class="dress-name">
+                                        <div class="product-info">
+
+                                            <div class="product-name">
                                                 {{ $product->product_name }}
                                             </div>
 
-                                            <div class="dress-meta">
-                                                รายการ #{{ $productId }}
+                                            <div class="product-id">
+
+                                                รหัสสินค้า:
+                                                {{ $product->product_id }}
+
                                             </div>
 
                                         </div>
@@ -1375,65 +965,182 @@
 
                                 </td>
 
-                                <!-- CATEGORY -->
+
+                                {{-- =================================================
+                                 SKU
+                            ================================================== --}}
                                 <td>
 
-                                    @if ($productCategoryName)
-                                        <span class="category-tag">
-                                            {{ $productCategoryName }}
-                                        </span>
+                                    @php
+                                        $skuList = [];
+
+                                        foreach ($variants as $variant) {
+                                            $skuValue = $variant->sku ?? null;
+
+                                            if ($skuValue !== null && $skuValue !== '') {
+                                                $skuList[] = $skuValue;
+                                            }
+                                        }
+
+                                        $skuList = array_values(array_unique($skuList));
+                                    @endphp
+
+
+                                    @if (!empty($skuList))
+                                        <div class="variant-list">
+
+                                            @foreach (array_slice($skuList, 0, 2) as $sku)
+                                                <div class="sku">
+                                                    {{ $sku }}
+                                                </div>
+                                            @endforeach
+
+
+                                            @if (count($skuList) > 2)
+                                                <div
+                                                    style="
+                                                    color:#aaa19b;
+                                                    font-size:10px;
+                                                ">
+                                                    +{{ count($skuList) - 2 }}
+                                                    รายการ
+                                                </div>
+                                            @endif
+
+                                        </div>
                                     @else
-                                        <span class="category-empty">
-                                            ไม่ระบุหมวดหมู่
+                                        <span class="variant-empty">
+                                            -
                                         </span>
                                     @endif
 
                                 </td>
 
-                                <!-- PRICE -->
-                                <td style="text-align:right;">
 
-                                    <span class="price">
-                                        ฿{{ number_format($product->rental_price, 2) }}
+                                {{-- =================================================
+                                 GENDER
+                            ================================================== --}}
+                                <td>
+
+                                    <span class="gender-badge {{ $genderClass }}">
+                                        {{ $genderText }}
                                     </span>
 
                                 </td>
 
-                                <!-- STATUS -->
+
+                                {{-- =================================================
+                                 VARIANTS
+                            ================================================== --}}
                                 <td>
 
-                                    <span class="status {{ $statusClass }}">
-                                        {{ $statusText }}
-                                    </span>
+                                    <div class="variant-list">
+
+                                        @if (!empty($sizes))
+                                            <div class="variant-line">
+
+                                                <strong>
+                                                    ไซซ์:
+                                                </strong>
+
+                                                {{ implode(', ', $sizes) }}
+
+                                            </div>
+                                        @endif
+
+
+                                        @if (!empty($colors))
+                                            <div class="variant-line">
+
+                                                <strong>
+                                                    สี:
+                                                </strong>
+
+                                                {{ implode(', ', $colors) }}
+
+                                            </div>
+                                        @endif
+
+
+                                        @if (empty($sizes) && empty($colors))
+                                            <span class="variant-empty">
+                                                ไม่มีตัวเลือก
+                                            </span>
+                                        @endif
+
+                                    </div>
 
                                 </td>
 
-                                <!-- ACTION -->
+
+                                {{-- =================================================
+                                 STOCK
+                            ================================================== --}}
                                 <td>
 
-                                    <div class="action-group">
+                                    <div class="stock-number {{ $stockClass }}">
+                                        {{ number_format($stockTotal) }}
+                                    </div>
 
-                                        <a href="{{ route('owner.dresses.edit', $productId) }}"
-                                            class="edit-btn">
-                                            <i class="fa-regular fa-pen-to-square"></i>
-                                            แก้ไข
-                                        </a>
+                                    <div class="stock-badge {{ $stockBadge }}">
 
-                                        <form
-                                            action="{{ route('owner.dresses.destroy', $productId) }}"
-                                            method="POST" style="margin:0;"
-                                            onsubmit="return confirm('ยืนยันการลบชุด {{ $product->product_code }} ใช่หรือไม่?');">
+                                        <span>
+                                            ●
+                                        </span>
 
-                                            @csrf
+                                        {{ $stockText }}
 
-                                            @method('DELETE')
+                                    </div>
 
-                                            <button type="submit" class="delete-btn">
-                                                <i class="fa-regular fa-trash-can"></i>
-                                                ลบ
-                                            </button>
+                                </td>
 
-                                        </form>
+
+                                {{-- =================================================
+                                 PRICE
+                            ================================================== --}}
+                                <td>
+
+                                    <div class="price">
+
+                                        ฿{{ number_format((float) ($product->price ?? 0), 0) }}
+
+                                    </div>
+
+                                </td>
+
+
+                                {{-- =================================================
+                                 ACTIONS
+                            ================================================== --}}
+                                <td>
+
+                                    <div class="action-buttons">
+
+
+                                        @if (Route::has('products.edit'))
+                                            <a href="{{ route('products.edit', $product->product_id) }}"
+                                                class="action-btn edit" title="แก้ไข">
+                                                <i class="fa-solid fa-pen"></i>
+                                            </a>
+                                        @endif
+
+
+                                        @if (Route::has('products.destroy'))
+                                            <form method="POST"
+                                                action="{{ route('products.destroy', $product->product_id) }}"
+                                                class="delete-form"
+                                                onsubmit="return confirm('ต้องการลบสินค้านี้ใช่หรือไม่?');">
+
+                                                @csrf
+                                                @method('DELETE')
+
+                                                <button type="submit" class="action-btn delete" title="ลบ">
+                                                    <i class="fa-solid fa-trash"></i>
+                                                </button>
+
+                                            </form>
+                                        @endif
+
 
                                     </div>
 
@@ -1445,21 +1152,21 @@
 
                             <tr>
 
-                                <td colspan="6">
+                                <td colspan="7" class="empty-row">
 
-                                    <div class="empty-box">
+                                    <div class="empty-icon">
 
-                                        <div class="empty-icon">
-                                            <i class="fa-solid fa-shirt"></i>
-                                        </div>
+                                        <i class="fa-solid fa-box-open"></i>
 
-                                        <div class="empty-title">
-                                            ไม่พบชุดตามเงื่อนไขที่เลือก
-                                        </div>
+                                    </div>
 
-                                        <div class="empty-text">
-                                            ลองเลือกหมวดหมู่หรือสถานะอื่น
-                                        </div>
+                                    <div class="empty-title">
+                                        ไม่พบสินค้า
+                                    </div>
+
+                                    <div class="empty-text">
+
+                                        ยังไม่มีสินค้าที่ตรงกับเงื่อนไขการค้นหา
 
                                     </div>
 
@@ -1474,564 +1181,20 @@
 
             </div>
 
-            <!-- PAGINATION -->
-            @if ($products->hasPages())
 
-                @php
-                    $currentPage = $products->currentPage();
-
-                    $lastPage = $products->lastPage();
-                @endphp
-
+            {{-- =========================================================
+             PAGINATION
+        ========================================================== --}}
+            @if (isset($products) && method_exists($products, 'links'))
                 <div class="pagination-wrap">
 
-                    <div class="pagination-inner">
-
-                        <div class="pagination-info">
-
-                            แสดง
-
-                            <strong>
-                                {{ $products->firstItem() }}
-                            </strong>
-
-                            –
-
-                            <strong>
-                                {{ $products->lastItem() }}
-                            </strong>
-
-                            จากทั้งหมด
-
-                            <strong>
-                                {{ $products->total() }}
-                            </strong>
-
-                            รายการ
-
-                        </div>
-
-                        <div class="pagination-nav">
-
-                            @if ($products->onFirstPage())
-                                <span class="pagination-btn disabled" aria-disabled="true">
-                                    <i class="fa-solid fa-chevron-left"></i>
-                                </span>
-                            @else
-                                <a href="{{ request()->fullUrlWithQuery(['page' => $currentPage - 1]) }}"
-                                    class="pagination-btn" aria-label="หน้าก่อนหน้า">
-                                    <i class="fa-solid fa-chevron-left"></i>
-                                </a>
-                            @endif
-
-                            @for ($page = 1; $page <= $lastPage; $page++)
-                                @if ($page === 1 || $page === $lastPage || abs($page - $currentPage) <= 1)
-                                    @if ($page === $currentPage)
-                                        <span class="pagination-btn active" aria-current="page">
-                                            {{ $page }}
-                                        </span>
-                                    @else
-                                        <a href="{{ request()->fullUrlWithQuery(['page' => $page]) }}"
-                                            class="pagination-btn">
-                                            {{ $page }}
-                                        </a>
-                                    @endif
-                                @elseif ($page === 2 && $currentPage > 3)
-                                    <span class="pagination-dots">
-                                        ...
-                                    </span>
-                                @elseif ($page === $lastPage - 1 && $currentPage < $lastPage - 2)
-                                    <span class="pagination-dots">
-                                        ...
-                                    </span>
-                                @endif
-                            @endfor
-
-                            @if ($products->hasMorePages())
-                                <a href="{{ request()->fullUrlWithQuery(['page' => $currentPage + 1]) }}"
-                                    class="pagination-btn" aria-label="หน้าถัดไป">
-                                    <i class="fa-solid fa-chevron-right"></i>
-                                </a>
-                            @else
-                                <span class="pagination-btn disabled" aria-disabled="true">
-                                    <i class="fa-solid fa-chevron-right"></i>
-                                </span>
-                            @endif
-
-                        </div>
-
-                    </div>
+                    {{ $products->withQueryString()->links() }}
 
                 </div>
-
             @endif
 
         </div>
 
     </div>
-
-    <!-- CATEGORY MODAL -->
-    <div id="categoryModal" class="modal-backdrop" style="display:none;">
-
-        <div class="modal-card">
-
-            <div class="modal-header">
-
-                <h3 class="modal-title" id="modalTitle">
-                    <i class="fa-solid fa-folder-gear"></i>
-                    จัดการหมวดหมู่ชุด
-                </h3>
-
-                <button type="button" class="modal-close" onclick="closeCategoryModal()">
-                    &times;
-                </button>
-
-            </div>
-
-            <div class="modal-tabs">
-
-                <button type="button" class="modal-tab-btn active" id="tabAddBtn" onclick="switchCategoryTab('add')">
-                    <i class="fa-solid fa-plus"></i>
-                    เพิ่มหมวดหมู่ใหม่
-                </button>
-
-                <button type="button" class="modal-tab-btn" id="tabManageBtn" onclick="switchCategoryTab('manage')">
-                    <i class="fa-solid fa-list-check"></i>
-                    แก้ไข / รายการหมวดหมู่
-                    ({{ $categories->count() }})
-                </button>
-
-            </div>
-
-            <!-- ADD -->
-            <div id="tabAddContent">
-
-                <form action="{{ route('owner.dresses.categories.store') }}" method="POST">
-
-                    @csrf
-
-                    <div class="modal-body">
-
-                        <div class="form-group-custom">
-
-                            <label for="category_name_input" class="form-label-custom">
-                                ชื่อหมวดหมู่
-                                <span style="color:var(--red);">*</span>
-                            </label>
-
-                            <input type="text" name="category_name" id="category_name_input"
-                                class="form-control-custom" placeholder="เช่น Western Muse — เดรสสายฝอ" required
-                                maxlength="100">
-
-                        </div>
-
-                        <div class="form-group-custom">
-
-                            <label for="description_input" class="form-label-custom">
-                                รายละเอียดหมวดหมู่ (ถ้ามี)
-                            </label>
-
-                            <textarea name="description" id="description_input" class="form-control-custom" rows="3"
-                                placeholder="ระบุคำอธิบายเกี่ยวกับหมวดหมู่นี้..."></textarea>
-
-                        </div>
-
-                    </div>
-
-                    <div class="modal-footer">
-
-                        <button type="button" class="btn-cancel" onclick="closeCategoryModal()">
-                            ยกเลิก
-                        </button>
-
-                        <button type="submit" class="btn-submit">
-                            <i class="fa-solid fa-check"></i>
-                            บันทึกหมวดหมู่ใหม่
-                        </button>
-
-                    </div>
-
-                </form>
-
-            </div>
-
-            <!-- MANAGE -->
-            <div id="tabManageContent" style="display:none;">
-
-                <div class="modal-body">
-
-                    <div class="category-manage-list">
-
-                        @foreach ($categories as $cat)
-                            @php
-                                $cId = $cat->category_id ?? $cat->id;
-
-                                $cName = $cat->category_name ?? $cat->name;
-
-                                $cDesc = $cat->description ?? '';
-                            @endphp
-
-                            <div class="category-list-item">
-
-                                <div class="cat-item-info">
-
-                                    <div class="cat-item-name">
-                                        {{ $cName }}
-                                    </div>
-
-                                    @if ($cDesc)
-                                        <div class="cat-item-desc">
-                                            {{ $cDesc }}
-                                        </div>
-                                    @endif
-
-                                </div>
-
-                                <div class="cat-item-actions">
-
-                                    <button type="button" class="btn-icon-edit"
-                                        onclick='startEditCategory(
-                                            @json($cId),
-                                            @json($cName),
-                                            @json($cDesc)
-                                        )'>
-                                        <i class="fa-regular fa-pen-to-square"></i>
-                                        แก้ไข
-                                    </button>
-
-                                    <form
-                                        action="{{ route('owner.dresses.categories.destroy', $cId) }}"
-                                        method="POST" style="margin:0;"
-                                        onsubmit="return confirm(@json('ยืนยันการลบหมวดหมู่ ' . $cName . ' ใช่หรือไม่?'));">
-
-                                        @csrf
-
-                                        @method('DELETE')
-
-                                        <button type="submit" class="btn-icon-delete">
-                                            <i class="fa-regular fa-trash-can"></i>
-                                            ลบ
-                                        </button>
-
-                                    </form>
-
-                                </div>
-
-                            </div>
-                        @endforeach
-
-                    </div>
-
-                </div>
-
-                <div class="modal-footer">
-
-                    <button type="button" class="btn-cancel" onclick="closeCategoryModal()">
-                        ปิด
-                    </button>
-
-                </div>
-
-            </div>
-
-            <!-- EDIT -->
-            <div id="tabEditContent" style="display:none;">
-
-                <form id="editCategoryForm" method="POST" action="">
-
-                    @csrf
-
-                    <div class="modal-body">
-
-                        <div
-                            style="
-                                margin-bottom:14px;
-                                color:var(--accent);
-                                font-size:13px;
-                                font-weight:600;
-                                display:flex;
-                                align-items:center;
-                                gap:6px;
-                            ">
-                            <i class="fa-solid fa-pen-to-square"></i>
-                            แก้ไขชื่อหมวดหมู่ในฐานข้อมูล
-                        </div>
-
-                        <div class="form-group-custom">
-
-                            <label for="edit_category_name_input" class="form-label-custom">
-                                ชื่อหมวดหมู่
-                                <span style="color:var(--red);">*</span>
-                            </label>
-
-                            <input type="text" name="category_name" id="edit_category_name_input"
-                                class="form-control-custom" required maxlength="100">
-
-                        </div>
-
-                        <div class="form-group-custom">
-
-                            <label for="edit_description_input" class="form-label-custom">
-                                รายละเอียดหมวดหมู่ (ถ้ามี)
-                            </label>
-
-                            <textarea name="description" id="edit_description_input" class="form-control-custom" rows="3"></textarea>
-
-                        </div>
-
-                    </div>
-
-                    <div class="modal-footer">
-
-                        <button type="button" class="btn-cancel" onclick="switchCategoryTab('manage')">
-                            ย้อนกลับ
-                        </button>
-
-                        <button type="submit" class="btn-submit">
-                            <i class="fa-solid fa-check"></i>
-                            บันทึกการแก้ไขลง DB
-                        </button>
-
-                    </div>
-
-                </form>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    @push('scripts')
-        <script>
-            function openCategoryModal(tab = 'add') {
-                const modal =
-                    document.getElementById(
-                        'categoryModal'
-                    );
-
-                if (modal) {
-                    modal.style.display = 'flex';
-                    switchCategoryTab(tab);
-                }
-            }
-
-            function closeCategoryModal() {
-                const modal =
-                    document.getElementById(
-                        'categoryModal'
-                    );
-
-                if (modal) {
-                    modal.style.display = 'none';
-                }
-            }
-
-            function switchCategoryTab(tab) {
-
-                const addContent =
-                    document.getElementById(
-                        'tabAddContent'
-                    );
-
-                const manageContent =
-                    document.getElementById(
-                        'tabManageContent'
-                    );
-
-                const editContent =
-                    document.getElementById(
-                        'tabEditContent'
-                    );
-
-                const addBtn =
-                    document.getElementById(
-                        'tabAddBtn'
-                    );
-
-                const manageBtn =
-                    document.getElementById(
-                        'tabManageBtn'
-                    );
-
-                if (tab === 'add') {
-
-                    if (addContent) {
-                        addContent.style.display =
-                            'block';
-                    }
-
-                    if (manageContent) {
-                        manageContent.style.display =
-                            'none';
-                    }
-
-                    if (editContent) {
-                        editContent.style.display =
-                            'none';
-                    }
-
-                    if (addBtn) {
-                        addBtn.classList.add('active');
-                    }
-
-                    if (manageBtn) {
-                        manageBtn.classList.remove(
-                            'active'
-                        );
-                    }
-
-                    const input =
-                        document.getElementById(
-                            'category_name_input'
-                        );
-
-                    if (input) {
-                        setTimeout(
-                            () => input.focus(),
-                            50
-                        );
-                    }
-
-                } else if (tab === 'manage') {
-
-                    if (addContent) {
-                        addContent.style.display =
-                            'none';
-                    }
-
-                    if (manageContent) {
-                        manageContent.style.display =
-                            'block';
-                    }
-
-                    if (editContent) {
-                        editContent.style.display =
-                            'none';
-                    }
-
-                    if (addBtn) {
-                        addBtn.classList.remove(
-                            'active'
-                        );
-                    }
-
-                    if (manageBtn) {
-                        manageBtn.classList.add(
-                            'active'
-                        );
-                    }
-
-                } else if (tab === 'edit') {
-
-                    if (addContent) {
-                        addContent.style.display =
-                            'none';
-                    }
-
-                    if (manageContent) {
-                        manageContent.style.display =
-                            'none';
-                    }
-
-                    if (editContent) {
-                        editContent.style.display =
-                            'block';
-                    }
-
-                    if (addBtn) {
-                        addBtn.classList.remove(
-                            'active'
-                        );
-                    }
-
-                    if (manageBtn) {
-                        manageBtn.classList.remove(
-                            'active'
-                        );
-                    }
-                }
-            }
-
-            function startEditCategory(
-                id,
-                name,
-                description
-            ) {
-
-                const form =
-                    document.getElementById(
-                        'editCategoryForm'
-                    );
-
-                const nameInput =
-                    document.getElementById(
-                        'edit_category_name_input'
-                    );
-
-                const descInput =
-                    document.getElementById(
-                        'edit_description_input'
-                    );
-
-                if (form) {
-                    form.action =
-                        '/owner/dresses/categories/' +
-                        id +
-                        '/update';
-                }
-
-                if (nameInput) {
-                    nameInput.value =
-                        name || '';
-                }
-
-                if (descInput) {
-                    descInput.value =
-                        description || '';
-                }
-
-                switchCategoryTab('edit');
-
-                if (nameInput) {
-                    setTimeout(
-                        () => nameInput.focus(),
-                        50
-                    );
-                }
-            }
-
-            document.addEventListener(
-                'keydown',
-                function(e) {
-
-                    if (e.key === 'Escape') {
-                        closeCategoryModal();
-                    }
-
-                }
-            );
-
-            document.addEventListener(
-                'click',
-                function(e) {
-
-                    const modal =
-                        document.getElementById(
-                            'categoryModal'
-                        );
-
-                    if (!modal) {
-                        return;
-                    }
-
-                    if (e.target === modal) {
-                        closeCategoryModal();
-                    }
-
-                }
-            );
-        </script>
-    @endpush
 
 @endsection
