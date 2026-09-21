@@ -5,6 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <title>สมัครสมาชิก | KYRIX</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
     <style>
         * {
             box-sizing: border-box;
@@ -13,7 +21,7 @@
         }
 
         body {
-            font-family: Arial, "Tahoma", sans-serif;
+            font-family: 'Prompt', 'Tahoma', sans-serif;
             background: #faf7f4;
             min-height: 100vh;
             display: flex;
@@ -82,6 +90,7 @@
             color: #fff;
             font-weight: 700;
             font-size: 15px;
+            font-family: inherit;
             cursor: pointer
         }
 
@@ -145,6 +154,7 @@
             text-decoration: none;
             font-size: 14px;
             font-weight: 600;
+            font-family: inherit;
             transition: .2s;
         }
 

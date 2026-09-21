@@ -64,7 +64,7 @@
 
 
         /* ==============================
-           Reset
+           RESET
         ============================== */
 
         * {
@@ -90,6 +90,7 @@
             color: var(--text-main);
 
             line-height: 1.6;
+
             min-height: 100vh;
 
             display: flex;
@@ -105,36 +106,14 @@
 
 
         /* ==============================
-           Top Notification Bar
-        ============================== */
-
-        .top-banner {
-            background: #2a2421;
-            color: #e5dfd8;
-
-            font-size: 13px;
-            padding: 8px 30px;
-
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-
-        .top-banner a {
-            color: var(--gold);
-            font-weight: 500;
-        }
-
-
-        /* ==============================
-           Main Navigation
+           HEADER
         ============================== */
 
         .header {
             background: var(--surface);
 
-            border-bottom: 1px solid var(--border);
+            border-bottom:
+                1px solid var(--border);
 
             position: sticky;
             top: 0;
@@ -151,10 +130,13 @@
 
             margin: 0 auto;
 
-            padding: 14px 24px;
+            padding:
+                14px 24px;
 
             display: flex;
+
             align-items: center;
+
             justify-content: space-between;
 
             gap: 20px;
@@ -162,12 +144,13 @@
 
 
         /* ==============================
-           Logo
+           LOGO
         ============================== */
 
         .logo-wrap {
             display: flex;
             flex-direction: column;
+
             flex-shrink: 0;
         }
 
@@ -178,6 +161,7 @@
                 sans-serif;
 
             font-size: 28px;
+
             font-weight: 800;
 
             letter-spacing: 2px;
@@ -190,6 +174,7 @@
 
         .logo-sub {
             font-size: 10px;
+
             letter-spacing: 3px;
 
             color: var(--gold);
@@ -203,11 +188,12 @@
 
 
         /* ==============================
-           Navigation Menu
+           NAVIGATION
         ============================== */
 
         .nav-links {
             display: flex;
+
             align-items: center;
 
             gap: 28px;
@@ -220,11 +206,13 @@
 
         .nav-links a {
             font-size: 15px;
+
             font-weight: 500;
 
             color: var(--text-main);
 
-            padding: 6px 0;
+            padding:
+                6px 0;
 
             position: relative;
 
@@ -245,27 +233,23 @@
         }
 
 
-        /* ==============================
-           Sliding Indicator
-        ============================== */
-
         .nav-indicator {
             position: absolute;
 
             left: 0;
+
             bottom: -1px;
 
             width: 0;
+
             height: 2px;
 
-            background: var(--primary);
+            background:
+                var(--primary);
 
             border-radius: 2px;
 
             pointer-events: none;
-
-            margin: 0;
-            padding: 0;
 
             transition:
                 transform 0.45s cubic-bezier(0.4, 0, 0.2, 1),
@@ -274,11 +258,12 @@
 
 
         /* ==============================
-           Header Actions
+           HEADER ACTIONS
         ============================== */
 
         .header-actions {
             display: flex;
+
             align-items: center;
 
             gap: 16px;
@@ -288,12 +273,15 @@
 
 
         /* ==============================
-           Search
+           SEARCH
         ============================== */
 
         .search-box {
             position: relative;
+
             width: 220px;
+
+            flex-shrink: 0;
         }
 
 
@@ -311,16 +299,19 @@
             background: #faf8f5;
 
             font-family: inherit;
+
             font-size: 13px;
 
-            transition: all 0.2s;
+            transition:
+                all 0.2s;
         }
 
 
         .search-box input:focus {
             outline: none;
 
-            border-color: var(--primary);
+            border-color:
+                var(--primary);
 
             background: #fff;
 
@@ -333,6 +324,7 @@
             position: absolute;
 
             right: 12px;
+
             top: 50%;
 
             transform:
@@ -342,14 +334,15 @@
 
             background: none;
 
-            color: var(--text-muted);
+            color:
+                var(--text-muted);
 
             cursor: pointer;
         }
 
 
         /* ==============================
-           Cart
+           CART
         ============================== */
 
         .cart-btn {
@@ -362,24 +355,30 @@
                 var(--primary);
 
             width: 42px;
+
             height: 42px;
 
             border-radius: 50%;
 
             display: flex;
+
             align-items: center;
+
             justify-content: center;
 
             font-size: 18px;
 
-            transition: all 0.2s;
+            transition:
+                all 0.2s;
 
             flex-shrink: 0;
         }
 
 
         .cart-btn:hover {
-            background: var(--primary);
+            background:
+                var(--primary);
+
             color: #fff;
 
             transform:
@@ -391,22 +390,28 @@
             position: absolute;
 
             top: -4px;
+
             right: -4px;
 
-            background: var(--gold);
+            background:
+                var(--gold);
 
             color: #fff;
 
             font-size: 11px;
+
             font-weight: 700;
 
             width: 20px;
+
             height: 20px;
 
             border-radius: 50%;
 
             display: flex;
+
             align-items: center;
+
             justify-content: center;
 
             box-shadow:
@@ -415,7 +420,7 @@
 
 
         /* ==============================
-           User Menu
+           USER MENU
         ============================== */
 
         .user-menu {
@@ -425,12 +430,13 @@
 
         .user-trigger {
             display: flex;
+
             align-items: center;
 
             gap: 8px;
 
             padding:
-                5px 10px 5px 5px;
+                5px 12px 5px 5px;
 
             border-radius: 30px;
 
@@ -445,13 +451,15 @@
 
             font-weight: 500;
 
-            transition: all 0.2s ease;
+            transition:
+                all 0.2s ease;
 
             font-family: inherit;
         }
 
 
-        .user-trigger:hover {
+        .user-trigger:hover,
+        .user-menu.active .user-trigger {
             border-color:
                 var(--primary);
 
@@ -460,23 +468,9 @@
         }
 
 
-        .profile-avatar {
-            width: 34px;
-            height: 34px;
-
-            border-radius: 50%;
-
-            object-fit: cover;
-
-            display: block;
-
-            border:
-                2px solid var(--primary-soft);
-        }
-
-
         .user-avatar {
             width: 34px;
+
             height: 34px;
 
             border-radius: 50%;
@@ -487,10 +481,13 @@
             color: #fff;
 
             display: flex;
+
             align-items: center;
+
             justify-content: center;
 
             font-size: 13px;
+
             font-weight: 700;
 
             flex-shrink: 0;
@@ -510,8 +507,20 @@
         }
 
 
+        .dropdown-arrow {
+            transition:
+                transform 0.25s ease;
+        }
+
+
+        .user-menu.active .dropdown-arrow {
+            transform:
+                rotate(180deg);
+        }
+
+
         /* ==============================
-           Dropdown
+           DROPDOWN
         ============================== */
 
         .dropdown-menu {
@@ -530,7 +539,7 @@
                 var(--radius-md);
 
             box-shadow:
-                var(--shadow-md);
+                0 12px 36px rgba(0, 0, 0, 0.1);
 
             border:
                 1px solid var(--border);
@@ -543,26 +552,31 @@
         }
 
 
-        .user-menu:hover .dropdown-menu {
+        .user-menu:hover .dropdown-menu,
+        .user-menu.active .dropdown-menu {
             display: block;
         }
 
 
         .dropdown-item {
             display: flex;
+
             align-items: center;
 
             gap: 10px;
 
-            padding: 10px 18px;
+            padding:
+                10px 18px;
 
             font-size: 14px;
 
-            color: var(--text-main);
+            color:
+                var(--text-main);
 
             width: 100%;
 
-            transition: all 0.2s ease;
+            transition:
+                all 0.2s ease;
         }
 
 
@@ -577,6 +591,7 @@
 
         .dropdown-item i {
             width: 18px;
+
             text-align: center;
         }
 
@@ -592,16 +607,18 @@
 
 
         /* ==============================
-           Dropdown User Info
+           DROPDOWN USER INFO
         ============================== */
 
         .profile-dropdown-header {
-            padding: 14px 18px;
+            padding:
+                14px 18px;
 
             border-bottom:
                 1px solid var(--border);
 
             display: flex;
+
             align-items: center;
 
             gap: 12px;
@@ -610,34 +627,57 @@
 
         .profile-dropdown-name {
             font-size: 14px;
+
             font-weight: 600;
 
-            color: var(--text-main);
+            color:
+                var(--text-main);
+
+            white-space: nowrap;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
         }
 
 
         .profile-dropdown-role {
             font-size: 12px;
 
-            color: var(--text-muted);
+            color:
+                var(--text-muted);
 
             margin-top: 2px;
         }
 
 
+        .logout-item {
+            color: #dc2626 !important;
+        }
+
+
+        .logout-item:hover {
+            background: #fef2f2 !important;
+
+            color: #b91c1c !important;
+        }
+
+
         /* ==============================
-           Buttons
+           BUTTONS
         ============================== */
 
         .btn {
             display: inline-flex;
 
             align-items: center;
+
             justify-content: center;
 
             gap: 8px;
 
-            padding: 11px 22px;
+            padding:
+                11px 22px;
 
             border-radius: 10px;
 
@@ -728,13 +768,14 @@
 
 
         /* ==============================
-           Flash Alerts
+           FLASH ALERTS
         ============================== */
 
         .alerts-container {
             max-width: 1280px;
 
-            margin: 20px auto 0;
+            margin:
+                20px auto 0;
 
             padding:
                 0 24px;
@@ -742,14 +783,17 @@
 
 
         .alert {
-            padding: 14px 20px;
+            padding:
+                14px 20px;
 
             border-radius:
                 var(--radius-md);
 
-            margin-bottom: 16px;
+            margin-bottom:
+                16px;
 
             display: flex;
+
             align-items: center;
 
             gap: 12px;
@@ -765,6 +809,7 @@
 
         .alert-success {
             background: #edfbf3;
+
             color: #1a7f47;
 
             border:
@@ -775,6 +820,7 @@
         .alert-error,
         .alert-danger {
             background: #fdf2f2;
+
             color: #b91c1c;
 
             border:
@@ -784,6 +830,7 @@
 
         .alert-warning {
             background: #fffbeb;
+
             color: #b45309;
 
             border:
@@ -792,7 +839,7 @@
 
 
         /* ==============================
-           Main Content
+           MAIN
         ============================== */
 
         .main-content {
@@ -801,7 +848,7 @@
 
 
         /* ==============================
-           Badges
+           BADGES
         ============================== */
 
         .badge {
@@ -880,17 +927,21 @@
 
 
         /* ==============================
-           Footer
+           FOOTER
         ============================== */
 
         .footer {
-            background: #1f1b19;
+            background:
+                #1f1b19;
 
-            color: #d1c8c1;
+            color:
+                #d1c8c1;
 
-            margin-top: 70px;
+            margin-top:
+                70px;
 
-            padding-top: 60px;
+            padding-top:
+                60px;
 
             border-top:
                 3px solid var(--primary);
@@ -933,9 +984,11 @@
             position: absolute;
 
             bottom: 0;
+
             left: 0;
 
             width: 35px;
+
             height: 2px;
 
             background:
@@ -963,16 +1016,23 @@
 
 
         .footer-links a {
-            color: #a69e97;
+            color:
+                #a69e97;
 
             font-size: 14px;
         }
 
 
         .footer-links a:hover {
-            color: var(--gold);
+            color:
+                var(--gold);
 
             padding-left: 5px;
+        }
+
+
+        .contact-info {
+            list-style: none;
         }
 
 
@@ -992,7 +1052,8 @@
 
 
         .contact-info i {
-            color: var(--gold);
+            color:
+                var(--gold);
 
             margin-top: 4px;
         }
@@ -1009,7 +1070,8 @@
 
             font-size: 13px;
 
-            color: #807771;
+            color:
+                #807771;
         }
 
 
@@ -1021,9 +1083,11 @@
             position: fixed;
 
             right: 24px;
+
             bottom: 24px;
 
             width: 50px;
+
             height: 50px;
 
             border: none;
@@ -1036,7 +1100,9 @@
             color: #fff;
 
             display: flex;
+
             align-items: center;
+
             justify-content: center;
 
             font-size: 17px;
@@ -1044,6 +1110,7 @@
             cursor: pointer;
 
             opacity: 0;
+
             visibility: hidden;
 
             transform:
@@ -1052,7 +1119,7 @@
             transition:
                 opacity 0.3s ease,
                 visibility 0.3s ease,
-                transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.35s ease,
                 background 0.25s ease,
                 box-shadow 0.25s ease;
 
@@ -1085,26 +1152,8 @@
         }
 
 
-        .back-to-top:active {
-            transform:
-                translateY(-2px) scale(0.94);
-        }
-
-
-        .back-to-top i {
-            transition:
-                transform 0.25s ease;
-        }
-
-
-        .back-to-top:hover i {
-            transform:
-                translateY(-3px);
-        }
-
-
         /* ==============================
-           Mobile
+           MOBILE
         ============================== */
 
         .mobile-menu-btn {
@@ -1116,9 +1165,23 @@
 
             font-size: 22px;
 
-            color: var(--text-main);
+            color:
+                var(--text-main);
 
             cursor: pointer;
+        }
+
+
+        @media (max-width: 1200px) {
+
+            .nav-links {
+                gap: 16px;
+            }
+
+            .search-box {
+                width: 180px;
+            }
+
         }
 
 
@@ -1150,32 +1213,6 @@
 
         @media (max-width: 600px) {
 
-            .footer-container {
-                grid-template-columns:
-                    1fr;
-            }
-
-            .top-banner {
-                display: none;
-            }
-
-            .profile-name {
-                display: none;
-            }
-
-            .back-to-top {
-                width: 44px;
-                height: 44px;
-
-                right: 16px;
-                bottom: 16px;
-            }
-
-            .dropdown-menu {
-                right: -20px;
-                min-width: 240px;
-            }
-
             .header-container {
                 padding:
                     12px 16px;
@@ -1191,13 +1228,12 @@
                 font-size: 8px;
             }
 
-            /*
-            ปุ่มเข้าสู่ระบบ/สมัครสมาชิก
-            ยังแสดงบนมือถือ
-            */
+            .profile-name {
+                display: none;
+            }
 
             .guest-actions {
-                gap: 5px;
+                gap: 5px !important;
             }
 
             .guest-actions .btn-sm {
@@ -1205,6 +1241,29 @@
                     6px 9px;
 
                 font-size: 11px;
+            }
+
+            .footer-container {
+                grid-template-columns:
+                    1fr;
+            }
+
+            .top-banner {
+                display: none;
+            }
+
+            .dropdown-menu {
+                right: -20px;
+
+                min-width: 240px;
+            }
+
+            .back-to-top {
+                width: 44px;
+                height: 44px;
+
+                right: 16px;
+                bottom: 16px;
             }
 
         }
@@ -1220,7 +1279,7 @@
 
 
     <!-- ==============================
-         Header Navigation
+         HEADER
     ============================== -->
 
     <header class="header">
@@ -1250,7 +1309,8 @@
 
                 <li>
 
-                    <a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'active' : '' }}">
+                    <a href="{{ route('home') }}"
+                        class="{{ request()->routeIs('home') ? 'active' : '' }}">
                         หน้าแรก
                     </a>
 
@@ -1294,15 +1354,13 @@
                 </li>
 
 
-                <!-- Sliding Indicator -->
-
                 <span class="nav-indicator" aria-hidden="true"></span>
 
             </ul>
 
 
             <!-- ==============================
-                 Header Actions
+                 HEADER ACTIONS
             ============================== -->
 
             <div class="header-actions">
@@ -1339,6 +1397,7 @@
 
                     <i class="fa-solid fa-bag-shopping"></i>
 
+
                     @if ($cartCount > 0)
                         <span class="cart-badge">
 
@@ -1350,67 +1409,97 @@
                 </a>
 
 
-                <!-- ===================================================== -->
-                <!-- ตรวจสอบสถานะผู้ใช้งาน -->
-                <!-- ===================================================== -->
+                <!-- ==============================
+                     USER STATUS
+                ============================== -->
 
                 @php
 
                     $customerId = session('customer_id');
 
-                    $customerName = session('customer_name');
+                    $customer = $customerId ? \App\Models\Customer::find($customerId) : null;
 
-                    $customer = null;
+                    $customerLoggedIn = (bool) session('customer_logged_in', false);
 
-                    if ($customerId) {
-                        $customer = \App\Models\Customer::find($customerId);
-                    }
+                    $authLoggedIn = auth()->check();
 
                     /*
                     |--------------------------------------------------------------------------
-                    | ตรวจสอบว่าล็อกอินแล้วหรือไม่
+                    | Owner / Admin
                     |--------------------------------------------------------------------------
                     */
 
-                    $isLoggedIn = session('customer_logged_in', false) || auth()->check();
+                    $isOwner = $authLoggedIn && in_array(auth()->user()->role ?? null, ['owner', 'admin'], true);
 
                     /*
                     |--------------------------------------------------------------------------
-                    | กำหนดชื่อที่ใช้แสดง
+                    | Customer
                     |--------------------------------------------------------------------------
                     */
 
-                    if (!empty($customerName)) {
-                        $displayName = $customerName;
-                    } elseif ($customer) {
-                        $displayName = trim(($customer->first_name ?? '') . ' ' . ($customer->last_name ?? ''));
-                    } elseif (auth()->check()) {
-                        $displayName = auth()->user()->name ?? 'ลูกค้า';
+                    $isCustomer = $customerLoggedIn && $customer;
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Logged In
+                    |--------------------------------------------------------------------------
+                    */
+
+                    $isLoggedIn = $isOwner || $isCustomer || $authLoggedIn;
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Display Name
+                    |--------------------------------------------------------------------------
+                    */
+
+                    if ($isOwner) {
+                        $displayName = auth()->user()->name ?? 'เจ้าของร้าน';
+
+                        $roleLabel = 'เจ้าของร้าน / ผู้ดูแลระบบ';
+                    } elseif ($isCustomer) {
+                        $displayName = session('customer_name');
+
+                        if (empty($displayName)) {
+                            $displayName = trim(($customer->first_name ?? '') . ' ' . ($customer->last_name ?? ''));
+                        }
+
+                        if (empty($displayName)) {
+                            $displayName = 'ลูกค้า KYRIX';
+                        }
+
+                        $roleLabel = 'สมาชิก KYRIX';
+                    } elseif ($authLoggedIn) {
+                        $displayName = auth()->user()->name ?? 'ผู้ใช้งาน';
+
+                        $roleLabel = 'ผู้ใช้งาน';
                     } else {
-                        $displayName = 'ลูกค้า';
+                        $displayName = null;
+
+                        $roleLabel = null;
                     }
 
-                    if (empty($displayName)) {
-                        $displayName = 'ลูกค้า';
-                    }
+                    $userInitial = $displayName ? mb_substr($displayName, 0, 1, 'UTF-8') : '';
                 @endphp
 
 
                 @if ($isLoggedIn)
-                    <!-- ================================================= -->
-                    <!-- Logged In Profile -->
-                    <!-- ================================================= -->
 
-                    <div class="user-menu">
+                    <!-- ==============================
+                         LOGGED IN
+                    ============================== -->
+
+                    <div class="user-menu" id="userMenu">
 
 
-                        <!-- Profile Button -->
+                        <!-- User Trigger -->
 
-                        <button type="button" class="user-trigger" aria-label="เมนูผู้ใช้งาน">
+                        <button type="button" class="user-trigger" id="userTrigger" aria-expanded="false"
+                            aria-label="เมนูผู้ใช้งาน">
 
                             <div class="user-avatar">
 
-                                {{ mb_substr($displayName, 0, 1, 'UTF-8') }}
+                                {{ $userInitial }}
 
                             </div>
 
@@ -1422,16 +1511,18 @@
                             </span>
 
 
-                            <i class="fa-solid fa-chevron-down" style="font-size:10px;"></i>
+                            <i class="fa-solid fa-chevron-down dropdown-arrow"
+                                style="
+                                    font-size:10px;
+                                    margin-left:2px;
+                                "></i>
 
                         </button>
 
 
-                        <!-- ================================================= -->
-                        <!-- Profile Dropdown -->
-                        <!-- ================================================= -->
+                        <!-- Dropdown -->
 
-                        <div class="dropdown-menu">
+                        <div class="dropdown-menu" id="userDropdown">
 
 
                             <!-- User Info -->
@@ -1445,12 +1536,15 @@
                                         font-size:16px;
                                     ">
 
-                                    {{ mb_substr($displayName, 0, 1, 'UTF-8') }}
+                                    {{ $userInitial }}
 
                                 </div>
 
 
-                                <div>
+                                <div
+                                    style="
+                                        min-width:0;
+                                    ">
 
                                     <div class="profile-dropdown-name">
 
@@ -1461,7 +1555,7 @@
 
                                     <div class="profile-dropdown-role">
 
-                                        สมาชิก KYRIX
+                                        {{ $roleLabel }}
 
                                     </div>
 
@@ -1470,48 +1564,95 @@
                             </div>
 
 
-                            <!-- Dashboard -->
+                            <!-- OWNER / ADMIN MENU -->
 
-                            <a href="{{ route('customer.dashboard') }}" class="dropdown-item">
+                            @if ($isOwner)
 
-                                <i class="fa-solid fa-gauge-high"></i>
+                                @if (Route::has('owner.dashboard'))
+                                    <a href="{{ route('owner.dashboard') }}"
+                                        class="dropdown-item">
 
-                                แดชบอร์ดของฉัน
+                                        <i class="fa-solid fa-gauge-high"></i>
 
-                            </a>
+                                        แดชบอร์ดเจ้าของร้าน
 
-
-                            <!-- Rentals -->
-
-                            <a href="{{ route('rentals.index') }}" class="dropdown-item">
-
-                                <i class="fa-solid fa-calendar-check"></i>
-
-                                การจองของฉัน
-
-                            </a>
+                                    </a>
+                                @endif
 
 
-                            <!-- Rental History -->
+                                @if (Route::has('owner.bookings.index'))
+                                    <a href="{{ route('owner.bookings.index') }}"
+                                        class="dropdown-item">
 
-                            <a href="{{ route('rentals.history') }}" class="dropdown-item">
+                                        <i class="fa-solid fa-calendar-check"></i>
 
-                                <i class="fa-solid fa-clock-rotate-left"></i>
+                                        จัดการการจอง
 
-                                ประวัติการเช่าชุด
+                                    </a>
+                                @endif
 
-                            </a>
+
+                                @if (Route::has('owner.dresses.index'))
+                                    <a href="{{ route('owner.dresses.index') }}"
+                                        class="dropdown-item">
+
+                                        <i class="fa-solid fa-shirt"></i>
+
+                                        จัดการชุด
+
+                                    </a>
+                                @endif
+                            @else
+                                <!-- CUSTOMER MENU -->
+
+                                @if (Route::has('customer.dashboard'))
+                                    <a href="{{ route('customer.dashboard') }}"
+                                        class="dropdown-item">
+
+                                        <i class="fa-solid fa-gauge-high"></i>
+
+                                        แดชบอร์ดของฉัน
+
+                                    </a>
+                                @endif
 
 
-                            <!-- Profile -->
+                                @if (Route::has('rentals.index'))
+                                    <a href="{{ route('rentals.index') }}"
+                                        class="dropdown-item">
 
-                            <a href="{{ route('profile.index') }}" class="dropdown-item">
+                                        <i class="fa-solid fa-calendar-check"></i>
 
-                                <i class="fa-solid fa-user-pen"></i>
+                                        การจองของฉัน
 
-                                โปรไฟล์ของฉัน
+                                    </a>
+                                @endif
 
-                            </a>
+
+                                @if (Route::has('rentals.history'))
+                                    <a href="{{ route('rentals.history') }}"
+                                        class="dropdown-item">
+
+                                        <i class="fa-solid fa-clock-rotate-left"></i>
+
+                                        ประวัติการเช่าชุด
+
+                                    </a>
+                                @endif
+
+
+                                @if (Route::has('profile.index'))
+                                    <a href="{{ route('profile.index') }}"
+                                        class="dropdown-item">
+
+                                        <i class="fa-solid fa-user-pen"></i>
+
+                                        โปรไฟล์ของฉัน
+
+                                    </a>
+                                @endif
+
+                            @endif
 
 
                             <div class="dropdown-divider"></div>
@@ -1519,36 +1660,43 @@
 
                             <!-- Logout -->
 
-                            <form action="{{ route('logout') }}" method="POST">
+                            @if (Route::has('logout'))
+                                <form action="{{ route('logout') }}" method="POST" style="margin:0;">
 
-                                @csrf
+                                    @csrf
 
-                                <button type="submit" class="dropdown-item"
-                                    style="
-                                        width:100%;
-                                        border:none;
-                                        background:none;
-                                        cursor:pointer;
-                                        text-align:left;
-                                        color:#dc2626;
-                                        font-family:inherit;
-                                    ">
+                                    <button type="submit" class="dropdown-item logout-item"
+                                        style="
+                                            width:100%;
+                                            border:none;
+                                            background:none;
+                                            cursor:pointer;
+                                            text-align:left;
+                                            font-family:inherit;
+                                            font-size:14px;
+                                        "
+                                        onclick="
+                                            return confirm(
+                                                'ต้องการออกจากระบบหรือไม่?'
+                                            );
+                                        ">
 
-                                    <i class="fa-solid fa-right-from-bracket"></i>
+                                        <i class="fa-solid fa-right-from-bracket"></i>
 
-                                    ออกจากระบบ
+                                        ออกจากระบบ
 
-                                </button>
+                                    </button>
 
-                            </form>
+                                </form>
+                            @endif
 
                         </div>
 
                     </div>
                 @else
-                    <!-- ================================================= -->
-                    <!-- Guest -->
-                    <!-- ================================================= -->
+                    <!-- ==============================
+                         GUEST
+                    ============================== -->
 
                     <div class="guest-actions"
                         style="
@@ -1557,20 +1705,21 @@
                             gap:8px;
                         ">
 
-                        <a href="{{ route('login') }}" class="btn btn-secondary btn-sm">
+                        @if (Route::has('login'))
+                            <a href="{{ route('login') }}" class="btn btn-secondary btn-sm">
+                                เข้าสู่ระบบ
+                            </a>
+                        @endif
 
-                            เข้าสู่ระบบ
 
-                        </a>
-
-
-                        <a href="{{ route('register') }}" class="btn btn-primary btn-sm">
-
-                            สมัครสมาชิก
-
-                        </a>
+                        @if (Route::has('register'))
+                            <a href="{{ route('register') }}" class="btn btn-primary btn-sm">
+                                สมัครสมาชิก
+                            </a>
+                        @endif
 
                     </div>
+
                 @endif
 
 
@@ -1582,7 +1731,7 @@
 
 
     <!-- ==============================
-         Flash Alerts
+         FLASH ALERTS
     ============================== -->
 
     @if (session('success') || session('error') || session('warning'))
@@ -1635,7 +1784,7 @@
 
 
     <!-- ==============================
-         Main Content
+         MAIN CONTENT
     ============================== -->
 
     <main class="main-content">
@@ -1646,7 +1795,7 @@
 
 
     <!-- ==============================
-         Footer
+         FOOTER
     ============================== -->
 
     <footer class="footer">
@@ -1737,13 +1886,17 @@
                     </li>
 
 
-                    <li>
+                    @if (Route::has('rentals.index'))
+                        <li>
 
-                        <a href="{{ route('rentals.index') }}">
-                            ติดตามสถานะการจอง
-                        </a>
+                            <a
+                                href="{{ route('rentals.index') }}">
+                                ติดตามสถานะการจอง
+                            </a>
 
-                    </li>
+                        </li>
+                    @endif
+
 
                 </ul>
 
@@ -1764,7 +1917,8 @@
 
                     <li>
 
-                        <a href="{{ route('products.index') }}?category_id=1">
+                        <a
+                            href="{{ route('products.index') }}?category_id=1">
                             ชุดสายฝอ
                         </a>
 
@@ -1773,7 +1927,8 @@
 
                     <li>
 
-                        <a href="{{ route('products.index') }}?category_id=2">
+                        <a
+                            href="{{ route('products.index') }}?category_id=2">
                             ชุดสายหวาน
                         </a>
 
@@ -1782,7 +1937,8 @@
 
                     <li>
 
-                        <a href="{{ route('products.index') }}?category_id=3">
+                        <a
+                            href="{{ route('products.index') }}?category_id=3">
                             ชุดออกงาน
                         </a>
 
@@ -1791,7 +1947,8 @@
 
                     <li>
 
-                        <a href="{{ route('products.index') }}?category_id=4">
+                        <a
+                            href="{{ route('products.index') }}?category_id=4">
                             มินิเดรส
                         </a>
 
@@ -1800,7 +1957,8 @@
 
                     <li>
 
-                        <a href="{{ route('products.index') }}?category_id=6">
+                        <a
+                            href="{{ route('products.index') }}?category_id=6">
                             เสื้อ & ท็อปส์
                         </a>
 
@@ -1809,7 +1967,8 @@
 
                     <li>
 
-                        <a href="{{ route('products.index') }}?category_id=6">
+                        <a
+                            href="{{ route('products.index') }}?category_id=6">
                             กระโปรง
                         </a>
 
@@ -1818,11 +1977,13 @@
 
                     <li>
 
-                        <a href="{{ route('products.index') }}?category_id=6">
+                        <a
+                            href="{{ route('products.index') }}?category_id=6">
                             กางเกง
                         </a>
 
                     </li>
+
 
                 </ul>
 
@@ -1838,7 +1999,7 @@
                 </h4>
 
 
-                <ul class="contact-info" style="list-style:none;">
+                <ul class="contact-info">
 
 
                     <li>
@@ -1863,7 +2024,7 @@
                         <i class="fa-solid fa-phone"></i>
 
                         <span>
-                            06525990723
+                            0652599072
                         </span>
 
                     </li>
@@ -1894,6 +2055,7 @@
 
                     </li>
 
+
                 </ul>
 
             </div>
@@ -1916,7 +2078,7 @@
 
 
     <!-- ==============================
-         Back To Top
+         BACK TO TOP
     ============================== -->
 
     <button type="button" class="back-to-top" id="backToTop" aria-label="กลับขึ้นด้านบน" title="กลับขึ้นด้านบน">
@@ -1927,7 +2089,7 @@
 
 
     <!-- ==============================
-         JavaScript
+         JAVASCRIPT
     ============================== -->
 
     <script>
@@ -1936,9 +2098,9 @@
             function() {
 
 
-                /* =========================================
+                /* =====================================
                    Navigation Sliding Indicator
-                ========================================= */
+                ===================================== */
 
                 const nav =
                     document.querySelector(
@@ -1996,17 +2158,10 @@
                             linkRect.width;
 
 
-                        if (!animate) {
-
-                            indicator.style.transition =
-                                'none';
-
-                        } else {
-
-                            indicator.style.transition =
-                                'transform 0.45s cubic-bezier(0.4, 0, 0.2, 1), width 0.45s cubic-bezier(0.4, 0, 0.2, 1)';
-
-                        }
+                        indicator.style.transition =
+                            animate ?
+                            'transform 0.45s cubic-bezier(0.4, 0, 0.2, 1), width 0.45s cubic-bezier(0.4, 0, 0.2, 1)' :
+                            'none';
 
 
                         indicator.style.width =
@@ -2033,7 +2188,9 @@
                     }
 
 
-                    function setActive(link) {
+                    function setActive(
+                        link
+                    ) {
 
                         links.forEach(
                             function(item) {
@@ -2098,11 +2255,6 @@
                             false
                         );
 
-
-                        activeLink.classList.add(
-                            'active'
-                        );
-
                     }
 
 
@@ -2157,7 +2309,9 @@
                                                 );
 
 
-                                            if (section) {
+                                            if (
+                                                section
+                                            ) {
 
                                                 section.scrollIntoView({
                                                     behavior: 'smooth',
@@ -2183,7 +2337,9 @@
                                     }
 
 
-                                    setActive(this);
+                                    setActive(
+                                        this
+                                    );
 
                                 }
                             );
@@ -2223,7 +2379,9 @@
                                 window.location.hash;
 
 
-                            if (currentHash) {
+                            if (
+                                currentHash
+                            ) {
 
                                 const hashLink =
                                     document.querySelector(
@@ -2231,7 +2389,9 @@
                                     );
 
 
-                                if (hashLink) {
+                                if (
+                                    hashLink
+                                ) {
 
                                     setActive(
                                         hashLink
@@ -2250,7 +2410,9 @@
                                 );
 
 
-                            if (homeLink) {
+                            if (
+                                homeLink
+                            ) {
 
                                 setActive(
                                     homeLink
@@ -2264,9 +2426,9 @@
                 }
 
 
-                /* =========================================
+                /* =====================================
                    Back To Top
-                ========================================= */
+                ===================================== */
 
                 const backToTop =
                     document.getElementById(
@@ -2274,7 +2436,9 @@
                     );
 
 
-                if (backToTop) {
+                if (
+                    backToTop
+                ) {
 
 
                     function toggleBackToTop() {
@@ -2318,6 +2482,112 @@
                                 top: 0,
                                 behavior: 'smooth'
                             });
+
+                        }
+                    );
+
+                }
+
+
+                /* =====================================
+                   User Dropdown
+                ===================================== */
+
+                const userMenu =
+                    document.getElementById(
+                        'userMenu'
+                    );
+
+
+                const userTrigger =
+                    document.getElementById(
+                        'userTrigger'
+                    );
+
+
+                if (
+                    userMenu &&
+                    userTrigger
+                ) {
+
+
+                    userTrigger.addEventListener(
+                        'click',
+                        function(e) {
+
+                            e.preventDefault();
+
+                            e.stopPropagation();
+
+
+                            userMenu.classList.toggle(
+                                'active'
+                            );
+
+
+                            const isExpanded =
+                                userMenu.classList.contains(
+                                    'active'
+                                );
+
+
+                            userTrigger.setAttribute(
+                                'aria-expanded',
+                                isExpanded ?
+                                'true' :
+                                'false'
+                            );
+
+                        }
+                    );
+
+
+                    document.addEventListener(
+                        'click',
+                        function(e) {
+
+                            if (
+                                !userMenu.contains(
+                                    e.target
+                                )
+                            ) {
+
+                                userMenu.classList.remove(
+                                    'active'
+                                );
+
+
+                                userTrigger.setAttribute(
+                                    'aria-expanded',
+                                    'false'
+                                );
+
+                            }
+
+                        }
+                    );
+
+
+                    document.addEventListener(
+                        'keydown',
+                        function(e) {
+
+                            if (
+                                e.key ===
+                                'Escape'
+                            ) {
+
+                                userMenu.classList.remove(
+                                    'active'
+                                );
+
+
+                                userTrigger.setAttribute(
+                                    'aria-expanded',
+                                    'false'
+                                );
+
+                            }
 
                         }
                     );
