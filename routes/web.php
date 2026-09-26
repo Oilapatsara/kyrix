@@ -23,13 +23,6 @@ use App\Http\Controllers\Owner\OwnerReportController;
 
 /*
 |--------------------------------------------------------------------------
-| KYRIX Dress Rental
-|--------------------------------------------------------------------------
-*/
-
-
-/*
-|--------------------------------------------------------------------------
 | PUBLIC
 |--------------------------------------------------------------------------
 */
@@ -73,7 +66,7 @@ Route::prefix('cart')
 
 /*
 |--------------------------------------------------------------------------
-| AUTH
+| AUTHENTICATION
 |--------------------------------------------------------------------------
 */
 
@@ -137,41 +130,55 @@ Route::middleware('customer')->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    // สร้างรายการเช่า
-    Route::post('/dresses/{id}/book', [RentalController::class, 'book'])
-        ->name('rentals.book');
+    Route::post(
+        '/dresses/{id}/book',
+        [RentalController::class, 'book']
+    )->name('rentals.book');
 
-    // หน้า Payment
-    Route::get('/rentals/{id}/payment', [RentalController::class, 'payment'])
-        ->name('rentals.payment');
+    Route::get(
+        '/rentals/{id}/payment',
+        [RentalController::class, 'payment']
+    )->name('rentals.payment');
 
-    // ส่งหลักฐานการชำระเงิน
-    Route::post('/rentals/{id}/payment', [RentalController::class, 'submitPayment'])
-        ->name('rentals.payment.submit');
+    Route::post(
+        '/rentals/{id}/address',
+        [RentalController::class, 'updateAddress']
+    )->name('rentals.address.update');
 
-    // รายการเช่าของลูกค้า
-    Route::get('/my-rentals', [RentalController::class, 'index'])
-        ->name('rentals.index');
+    Route::post(
+        '/rentals/{id}/payment',
+        [RentalController::class, 'submitPayment']
+    )->name('rentals.payment.submit');
 
-    // รายละเอียดรายการเช่า
-    Route::get('/my-rentals/{id}', [RentalController::class, 'show'])
-        ->name('rentals.show');
+    Route::get(
+        '/my-rentals',
+        [RentalController::class, 'index']
+    )->name('rentals.index');
 
-    // ยกเลิกรายการเช่า
-    Route::post('/my-rentals/{id}/cancel', [RentalController::class, 'cancel'])
-        ->name('rentals.cancel');
+    Route::get(
+        '/my-rentals/{id}',
+        [RentalController::class, 'show']
+    )->name('rentals.show');
 
-    // อัปโหลดสลิป
-    Route::post('/my-rentals/{id}/slip', [RentalController::class, 'uploadSlip'])
-        ->name('rentals.upload-slip');
+    Route::post(
+        '/my-rentals/{id}/cancel',
+        [RentalController::class, 'cancel']
+    )->name('rentals.cancel');
 
-    // แจ้งคืนชุด
-    Route::post('/my-rentals/{id}/return', [RentalController::class, 'requestReturn'])
-        ->name('rentals.request-return');
+    Route::post(
+        '/my-rentals/{id}/slip',
+        [RentalController::class, 'uploadSlip']
+    )->name('rentals.upload-slip');
 
-    // ประวัติการเช่า
-    Route::get('/rental-history', [RentalController::class, 'history'])
-        ->name('rentals.history');
+    Route::post(
+        '/my-rentals/{id}/return',
+        [RentalController::class, 'requestReturn']
+    )->name('rentals.request-return');
+
+    Route::get(
+        '/rental-history',
+        [RentalController::class, 'history']
+    )->name('rentals.history');
 
 
     /*
@@ -180,11 +187,15 @@ Route::middleware('customer')->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    Route::get('/checkout', [CheckoutController::class, 'index'])
-        ->name('checkout.index');
+    Route::get(
+        '/checkout',
+        [CheckoutController::class, 'index']
+    )->name('checkout.index');
 
-    Route::post('/checkout/process', [CheckoutController::class, 'process'])
-        ->name('checkout.process');
+    Route::post(
+        '/checkout/process',
+        [CheckoutController::class, 'process']
+    )->name('checkout.process');
 
 
     /*
@@ -193,17 +204,25 @@ Route::middleware('customer')->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    Route::get('/profile', [ProfileController::class, 'index'])
-        ->name('profile.index');
+    Route::get(
+        '/profile',
+        [ProfileController::class, 'index']
+    )->name('profile.index');
 
-    Route::post('/profile/update', [ProfileController::class, 'update'])
-        ->name('profile.update');
+    Route::post(
+        '/profile/update',
+        [ProfileController::class, 'update']
+    )->name('profile.update');
 
-    Route::post('/profile/password', [ProfileController::class, 'updatePassword'])
-        ->name('profile.password');
+    Route::post(
+        '/profile/password',
+        [ProfileController::class, 'updatePassword']
+    )->name('profile.password');
 
-    Route::post('/profile/image', [ProfileController::class, 'updateProfileImage'])
-        ->name('profile.image.update');
+    Route::post(
+        '/profile/image',
+        [ProfileController::class, 'updateProfileImage']
+    )->name('profile.image.update');
 
 
     /*
@@ -227,7 +246,6 @@ Route::middleware('customer')->group(function () {
 /*
 |--------------------------------------------------------------------------
 | OWNER / ADMIN PANEL
-| ใช้ Laravel Auth + OwnerMiddleware
 |--------------------------------------------------------------------------
 */
 
@@ -235,7 +253,6 @@ Route::middleware(['auth', 'owner'])
     ->prefix('owner')
     ->name('owner.')
     ->group(function () {
-
 
         /*
         |--------------------------------------------------------------------------
@@ -277,7 +294,7 @@ Route::middleware(['auth', 'owner'])
 
                 /*
                 |--------------------------------------------------------------------------
-                | Categories
+                | CATEGORIES
                 |--------------------------------------------------------------------------
                 */
 
@@ -300,7 +317,7 @@ Route::middleware(['auth', 'owner'])
 
                 /*
                 |--------------------------------------------------------------------------
-                | Item Operations
+                | ITEM OPERATIONS
                 |--------------------------------------------------------------------------
                 */
 
@@ -324,6 +341,11 @@ Route::middleware(['auth', 'owner'])
                     '/{id}/toggle-status',
                     [OwnerDressController::class, 'toggleStatus']
                 )->name('toggle-status');
+
+                Route::post(
+                    '/{id}/add-stock',
+                    [OwnerDressController::class, 'addStock']
+                )->name('add-stock');
             });
 
 
@@ -391,11 +413,19 @@ Route::middleware(['auth', 'owner'])
             ->name('returns.')
             ->group(function () {
 
+                // หน้าจัดการรับคืนชุด
                 Route::get(
                     '/',
                     [OwnerReturnController::class, 'index']
                 )->name('index');
 
+                // อัปเดตสถานะพัสดุส่งคืน
+                Route::post(
+                    '/{id}/shipping-status',
+                    [OwnerReturnController::class, 'updateReturnShippingStatus']
+                )->name('update-status');
+
+                // ตรวจรับชุดและจัดการเงินมัดจำ
                 Route::post(
                     '/{id}/confirm',
                     [OwnerReturnController::class, 'confirmReturn']

@@ -10,6 +10,7 @@
             padding: 0 24px;
         }
 
+
         .top-actions {
             display: flex;
             justify-content: space-between;
@@ -203,8 +204,8 @@
         }
 
         /* =========================================================
-                   SHIPPING / RETURN TRACKING
-                ========================================================= */
+                                   SHIPPING / RETURN TRACKING
+                                ========================================================= */
         .shipping-panel {
             display: flex;
             flex-direction: column;
@@ -315,8 +316,8 @@
         }
 
         /* =========================================================
-                   RETURN SHIPPING
-                ========================================================= */
+                                   RETURN SHIPPING
+                                ========================================================= */
         .return-shipping-box {
             margin-top: 14px;
             padding-top: 16px;
@@ -348,45 +349,241 @@
             transition: .18s ease;
         }
 
-        @media (max-width: 900px) {
-            #returnSection form>div {
-                grid-template-columns: 1fr 1fr !important;
-            }
+        /* =========================================================
+                                   RETURN STATUS
+                                ========================================================= */
+        .return-status-card {
+            margin-top: 36px;
+            padding: 24px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            background: #faf8f5;
+        }
 
-            #returnSection form button {
-                width: 100%;
+        .return-status-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+        }
+
+        .return-status-title {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .return-status-subtitle {
+            margin: 5px 0 0;
+            font-size: 12.5px;
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+
+        .return-status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 7px 13px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .return-status-badge.waiting {
+            background: #fff7ed;
+            color: #9a3412;
+            border: 1px solid #fed7aa;
+        }
+
+        .return-status-badge.success {
+            background: #f0fdf4;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        .return-status-badge.neutral {
+            background: #f5f5f5;
+            color: #666;
+            border: 1px solid #e5e5e5;
+        }
+
+        .return-request-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .return-request-field {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 13px 14px;
+        }
+
+        .return-request-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .return-request-value {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-main);
+            word-break: break-word;
+        }
+
+        .return-request-value.green {
+            color: #166534;
+        }
+
+        .return-request-note {
+            margin-top: 12px;
+            padding: 11px 13px;
+            border-radius: 9px;
+            background: #fff;
+            border: 1px dashed var(--border);
+            color: var(--text-muted);
+            font-size: 11.5px;
+            line-height: 1.7;
+        }
+
+        .return-request-form {
+            margin-top: 4px;
+        }
+
+        .return-method-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .return-method-card {
+            display: block;
+            border: 1px solid var(--border);
+            border-radius: 11px;
+            background: #fff;
+            padding: 14px;
+            cursor: pointer;
+            transition: .18s ease;
+        }
+
+        .return-method-card:hover {
+            border-color: var(--primary);
+            background: #fffdfd;
+        }
+
+        .return-method-card input {
+            margin-right: 7px;
+            accent-color: var(--primary);
+        }
+
+        .return-method-name {
+            font-size: 13px;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .return-method-desc {
+            margin-top: 5px;
+            font-size: 11px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .return-form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-bottom: 14px;
+        }
+
+        .return-form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 12.5px;
+            font-weight: 650;
+            color: var(--text-main);
+        }
+
+        .return-form-group label span {
+            color: #b42318;
+        }
+
+        .return-form-group .input-field {
+            margin-top: 0;
+        }
+
+        .return-submit-row {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 6px;
+        }
+
+        .return-submit-btn {
+            height: 44px;
+            padding: 0 20px;
+            border: none;
+            border-radius: 9px;
+            background: linear-gradient(135deg, var(--primary), #5c1522);
+            color: #fff;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: .18s ease;
+        }
+
+        .return-submit-btn:hover {
+            filter: brightness(.96);
+            transform: translateY(-1px);
+        }
+
+        .return-helper {
+            margin-top: 10px;
+            font-size: 11px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        @media (max-width: 900px) {
+
+            .return-form-grid,
+            .return-request-grid {
+                grid-template-columns: 1fr;
             }
         }
 
         @media (max-width: 600px) {
-            .shipping-row {
-                flex-direction: column;
-                gap: 5px;
+            .return-method-grid {
+                grid-template-columns: 1fr;
             }
 
-            .shipping-value {
-                text-align: left;
+            .return-submit-row {
+                display: block;
             }
 
-            .tracking-btn {
+            .return-submit-btn {
                 width: 100%;
-            }
-
-            #returnSection form>div {
-                grid-template-columns: 1fr !important;
             }
         }
 
         /* =========================================================
-                   PRINT RECEIPT
-                ========================================================= */
+                                   PRINT RECEIPT
+                                ========================================================= */
         .print-receipt {
             display: none;
         }
 
         /* =========================================================
-                   CANCEL RENTAL
-                ========================================================= */
+                                   CANCEL RENTAL
+                                ========================================================= */
         .cancel-rental-box {
             margin-top: 24px;
             padding: 18px 20px;
@@ -672,8 +869,8 @@
         }
 
         /* =========================================================
-                   PRINT
-                ========================================================= */
+                                   PRINT
+                                ========================================================= */
         @media print {
             @page {
                 size: A4 portrait;
@@ -912,6 +1109,76 @@
 
     <div class="order-detail-wrap">
 
+        @php
+            /*
+        |--------------------------------------------------------------------------
+        | RETURN STATUS
+        |--------------------------------------------------------------------------
+        |
+        | ระบบใหม่:
+        |
+        | not_returned       = ยังไม่คืน
+        | returned_requested = แจ้งคืนแล้ว
+        | returned           = คืนชุดแล้ว
+        |
+        | รองรับรายการเก่าที่ไม่มี return_status
+        |--------------------------------------------------------------------------
+        */
+
+            $returnStatus = trim((string) ($rental->return_status ?? ''));
+
+            if ($returnStatus === '') {
+                if ($rental->status === 'pending_return') {
+                    $returnStatus = 'returned_requested';
+                } elseif (in_array($rental->status, ['returned', 'completed'], true)) {
+                    $returnStatus = 'returned';
+                } else {
+                    $returnStatus = 'not_returned';
+                }
+            }
+
+            $returnMethod = trim((string) ($rental->return_method ?? ''));
+
+            $returnTrackingNumber = trim(
+                (string) ($rental->return_tracking_number ?: $rental->return_tracking_no ?? ''),
+            );
+
+            $returnCarrier = trim((string) ($rental->return_shipping_carrier ?? ''));
+
+            $returnShippingStatus = trim((string) ($rental->return_shipping_status ?? ''));
+
+            /*
+        |--------------------------------------------------------------------------
+        | รองรับข้อมูลเก่า
+        |--------------------------------------------------------------------------
+        */
+            if ($returnMethod === '') {
+                $returnMethod =
+                    $returnTrackingNumber !== '' ? 'parcel' : ($returnStatus === 'returned_requested' ? 'store' : '');
+            }
+
+            $returnMethodText = match ($returnMethod) {
+                'parcel' => 'ส่งพัสดุ',
+                'store' => 'คืนที่ร้าน',
+                default => '-',
+            };
+
+            $returnStatusText = match ($returnStatus) {
+                'not_returned' => 'ยังไม่คืน',
+                'returned_requested' => 'แจ้งคืนแล้ว',
+                'returned' => 'คืนชุดแล้ว',
+                default => 'ยังไม่คืน',
+            };
+
+            $canRequestReturn =
+                in_array($rental->status, ['confirmed', 'ready_pickup', 'renting'], true) &&
+                $returnStatus === 'not_returned';
+
+            $isReturnRequested = $returnStatus === 'returned_requested';
+
+            $isReturnCompleted = $returnStatus === 'returned';
+        @endphp
+
         {{-- TOP ACTIONS --}}
         <div class="top-actions">
 
@@ -942,20 +1209,20 @@
 
                     <div
                         style="
-                            font-size: 12px;
-                            color: var(--gold);
-                            font-weight: 600;
-                            letter-spacing: 2px;
-                            margin-bottom: 12px;
-                        ">
+                        font-size: 12px;
+                        color: var(--gold);
+                        font-weight: 600;
+                        letter-spacing: 2px;
+                        margin-bottom: 12px;
+                    ">
                         DRESS RENTAL BOUTIQUE
                     </div>
 
                     <div
                         style="
-                            font-size: 13px;
-                            color: var(--text-muted);
-                        ">
+                        font-size: 13px;
+                        color: var(--text-muted);
+                    ">
                         77 ตำบลในเมือง อำเภอเมือง จังหวัดนครราชสีมา 30000
                         | โทร: 0652599072
                     </div>
@@ -966,20 +1233,20 @@
 
                     <span
                         style="
-                            font-size: 12px;
-                            color: var(--text-muted);
-                        ">
+                        font-size: 12px;
+                        color: var(--text-muted);
+                    ">
                         เลขที่การเช่า (Rental Code)
                     </span>
 
                     <h2
                         style="
-                            font-family: 'Plus Jakarta Sans', monospace;
-                            font-size: 24px;
-                            color: var(--primary);
-                            font-weight: 800;
-                            margin: 2px 0;
-                        ">
+                        font-family: 'Plus Jakarta Sans', monospace;
+                        font-size: 24px;
+                        color: var(--primary);
+                        font-weight: 800;
+                        margin: 2px 0;
+                    ">
                         {{ $rental->rental_code ?? 'KR-2026-' . $rental->rental_id }}
                     </h2>
 
@@ -987,9 +1254,9 @@
 
                         <span class="badge {{ $rental->status_badge_class }}"
                             style="
-                                font-size: 13px;
-                                padding: 6px 14px;
-                            ">
+                            font-size: 13px;
+                            padding: 6px 14px;
+                        ">
                             <i class="fa-solid fa-circle-dot"></i>
                             {{ $rental->status_label }}
                         </span>
@@ -1089,26 +1356,26 @@
             {{-- DATES --}}
             <div
                 style="
-                    background: #faf8f5;
-                    padding: 16px 20px;
-                    border-radius: 10px;
-                    display: flex;
-                    justify-content: space-around;
-                    text-align: center;
-                    border: 1px solid var(--border);
-                    margin-bottom: 24px;
-                    flex-wrap: wrap;
-                    gap: 14px;
-                ">
+                background: #faf8f5;
+                padding: 16px 20px;
+                border-radius: 10px;
+                display: flex;
+                justify-content: space-around;
+                text-align: center;
+                border: 1px solid var(--border);
+                margin-bottom: 24px;
+                flex-wrap: wrap;
+                gap: 14px;
+            ">
 
                 <div>
 
                     <span
                         style="
-                            font-size: 12px;
-                            color: var(--text-muted);
-                            display: block;
-                        ">
+                        font-size: 12px;
+                        color: var(--text-muted);
+                        display: block;
+                    ">
                         วันที่ทำรายการ
                     </span>
 
@@ -1122,10 +1389,10 @@
 
                     <span
                         style="
-                            font-size: 12px;
-                            color: var(--text-muted);
-                            display: block;
-                        ">
+                        font-size: 12px;
+                        color: var(--text-muted);
+                        display: block;
+                    ">
                         วันเริ่มรับชุด
                     </span>
 
@@ -1139,10 +1406,10 @@
 
                     <span
                         style="
-                            font-size: 12px;
-                            color: var(--text-muted);
-                            display: block;
-                        ">
+                        font-size: 12px;
+                        color: var(--text-muted);
+                        display: block;
+                    ">
                         วันกำหนดส่งคืนชุด
                     </span>
 
@@ -1156,10 +1423,10 @@
 
                     <span
                         style="
-                            font-size: 12px;
-                            color: var(--text-muted);
-                            display: block;
-                        ">
+                        font-size: 12px;
+                        color: var(--text-muted);
+                        display: block;
+                    ">
                         วิธีรับชุด
                     </span>
 
@@ -1191,7 +1458,7 @@
                         </th>
 
                         <th>
-                            ค่าเช่า / วัน
+                            ค่าเช่า / ครั้ง
                         </th>
 
                         <th style="text-align: right;">
@@ -1217,35 +1484,35 @@
 
                                 <div
                                     style="
-                                        display: flex;
-                                        align-items: center;
-                                        gap: 12px;
-                                    ">
+                                    display: flex;
+                                    align-items: center;
+                                    gap: 12px;
+                                ">
 
                                     <img src="{{ $detail->product->main_image_url ?? '' }}"
                                         style="
-                                            width: 50px;
-                                            height: 60px;
-                                            border-radius: 6px;
-                                            object-fit: cover;
-                                        "
+                                        width: 50px;
+                                        height: 60px;
+                                        border-radius: 6px;
+                                        object-fit: cover;
+                                    "
                                         alt="dress">
 
                                     <div>
 
                                         <a href="{{ route('products.show', $detail->product_id) }}"
                                             style="
-                                                font-weight: 700;
-                                                color: var(--text-main);
-                                            ">
+                                            font-weight: 700;
+                                            color: var(--text-main);
+                                        ">
                                             {{ $detail->product->product_name ?? 'ชุดเช่า' }}
                                         </a>
 
                                         <div
                                             style="
-                                                font-size: 11px;
-                                                color: var(--text-muted);
-                                            ">
+                                            font-size: 11px;
+                                            color: var(--text-muted);
+                                        ">
                                             รหัสชุด:
                                             {{ $detail->product->product_code ?? '-' }}
                                         </div>
@@ -1267,9 +1534,9 @@
 
                                 <div
                                     style="
-                                        font-size: 12px;
-                                        color: var(--text-muted);
-                                    ">
+                                    font-size: 12px;
+                                    color: var(--text-muted);
+                                ">
                                     สี:
                                     {{ $detail->selected_color ?? 'ตามแบบ' }}
                                 </div>
@@ -1286,10 +1553,10 @@
 
                             <td
                                 style="
-                                    text-align: right;
-                                    font-weight: 700;
-                                    color: var(--primary);
-                                ">
+                                text-align: right;
+                                font-weight: 700;
+                                color: var(--primary);
+                            ">
                                 ฿{{ number_format($detail->subtotal, 2) }}
                             </td>
 
@@ -1321,10 +1588,10 @@
                 {{-- DELIVERY --}}
                 <div
                     style="
-                        display: flex;
-                        flex-direction: column;
-                        gap: 16px;
-                    ">
+                    display: flex;
+                    flex-direction: column;
+                    gap: 16px;
+                ">
 
                     <div class="info-card">
 
@@ -1342,7 +1609,7 @@
                                 </div>
 
                                 <div class="shipping-value">
-                                    {{ $rental->customer->user->name ?? 'ลูกค้า' }}
+                                    {{ trim(($rental->customer->first_name ?? '') . ' ' . ($rental->customer->last_name ?? '')) ?: 'ลูกค้า' }}
                                 </div>
 
                             </div>
@@ -1478,133 +1745,313 @@
                             @elseif ($rental->tracking_number)
                                 <div
                                     style="
-                                        margin-top:4px;
-                                        font-size:11.5px;
-                                        color:var(--text-muted);
-                                        line-height:1.6;
-                                    ">
+                                    margin-top:4px;
+                                    font-size:11.5px;
+                                    color:var(--text-muted);
+                                    line-height:1.6;
+                                ">
                                     <i class="fa-solid fa-circle-info"></i>
                                     ร้านยังไม่ได้ระบุลิงก์สำหรับติดตามพัสดุ
                                 </div>
                             @endif
 
-                            {{-- RETURN SHIPPING --}}
+                            {{-- =====================================================
+                             RETURN SHIPPING
+                        ====================================================== --}}
+
                             @if (
-                                $rental->return_tracking_no ||
-                                    $rental->return_shipping_carrier ||
-                                    $rental->return_shipping_status ||
-                                    $rental->return_shipped_at ||
-                                    $rental->return_estimated_delivery_at)
+                                $returnStatus !== 'not_returned' ||
+                                    $returnTrackingNumber ||
+                                    $returnCarrier ||
+                                    $returnShippingStatus ||
+                                    $rental->return_requested_at ||
+                                    $rental->return_received_at)
 
                                 <div class="return-shipping-box">
 
                                     <div class="return-shipping-title">
 
-                                        <i class="fa-solid fa-box"></i>
+                                        <i class="fa-solid fa-box-archive"></i>
 
-                                        พัสดุส่งคืนจากลูกค้า
+                                        ข้อมูลการคืนชุด
 
                                     </div>
 
-                                    @if ($rental->return_shipping_carrier)
-                                        <div class="shipping-row">
-
-                                            <div class="shipping-label">
-                                                บริษัทขนส่ง
-                                            </div>
-
-                                            <div class="shipping-value">
-                                                {{ $rental->return_shipping_carrier }}
-                                            </div>
-
-                                        </div>
-                                    @endif
-
+                                    {{-- RETURN STATUS --}}
                                     <div class="shipping-row">
 
                                         <div class="shipping-label">
-                                            เลขพัสดุส่งคืน
+                                            สถานะการคืน
                                         </div>
 
-                                        <div class="shipping-value" style="color:#166534;">
-                                            <i class="fa-solid fa-barcode"></i>
-                                            {{ $rental->return_tracking_no }}
+                                        <div class="shipping-value">
+
+                                            @if ($returnStatus === 'returned')
+                                                <span class="return-status-badge success">
+                                                    <i class="fa-solid fa-circle-check"></i>
+                                                    คืนชุดแล้ว
+                                                </span>
+                                            @elseif ($returnStatus === 'returned_requested')
+                                                <span class="return-status-badge waiting">
+                                                    <i class="fa-solid fa-clock"></i>
+                                                    แจ้งคืนแล้ว
+                                                </span>
+                                            @else
+                                                <span class="return-status-badge neutral">
+                                                    <i class="fa-solid fa-shirt"></i>
+                                                    ยังไม่คืน
+                                                </span>
+                                            @endif
+
                                         </div>
 
                                     </div>
 
-                                    @if ($rental->return_shipping_status)
-
+                                    {{-- RETURN METHOD --}}
+                                    @if ($returnMethod !== '')
                                         <div class="shipping-row">
 
                                             <div class="shipping-label">
-                                                สถานะพัสดุส่งคืน
+                                                วิธีคืนชุด
                                             </div>
 
                                             <div class="shipping-value">
-
-                                                <span class="shipping-status-badge return-shipping-status">
-
-                                                    @if ($rental->return_shipping_status === 'ลูกค้ายังไม่ได้ส่งคืน')
-                                                        <i class="fa-solid fa-clock"></i>
-                                                    @elseif ($rental->return_shipping_status === 'ส่งพัสดุแล้ว')
-                                                        <i class="fa-solid fa-box-open"></i>
-                                                    @elseif ($rental->return_shipping_status === 'กำลังขนส่ง')
-                                                        <i class="fa-solid fa-truck-fast"></i>
-                                                    @elseif ($rental->return_shipping_status === 'กำลังนำจ่าย')
-                                                        <i class="fa-solid fa-location-dot"></i>
-                                                    @elseif ($rental->return_shipping_status === 'ถึงร้านแล้ว')
-                                                        <i class="fa-solid fa-circle-check"></i>
-                                                    @else
-                                                        <i class="fa-solid fa-circle-info"></i>
-                                                    @endif
-
-                                                    {{ $rental->return_shipping_status_label }}
-
-                                                </span>
-
+                                                {{ $returnMethodText }}
                                             </div>
 
                                         </div>
-
                                     @endif
 
-                                    @if ($rental->return_shipped_at)
+                                    {{-- REQUESTED AT --}}
+                                    @if ($rental->return_requested_at)
                                         <div class="shipping-row">
 
                                             <div class="shipping-label">
-                                                วันที่ส่งคืน
+                                                วันที่แจ้งคืน
                                             </div>
 
                                             <div class="shipping-value">
-                                                {{ $rental->return_shipped_at->format('d/m/Y H:i') }} น.
+                                                {{ $rental->return_requested_at->format('d/m/Y H:i') }} น.
                                             </div>
 
                                         </div>
                                     @endif
 
-                                    @if ($rental->return_estimated_delivery_at)
-                                        <div class="shipping-row">
+                                    {{-- PARCEL --}}
+                                    @if ($returnMethod === 'parcel')
 
-                                            <div class="shipping-label">
-                                                คาดว่าจะถึงร้าน
+                                        @if ($returnCarrier)
+                                            <div class="shipping-row">
+
+                                                <div class="shipping-label">
+                                                    บริษัทขนส่ง
+                                                </div>
+
+                                                <div class="shipping-value">
+                                                    {{ $returnCarrier }}
+                                                </div>
+
+                                            </div>
+                                        @endif
+
+                                        @if ($returnTrackingNumber)
+                                            <div class="shipping-row">
+
+                                                <div class="shipping-label">
+                                                    เลขพัสดุส่งคืน
+                                                </div>
+
+                                                <div class="shipping-value" style="color:#166534;">
+                                                    <i class="fa-solid fa-barcode"></i>
+                                                    {{ $returnTrackingNumber }}
+                                                </div>
+
+                                            </div>
+                                        @endif
+
+                                        @if ($returnShippingStatus)
+
+                                            <div class="shipping-row">
+
+                                                <div class="shipping-label">
+                                                    สถานะพัสดุส่งคืน
+                                                </div>
+
+                                                <div class="shipping-value">
+
+                                                    <span class="shipping-status-badge return-shipping-status">
+
+                                                        @if ($returnShippingStatus === 'ลูกค้ายังไม่ได้ส่งคืน')
+                                                            <i class="fa-solid fa-clock"></i>
+                                                        @elseif ($returnShippingStatus === 'ส่งพัสดุแล้ว' || $returnShippingStatus === 'ลูกค้าส่งคืนแล้ว')
+                                                            <i class="fa-solid fa-box-open"></i>
+                                                        @elseif ($returnShippingStatus === 'กำลังขนส่ง')
+                                                            <i class="fa-solid fa-truck-fast"></i>
+                                                        @elseif ($returnShippingStatus === 'กำลังนำจ่าย')
+                                                            <i class="fa-solid fa-location-dot"></i>
+                                                        @elseif ($returnShippingStatus === 'ถึงร้านแล้ว')
+                                                            <i class="fa-solid fa-circle-check"></i>
+                                                        @else
+                                                            <i class="fa-solid fa-circle-info"></i>
+                                                        @endif
+
+                                                        {{ $returnShippingStatus }}
+
+                                                    </span>
+
+                                                </div>
+
                                             </div>
 
-                                            <div class="shipping-value" style="color:var(--primary);">
-                                                {{ $rental->return_estimated_delivery_at->format('d/m/Y H:i') }} น.
-                                            </div>
+                                        @endif
 
-                                        </div>
+                                        @if ($rental->return_shipped_at)
+                                            <div class="shipping-row">
+
+                                                <div class="shipping-label">
+                                                    วันที่ส่งคืน
+                                                </div>
+
+                                                <div class="shipping-value">
+                                                    {{ $rental->return_shipped_at->format('d/m/Y H:i') }} น.
+                                                </div>
+
+                                            </div>
+                                        @endif
+
+                                        @if ($rental->return_estimated_delivery_at)
+                                            <div class="shipping-row">
+
+                                                <div class="shipping-label">
+                                                    คาดว่าจะถึงร้าน
+                                                </div>
+
+                                                <div class="shipping-value" style="color:var(--primary);">
+                                                    {{ $rental->return_estimated_delivery_at->format('d/m/Y H:i') }} น.
+                                                </div>
+
+                                            </div>
+                                        @endif
+
+                                        @if (!empty($returnTrackingUrl))
+                                            <div style="margin-top:12px;">
+
+                                                <a href="{{ $returnTrackingUrl }}" target="_blank"
+                                                    rel="noopener noreferrer" class="tracking-btn">
+
+                                                    <i class="fa-solid fa-location-arrow"></i>
+
+                                                    ติดตามพัสดุส่งคืน
+
+                                                </a>
+
+                                            </div>
+                                        @elseif ($returnTrackingNumber && $returnCarrier)
+                                            <div
+                                                style="
+                                                margin-top:12px;
+                                                padding:10px 12px;
+                                                border-radius:9px;
+                                                background:#fff;
+                                                border:1px solid var(--border);
+                                                color:var(--text-muted);
+                                                font-size:11.5px;
+                                                line-height:1.6;
+                                            ">
+
+                                                <i class="fa-solid fa-circle-info"></i>
+
+                                                ระบบยังไม่พบลิงก์ติดตามอัตโนมัติของบริษัทขนส่งนี้
+
+                                            </div>
+                                        @endif
+
                                     @endif
 
-                                    @if ($rental->return_tracking_url)
-                                        <div style="margin-top:12px;">
+                                    {{-- STORE RETURN --}}
+                                    @if ($returnMethod === 'store')
+                                        <div
+                                            style="
+                                            margin-top:8px;
+                                            padding:11px 12px;
+                                            border-radius:9px;
+                                            background:#fff;
+                                            border:1px solid var(--border);
+                                            color:var(--text-muted);
+                                            font-size:11.5px;
+                                            line-height:1.6;
+                                        ">
 
-                                            <a href="{{ $rental->return_tracking_url }}" target="_blank"
-                                                rel="noopener noreferrer" class="tracking-btn">
-                                                <i class="fa-solid fa-location-arrow"></i>
-                                                ติดตามพัสดุส่งคืน
+                                            <i class="fa-solid fa-store"></i>
+
+                                            ลูกค้าเลือกนำชุดมาคืนที่ร้าน KYRIX
+
+                                            <div
+                                                style="
+                                                    margin-top:7px;
+                                                    padding-left:22px;
+                                                    color:var(--text-muted);
+                                                ">
+                                                <strong style="color:var(--text-main);">
+                                                    ที่อยู่ร้าน:
+                                                </strong>
+                                                77 ตำบลในเมือง อำเภอเมือง
+                                                จังหวัดนครราชสีมา 30000
+
+                                                <div
+                                                    style="
+                                                        margin-top:6px;
+                                                        color:var(--text-muted);
+                                                    ">
+                                                    กรุณานำชุดมาคืนที่ร้านตามวันและเวลาที่กำหนด
+                                                </div>
+                                            </div>
+
+                                            <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode('77 ตำบลในเมือง อำเภอเมือง จังหวัดนครราชสีมา 30000') }}"
+                                                target="_blank" rel="noopener noreferrer"
+                                                style="
+                                                    display:inline-flex;
+                                                    align-items:center;
+                                                    gap:6px;
+                                                    margin-top:8px;
+                                                    margin-left:22px;
+                                                    padding:7px 11px;
+                                                    border-radius:8px;
+                                                    background:#fff;
+                                                    border:1px solid var(--border);
+                                                    color:var(--primary);
+                                                    text-decoration:none;
+                                                    font-size:11.5px;
+                                                    font-weight:700;
+                                                ">
+                                                <i class="fa-solid fa-map-location-dot"></i>
+                                                เปิดแผนที่ร้าน
                                             </a>
+
+                                        </div>
+                                    @endif
+
+                                    {{-- RECEIVED AT --}}
+                                    @if ($rental->return_received_at)
+                                        <div
+                                            style="
+                                            margin-top:10px;
+                                            padding:11px 12px;
+                                            border-radius:9px;
+                                            background:#f0fdf4;
+                                            border:1px solid #bbf7d0;
+                                            color:#166534;
+                                            font-size:11.5px;
+                                            line-height:1.6;
+                                        ">
+
+                                            <i class="fa-solid fa-circle-check"></i>
+
+                                            ร้านรับคืนชุดแล้ว เมื่อ
+
+                                            <strong>
+                                                {{ $rental->return_received_at->format('d/m/Y H:i') }} น.
+                                            </strong>
 
                                         </div>
                                     @endif
@@ -1659,12 +2106,15 @@
                         @else
                             <div
                                 style="
-                                    padding:14px 0;
-                                    color:var(--text-muted);
-                                    font-size:12.5px;
-                                ">
+                                padding:14px 0;
+                                color:var(--text-muted);
+                                font-size:12.5px;
+                            ">
+
                                 <i class="fa-solid fa-calendar-xmark"></i>
+
                                 ร้านยังไม่ได้กำหนดวันและเวลาคืนชุด
+
                             </div>
 
                         @endif
@@ -1680,6 +2130,7 @@
                         </h4>
 
                         @php
+
                             // ดึงรายการชำระเงินล่าสุด
                             $latestPayment = collect($rental->payments ?? [])
                                 ->sortByDesc('payment_id')
@@ -1687,22 +2138,23 @@
 
                             // ยอดที่ควรแสดง = ยอดที่ชำระจริง หากมีค่า
                             // ถ้ายังไม่มี/เป็น 0 ให้ใช้ยอดรวมรายการเช่าแทน
-                            // เพื่อไม่ให้หน้าเว็บแสดง ฿0.00 ทั้งที่ลูกค้าต้องโอนเงินจริง
-                            $displayPaymentAmount = $latestPayment && (float) $latestPayment->payment_amount > 0
-                                ? (float) $latestPayment->payment_amount
-                                : (float) ($rental->grand_total ?? 0);
+                            $displayPaymentAmount =
+                                $latestPayment && (float) $latestPayment->amount > 0
+                                    ? (float) $latestPayment->amount
+                                    : (float) ($rental->grand_total ?? 0);
+
                         @endphp
 
                         @if ($latestPayment)
 
                             <div
                                 style="
-                                    display:flex;
-                                    justify-content:space-between;
-                                    align-items:center;
-                                    gap:20px;
-                                    padding:8px 0;
-                                ">
+                                display:flex;
+                                justify-content:space-between;
+                                align-items:center;
+                                gap:20px;
+                                padding:8px 0;
+                            ">
 
                                 <div>
 
@@ -1716,46 +2168,48 @@
 
                                         <span
                                             style="
-                                                font-size:11px;
-                                                color:#888;
-                                            ">
+                                            font-size:11px;
+                                            color:#888;
+                                        ">
+
                                             (
-                                            {{ $latestPayment->payment_date ? $latestPayment->payment_date->format('d/m/Y H:i') : '-' }}
+                                            {{ $latestPayment->paid_at ? $latestPayment->paid_at->format('d/m/Y H:i') : '-' }}
                                             )
+
                                         </span>
 
                                     </div>
 
                                     <div
                                         style="
-                                            font-size:11px;
-                                            margin-top:4px;
-                                        ">
+                                        font-size:11px;
+                                        margin-top:4px;
+                                    ">
 
                                         สถานะ:
 
                                         @if ($latestPayment->status === 'approved')
                                             <span
                                                 style="
-                                                    color:#166534;
-                                                    font-weight:700;
-                                                ">
+                                                color:#166534;
+                                                font-weight:700;
+                                            ">
                                                 ตรวจสอบอนุมัติแล้ว
                                             </span>
                                         @elseif ($latestPayment->status === 'rejected')
                                             <span
                                                 style="
-                                                    color:#b91c1c;
-                                                    font-weight:700;
-                                                ">
+                                                color:#b91c1c;
+                                                font-weight:700;
+                                            ">
                                                 ปฏิเสธการชำระเงิน
                                             </span>
                                         @else
                                             <span
                                                 style="
-                                                    color:#b45309;
-                                                    font-weight:700;
-                                                ">
+                                                color:#b45309;
+                                                font-weight:700;
+                                            ">
                                                 รอเจ้าหน้าที่ตรวจสลิป
                                             </span>
                                         @endif
@@ -1766,7 +2220,9 @@
 
                                 @if ($latestPayment->slip_url)
                                     <a href="{{ $latestPayment->slip_url }}" target="_blank">
+
                                         <img src="{{ $latestPayment->slip_url }}" class="slip-img-card" alt="สลิป">
+
                                     </a>
                                 @endif
 
@@ -1774,10 +2230,12 @@
                         @else
                             <p
                                 style="
-                                    color:var(--text-muted);
-                                    margin:0;
-                                ">
+                                color:var(--text-muted);
+                                margin:0;
+                            ">
+
                                 ยังไม่มีข้อมูลการชำระเงินหรือแนบสลิป
+
                             </p>
 
                         @endif
@@ -1791,13 +2249,15 @@
 
                     <h4
                         style="
-                            font-size:16px;
-                            font-weight:800;
-                            margin-bottom:16px;
-                            padding-bottom:8px;
-                            border-bottom:1px solid var(--border);
-                        ">
+                        font-size:16px;
+                        font-weight:800;
+                        margin-bottom:16px;
+                        padding-bottom:8px;
+                        border-bottom:1px solid var(--border);
+                    ">
+
                         แจกแจงค่าใช้จ่าย
+
                     </h4>
 
                     <div class="totals-row">
@@ -1816,8 +2276,11 @@
                         <div class="totals-row" style="color:#16a34a;">
 
                             <span>
+
                                 <i class="fa-solid fa-tag"></i>
+
                                 {{ $rental->discount_reason ?? 'ส่วนลดโปรโมชั่น' }}:
+
                             </span>
 
                             <strong style="color:#16a34a;">
@@ -1851,19 +2314,6 @@
 
                     </div>
 
-                    <div class="totals-row">
-
-                        <span>
-                            บริการเสริม
-                            ({{ $rental->service_type ?? 'มาตรฐาน' }}):
-                        </span>
-
-                        <strong>
-                            ฿{{ number_format($rental->service_fee ?? 0, 2) }}
-                        </strong>
-
-                    </div>
-
                     <div class="totals-row final">
 
                         <span>
@@ -1878,13 +2328,13 @@
 
                     <div
                         style="
-                            background:var(--gold-light);
-                            padding:10px;
-                            border-radius:8px;
-                            font-size:12px;
-                            color:#855d14;
-                            margin-top:14px;
-                        ">
+                        background:var(--gold-light);
+                        padding:10px;
+                        border-radius:8px;
+                        font-size:12px;
+                        color:#855d14;
+                        margin-top:14px;
+                    ">
 
                         <i class="fa-solid fa-shield"></i>
 
@@ -1903,8 +2353,412 @@
             </div>
 
             {{-- =====================================================
-                 CANCEL RENTAL
+             RETURN REQUEST
+        ====================================================== --}}
+
+            <div id="returnSection" class="return-status-card">
+
+                <div class="return-status-header">
+
+                    <div>
+
+                        <h3 class="return-status-title">
+                            <i class="fa-solid fa-arrow-rotate-left" style="color:var(--primary);"></i>
+                            แจ้งคืนชุด
+                        </h3>
+
+                        <p class="return-status-subtitle">
+                            กรุณาเลือกวิธีคืนชุดที่ต้องการ
+                            หากเลือกส่งพัสดุให้กรอกบริษัทขนส่งและเลขพัสดุ
+                        </p>
+
+                    </div>
+
+                    @if ($isReturnCompleted)
+                        <span class="return-status-badge success">
+                            <i class="fa-solid fa-circle-check"></i>
+                            คืนชุดแล้ว
+                        </span>
+                    @elseif ($isReturnRequested)
+                        <span class="return-status-badge waiting">
+                            <i class="fa-solid fa-clock"></i>
+                            แจ้งคืนแล้ว
+                        </span>
+                    @else
+                        <span class="return-status-badge neutral">
+                            <i class="fa-solid fa-shirt"></i>
+                            ยังไม่คืน
+                        </span>
+                    @endif
+
+                </div>
+
+                {{-- =====================================================
+                 ยังไม่คืน + สามารถแจ้งคืนได้
             ====================================================== --}}
+
+                @if ($canRequestReturn)
+
+                    <form action="{{ route('rentals.request-return', $rental->rental_id) }}" method="POST"
+                        id="returnRequestForm" class="return-request-form">
+                        @csrf
+
+                        <div class="return-method-grid">
+
+                            {{-- คืนที่ร้าน --}}
+                            <label class="return-method-card">
+
+                                <div>
+                                    <input type="radio" name="return_method" value="store" checked required>
+
+                                    <span class="return-method-name">
+                                        <i class="fa-solid fa-store"></i>
+                                        คืนที่ร้าน
+                                    </span>
+                                </div>
+
+                                <div class="return-method-desc">
+                                    นำชุดมาคืนที่ร้าน KYRIX
+                                    ไม่ต้องกรอกเลขพัสดุ
+                                </div>
+
+                                {{-- STORE ADDRESS --}}
+                                <div class="store-address-box"
+                                    style="
+                                        margin-top:12px;
+                                        padding:12px;
+                                        border-radius:9px;
+                                        background:#faf8f5;
+                                        border:1px solid var(--border);
+                                    ">
+                                    <div
+                                        style="
+                                            display:flex;
+                                            align-items:flex-start;
+                                            gap:8px;
+                                            font-size:12px;
+                                            font-weight:800;
+                                            color:var(--text-main);
+                                            line-height:1.6;
+                                        ">
+                                        <i class="fa-solid fa-location-dot"
+                                            style="
+                                                color:var(--primary);
+                                                margin-top:3px;
+                                            "></i>
+                                        <span>ที่อยู่ร้าน KYRIX</span>
+                                    </div>
+
+                                    <div
+                                        style="
+                                            margin-top:5px;
+                                            padding-left:22px;
+                                            font-size:11.5px;
+                                            color:var(--text-muted);
+                                            line-height:1.7;
+                                        ">
+                                        77 ตำบลในเมือง อำเภอเมือง
+                                        จังหวัดนครราชสีมา 30000
+                                    </div>
+
+                                    <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode('77 ตำบลในเมือง อำเภอเมือง จังหวัดนครราชสีมา 30000') }}"
+                                        target="_blank" rel="noopener noreferrer"
+                                        style="
+                                            display:inline-flex;
+                                            align-items:center;
+                                            gap:6px;
+                                            margin-top:8px;
+                                            padding:7px 11px;
+                                            border-radius:8px;
+                                            background:#fff;
+                                            border:1px solid var(--border);
+                                            color:var(--primary);
+                                            text-decoration:none;
+                                            font-size:11.5px;
+                                            font-weight:700;
+                                        ">
+                                        <i class="fa-solid fa-map-location-dot"></i>
+                                        เปิดแผนที่ร้าน
+                                    </a>
+                                </div>
+
+                            </label>
+
+                            {{-- ส่งพัสดุ --}}
+                            <label class="return-method-card">
+
+                                <div>
+                                    <input type="radio" name="return_method" value="parcel" id="returnMethodParcel"
+                                        required>
+
+                                    <span class="return-method-name">
+                                        <i class="fa-solid fa-truck"></i>
+                                        ส่งพัสดุ
+                                    </span>
+                                </div>
+
+                                <div class="return-method-desc">
+                                    ส่งชุดกลับมาทางบริษัทขนส่ง
+                                    และกรอกเลขพัสดุ
+                                </div>
+
+                            </label>
+
+                        </div>
+
+                        <div id="parcelReturnFields" style="display:none;">
+
+                            <div class="return-form-grid">
+
+                                <div class="return-form-group">
+
+                                    <label for="return_shipping_carrier">
+                                        บริษัทขนส่ง
+                                        <span>*</span>
+                                    </label>
+
+                                    <select name="return_shipping_carrier" id="return_shipping_carrier"
+                                        class="input-field">
+                                        <option value="">
+                                            -- เลือกบริษัทขนส่ง --
+                                        </option>
+                                        <option value="ไปรษณีย์ไทย">ไปรษณีย์ไทย</option>
+                                        <option value="Flash Express">Flash Express</option>
+                                        <option value="J&T Express">J&amp;T Express</option>
+                                        <option value="KEX">KEX</option>
+                                        <option value="Ninja Van">Ninja Van</option>
+                                        <option value="DHL">DHL</option>
+                                    </select>
+
+                                </div>
+
+                                <div class="return-form-group">
+
+                                    <label for="return_tracking_number">
+                                        เลขพัสดุส่งคืน
+                                        <span>*</span>
+                                    </label>
+
+                                    <input type="text" name="return_tracking_number" id="return_tracking_number"
+                                        class="input-field" maxlength="100" placeholder="เช่น TH123456789">
+
+                                </div>
+
+                            </div>
+
+                            <div class="return-helper">
+                                <i class="fa-solid fa-circle-info"></i>
+                                กรุณากรอกเลขพัสดุให้ตรงกับใบเสร็จของบริษัทขนส่ง
+                                เพื่อให้ร้านสามารถติดตามการส่งคืนได้
+                            </div>
+
+                        </div>
+
+                        <div class="return-submit-row">
+                            <button type="submit" class="return-submit-btn">
+                                <i class="fa-solid fa-paper-plane"></i>
+                                ยืนยันแจ้งคืนชุด
+                            </button>
+                        </div>
+
+                    </form>
+
+                    {{-- =====================================================
+                 แจ้งคืนแล้ว
+            ====================================================== --}}
+                @elseif ($isReturnRequested)
+                    <div class="return-request-grid">
+
+                        <div class="return-request-field">
+                            <div class="return-request-label">วิธีคืนชุด</div>
+                            <div class="return-request-value">
+                                {{ $returnMethodText }}
+                            </div>
+                        </div>
+
+                        <div class="return-request-field">
+                            <div class="return-request-label">วันที่แจ้งคืน</div>
+                            <div class="return-request-value">
+                                {{ $rental->return_requested_at ? $rental->return_requested_at->format('d/m/Y H:i') . ' น.' : '-' }}
+                            </div>
+                        </div>
+
+                        @if ($returnMethod === 'parcel')
+
+                            <div class="return-request-field">
+                                <div class="return-request-label">บริษัทขนส่ง</div>
+                                <div class="return-request-value">
+                                    {{ $returnCarrier ?: '-' }}
+                                </div>
+                            </div>
+
+                            <div class="return-request-field">
+                                <div class="return-request-label">เลขพัสดุ</div>
+                                <div class="return-request-value green">
+                                    {{ $returnTrackingNumber ?: '-' }}
+                                </div>
+                            </div>
+
+                            @if ($returnShippingStatus)
+                                <div class="return-request-field">
+                                    <div class="return-request-label">สถานะพัสดุ</div>
+                                    <div class="return-request-value">
+                                        {{ $returnShippingStatus }}
+                                    </div>
+                                </div>
+                            @endif
+
+                        @endif
+
+                    </div>
+
+                    @if ($returnMethod === 'store')
+                        <div class="return-request-note">
+                            <i class="fa-solid fa-store"></i>
+                            คุณเลือก <strong>คืนที่ร้าน</strong>
+                            กรุณานำชุดมาคืนที่ร้าน KYRIX
+                            แล้วรอเจ้าของร้านตรวจรับ
+                        </div>
+                    @else
+                        <div class="return-request-note">
+                            <i class="fa-solid fa-truck"></i>
+                            หากเป็นการส่งพัสดุ
+                            สามารถติดตามสถานะพัสดุได้จากข้อมูลด้านบน
+                            และรอให้พัสดุถึงร้านก่อนเจ้าของร้านตรวจรับ
+                        </div>
+                    @endif
+
+                    {{-- =====================================================
+                 คืนชุดแล้ว
+            ====================================================== --}}
+                @elseif ($isReturnCompleted)
+                    <div class="return-request-grid">
+
+                        <div class="return-request-field">
+                            <div class="return-request-label">วิธีคืนชุด</div>
+                            <div class="return-request-value">
+                                {{ $returnMethodText }}
+                            </div>
+                        </div>
+
+                        <div class="return-request-field">
+                            <div class="return-request-label">วันที่ร้านรับคืน</div>
+                            <div class="return-request-value green">
+                                {{ $rental->return_received_at ? $rental->return_received_at->format('d/m/Y H:i') . ' น.' : '-' }}
+                            </div>
+                        </div>
+
+                        @if ($returnMethod === 'parcel' && $returnTrackingNumber)
+                            <div class="return-request-field">
+                                <div class="return-request-label">เลขพัสดุส่งคืน</div>
+                                <div class="return-request-value">
+                                    {{ $returnTrackingNumber }}
+                                </div>
+                            </div>
+                        @endif
+
+                        @if ($rental->condition_status)
+                            <div class="return-request-field">
+                                <div class="return-request-label">ผลตรวจสภาพชุด</div>
+                                <div class="return-request-value">
+
+                                    @if ($rental->condition_status === 'good')
+                                        <span style="color:#166534;">
+                                            <i class="fa-solid fa-circle-check"></i>
+                                            ชุดสมบูรณ์
+                                        </span>
+                                    @elseif ($rental->condition_status === 'damaged')
+                                        <span style="color:#b91c1c;">
+                                            <i class="fa-solid fa-triangle-exclamation"></i>
+                                            ชุดชำรุด / มีความเสียหาย
+                                        </span>
+                                    @else
+                                        {{ $rental->condition_status }}
+                                    @endif
+
+                                </div>
+                            </div>
+                        @endif
+
+                    </div>
+
+                    @if ($rental->condition_status === 'good')
+
+                        <div class="return-request-note"
+                            style="
+                                background:#f0fdf4;
+                                border-color:#bbf7d0;
+                                color:#166534;
+                            ">
+                            <i class="fa-solid fa-hand-holding-dollar"></i>
+                            ร้านตรวจรับชุดสภาพสมบูรณ์
+                            และดำเนินการคืนเงินมัดจำตามระบบแล้ว
+
+                            @if ($rental->deposit_refund_amount !== null)
+                                จำนวน
+                                <strong>
+                                    ฿{{ number_format((float) $rental->deposit_refund_amount, 2) }}
+                                </strong>
+                            @endif
+                        </div>
+                    @elseif ($rental->condition_status === 'damaged')
+                        <div class="return-request-note"
+                            style="
+                                background:#fff1f2;
+                                border-color:#fecdd3;
+                                color:#991b1b;
+                            ">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            ร้านตรวจพบความเสียหายของชุด
+                            และดำเนินการตามเงื่อนไขเงินมัดจำของร้าน
+
+                            @if ($rental->damage_note)
+                                <br>
+                                สาเหตุ:
+                                <strong>
+                                    {{ $rental->damage_note }}
+                                </strong>
+                            @endif
+                        </div>
+
+                    @endif
+
+                    {{-- =====================================================
+                 ยังไม่พร้อมแจ้งคืน
+            ====================================================== --}}
+                @else
+                    <div
+                        style="
+                            padding:16px 18px;
+                            border-radius:10px;
+                            background:#fff8ed;
+                            border:1px solid #fed7aa;
+                            color:#9a3412;
+                            font-size:12.5px;
+                            line-height:1.7;
+                        ">
+                        <i class="fa-solid fa-clock"></i>
+
+                        <strong>
+                            ยังไม่สามารถแจ้งคืนชุดได้
+                        </strong>
+
+                        <div style="margin-top:4px;">
+                            เมื่อรายการเช่าเข้าสู่สถานะ
+                            <strong>กำลังเช่า</strong>
+                            คุณจะสามารถเลือกวิธีคืนชุดได้ที่ส่วนนี้
+                        </div>
+
+                    </div>
+
+                @endif
+
+            </div>
+
+            {{-- =====================================================
+             CANCEL RENTAL
+        ====================================================== --}}
+
             @if ($rental->status === 'pending_payment')
                 <div class="cancel-rental-box" id="cancelRentalSection">
 
@@ -1928,8 +2782,11 @@
                         </div>
 
                         <button type="button" class="cancel-rental-btn" onclick="openCancelRentalModal()">
+
                             <i class="fa-solid fa-ban"></i>
+
                             ยกเลิกการเช่า
+
                         </button>
 
                     </div>
@@ -2006,8 +2863,11 @@
                                 <div class="cancel-form-group">
 
                                     <label for="cancel_reason_select">
+
                                         เหตุผลในการยกเลิก
+
                                         <span>*</span>
+
                                     </label>
 
                                     <select id="cancel_reason_select" class="input-field"
@@ -2054,8 +2914,11 @@
                                 </button>
 
                                 <button type="submit" class="cancel-confirm-btn" onclick="return confirmCancelRental()">
+
                                     <i class="fa-solid fa-ban"></i>
+
                                     ยืนยันการยกเลิก
+
                                 </button>
 
                             </div>
@@ -2071,36 +2934,41 @@
             @if ($rental->status === 'pending_payment')
                 <div id="slipSection"
                     style="
-                        margin-top:36px;
-                        padding:26px;
-                        border:2px dashed var(--primary);
-                        border-radius:var(--radius-md);
-                        background:var(--primary-soft);
-                    ">
+                    margin-top:36px;
+                    padding:26px;
+                    border:2px dashed var(--primary);
+                    border-radius:var(--radius-md);
+                    background:var(--primary-soft);
+                ">
 
                     <h3
                         style="
-                            font-size:18px;
-                            font-weight:800;
-                            color:var(--primary);
-                            margin-bottom:8px;
-                        ">
+                        font-size:18px;
+                        font-weight:800;
+                        color:var(--primary);
+                        margin-bottom:8px;
+                    ">
+
                         <i class="fa-solid fa-cloud-arrow-up"></i>
+
                         แนบสลิปโอนเงินสำหรับรายการนี้
+
                     </h3>
 
                     <p
                         style="
-                            font-size:13px;
-                            color:var(--text-muted);
-                            margin-bottom:18px;
-                        ">
+                        font-size:13px;
+                        color:var(--text-muted);
+                        margin-bottom:18px;
+                    ">
+
                         โอนเงินเข้าบัญชี ออมสิน
                         020310925126
                         (นางสาว อภัสรา แคะมะดัน)
                         ยอดรวม
                         ฿{{ number_format($rental->grand_total, 2) }}
                         แล้วแนบสลิปด้านล่าง
+
                     </p>
 
                     <form action="{{ route('rentals.upload-slip', $rental->rental_id) }}" method="POST"
@@ -2112,178 +2980,20 @@
 
                         <div
                             style="
-                                display:flex;
-                                gap:14px;
-                                align-items:center;
-                                flex-wrap:wrap;
-                            ">
+                            display:flex;
+                            gap:14px;
+                            align-items:center;
+                            flex-wrap:wrap;
+                        ">
 
                             <input type="file" name="slip_image" accept="image/*" required style="font-size:14px;">
 
                             <button type="submit" class="btn btn-primary">
+
                                 <i class="fa-solid fa-upload"></i>
+
                                 อัปโหลดสลิปยืนยันการชำระ
-                            </button>
 
-                        </div>
-
-                    </form>
-
-                </div>
-            @endif
-
-            {{-- REQUEST RETURN --}}
-            @if (in_array($rental->status, ['renting', 'ready_pickup', 'confirmed']))
-                <div id="returnSection"
-                    style="
-                        margin-top:36px;
-                        padding:26px;
-                        border:1px solid var(--border);
-                        border-radius:var(--radius-md);
-                        background:#faf8f5;
-                    ">
-
-                    <h3
-                        style="
-                            font-size:18px;
-                            font-weight:800;
-                            color:var(--text-main);
-                            margin-bottom:8px;
-                        ">
-
-                        <i class="fa-solid fa-arrow-rotate-left" style="color:var(--primary);"></i>
-
-                        แจ้งส่งคืนชุด
-                        (Return Request)
-
-                    </h3>
-
-                    <p
-                        style="
-                            font-size:13px;
-                            color:var(--text-muted);
-                            margin-bottom:18px;
-                            line-height:1.7;
-                        ">
-                        หากใช้งานชุดเสร็จเรียบร้อยแล้ว
-                        หรือจัดส่งพัสดุคืนแล้ว
-                        สามารถแจ้งข้อมูลการส่งคืนให้ทางร้านทราบได้ที่นี่
-                    </p>
-
-                    <form action="{{ route('rentals.request-return', $rental->rental_id) }}" method="POST">
-
-                        @csrf
-
-                        <div
-                            style="
-                                display:grid;
-                                grid-template-columns:1fr 1fr 1fr auto;
-                                gap:14px;
-                                align-items:end;
-                            ">
-
-                            {{-- วิธีการคืน --}}
-                            <div>
-
-                                <label
-                                    style="
-                                        font-size:13px;
-                                        font-weight:600;
-                                        display:block;
-                                        margin-bottom:4px;
-                                    ">
-                                    วิธีการคืนชุด:
-                                </label>
-
-                                <select name="return_method" id="return_method" class="input-field"
-                                    style="margin-top:0;" required>
-
-                                    <option value="นำมาคืนที่หน้าร้าน KYRIX (โคราช)">
-                                        นำมาคืนที่หน้าร้าน KYRIX (โคราช)
-                                    </option>
-
-                                    <option value="ส่งพัสดุ">
-                                        ส่งพัสดุ
-                                    </option>
-
-                                    <option value="ส่งผ่านแมสเซนเจอร์ (Grab / Lineman)">
-                                        ส่งผ่านแมสเซนเจอร์ (Grab / Lineman)
-                                    </option>
-
-                                </select>
-
-                            </div>
-
-                            {{-- บริษัทขนส่ง --}}
-                            <div id="returnCarrierWrap" style="display:none;">
-
-                                <label
-                                    style="
-                                        font-size:13px;
-                                        font-weight:600;
-                                        display:block;
-                                        margin-bottom:4px;
-                                    ">
-                                    บริษัทขนส่ง:
-                                </label>
-
-                                <select name="return_shipping_carrier" id="return_shipping_carrier" class="input-field"
-                                    style="margin-top:0;">
-
-                                    <option value="">
-                                        -- เลือกบริษัทขนส่ง --
-                                    </option>
-
-                                    <option value="ไปรษณีย์ไทย">
-                                        ไปรษณีย์ไทย
-                                    </option>
-
-                                    <option value="Flash Express">
-                                        Flash Express
-                                    </option>
-
-                                    <option value="J&T Express">
-                                        J&amp;T Express
-                                    </option>
-
-                                    <option value="KEX">
-                                        KEX
-                                    </option>
-
-                                    <option value="Ninja Van">
-                                        Ninja Van
-                                    </option>
-
-                                    <option value="DHL">
-                                        DHL
-                                    </option>
-
-                                </select>
-
-                            </div>
-
-                            {{-- เลขพัสดุ --}}
-                            <div id="returnTrackingWrap" style="display:none;">
-
-                                <label
-                                    style="
-                                        font-size:13px;
-                                        font-weight:600;
-                                        display:block;
-                                        margin-bottom:4px;
-                                    ">
-                                    เลขพัสดุส่งคืน:
-                                </label>
-
-                                <input type="text" name="return_tracking_no" id="return_tracking_no"
-                                    class="input-field" style="margin-top:0;" placeholder="เช่น TH123456789">
-
-                            </div>
-
-                            {{-- ปุ่ม --}}
-                            <button type="submit" class="btn btn-secondary" style="height:44px;">
-                                <i class="fa-solid fa-paper-plane"></i>
-                                บันทึกการแจ้งส่งคืน
                             </button>
 
                         </div>
@@ -2298,8 +3008,9 @@
     </div>
 
     {{-- =========================================================
-         PRINT RECEIPT
-    ========================================================= --}}
+     PRINT RECEIPT
+========================================================= --}}
+
     @php
 
         $printRentalAmount = (float) ($rental->total_amount ?? 0);
@@ -2318,11 +3029,11 @@
             ->sortByDesc('payment_id')
             ->first();
 
-        // ยอดชำระสำหรับใบพิมพ์: ใช้ payment_amount หากมีค่า
-        // หากเป็น 0/ไม่มีค่า ให้ใช้ยอดรวมรายการเช่า เพื่อไม่ให้ใบเสร็จแสดง ฿0.00
-        $printPaymentAmount = $latestPrintPayment && (float) $latestPrintPayment->payment_amount > 0
-            ? (float) $latestPrintPayment->payment_amount
-            : (float) ($rental->grand_total ?? $printGrandTotal);
+        // ยอดชำระสำหรับใบพิมพ์
+        $printPaymentAmount =
+            $latestPrintPayment && (float) $latestPrintPayment->amount > 0
+                ? (float) $latestPrintPayment->amount
+                : (float) ($rental->grand_total ?? $printGrandTotal);
 
     @endphp
 
@@ -2451,9 +3162,9 @@
 
                             <span
                                 style="
-                                    font-size:8px;
-                                    color:#777;
-                                ">
+                                font-size:8px;
+                                color:#777;
+                            ">
                                 {{ $detail->product->product_code ?? '-' }}
                                 /
                                 {{ $detail->selected_size ?? 'M' }}
@@ -2539,20 +3250,6 @@
 
             </div>
 
-            @if ($printServiceFee > 0)
-                <div class="print-summary-row">
-
-                    <span>
-                        บริการเสริม
-                    </span>
-
-                    <strong>
-                        ฿{{ number_format($printServiceFee, 2) }}
-                    </strong>
-
-                </div>
-            @endif
-
             <div class="print-summary-final">
 
                 <span>
@@ -2606,7 +3303,7 @@
                         วันที่ชำระ:
                     </strong>
 
-                    {{ $latestPrintPayment->payment_date ? $latestPrintPayment->payment_date->format('d/m/Y H:i') : '-' }}
+                    {{ $latestPrintPayment->paid_at ? $latestPrintPayment->paid_at->format('d/m/Y H:i') : '-' }}
 
                 </div>
 
@@ -2703,6 +3400,7 @@
                         );
 
                         window.print();
+
                     });
 
                     window.addEventListener(
@@ -2733,6 +3431,7 @@
 
                         }
                     );
+
                 }
 
                 /* =====================================================
@@ -2756,6 +3455,7 @@
                     );
 
                     document.body.style.overflow = 'hidden';
+
                 };
 
                 window.closeCancelRentalModal = function() {
@@ -2775,6 +3475,7 @@
                     );
 
                     document.body.style.overflow = '';
+
                 };
 
                 window.handleCancelReasonChange = function() {
@@ -2799,6 +3500,7 @@
                         textarea.focus();
 
                         return;
+
                     }
 
                     textarea.value =
@@ -2808,6 +3510,7 @@
                         select.value !== '' ?
                         'ระบุเหตุผลเพิ่มเติมได้' :
                         'ระบุเหตุผลในการยกเลิก';
+
                 };
 
                 window.confirmCancelRental = function() {
@@ -2826,6 +3529,7 @@
                         }
 
                         return false;
+
                     }
 
                     return confirm(
@@ -2833,82 +3537,176 @@
                         'รายการนี้ยังไม่ได้ชำระเงิน\n' +
                         'เมื่อยืนยันแล้ว สถานะจะเปลี่ยนเป็น "ยกเลิกแล้ว" และระบบจะคืนชุดเข้าสต็อก'
                     );
+
                 };
 
                 /* =====================================================
-                   RETURN SHIPPING
+                   RETURN REQUEST
                 ====================================================== */
 
-                const returnMethod =
-                    document.getElementById('return_method');
+                const returnForm =
+                    document.getElementById('returnRequestForm');
 
-                const returnCarrierWrap =
-                    document.getElementById('returnCarrierWrap');
+                const returnMethodRadios =
+                    document.querySelectorAll(
+                        'input[name="return_method"]'
+                    );
 
-                const returnTrackingWrap =
-                    document.getElementById('returnTrackingWrap');
+                const parcelFields =
+                    document.getElementById(
+                        'parcelReturnFields'
+                    );
 
-                const returnCarrier =
-                    document.getElementById('return_shipping_carrier');
+                const carrier =
+                    document.getElementById(
+                        'return_shipping_carrier'
+                    );
 
-                const returnTracking =
-                    document.getElementById('return_tracking_no');
+                const tracking =
+                    document.getElementById(
+                        'return_tracking_number'
+                    );
 
-                function updateReturnShippingFields() {
+                function updateReturnFields() {
 
                     if (
-                        !returnMethod ||
-                        !returnCarrierWrap ||
-                        !returnTrackingWrap
+                        !parcelFields ||
+                        !carrier ||
+                        !tracking
                     ) {
                         return;
                     }
 
-                    const method =
-                        returnMethod.value;
+                    const selected =
+                        document.querySelector(
+                            'input[name="return_method"]:checked'
+                        );
 
-                    if (method === 'ส่งพัสดุ') {
+                    if (!selected) {
+                        return;
+                    }
 
-                        returnCarrierWrap.style.display = 'block';
-                        returnTrackingWrap.style.display = 'block';
+                    if (
+                        selected.value === 'parcel'
+                    ) {
 
-                        if (returnCarrier) {
-                            returnCarrier.required = true;
-                        }
+                        parcelFields.style.display =
+                            'block';
 
-                        if (returnTracking) {
-                            returnTracking.required = true;
-                        }
+                        carrier.required =
+                            true;
+
+                        tracking.required =
+                            true;
 
                     } else {
 
-                        returnCarrierWrap.style.display = 'none';
-                        returnTrackingWrap.style.display = 'none';
+                        parcelFields.style.display =
+                            'none';
 
-                        if (returnCarrier) {
-                            returnCarrier.required = false;
-                            returnCarrier.value = '';
-                        }
+                        carrier.required =
+                            false;
 
-                        if (returnTracking) {
-                            returnTracking.required = false;
-                            returnTracking.value = '';
-                        }
+                        tracking.required =
+                            false;
+
+                        carrier.value =
+                            '';
+
+                        tracking.value =
+                            '';
+
                     }
+
                 }
 
-                if (returnMethod) {
+                returnMethodRadios.forEach(
+                    function(radio) {
 
-                    returnMethod.addEventListener(
-                        'change',
-                        updateReturnShippingFields
+                        radio.addEventListener(
+                            'change',
+                            updateReturnFields
+                        );
+
+                    }
+                );
+
+                updateReturnFields();
+
+                if (returnForm) {
+
+                    returnForm.addEventListener(
+                        'submit',
+                        function(event) {
+
+                            const selected =
+                                document.querySelector(
+                                    'input[name="return_method"]:checked'
+                                );
+
+                            if (!selected) {
+
+                                event.preventDefault();
+
+                                alert(
+                                    'กรุณาเลือกวิธีคืนชุด'
+                                );
+
+                                return;
+
+                            }
+
+                            if (
+                                selected.value === 'parcel'
+                            ) {
+
+                                if (
+                                    !carrier ||
+                                    !carrier.value.trim()
+                                ) {
+
+                                    event.preventDefault();
+
+                                    alert(
+                                        'กรุณาเลือกบริษัทขนส่ง'
+                                    );
+
+                                    if (carrier) {
+                                        carrier.focus();
+                                    }
+
+                                    return;
+
+                                }
+
+                                if (
+                                    !tracking ||
+                                    !tracking.value.trim()
+                                ) {
+
+                                    event.preventDefault();
+
+                                    alert(
+                                        'กรุณากรอกเลขพัสดุ'
+                                    );
+
+                                    if (tracking) {
+                                        tracking.focus();
+                                    }
+
+                                    return;
+
+                                }
+
+                            }
+
+                        }
                     );
 
-                    updateReturnShippingFields();
                 }
 
                 /* =====================================================
-                   ESC สำหรับปิด Modal
+                   ESC
                 ====================================================== */
 
                 document.addEventListener(
@@ -2916,14 +3714,16 @@
                     function(e) {
 
                         if (e.key === 'Escape') {
+
                             closeCancelRentalModal();
+
                         }
 
                     }
                 );
 
                 /* =====================================================
-                   คลิกพื้นที่ด้านหลัง Modal เพื่อปิด
+                   CLICK BACKDROP
                 ====================================================== */
 
                 document.addEventListener(
@@ -2931,7 +3731,9 @@
                     function(e) {
 
                         const modal =
-                            document.getElementById('cancelRentalModal');
+                            document.getElementById(
+                                'cancelRentalModal'
+                            );
 
                         if (!modal) {
                             return;
@@ -2946,7 +3748,9 @@
                             backdrop &&
                             e.target === backdrop
                         ) {
+
                             closeCancelRentalModal();
+
                         }
 
                     }
@@ -2955,5 +3759,6 @@
             });
         </script>
     @endpush
+
 
 @endsection

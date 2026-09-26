@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\DB;
 
 class OwnerPaymentController extends Controller
 {
+    /**
+     * หน้าตรวจสอบการชำระเงิน
+     */
     public function index(Request $request)
     {
         $status = $request->query('status');
@@ -29,8 +32,21 @@ class OwnerPaymentController extends Controller
         | Filter Status
         |--------------------------------------------------------------------------
         */
-        if (in_array($status, ['pending', 'approved', 'rejected'], true)) {
-            $query->where('status', $status);
+        if (
+            in_array(
+                $status,
+                [
+                    'pending',
+                    'approved',
+                    'rejected',
+                ],
+                true
+            )
+        ) {
+            $query->where(
+                'status',
+                $status
+            );
         }
 
         /*
@@ -44,78 +60,326 @@ class OwnerPaymentController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | จำนวนแต่ละสถานะ (ปรับเป็น 1 Query เพื่อลดภาระ Database)
+        | จำนวนแต่ละสถานะ
         |--------------------------------------------------------------------------
         */
         $statusCounts = Payment::query()
-            ->select('status', DB::raw('count(*) as count'))
+            ->select(
+                'status',
+                DB::raw('count(*) as count')
+            )
             ->groupBy('status')
-            ->pluck('count', 'status');
+            ->pluck(
+                'count',
+                'status'
+            );
 
         $counts = [
-            'pending'  => $statusCounts->get('pending', 0),
-            'approved' => $statusCounts->get('approved', 0),
-            'rejected' => $statusCounts->get('rejected', 0),
+            'pending' => $statusCounts->get(
+                'pending',
+                0
+            ),
+
+            'approved' => $statusCounts->get(
+                'approved',
+                0
+            ),
+
+            'rejected' => $statusCounts->get(
+                'rejected',
+                0
+            ),
         ];
 
-        return view('owner.payments.index', compact(
-            'payments',
-            'counts'
-        ));
+        return view(
+            'owner.payments.index',
+            compact(
+                'payments',
+                'counts'
+            )
+        );
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | อนุมัติการชำระเงิน (Approve Payment)
-    |--------------------------------------------------------------------------
-    */
+    /**
+     * อนุมัติการชำระเงิน
+     *
+     * Flow:
+     *
+     * pending
+     *   ↓
+     * approved
+     *
+     * และ Rental:
+     *
+     * pending_verification
+     *   ↓
+     * renting
+     */
     public function approve($id)
     {
-        $payment = Payment::findOrFail($id);
+        try {
+            DB::transaction(
+                function () use ($id) {
 
-        DB::transaction(function () use ($payment) {
-            // 1. อัปเดตสถานะการชำระเงินเป็น approved
-            $payment->update([
-                'status' => 'approved',
-            ]);
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Lock Payment
+                    |--------------------------------------------------------------------------
+                    */
+                    $payment = Payment::query()
+                        ->lockForUpdate()
+                        ->findOrFail($id);
 
-            // 2. อัปเดตสถานะใบเช่า (Rental) เป็น confirmed (ยืนยันการเช่าเรียบร้อย)
-            if ($payment->rental) {
-                $payment->rental->update([
-                    'status' => 'confirmed',
-                ]);
-            }
-        });
+                    /*
+                    |--------------------------------------------------------------------------
+                    | ป้องกันอนุมัติซ้ำ
+                    |--------------------------------------------------------------------------
+                    */
+                    if (
+                        $payment->status === 'approved'
+                    ) {
+                        throw new \RuntimeException(
+                            'รายการชำระเงินนี้ได้รับการอนุมัติแล้ว'
+                        );
+                    }
 
-        return redirect()->back()->with('success', 'อนุมัติการชำระเงินเรียบร้อยแล้ว');
+                    /*
+                    |--------------------------------------------------------------------------
+                    | ตรวจสอบว่ามี Rental
+                    |--------------------------------------------------------------------------
+                    */
+                    $rental = $payment->rental;
+
+                    if (!$rental) {
+                        throw new \RuntimeException(
+                            'ไม่พบรายการเช่าที่เชื่อมกับการชำระเงินนี้'
+                        );
+                    }
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | อนุมัติเฉพาะรายการที่รอตรวจสอบ
+                    |--------------------------------------------------------------------------
+                    */
+                    if (
+                        !in_array(
+                            $payment->status,
+                            [
+                                'pending',
+                            ],
+                            true
+                        )
+                    ) {
+                        throw new \RuntimeException(
+                            'รายการชำระเงินนี้ไม่อยู่ในสถานะที่สามารถอนุมัติได้'
+                        );
+                    }
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | 1. อัปเดต Payment
+                    |--------------------------------------------------------------------------
+                    |
+                    | สำคัญ:
+                    | - status = approved
+                    | - paid_at = เวลาที่เจ้าของร้านอนุมัติ
+                    |
+                    */
+                    $payment->update([
+                        'status' => 'approved',
+                        'paid_at' => now(),
+                    ]);
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | 2. อัปเดต Rental
+                    |--------------------------------------------------------------------------
+                    |
+                    | เมื่ออนุมัติการชำระเงินแล้ว
+                    | รายการเช่าต้องเข้าสู่ "กำลังเช่า"
+                    |
+                    */
+                    $rental->update([
+                        'status' => 'renting',
+                    ]);
+                }
+            );
+
+            return redirect()
+                ->back()
+                ->with(
+                    'success',
+                    'อนุมัติการชำระเงินเรียบร้อยแล้ว รายการเช่าเปลี่ยนเป็น "กำลังเช่า"'
+                );
+        } catch (\RuntimeException $e) {
+
+            return redirect()
+                ->back()
+                ->with(
+                    'error',
+                    $e->getMessage()
+                );
+        } catch (\Throwable $e) {
+
+            return redirect()
+                ->back()
+                ->with(
+                    'error',
+                    'ไม่สามารถอนุมัติการชำระเงินได้ กรุณาลองใหม่อีกครั้ง'
+                );
+        }
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | ปฏิเสธการชำระเงิน (Reject Payment)
-    |--------------------------------------------------------------------------
-    */
-    public function reject(Request $request, $id)
-    {
-        $request->validate([
-            'note' => 'nullable|string|max:500',
-        ]);
+    /**
+     * ปฏิเสธการชำระเงิน
+     *
+     * Flow:
+     *
+     * pending
+     *   ↓
+     * rejected
+     *
+     * Rental:
+     *
+     * pending_verification
+     *   ↓
+     * pending_payment
+     */
+    public function reject(
+        Request $request,
+        $id
+    ) {
+        $request->validate(
+            [
+                'note' =>
+                    'nullable|string|max:500',
+            ],
+            [
+                'note.max' =>
+                    'หมายเหตุต้องไม่เกิน 500 ตัวอักษร',
+            ]
+        );
 
-        $payment = Payment::findOrFail($id);
+        try {
+            DB::transaction(
+                function () use (
+                    $request,
+                    $id
+                ) {
 
-        DB::transaction(function () use ($payment, $request) {
-            $payment->update([
-                'status' => 'rejected',
-                'note'   => $request->input('note', $payment->note),
-            ]);
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Lock Payment
+                    |--------------------------------------------------------------------------
+                    */
+                    $payment = Payment::query()
+                        ->lockForUpdate()
+                        ->findOrFail($id);
 
-            if ($payment->rental) {
-                $payment->rental->update([
-                    'status' => 'pending_payment',
-                ]);
-            }
-        });
+                    /*
+                    |--------------------------------------------------------------------------
+                    | ป้องกันปฏิเสธรายการที่อนุมัติแล้ว
+                    |--------------------------------------------------------------------------
+                    */
+                    if (
+                        $payment->status === 'approved'
+                    ) {
+                        throw new \RuntimeException(
+                            'รายการนี้อนุมัติการชำระเงินแล้ว ไม่สามารถปฏิเสธได้'
+                        );
+                    }
 
-        return redirect()->back()->with('success', 'ปฏิเสธรายการชำระเงินเรียบร้อยแล้ว');
+                    /*
+                    |--------------------------------------------------------------------------
+                    | ตรวจสอบ Rental
+                    |--------------------------------------------------------------------------
+                    */
+                    $rental = $payment->rental;
+
+                    if (!$rental) {
+                        throw new \RuntimeException(
+                            'ไม่พบรายการเช่าที่เชื่อมกับการชำระเงินนี้'
+                        );
+                    }
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | ต้องเป็น pending เท่านั้น
+                    |--------------------------------------------------------------------------
+                    */
+                    if (
+                        $payment->status !== 'pending'
+                    ) {
+                        throw new \RuntimeException(
+                            'รายการชำระเงินนี้ไม่อยู่ในสถานะที่สามารถปฏิเสธได้'
+                        );
+                    }
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | หมายเหตุ
+                    |--------------------------------------------------------------------------
+                    */
+                    $note = trim(
+                        (string) (
+                            $request->input(
+                                'note',
+                                $payment->note
+                            ) ?? ''
+                        )
+                    );
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | อัปเดต Payment
+                    |--------------------------------------------------------------------------
+                    */
+                    $payment->update([
+                        'status' => 'rejected',
+                        'note' => $note !== ''
+                            ? $note
+                            : $payment->note,
+
+                        /*
+                        | ป้องกันกรณีมี paid_at จากข้อมูลเก่า
+                        */
+                        'paid_at' => null,
+                    ]);
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Rental กลับไปสถานะรอชำระเงิน
+                    |--------------------------------------------------------------------------
+                    */
+                    $rental->update([
+                        'status' =>
+                            'pending_payment',
+                    ]);
+                }
+            );
+
+            return redirect()
+                ->back()
+                ->with(
+                    'success',
+                    'ปฏิเสธรายการชำระเงินเรียบร้อยแล้ว รายการเช่ากลับไปสถานะ "รอชำระเงิน"'
+                );
+        } catch (\RuntimeException $e) {
+
+            return redirect()
+                ->back()
+                ->with(
+                    'error',
+                    $e->getMessage()
+                );
+        } catch (\Throwable $e) {
+
+            return redirect()
+                ->back()
+                ->with(
+                    'error',
+                    'ไม่สามารถปฏิเสธการชำระเงินได้ กรุณาลองใหม่อีกครั้ง'
+                );
+        }
     }
 }

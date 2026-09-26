@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\RentalDetail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -48,6 +49,7 @@ class OwnerDressController extends Controller
         return true;
     }
 
+
     /**
      * แสดงรายการชุดทั้งหมด พร้อมระบบค้นหา ตัวกรอง และการเรียงลำดับ
      */
@@ -62,148 +64,238 @@ class OwnerDressController extends Controller
         // =====================================================
         // 1. ระบบค้นหา
         // =====================================================
+
         if ($request->filled('search')) {
+
             $search = trim($request->search);
 
             $query->where(function ($q) use ($search) {
+
                 $q->where(
                     'product_name',
                     'like',
                     "%{$search}%"
                 )
-                    ->orWhere(
-                        'product_code',
-                        'like',
-                        "%{$search}%"
-                    )
-                    ->orWhere(
-                        'color',
-                        'like',
-                        "%{$search}%"
-                    );
+                ->orWhere(
+                    'product_code',
+                    'like',
+                    "%{$search}%"
+                )
+                ->orWhere(
+                    'color',
+                    'like',
+                    "%{$search}%"
+                );
+
             });
         }
+
 
         // =====================================================
         // 2. ตัวกรองหมวดหมู่
         // =====================================================
+
         if ($request->filled('category_id')) {
+
             $query->where(
                 'category_id',
                 $request->category_id
             );
         }
 
+
         // =====================================================
         // 3. ตัวกรองสถานะ
         // =====================================================
+
         if ($request->filled('status')) {
+
             switch ($request->status) {
+
                 case 'active':
                 case 'available':
-                    $query->whereIn('status', [
-                        'active',
-                        'available'
-                    ]);
+
+                    $query->whereIn(
+                        'status',
+                        [
+                            'active',
+                            'available'
+                        ]
+                    );
+
                     break;
+
 
                 case 'rented':
-                    $query->whereIn('status', [
-                        'rented',
-                        'busy'
-                    ]);
+
+                    $query->whereIn(
+                        'status',
+                        [
+                            'rented',
+                            'busy'
+                        ]
+                    );
+
                     break;
 
+
                 case 'inactive':
+
                     $query->where(
                         'status',
                         'inactive'
                     );
+
                     break;
 
+
                 case 'maintenance':
+
                     $query->where(
                         'status',
                         'maintenance'
                     );
+
                     break;
 
+
                 default:
+
                     $query->where(
                         'status',
                         $request->status
                     );
+
                     break;
             }
         }
 
+
         // =====================================================
-        // 4. ระบบเรียงลำดับ
+        // 4. ตัวกรองสต็อก
         // =====================================================
+
+        if ($request->filled('stock')) {
+
+            switch ($request->stock) {
+
+                case 'out':
+
+                    $query->where('stock', '<=', 0);
+
+                    break;
+
+
+                case 'low':
+
+                    $query->whereBetween(
+                        'stock',
+                        [1, 3]
+                    );
+
+                    break;
+
+
+                case 'normal':
+
+                    $query->where(
+                        'stock',
+                        '>',
+                        3
+                    );
+
+                    break;
+            }
+        }
+
+
+        // =====================================================
+        // 5. ระบบเรียงลำดับ
+        // =====================================================
+
         $sort = $request->input(
             'sort',
             'latest'
         );
 
         switch ($sort) {
+
             case 'name_asc':
+
                 $query->orderBy(
                     'product_name',
                     'asc'
                 )
-                    ->orderBy(
-                        'product_id',
-                        'desc'
-                    );
+                ->orderBy(
+                    'product_id',
+                    'desc'
+                );
+
                 break;
 
+
             case 'price_low':
+
                 $query->orderBy(
                     'rental_price',
                     'asc'
                 )
-                    ->orderBy(
-                        'product_id',
-                        'desc'
-                    );
+                ->orderBy(
+                    'product_id',
+                    'desc'
+                );
+
                 break;
 
+
             case 'price_high':
+
                 $query->orderBy(
                     'rental_price',
                     'desc'
                 )
-                    ->orderBy(
-                        'product_id',
-                        'desc'
-                    );
+                ->orderBy(
+                    'product_id',
+                    'desc'
+                );
+
                 break;
+
 
             case 'latest':
             default:
+
                 $query->orderBy(
                     'product_id',
                     'desc'
                 );
+
                 break;
         }
 
+
         // =====================================================
-        // 5. Pagination
+        // 6. Pagination
         // =====================================================
+
         $products = $query
             ->paginate(12)
             ->withQueryString();
 
-        // =====================================================
-        // 6. ดึงหมวดหมู่ทั้งหมด
-        // =====================================================
-        $categories = Category::all();
 
         // =====================================================
-        // 7. สถิติสรุป
+        // 7. ดึงหมวดหมู่ทั้งหมด
         // =====================================================
+
+        $categories = Category::all();
+
+
+        // =====================================================
+        // 8. สถิติสรุป
+        // =====================================================
+
         $summary = [
+
             'total' => Product::count(),
 
             'available' => Product::whereIn(
@@ -233,9 +325,11 @@ class OwnerDressController extends Controller
             )->count(),
         ];
 
+
         // =====================================================
-        // 8. ส่งข้อมูลไปยัง Blade
+        // 9. ส่งข้อมูลไปยัง Blade
         // =====================================================
+
         return view(
             'owner.dresses.index',
             compact(
@@ -245,6 +339,7 @@ class OwnerDressController extends Controller
             )
         );
     }
+
 
     /**
      * แสดงหน้าฟอร์มเพิ่มชุดใหม่
@@ -275,6 +370,7 @@ class OwnerDressController extends Controller
         );
     }
 
+
     /**
      * บันทึกข้อมูลชุดใหม่ลงฐานข้อมูล
      */
@@ -285,6 +381,7 @@ class OwnerDressController extends Controller
 
         $data = $request->validate(
             [
+
                 'category_id' =>
                     "required|exists:categories,{$categoryKey}",
 
@@ -342,19 +439,14 @@ class OwnerDressController extends Controller
                 'is_new' =>
                     'nullable|boolean',
 
-                /*
-                 * รูปหลักต้องเป็น URL ออนไลน์
-                 */
                 'image_url' =>
                     'nullable|url|max:500',
 
-                /*
-                 * URL รูปแยกตามสี
-                 */
                 'color_image_urls.*' =>
                     'nullable|url|max:500',
             ],
             [
+
                 'product_code.unique' =>
                     'รหัสชุดนี้มีอยู่ในระบบแล้ว',
 
@@ -378,9 +470,11 @@ class OwnerDressController extends Controller
             ]
         );
 
+
         // =====================================================
         // 1. Checkbox
         // =====================================================
+
         $data['is_featured'] =
             $request->has('is_featured');
 
@@ -390,12 +484,15 @@ class OwnerDressController extends Controller
         $data['is_new'] =
             $request->has('is_new');
 
+
         // =====================================================
         // 2. จัดการไซซ์
         // =====================================================
+
         $colorNames = [];
 
         if ($request->has('sizes')) {
+
             $sizes = array_filter(
                 (array) $request->sizes
             );
@@ -407,10 +504,13 @@ class OwnerDressController extends Controller
                 $sizes[0] ?? 'M';
         }
 
+
         // =====================================================
         // 3. จัดการสี
         // =====================================================
+
         if ($request->has('color_names')) {
+
             $colorNames = array_values(
                 array_filter(
                     array_map(
@@ -421,6 +521,7 @@ class OwnerDressController extends Controller
             );
 
             if (!empty($colorNames)) {
+
                 $colorString =
                     implode(
                         ', ',
@@ -439,10 +540,12 @@ class OwnerDressController extends Controller
             }
         }
 
+
         /*
          * image_url ไม่ใช่คอลัมน์ของ products
          * จึงเอาออกก่อนสร้าง Product
          */
+
         $mainImageUrl =
             trim(
                 (string) (
@@ -454,15 +557,19 @@ class OwnerDressController extends Controller
 
         unset($data['image_url']);
 
+
         // =====================================================
         // 4. สร้างข้อมูลชุด
         // =====================================================
+
         $product =
             Product::create($data);
+
 
         // =====================================================
         // 5. บันทึก URL รูปหลัก
         // =====================================================
+
         $hasMainImage = false;
 
         if (
@@ -470,7 +577,9 @@ class OwnerDressController extends Controller
                 $mainImageUrl
             )
         ) {
+
             ProductImage::create([
+
                 'product_id' =>
                     $product->product_id,
 
@@ -484,9 +593,11 @@ class OwnerDressController extends Controller
             $hasMainImage = true;
         }
 
+
         // =====================================================
         // 6. บันทึก URL รูปแยกตามสี
         // =====================================================
+
         $colorImageUrls =
             $request->input(
                 'color_image_urls',
@@ -496,6 +607,7 @@ class OwnerDressController extends Controller
         foreach (
             $colorNames as $i => $colorName
         ) {
+
             $colorUrl =
                 trim(
                     (string) (
@@ -512,14 +624,18 @@ class OwnerDressController extends Controller
                 continue;
             }
 
+
             /*
              * ถ้ายังไม่มีรูปหลัก
              * รูปสีแรกจะเป็นรูปหลัก
              */
+
             $makeMain =
                 !$hasMainImage;
 
+
             ProductImage::create([
+
                 'product_id' =>
                     $product->product_id,
 
@@ -533,10 +649,12 @@ class OwnerDressController extends Controller
                     $colorName ?: null,
             ]);
 
+
             if ($makeMain) {
                 $hasMainImage = true;
             }
         }
+
 
         return redirect()
             ->route('owner.dresses.index')
@@ -546,6 +664,7 @@ class OwnerDressController extends Controller
                 $product->product_name
             );
     }
+
 
     /**
      * แสดงหน้าแก้ไขข้อมูลชุด
@@ -568,6 +687,7 @@ class OwnerDressController extends Controller
         );
     }
 
+
     /**
      * อัปเดตข้อมูลชุด
      */
@@ -575,14 +695,17 @@ class OwnerDressController extends Controller
         Request $request,
         $id
     ) {
+
         $product =
             Product::findOrFail($id);
 
         $categoryKey =
             (new Category)->getKeyName();
 
+
         $data = $request->validate(
             [
+
                 'category_id' =>
                     "required|exists:categories,{$categoryKey}",
 
@@ -649,6 +772,7 @@ class OwnerDressController extends Controller
                     'nullable|url|max:500',
             ],
             [
+
                 'product_code.unique' =>
                     'รหัสชุดนี้มีอยู่ในระบบแล้ว',
 
@@ -672,9 +796,11 @@ class OwnerDressController extends Controller
             ]
         );
 
+
         // =====================================================
         // 1. Checkbox
         // =====================================================
+
         $data['is_featured'] =
             $request->has('is_featured');
 
@@ -684,12 +810,15 @@ class OwnerDressController extends Controller
         $data['is_new'] =
             $request->has('is_new');
 
+
         // =====================================================
         // 2. จัดการไซซ์
         // =====================================================
+
         $colorNames = [];
 
         if ($request->has('sizes')) {
+
             $sizes = array_filter(
                 (array) $request->sizes
             );
@@ -704,10 +833,13 @@ class OwnerDressController extends Controller
                 $sizes[0] ?? 'M';
         }
 
+
         // =====================================================
         // 3. จัดการสี
         // =====================================================
+
         if ($request->has('color_names')) {
+
             $colorNames = array_values(
                 array_filter(
                     array_map(
@@ -718,6 +850,7 @@ class OwnerDressController extends Controller
             );
 
             if (!empty($colorNames)) {
+
                 $colorString =
                     implode(
                         ', ',
@@ -736,9 +869,11 @@ class OwnerDressController extends Controller
             }
         }
 
+
         /*
          * เก็บ URL รูปหลักไว้ก่อน
          */
+
         $mainImageUrl =
             trim(
                 (string) (
@@ -748,31 +883,40 @@ class OwnerDressController extends Controller
                 )
             );
 
+
         /*
          * image_url ไม่ใช่คอลัมน์ของ products
          */
+
         unset($data['image_url']);
+
 
         // =====================================================
         // 4. อัปเดตข้อมูล Product
         // =====================================================
+
         $product->update($data);
+
 
         // =====================================================
         // 5. ดึงชื่อสีเดิมจากฟอร์ม
         // =====================================================
+
         $existingColorNames =
             (array) $request->input(
                 'existing_color_names',
                 []
             );
 
+
         // =====================================================
         // 6. เปลี่ยนชื่อสีเดิมให้ตรงกับสีใหม่
         // =====================================================
+
         foreach (
             $colorNames as $i => $newColorName
         ) {
+
             $oldColorName =
                 trim(
                     (string) (
@@ -781,45 +925,52 @@ class OwnerDressController extends Controller
                     )
                 );
 
+
             if (
                 $oldColorName !== '' &&
                 $newColorName !== '' &&
-                $oldColorName !==
-                $newColorName
+                $oldColorName !== $newColorName
             ) {
+
                 ProductImage::where(
                     'product_id',
                     $product->product_id
                 )
-                    ->where(
-                        'color_name',
-                        $oldColorName
-                    )
-                    ->update([
-                        'color_name' =>
-                            $newColorName,
-                    ]);
+                ->where(
+                    'color_name',
+                    $oldColorName
+                )
+                ->update([
+                    'color_name' =>
+                        $newColorName,
+                ]);
             }
         }
+
 
         // =====================================================
         // 7. บันทึก/อัปเดต URL รูปแยกตามสี
         // =====================================================
+
         $colorImageUrls =
             $request->input(
                 'color_image_urls',
                 []
             );
 
+
         foreach (
             $colorNames as $i => $colorName
         ) {
+
             $colorName =
                 trim($colorName);
+
 
             if ($colorName === '') {
                 continue;
             }
+
 
             $colorUrl =
                 trim(
@@ -829,10 +980,12 @@ class OwnerDressController extends Controller
                     )
                 );
 
+
             /*
              * ถ้าไม่มี URL หรือเป็น URL ที่ชี้เครื่องตัวเอง
              * ไม่ต้องเปลี่ยนรูปเดิม
              */
+
             if (
                 !$this->isExternalUrl(
                     $colorUrl
@@ -841,24 +994,30 @@ class OwnerDressController extends Controller
                 continue;
             }
 
+
             $existingForColor =
                 ProductImage::where(
                     'product_id',
                     $product->product_id
                 )
-                    ->where(
-                        'color_name',
-                        $colorName
-                    )
-                    ->first();
+                ->where(
+                    'color_name',
+                    $colorName
+                )
+                ->first();
+
 
             if ($existingForColor) {
+
                 $existingForColor->update([
                     'image_path' =>
                         $colorUrl,
                 ]);
+
             } else {
+
                 ProductImage::create([
+
                     'product_id' =>
                         $product->product_id,
 
@@ -874,32 +1033,40 @@ class OwnerDressController extends Controller
             }
         }
 
+
         // =====================================================
         // 8. อัปเดต URL รูปหลัก
         // =====================================================
+
         if (
             $this->isExternalUrl(
                 $mainImageUrl
             )
         ) {
+
             $mainImage =
                 ProductImage::where(
                     'product_id',
                     $product->product_id
                 )
-                    ->where(
-                        'is_main',
-                        true
-                    )
-                    ->first();
+                ->where(
+                    'is_main',
+                    true
+                )
+                ->first();
+
 
             if ($mainImage) {
+
                 $mainImage->update([
                     'image_path' =>
                         $mainImageUrl,
                 ]);
+
             } else {
+
                 ProductImage::create([
+
                     'product_id' =>
                         $product->product_id,
 
@@ -912,36 +1079,43 @@ class OwnerDressController extends Controller
             }
         }
 
+
         // =====================================================
         // 9. ถ้าไม่มีรูปหลักเลย ให้ใช้รูปสีแรก
         // =====================================================
+
         $hasMain =
             ProductImage::where(
                 'product_id',
                 $product->product_id
             )
-                ->where(
-                    'is_main',
-                    true
-                )
-                ->exists();
+            ->where(
+                'is_main',
+                true
+            )
+            ->exists();
+
 
         if (!$hasMain) {
+
             $firstColorImage =
                 ProductImage::where(
                     'product_id',
                     $product->product_id
                 )
-                    ->whereNotNull('color_name')
-                    ->first();
+                ->whereNotNull('color_name')
+                ->first();
+
 
             if ($firstColorImage) {
+
                 $firstColorImage->update([
                     'is_main' =>
                         true,
                 ]);
             }
         }
+
 
         return redirect()
             ->route('owner.dresses.index')
@@ -950,6 +1124,139 @@ class OwnerDressController extends Controller
                 'บันทึกการแก้ไขชุดเรียบร้อยแล้ว'
             );
     }
+
+
+    /**
+     * เพิ่มสต็อกสินค้า
+     *
+     * ตัวอย่าง:
+     * สต็อกเดิม 0 + เพิ่ม 5 = 5
+     */
+    public function addStock(
+        Request $request,
+        $id
+    ) {
+
+        $validated = $request->validate(
+            [
+                'quantity' =>
+                    'required|integer|min:1|max:9999',
+            ],
+            [
+                'quantity.required' =>
+                    'กรุณาระบุจำนวนสต็อก',
+
+                'quantity.integer' =>
+                    'จำนวนสต็อกต้องเป็นจำนวนเต็ม',
+
+                'quantity.min' =>
+                    'จำนวนที่เพิ่มต้องอย่างน้อย 1',
+
+                'quantity.max' =>
+                    'จำนวนที่เพิ่มต้องไม่เกิน 9,999 ชิ้น',
+            ]
+        );
+
+
+        /*
+         * ใช้ lockForUpdate ป้องกัน
+         * กรณีมีการเพิ่มสต็อกพร้อมกันหลายครั้ง
+         */
+
+        DB::beginTransaction();
+
+
+        try {
+
+            $product =
+                Product::where(
+                    'product_id',
+                    $id
+                )
+                ->lockForUpdate()
+                ->firstOrFail();
+
+
+            $quantity =
+                (int) $validated['quantity'];
+
+
+            $oldStock =
+                (int) (
+                    $product->stock ?? 0
+                );
+
+
+            $newStock =
+                $oldStock + $quantity;
+
+
+            /*
+             * บันทึกสต็อกใหม่
+             */
+
+            $product->stock =
+                $newStock;
+
+
+            /*
+             * ถ้าสินค้าเดิมเป็น rented/busy
+             * และเติมสต็อกกลับมาแล้ว
+             * ให้กลับเป็น available
+             *
+             * ไม่ไปเปลี่ยน maintenance/inactive
+             * อัตโนมัติ
+             */
+
+            if (
+                $newStock > 0 &&
+                in_array(
+                    $product->status,
+                    [
+                        'rented',
+                        'busy'
+                    ],
+                    true
+                )
+            ) {
+
+                $product->status =
+                    'available';
+            }
+
+
+            $product->save();
+
+
+            DB::commit();
+
+
+            return back()->with(
+                'success',
+                'เพิ่มสต็อก "' .
+                    $product->product_name .
+                    '" จำนวน ' .
+                    number_format($quantity) .
+                    ' ชิ้นเรียบร้อยแล้ว ' .
+                    '(คงเหลือ ' .
+                    number_format($newStock) .
+                    ' ชิ้น)'
+            );
+
+        } catch (\Throwable $e) {
+
+            DB::rollBack();
+
+
+            return back()
+                ->with(
+                    'error',
+                    'ไม่สามารถเพิ่มสต็อกได้: ' .
+                    $e->getMessage()
+                );
+        }
+    }
+
 
     /**
      * ลบชุดออกจากระบบ
@@ -960,49 +1267,62 @@ class OwnerDressController extends Controller
             Product::with('images')
                 ->findOrFail($id);
 
+
         $productName =
             $product->product_name;
+
 
         // =====================================================
         // ตรวจสอบรายการเช่าที่ยังดำเนินการอยู่
         // =====================================================
+
         $hasActiveRentals =
             RentalDetail::where(
                 'product_id',
                 $product->product_id
             )
-                ->whereHas(
-                    'rental',
-                    function ($q) {
-                        $q->whereIn(
-                            'status',
-                            [
-                                'pending',
-                                'confirmed',
-                                'renting'
-                            ]
-                        );
-                    }
-                )
-                ->exists();
+            ->whereHas(
+                'rental',
+                function ($q) {
+
+                    $q->whereIn(
+                        'status',
+                        [
+                            'pending',
+                            'confirmed',
+                            'renting'
+                        ]
+                    );
+
+                }
+            )
+            ->exists();
+
 
         if ($hasActiveRentals) {
+
             return back()->with(
                 'error',
                 'ไม่สามารถลบชุดนี้ได้ เนื่องจากมีรายการเช่าที่กำลังดำเนินการอยู่ กรุณาเปลี่ยนสถานะเป็น "ปิดใช้งาน" แทน'
             );
         }
 
+
         // =====================================================
         // ลบไฟล์รูปเก่าที่อยู่ใน storage เท่านั้น
         // URL ออนไลน์จะไม่ถูกลบ
         // =====================================================
-        foreach ($product->images as $image) {
+
+        foreach (
+            $product->images as $image
+        ) {
 
             $imagePath =
                 trim(
-                    (string) $image->image_path
+                    (string)
+                    $image->image_path
                 );
+
 
             if (
                 $imagePath !== '' &&
@@ -1013,21 +1333,27 @@ class OwnerDressController extends Controller
                     $imagePath
                 )
             ) {
+
                 Storage::disk('public')->delete(
                     $imagePath
                 );
             }
         }
 
+
         // =====================================================
         // ลบข้อมูลรูปภาพและสินค้า
         // =====================================================
+
         $product->images()->delete();
 
         $product->delete();
 
+
         return redirect()
-            ->route('owner.dresses.index')
+            ->route(
+                'owner.dresses.index'
+            )
             ->with(
                 'success',
                 'ลบชุด ' .
@@ -1035,6 +1361,7 @@ class OwnerDressController extends Controller
                 ' เรียบร้อยแล้ว'
             );
     }
+
 
     /**
      * สลับสถานะพร้อมเช่า / ปิดใช้งาน
@@ -1044,20 +1371,24 @@ class OwnerDressController extends Controller
         $product =
             Product::findOrFail($id);
 
+
         $newStatus =
             $product->status === 'available'
                 ? 'inactive'
                 : 'available';
+
 
         $product->update([
             'status' =>
                 $newStatus
         ]);
 
+
         $statusText =
             $newStatus === 'available'
                 ? 'พร้อมให้เช่า'
                 : 'ปิดใช้งาน';
+
 
         return back()->with(
             'success',
@@ -1065,22 +1396,27 @@ class OwnerDressController extends Controller
         );
     }
 
+
     /**
      * บันทึกหมวดหมู่ใหม่
      */
     public function storeCategory(
         Request $request
     ) {
+
         $validated =
             $request->validate(
                 [
+
                     'category_name' =>
                         'required|string|max:100|unique:categories,category_name',
 
                     'description' =>
                         'nullable|string|max:500',
+
                 ],
                 [
+
                     'category_name.required' =>
                         'กรุณากรอกชื่อหมวดหมู่',
 
@@ -1089,10 +1425,13 @@ class OwnerDressController extends Controller
 
                     'category_name.unique' =>
                         'มีชื่อหมวดหมู่นี้อยู่ในระบบแล้ว',
+
                 ]
             );
 
+
         Category::create([
+
             'category_name' =>
                 trim(
                     $validated['category_name']
@@ -1111,6 +1450,7 @@ class OwnerDressController extends Controller
                 'active',
         ]);
 
+
         return redirect()
             ->back()
             ->with(
@@ -1123,6 +1463,7 @@ class OwnerDressController extends Controller
             );
     }
 
+
     /**
      * อัปเดตข้อมูลหมวดหมู่
      */
@@ -1130,12 +1471,15 @@ class OwnerDressController extends Controller
         Request $request,
         $id
     ) {
+
         $category =
             Category::findOrFail($id);
+
 
         $validated =
             $request->validate(
                 [
+
                     'category_name' =>
                         'required|string|max:100|unique:categories,category_name,' .
                         $category->category_id .
@@ -1143,8 +1487,10 @@ class OwnerDressController extends Controller
 
                     'description' =>
                         'nullable|string|max:500',
+
                 ],
                 [
+
                     'category_name.required' =>
                         'กรุณากรอกชื่อหมวดหมู่',
 
@@ -1153,10 +1499,13 @@ class OwnerDressController extends Controller
 
                     'category_name.unique' =>
                         'มีชื่อหมวดหมู่นี้อยู่ในระบบแล้ว',
+
                 ]
             );
 
+
         $category->update([
+
             'category_name' =>
                 trim(
                     $validated['category_name']
@@ -1172,6 +1521,7 @@ class OwnerDressController extends Controller
                     : null,
         ]);
 
+
         return redirect()
             ->back()
             ->with(
@@ -1184,19 +1534,24 @@ class OwnerDressController extends Controller
             );
     }
 
+
     /**
      * ลบหมวดหมู่
      */
-    public function destroyCategory($id)
-    {
+    public function destroyCategory(
+        $id
+    ) {
+
         $category =
             Category::findOrFail($id);
+
 
         if (
             $category
                 ->products()
                 ->exists()
         ) {
+
             return redirect()
                 ->back()
                 ->with(
@@ -1207,10 +1562,13 @@ class OwnerDressController extends Controller
                 );
         }
 
+
         $categoryName =
             $category->category_name;
 
+
         $category->delete();
+
 
         return redirect()
             ->back()

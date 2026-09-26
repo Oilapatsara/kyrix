@@ -352,6 +352,7 @@
             font-size: 14px;
             margin-bottom: 8px;
             color: var(--text-muted);
+            gap: 16px;
         }
 
         .calc-row.total {
@@ -363,10 +364,60 @@
             color: var(--primary);
         }
 
+        /* Action buttons */
         .action-buttons-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
+            margin-top: 12px;
+        }
+
+        .cart-button {
+            width: 100%;
+            min-height: 48px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border-radius: 10px;
+            border: 1.5px solid var(--primary);
+            background: #fff;
+            color: var(--primary);
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .cart-button:hover {
+            background: var(--primary-soft);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(122, 31, 43, 0.12);
+        }
+
+        .book-button {
+            width: 100%;
+            min-height: 48px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border-radius: 10px;
+            border: 0;
+            background: var(--primary);
+            color: #fff;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .book-button:hover {
+            background: #58141d;
+            transform: translateY(-1px);
+            box-shadow: 0 5px 12px rgba(122, 31, 43, 0.22);
         }
 
         /* Reviews Section */
@@ -436,6 +487,7 @@
         }
 
         @media (max-width: 900px) {
+
             .detail-container {
                 grid-template-columns: 1fr;
             }
@@ -447,16 +499,27 @@
             .gallery-wrap {
                 position: static;
             }
+
+            .action-buttons-row {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 @endpush
 
+
 @section('content')
 
     <div class="detail-container">
-        <!-- 1. Product Image Gallery -->
+
+        {{-- =========================================================
+             1. Product Image Gallery
+        ========================================================== --}}
+
         <div class="gallery-wrap">
+
             @php
+
                 // สร้าง map: ชื่อสี => URL รูปภาพ สำหรับ JS auto-switch
                 $colorImageMap = [];
 
@@ -478,14 +541,21 @@
                         $colorImageMap[$colorName] = $product->main_image_url;
                     }
                 }
+
             @endphp
 
+
             <div class="main-image-box" id="mainImageBox">
+
                 <img src="{{ $product->main_image_url }}" id="mainProductImage" alt="{{ $product->product_name }}">
+
             </div>
 
+
             @if (count($colorImageMap) > 1)
+
                 <div class="thumbs-row">
+
                     @foreach ($product->colors_list as $idx => $colorLabel)
                         @php
                             $thumbUrl = $colorImageMap[$colorLabel] ?? $product->main_image_url;
@@ -493,100 +563,200 @@
 
                         <button type="button" class="thumb-btn {{ $idx === 0 ? 'active' : '' }}"
                             onclick="selectColorByThumb('{{ $colorLabel }}', this)">
+
                             <img src="{{ $thumbUrl }}" alt="{{ $colorLabel }}">
+
                         </button>
                     @endforeach
+
                 </div>
+
             @endif
 
-            <!-- Specs summary -->
+
+            {{-- Specs summary --}}
+
             <div class="specs-card" style="margin-top: 24px;">
+
                 <div class="specs-title">
+
                     <i class="fa-solid fa-ruler-combined" style="color: var(--primary);"></i>
-                    <span>ตารางสัดส่วนชุด (Measurements Guide)</span>
+
+                    <span>
+                        ตารางสัดส่วนชุด (Measurements Guide)
+                    </span>
+
                 </div>
+
 
                 <div class="specs-grid">
-                    <div class="spec-item">
-                        <div class="spec-label">รอบอก (Bust)</div>
-                        <div class="spec-val">{{ $product->bust ?? '32-35 นิ้ว' }}</div>
-                    </div>
 
                     <div class="spec-item">
-                        <div class="spec-label">รอบเอว (Waist)</div>
-                        <div class="spec-val">{{ $product->waist ?? '25-28 นิ้ว' }}</div>
+
+                        <div class="spec-label">
+                            รอบอก (Bust)
+                        </div>
+
+                        <div class="spec-val">
+                            {{ $product->bust ?? '32-35 นิ้ว' }}
+                        </div>
+
                     </div>
 
-                    <div class="spec-item">
-                        <div class="spec-label">สะโพก (Hips)</div>
-                        <div class="spec-val">{{ $product->hips ?? '35-38 นิ้ว' }}</div>
-                    </div>
 
                     <div class="spec-item">
-                        <div class="spec-label">ความยาว (Length)</div>
-                        <div class="spec-val">{{ $product->length ?? '145 ซม.' }}</div>
+
+                        <div class="spec-label">
+                            รอบเอว (Waist)
+                        </div>
+
+                        <div class="spec-val">
+                            {{ $product->waist ?? '25-28 นิ้ว' }}
+                        </div>
+
                     </div>
+
+
+                    <div class="spec-item">
+
+                        <div class="spec-label">
+                            สะโพก (Hips)
+                        </div>
+
+                        <div class="spec-val">
+                            {{ $product->hips ?? '35-38 นิ้ว' }}
+                        </div>
+
+                    </div>
+
+
+                    <div class="spec-item">
+
+                        <div class="spec-label">
+                            ความยาว (Length)
+                        </div>
+
+                        <div class="spec-val">
+                            {{ $product->length ?? '145 ซม.' }}
+                        </div>
+
+                    </div>
+
                 </div>
 
-                <p style="font-size: 12px; color: var(--text-muted); margin-top: 10px; text-align: center;">
-                    * ทางร้านมีบริการปรับแก้ทรงชั่วคราวให้พอดีสัดส่วนฟรี โดยไม่ทำให้ผ้าเสียหาย
+
+                <p
+                    style="
+                        font-size: 12px;
+                        color: var(--text-muted);
+                        margin-top: 10px;
+                        text-align: center;
+                    ">
+                    * ทางร้านมีบริการปรับแก้ทรงชั่วคราวให้พอดีสัดส่วนฟรี
+                    โดยไม่ทำให้ผ้าเสียหาย
                 </p>
+
             </div>
+
         </div>
 
-        <!-- 2. Product Info & Booking Form -->
+
+        {{-- =========================================================
+             2. Product Info & Booking Form
+        ========================================================== --}}
+
         <div class="product-info">
+
+
             <div class="info-header">
+
                 <div class="info-cat">
                     {{ $product->category->category_name ?? 'ชุดเช่าพรีเมียม' }}
                 </div>
+
 
                 <h1 class="info-title">
                     {{ $product->product_name }}
                 </h1>
 
+
                 <div class="info-meta-row" style="flex-wrap: wrap; gap: 14px;">
+
                     <span class="info-code">
                         รหัส: {{ $product->product_code }}
                     </span>
 
-                    <span>
-                        <i class="fa-solid fa-boxes-stacked"></i>
-                        จำนวนชุดที่มี:
-                        <strong>{{ $product->stock }}</strong>
-                        ชุด
-                    </span>
 
                     <span>
+
+                        <i class="fa-solid fa-boxes-stacked"></i>
+
+                        จำนวนชุดที่มี:
+
+                        <strong>
+                            {{ $product->stock }}
+                        </strong>
+
+                        ชุด
+
+                    </span>
+
+
+                    <span>
+
                         @if ($product->status === 'available')
                             <span class="badge badge-success">
+
                                 <i class="fa-solid fa-circle-check"></i>
+
                                 ว่าง (พร้อมเช่า)
+
                             </span>
                         @elseif($product->status === 'rented')
                             <span class="badge badge-warning">
+
                                 <i class="fa-solid fa-clock"></i>
+
                                 เช่าอยู่
+
                             </span>
                         @elseif($product->status === 'maintenance')
                             <span class="badge badge-danger">
+
                                 <i class="fa-solid fa-wrench"></i>
+
                                 ซ่อม / ปรับปรุง
+
                             </span>
                         @else
                             <span class="badge badge-secondary">
+
                                 <i class="fa-solid fa-ban"></i>
+
                                 ปิดใช้งาน
+
                             </span>
                         @endif
+
                     </span>
+
                 </div>
+
             </div>
 
-            <!-- Price display -->
+
+            {{-- Price display --}}
+
             <div class="price-box">
+
                 <div>
-                    <span style="font-size: 12px; color: var(--text-muted); display: block;">
+
+                    <span
+                        style="
+                            font-size: 12px;
+                            color: var(--text-muted);
+                            display: block;
+                        ">
                         ราคาเช่า
                     </span>
 
@@ -594,87 +764,171 @@
                         ฿{{ number_format($product->rental_price) }}
                     </span>
 
-                    <span style="font-size: 14px; color: var(--text-muted);">
-                        / วัน
+                    <span
+                        style="
+                            font-size: 14px;
+                            color: var(--text-muted);
+                        ">
+                        / ครั้ง
                     </span>
+
                 </div>
+
 
                 <div>
+
                     <span class="deposit-badge">
+
                         <i class="fa-solid fa-shield"></i>
-                        เงินมัดจำ ฿{{ number_format($product->deposit) }}
+
+                        เงินมัดจำ
+                        ฿{{ number_format($product->deposit) }}
+
                     </span>
+
                 </div>
+
             </div>
 
-            <!-- Description & Details -->
+
+            {{-- Description & Details --}}
+
             <div>
-                <h4 style="font-size: 15px; font-weight: 700; margin-bottom: 8px;">
+
+                <h4
+                    style="
+                        font-size: 15px;
+                        font-weight: 700;
+                        margin-bottom: 8px;
+                    ">
                     รายละเอียดชุด
                 </h4>
 
-                <p style="font-size: 14px; color: #555; line-height: 1.8; margin-bottom: 12px;">
+
+                <p
+                    style="
+                        font-size: 14px;
+                        color: #555;
+                        line-height: 1.8;
+                        margin-bottom: 12px;
+                    ">
                     {{ $product->description }}
                 </p>
 
-                <div style="display: flex; gap: 20px; font-size: 13px; color: var(--text-muted);">
-                    <span>
-                        <i class="fa-solid fa-ruler"></i>
-                        ไซซ์มาตรฐาน:
-                        <strong>{{ $product->size ?? 'M' }}</strong>
-                    </span>
+
+                <div
+                    style="
+                        display: flex;
+                        gap: 20px;
+                        font-size: 13px;
+                        color: var(--text-muted);
+                    ">
 
                     <span>
-                        <i class="fa-solid fa-palette"></i>
-                        สี:
-                        <strong>{{ $product->colors_text }}</strong>
+
+                        <i class="fa-solid fa-ruler"></i>
+
+                        ไซซ์มาตรฐาน:
+
+                        <strong>
+                            {{ $product->size ?? 'M' }}
+                        </strong>
+
                     </span>
+
+
+                    <span>
+
+                        <i class="fa-solid fa-palette"></i>
+
+                        สี:
+
+                        <strong>
+                            {{ $product->colors_text }}
+                        </strong>
+
+                    </span>
+
                 </div>
+
             </div>
 
-            <!-- 3. Interactive Rental Booking Form -->
+
+            {{-- =====================================================
+                 3. Interactive Rental Booking Form
+            ====================================================== --}}
+
             <div class="rental-form-card">
+
                 @if ($product->status === 'available' && $product->stock > 0)
 
                     <form action="{{ route('rentals.book', $product->product_id) }}" method="POST" id="rentalBookingForm">
+
                         @csrf
 
+
                         <div class="form-section-title">
+
                             <i class="fa-solid fa-calendar-check"></i>
-                            <span>จองเช่าชุด (Book Dress)</span>
+
+                            <span>
+                                จองเช่าชุด (Book Dress)
+                            </span>
+
                         </div>
 
-                        <!-- Size Chooser -->
+
+                        {{-- Size Chooser --}}
+
                         <div class="form-group">
+
                             <label class="form-label">
                                 เลือกไซซ์ (Size):
                             </label>
 
+
                             <div class="options-row">
+
                                 @foreach ($product->sizes_list as $idx => $s)
                                     <button type="button" class="option-btn {{ $idx === 0 ? 'selected' : '' }}"
                                         onclick="selectSize('{{ $s }}', this)">
                                         {{ $s }}
                                     </button>
                                 @endforeach
+
                             </div>
+
 
                             <input type="hidden" name="size" id="selectedSize"
                                 value="{{ $product->sizes_list[0] ?? 'M' }}">
+
                         </div>
 
-                        <!-- Color Chooser -->
+
+                        {{-- Color Chooser --}}
+
                         <div class="form-group">
+
                             <label class="form-label">
+
                                 เลือกสี:
+
                                 <span id="currentColorLabel"
-                                    style="font-weight: 700; color: var(--primary); margin-left: 6px;">
+                                    style="
+                                        font-weight: 700;
+                                        color: var(--primary);
+                                        margin-left: 6px;
+                                    ">
                                     {{ $product->colors_list[0] ?? $product->color }}
                                 </span>
+
                             </label>
 
+
                             <div class="options-row">
+
                                 @php
+
                                     $colorMap = [
                                         // โทนดำ
                                         'ดำคลาสสิก' => '#1a1a1a',
@@ -755,15 +1009,19 @@
                                         'ส้ม' => '#ea580c',
                                         'orange' => '#ea580c',
                                     ];
+
                                 @endphp
+
 
                                 @foreach ($product->colors_list as $idx => $c)
                                     @php
+
                                         $dotColor = null;
 
                                         foreach ($colorMap as $nameKey => $hex) {
                                             if (mb_stripos($c, $nameKey) !== false) {
                                                 $dotColor = $hex;
+
                                                 break;
                                             }
                                         }
@@ -779,183 +1037,373 @@
                                             ];
 
                                             $hashIndex = abs(crc32($c)) % count($fallbackPalette);
+
                                             $dotColor = $fallbackPalette[$hashIndex];
                                         }
+
                                     @endphp
+
 
                                     <button type="button" class="color-option-btn {{ $idx === 0 ? 'selected' : '' }}"
                                         onclick="selectColor('{{ $c }}', this)">
-                                        <span class="color-circle" style="background-color: {{ $dotColor }};"></span>
-                                        <span>{{ $c }}</span>
+
+                                        <span class="color-circle"
+                                            style="
+                                                background-color:
+                                                {{ $dotColor }};
+                                            "></span>
+
+                                        <span>
+                                            {{ $c }}
+                                        </span>
+
                                     </button>
                                 @endforeach
+
                             </div>
+
 
                             <input type="hidden" name="color" id="selectedColor"
                                 value="{{ $product->colors_list[0] ?? $product->color }}">
+
                         </div>
 
-                        <!-- Rental Dates -->
+
+                        {{-- Rental Dates --}}
+
                         <div class="form-group">
+
                             <label class="form-label">
+
                                 กำหนดวันที่เริ่มเช่า และ วันที่คืนชุด:
+
                             </label>
 
+
                             <div class="dates-grid">
+
                                 <div>
+
                                     <span
-                                        style="font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 4px;">
+                                        style="
+                                            font-size: 12px;
+                                            color: var(--text-muted);
+                                            display: block;
+                                            margin-bottom: 4px;
+                                        ">
                                         วันที่เริ่มเช่า (Start Date)
                                     </span>
+
 
                                     <input type="date" name="start_date" id="startDate" class="date-input"
                                         value="{{ date('Y-m-d') }}" min="{{ date('Y-m-d') }}" required
                                         onchange="calculateRental()">
+
                                 </div>
 
+
                                 <div>
+
                                     <span
-                                        style="font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 4px;">
+                                        style="
+                                            font-size: 12px;
+                                            color: var(--text-muted);
+                                            display: block;
+                                            margin-bottom: 4px;
+                                        ">
                                         วันที่คืนชุด (End Date)
                                     </span>
+
 
                                     <input type="date" name="end_date" id="endDate" class="date-input"
                                         value="{{ date('Y-m-d', strtotime('+2 days')) }}" min="{{ date('Y-m-d') }}"
                                         required onchange="calculateRental()">
+
                                 </div>
+
                             </div>
+
                         </div>
 
-                        <!-- Quantity -->
+
+                        {{-- Quantity --}}
+
                         <div class="form-group">
+
                             <label class="form-label">
+
                                 ระบุจำนวนชุดที่ต้องการเช่า:
+
                             </label>
 
-                            <div style="display: flex; align-items: center; gap: 10px;">
+
+                            <div
+                                style="
+                                    display: flex;
+                                    align-items: center;
+                                    gap: 10px;
+                                ">
+
                                 <input type="number" name="quantity" id="rentalQty" value="1" min="1"
                                     max="{{ $product->stock }}" class="date-input" style="width: 110px;" required
-                                    onchange="calculateRental()">
+                                    onchange="calculateRental()" oninput="calculateRental()">
 
-                                <span style="font-size: 13px; color: var(--text-muted);">
-                                    (มีในสต็อกทั้งหมด {{ $product->stock }} ชุด)
+
+                                <span
+                                    style="
+                                        font-size: 13px;
+                                        color: var(--text-muted);
+                                    ">
+                                    (มีในสต็อกทั้งหมด
+                                    {{ $product->stock }}
+                                    ชุด)
                                 </span>
+
                             </div>
+
                         </div>
 
-                        <!-- Note -->
+
+                        {{-- Note --}}
+
                         <div class="form-group">
+
                             <label class="form-label">
+
                                 เขียนหมายเหตุเพิ่มเติม (ถ้ามี):
+
                             </label>
+
 
                             <input type="text" name="note" class="date-input"
                                 placeholder="เช่น ขอปรับขนาดเอวเข้า 1 นิ้ว, รับชุดช่วงบ่าย">
+
                         </div>
 
-                        <!-- Live Price Calculation Box -->
+
+                        {{-- Live Price Calculation Box --}}
+
                         <div class="live-calc-box">
-                            <div class="calc-row">
-                                <span>จำนวนวันที่เช่า:</span>
-                                <strong id="displayDays">3 วัน</strong>
-                            </div>
 
                             <div class="calc-row">
+
                                 <span>
-                                    ค่าเช่าชุด (฿{{ number_format($product->rental_price) }} x
-                                    <span id="displayDaysText">3</span> วัน x
-                                    <span id="displayQtyText">1</span> ชุด):
+                                    จำนวนวันที่เช่า:
                                 </span>
+
+                                <strong id="displayDays">
+                                    3 วัน
+                                </strong>
+
+                            </div>
+
+
+                            <div class="calc-row">
+
+                                <span>
+
+                                    ค่าเช่าชุด
+                                    (฿{{ number_format($product->rental_price) }}
+                                    ×
+                                    <span id="displayQtyText">1</span>
+                                    ชุด):
+
+                                </span>
+
 
                                 <span id="displayRentalSubtotal">
-                                    ฿{{ number_format($product->rental_price * 3) }}
+                                    ฿{{ number_format($product->rental_price) }}
                                 </span>
+
                             </div>
 
+
                             <div class="calc-row">
+
                                 <span>
+
                                     เงินมัดจำประกันชุด
-                                    (<span id="displayQtyDepositText">1</span> ชุด):
+                                    (<span id="displayQtyDepositText">1</span>
+                                    ชุด):
+
                                 </span>
+
 
                                 <span id="displayDeposit">
                                     ฿{{ number_format($product->deposit) }}
                                 </span>
+
                             </div>
+
 
                             <div class="calc-row total">
-                                <span>ยอดที่ต้องจ่ายรวมทั้งหมด:</span>
+
+                                <span>
+                                    ยอดที่ต้องจ่ายรวมทั้งหมด:
+                                </span>
 
                                 <span id="displayGrandTotal">
-                                    ฿{{ number_format($product->rental_price * 3 + $product->deposit) }}
+                                    ฿{{ number_format($product->rental_price + $product->deposit) }}
                                 </span>
+
                             </div>
+
                         </div>
 
-                        <!-- Submit Button -->
-                        <button type="submit" class="btn btn-primary btn-block" style="padding: 14px; font-size: 16px;">
-                            <i class="fa-solid fa-calendar-check"></i>
-                            ยืนยันการเช่าชุด & ไปหน้าชำระเงิน
-                        </button>
+
+                        {{-- =====================================================
+                             ACTION BUTTONS
+                        ====================================================== --}}
+
+                        <div class="action-buttons-row">
+
+                            {{-- เพิ่มลงตะกร้า --}}
+
+                            <button type="button" class="cart-button" id="addToCartButton"
+                                onclick="addCurrentProductToCart()">
+
+                                <i class="fa-solid fa-cart-plus"></i>
+
+                                เพิ่มลงตะกร้า
+
+                            </button>
+
+
+                            {{-- เช่าทันที --}}
+
+                            <button type="submit" class="book-button">
+
+                                <i class="fa-solid fa-calendar-check"></i>
+
+                                ยืนยันการเช่า
+                                & ไปหน้าชำระเงิน
+
+                            </button>
+
+                        </div>
+
                     </form>
                 @else
-                    <div style="text-align: center; padding: 30px 10px; color: var(--text-muted);">
-                        <i class="fa-solid fa-circle-exclamation"
-                            style="font-size: 38px; color: #dc2626; margin-bottom: 10px;"></i>
+                    <div
+                        style="
+                            text-align: center;
+                            padding: 30px 10px;
+                            color: var(--text-muted);
+                        ">
 
-                        <h4 style="font-size: 16px; font-weight: 700; color: #b91c1c; margin-bottom: 6px;">
+                        <i class="fa-solid fa-circle-exclamation"
+                            style="
+                                font-size: 38px;
+                                color: #dc2626;
+                                margin-bottom: 10px;
+                            "></i>
+
+
+                        <h4
+                            style="
+                                font-size: 16px;
+                                font-weight: 700;
+                                color: #b91c1c;
+                                margin-bottom: 6px;
+                            ">
                             ชุดนี้ไม่พร้อมให้เช่าในขณะนี้
                         </h4>
 
+
                         <p style="font-size: 13px;">
-                            สถานะ: {{ $product->status_label }}
+                            สถานะ:
+                            {{ $product->status_label }}
                         </p>
+
 
                         <a href="{{ route('products.index') }}" class="btn btn-secondary btn-sm"
                             style="margin-top: 12px;">
                             เลือกดูชุดอื่นๆ
                         </a>
+
                     </div>
 
                 @endif
+
             </div>
+
         </div>
+
     </div>
 
-    <!-- 4. Customer Reviews Section (Feature 10) -->
+
+    {{-- =========================================================
+         4. Customer Reviews Section
+    ========================================================== --}}
+
     <section class="reviews-section" id="reviews">
+
         <div class="reviews-header-card">
+
             <div class="rating-big">
+
                 <div class="rating-num">
                     {{ $product->average_rating }}
                 </div>
 
+
                 <div>
+
                     <div class="rating-stars">
+
                         @for ($i = 1; $i <= 5; $i++)
                             <i class="fa-solid fa-star{{ $i <= round($product->average_rating) ? '' : '-o' }}"></i>
                         @endfor
+
                     </div>
 
-                    <div style="font-size: 14px; color: var(--text-muted);">
+
+                    <div
+                        style="
+                            font-size: 14px;
+                            color: var(--text-muted);
+                        ">
+
                         จากความประทับใจของลูกค้า
-                        <strong>{{ $product->reviews_count }}</strong>
+
+                        <strong>
+                            {{ $product->reviews_count }}
+                        </strong>
+
                         ท่าน
+
                     </div>
+
                 </div>
+
             </div>
+
 
             <div>
-                <span style="font-size: 13px; color: var(--text-muted);">
+
+                <span
+                    style="
+                        font-size: 13px;
+                        color: var(--text-muted);
+                    ">
+
                     <i class="fa-solid fa-check-circle" style="color: #16a34a;"></i>
+
                     รีวิวทั้งหมดมาจากลูกค้าที่เช่าและคืนชุดกับทางร้านจริงเท่านั้น
+
                 </span>
+
             </div>
+
         </div>
 
+
         @forelse($product->reviews as $review)
+
             @php
+
                 $customerFirstName = trim($review->customer->first_name ?? '');
+
                 $customerLastName = trim($review->customer->last_name ?? '');
 
                 $reviewerName = trim($customerFirstName . ' ' . $customerLastName);
@@ -965,227 +1413,826 @@
                 }
 
                 $reviewerInitial = $reviewerName === 'ลูกค้า KYRIX' ? 'K' : mb_substr($reviewerName, 0, 1);
+
             @endphp
 
+
             <div class="review-item">
+
                 <div class="review-user-row">
-                    <div style="display: flex; align-items: center; gap: 10px;">
+
+                    <div
+                        style="
+                            display: flex;
+                            align-items: center;
+                            gap: 10px;
+                        ">
+
                         <div
-                            style="width: 38px; height: 38px; border-radius: 50%; background: var(--primary-soft); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700;">
+                            style="
+                                width: 38px;
+                                height: 38px;
+                                border-radius: 50%;
+                                background: var(--primary-soft);
+                                color: var(--primary);
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                font-weight: 700;
+                            ">
                             {{ $reviewerInitial }}
                         </div>
 
+
                         <div>
-                            <div style="font-weight: 700; font-size: 14px;">
+
+                            <div
+                                style="
+                                    font-weight: 700;
+                                    font-size: 14px;
+                                ">
                                 {{ $reviewerName }}
                             </div>
 
-                            <div style="font-size: 12px; color: var(--text-muted);">
+
+                            <div
+                                style="
+                                    font-size: 12px;
+                                    color: var(--text-muted);
+                                ">
                                 {{ $review->created_at->format('d/m/Y') }}
                             </div>
+
                         </div>
+
                     </div>
 
-                    <div style="color: #f59e0b; font-size: 14px;">
+
+                    <div
+                        style="
+                            color: #f59e0b;
+                            font-size: 14px;
+                        ">
+
                         @for ($i = 1; $i <= 5; $i++)
                             <i class="fa-solid fa-star{{ $i <= $review->rating ? '' : '-o' }}"></i>
                         @endfor
+
                     </div>
+
                 </div>
 
-                <p style="font-size: 14px; color: #444; line-height: 1.7; margin: 0;">
+
+                <p
+                    style="
+                        font-size: 14px;
+                        color: #444;
+                        line-height: 1.7;
+                        margin: 0;
+                    ">
                     {{ $review->comment }}
                 </p>
 
+
                 @if ($review->image_path)
                     @php
+
                         $revImg = str_starts_with($review->image_path, 'http')
                             ? $review->image_path
                             : asset($review->image_path);
+
                     @endphp
 
+
                     <div>
+
                         <a href="{{ $revImg }}" target="_blank">
+
                             <img src="{{ $revImg }}" class="review-photo-preview" alt="รูปลูกค้าใส่ชุดจริง">
+
                         </a>
+
                     </div>
                 @endif
+
             </div>
 
         @empty
 
             <div
-                style="background: #fff; padding: 40px; text-align: center; border-radius: var(--radius-md); border: 1px solid var(--border); color: var(--text-muted);">
-                <i class="fa-regular fa-comment-dots" style="font-size: 36px; margin-bottom: 12px; color: #cbd5e1;"></i>
+                style="
+                    background: #fff;
+                    padding: 40px;
+                    text-align: center;
+                    border-radius: var(--radius-md);
+                    border: 1px solid var(--border);
+                    color: var(--text-muted);
+                ">
+
+                <i class="fa-regular fa-comment-dots"
+                    style="
+                        font-size: 36px;
+                        margin-bottom: 12px;
+                        color: #cbd5e1;
+                    "></i>
+
 
                 <p>
-                    ยังไม่มีรีวิวสำหรับชุดนี้ ลูกค้าที่เช่าชุดนี้จะเป็นท่านแรกที่ได้เขียนรีวิวความประทับใจ!
+                    ยังไม่มีรีวิวสำหรับชุดนี้
+                    ลูกค้าที่เช่าชุดนี้จะเป็นท่านแรกที่ได้เขียนรีวิวความประทับใจ!
                 </p>
+
             </div>
 
         @endforelse
+
     </section>
+
 
     @push('scripts')
         <script>
-            const dailyPrice = {{ (float) $product->rental_price }};
-            const depositPrice = {{ (float) $product->deposit }};
+            const rentalPrice =
+                {{ (float) $product->rental_price }};
+
+            const depositPrice =
+                {{ (float) $product->deposit }};
+
             let currentServiceFee = 0;
 
+
+            // =====================================================
             // Color => image URL map
-            const colorImageMap = @json($colorImageMap);
+            // =====================================================
+
+            const colorImageMap =
+                @json($colorImageMap);
+
+
+            // =====================================================
+            // เปลี่ยนรูปหลัก
+            // =====================================================
 
             function switchImage(src, btn) {
-                document.getElementById('mainProductImage').src = src;
 
-                document.querySelectorAll('.thumb-btn').forEach(b => {
-                    b.classList.remove('active');
-                });
+                const mainImage =
+                    document.getElementById(
+                        'mainProductImage'
+                    );
+
+
+                if (mainImage) {
+                    mainImage.src = src;
+                }
+
+
+                document
+                    .querySelectorAll('.thumb-btn')
+                    .forEach(function(b) {
+
+                        b.classList.remove(
+                            'active'
+                        );
+
+                    });
+
 
                 if (btn) {
-                    btn.classList.add('active');
+                    btn.classList.add(
+                        'active'
+                    );
                 }
             }
+
+
+            // =====================================================
+            // เลือกไซซ์
+            // =====================================================
 
             function selectSize(sz, btn) {
-                document.getElementById('selectedSize').value = sz;
 
-                btn.closest('.options-row')
-                    .querySelectorAll('.option-btn')
-                    .forEach(b => b.classList.remove('selected'));
+                const selectedSize =
+                    document.getElementById(
+                        'selectedSize'
+                    );
 
-                btn.classList.add('selected');
+
+                if (selectedSize) {
+
+                    selectedSize.value =
+                        sz;
+                }
+
+
+                if (btn) {
+
+                    btn
+                        .closest('.options-row')
+                        .querySelectorAll('.option-btn')
+                        .forEach(function(b) {
+
+                            b.classList.remove(
+                                'selected'
+                            );
+
+                        });
+
+
+                    btn.classList.add(
+                        'selected'
+                    );
+                }
             }
+
+
+            // =====================================================
+            // เลือกสี
+            // =====================================================
 
             function selectColor(color, btn) {
-                document.getElementById('selectedColor').value = color;
 
-                const label = document.getElementById('currentColorLabel');
+                const selectedColor =
+                    document.getElementById(
+                        'selectedColor'
+                    );
+
+
+                if (selectedColor) {
+
+                    selectedColor.value =
+                        color;
+                }
+
+
+                const label =
+                    document.getElementById(
+                        'currentColorLabel'
+                    );
+
 
                 if (label) {
-                    label.innerText = color;
+
+                    label.innerText =
+                        color;
                 }
 
-                btn.closest('.options-row')
-                    .querySelectorAll('.color-option-btn')
-                    .forEach(b => b.classList.remove('selected'));
 
-                btn.classList.add('selected');
+                if (btn) {
+
+                    btn
+                        .closest('.options-row')
+                        .querySelectorAll('.color-option-btn')
+                        .forEach(function(b) {
+
+                            b.classList.remove(
+                                'selected'
+                            );
+
+                        });
+
+
+                    btn.classList.add(
+                        'selected'
+                    );
+                }
+
 
                 // เปลี่ยนรูปหลักอัตโนมัติตามสีที่เลือก
-                const imgUrl = colorImageMap[color];
+
+                const imgUrl =
+                    colorImageMap[color];
+
 
                 if (imgUrl) {
-                    switchImage(imgUrl, null);
+
+                    switchImage(
+                        imgUrl,
+                        null
+                    );
                 }
 
+
                 // sync thumb active state
-                document.querySelectorAll('.thumb-btn').forEach(tb => {
-                    tb.classList.toggle(
-                        'active',
-                        tb.querySelector('img')?.alt === color
-                    );
-                });
+
+                document
+                    .querySelectorAll('.thumb-btn')
+                    .forEach(function(tb) {
+
+                        tb.classList.toggle(
+                            'active',
+                            tb.querySelector('img')?.alt === color
+                        );
+
+                    });
+
             }
 
-            // เมื่อคลิก thumbnail → sync ทั้งรูปหลักและปุ่มเลือกสี
-            function selectColorByThumb(color, thumbBtn) {
-                document.querySelectorAll('.thumb-btn').forEach(b => {
-                    b.classList.remove('active');
-                });
 
-                thumbBtn.classList.add('active');
+            // =====================================================
+            // เมื่อคลิก thumbnail
+            // =====================================================
+
+            function selectColorByThumb(
+                color,
+                thumbBtn
+            ) {
+
+                document
+                    .querySelectorAll('.thumb-btn')
+                    .forEach(function(b) {
+
+                        b.classList.remove(
+                            'active'
+                        );
+
+                    });
+
+
+                thumbBtn.classList.add(
+                    'active'
+                );
+
 
                 // หาปุ่มสีที่ตรงกันแล้วกดแทน
-                const colorBtns = document.querySelectorAll('.color-option-btn');
 
-                colorBtns.forEach(btn => {
-                    if (btn.innerText.trim() === color) {
-                        selectColor(color, btn);
+                const colorBtns =
+                    document.querySelectorAll(
+                        '.color-option-btn'
+                    );
+
+
+                colorBtns.forEach(function(btn) {
+
+                    if (
+                        btn.innerText.trim() ===
+                        color
+                    ) {
+
+                        selectColor(
+                            color,
+                            btn
+                        );
                     }
+
                 });
+
             }
 
-            function setService(type, fee, labelElem) {
-                currentServiceFee = fee;
 
-                document.querySelectorAll('.service-radio-label').forEach(l => {
-                    l.classList.remove('checked');
-                });
+            // =====================================================
+            // Service
+            // =====================================================
 
-                labelElem.classList.add('checked');
+            function setService(
+                type,
+                fee,
+                labelElem
+            ) {
+
+                currentServiceFee =
+                    fee;
+
+
+                document
+                    .querySelectorAll(
+                        '.service-radio-label'
+                    )
+                    .forEach(function(l) {
+
+                        l.classList.remove(
+                            'checked'
+                        );
+
+                    });
+
+
+                labelElem.classList.add(
+                    'checked'
+                );
+
 
                 calculateRental();
+
             }
 
-            function calculateRental() {
-                const startInput = document.getElementById('startDate')?.value;
-                const endInput = document.getElementById('endDate')?.value;
-                const qtyInput = document.getElementById('rentalQty');
 
-                const qty = qtyInput ?
-                    Math.max(1, parseInt(qtyInput.value) || 1) :
+            // =====================================================
+            // คำนวณราคา
+            // =====================================================
+
+            function calculateRental() {
+
+                const startInput =
+                    document.getElementById(
+                        'startDate'
+                    )?.value;
+
+
+                const endInput =
+                    document.getElementById(
+                        'endDate'
+                    )?.value;
+
+
+                const qtyInput =
+                    document.getElementById(
+                        'rentalQty'
+                    );
+
+
+                const qty =
+                    qtyInput ?
+                    Math.max(
+                        1,
+                        parseInt(
+                            qtyInput.value
+                        ) || 1
+                    ) :
                     1;
 
-                if (!startInput || !endInput) {
+
+                if (
+                    !startInput ||
+                    !endInput
+                ) {
                     return;
                 }
 
-                const start = new Date(startInput);
-                const end = new Date(endInput);
+
+                const start =
+                    new Date(
+                        startInput
+                    );
+
+
+                const end =
+                    new Date(
+                        endInput
+                    );
+
 
                 if (end < start) {
-                    alert('วันคืนชุดต้องไม่น้อยกว่าวันรับชุด');
-                    document.getElementById('endDate').value = startInput;
+
+                    alert(
+                        'วันคืนชุดต้องไม่น้อยกว่าวันรับชุด'
+                    );
+
+
+                    document.getElementById(
+                            'endDate'
+                        ).value =
+                        startInput;
+
+
                     return calculateRental();
                 }
 
-                const diffTime = Math.abs(end - start);
-                const diffDays = Math.ceil(
-                    diffTime / (1000 * 60 * 60 * 24)
-                ) + 1;
 
-                const days = Math.max(1, diffDays);
+                const diffTime =
+                    Math.abs(
+                        end - start
+                    );
 
-                const rentalSubtotal = dailyPrice * days * qty;
-                const depositTotal = depositPrice * qty;
-                const grandTotal = rentalSubtotal + depositTotal;
 
-                if (document.getElementById('displayDays')) {
-                    document.getElementById('displayDays').innerText = days + ' วัน';
+                const diffDays =
+                    Math.ceil(
+                        diffTime /
+                        (
+                            1000 *
+                            60 *
+                            60 *
+                            24
+                        )
+                    ) + 1;
+
+
+                const days =
+                    Math.max(
+                        1,
+                        diffDays
+                    );
+
+
+                /*
+                 * จำนวนวันใช้สำหรับแสดงระยะเวลาเช่าเท่านั้น
+                 *
+                 * ราคาเช่า = ราคาต่อการเช่า 1 ครั้ง × จำนวนชุด
+                 */
+
+                const rentalSubtotal =
+                    rentalPrice *
+                    qty;
+
+
+                const depositTotal =
+                    depositPrice *
+                    qty;
+
+
+                const grandTotal =
+                    rentalSubtotal +
+                    depositTotal +
+                    currentServiceFee;
+
+
+                // แสดงจำนวนวัน
+
+                const displayDays =
+                    document.getElementById(
+                        'displayDays'
+                    );
+
+
+                if (displayDays) {
+
+                    displayDays.innerText =
+                        days + ' วัน';
                 }
 
-                if (document.getElementById('displayDaysText')) {
-                    document.getElementById('displayDaysText').innerText = days;
+
+                // จำนวนชุด
+
+                const displayQtyText =
+                    document.getElementById(
+                        'displayQtyText'
+                    );
+
+
+                if (displayQtyText) {
+
+                    displayQtyText.innerText =
+                        qty;
                 }
 
-                if (document.getElementById('displayQtyText')) {
-                    document.getElementById('displayQtyText').innerText = qty;
+
+                // จำนวนชุดสำหรับมัดจำ
+
+                const displayQtyDepositText =
+                    document.getElementById(
+                        'displayQtyDepositText'
+                    );
+
+
+                if (displayQtyDepositText) {
+
+                    displayQtyDepositText.innerText =
+                        qty;
                 }
 
-                if (document.getElementById('displayQtyDepositText')) {
-                    document.getElementById('displayQtyDepositText').innerText = qty;
+
+                // ค่าเช่าชุด
+
+                const displayRentalSubtotal =
+                    document.getElementById(
+                        'displayRentalSubtotal'
+                    );
+
+
+                if (displayRentalSubtotal) {
+
+                    displayRentalSubtotal.innerText =
+                        '฿' +
+                        rentalSubtotal.toLocaleString();
                 }
 
-                if (document.getElementById('displayRentalSubtotal')) {
-                    document.getElementById('displayRentalSubtotal').innerText =
-                        '฿' + rentalSubtotal.toLocaleString();
+
+                // มัดจำ
+
+                const displayDeposit =
+                    document.getElementById(
+                        'displayDeposit'
+                    );
+
+
+                if (displayDeposit) {
+
+                    displayDeposit.innerText =
+                        '฿' +
+                        depositTotal.toLocaleString();
                 }
 
-                if (document.getElementById('displayDeposit')) {
-                    document.getElementById('displayDeposit').innerText =
-                        '฿' + depositTotal.toLocaleString();
+
+                // ยอดรวม
+
+                const displayGrandTotal =
+                    document.getElementById(
+                        'displayGrandTotal'
+                    );
+
+
+                if (displayGrandTotal) {
+
+                    displayGrandTotal.innerText =
+                        '฿' +
+                        grandTotal.toLocaleString();
                 }
 
-                if (document.getElementById('displayGrandTotal')) {
-                    document.getElementById('displayGrandTotal').innerText =
-                        '฿' + grandTotal.toLocaleString();
-                }
             }
 
-            document.addEventListener('DOMContentLoaded', () => {
-                calculateRental();
-            });
+
+            // =====================================================
+            // เพิ่มลงตะกร้า
+            // =====================================================
+
+            function addCurrentProductToCart() {
+
+                const size =
+                    document.getElementById(
+                        'selectedSize'
+                    )?.value || '';
+
+
+                const color =
+                    document.getElementById(
+                        'selectedColor'
+                    )?.value || '';
+
+
+                const quantityInput =
+                    document.getElementById(
+                        'rentalQty'
+                    );
+
+
+                const quantity =
+                    Math.max(
+                        1,
+                        parseInt(
+                            quantityInput?.value
+                        ) || 1
+                    );
+
+
+                const maxStock =
+                    {{ (int) $product->stock }};
+
+
+                if (
+                    quantity < 1 ||
+                    quantity > maxStock
+                ) {
+
+                    alert(
+                        'จำนวนชุดต้องอยู่ระหว่าง 1 ถึง ' +
+                        maxStock +
+                        ' ชุด'
+                    );
+
+                    return;
+                }
+
+
+                /*
+                 * สร้าง Form สำหรับส่งไป cart.add
+                 * แยกจาก rentalBookingForm
+                 * เพื่อไม่ให้เกิด nested form
+                 */
+
+                const form =
+                    document.createElement(
+                        'form'
+                    );
+
+
+                form.method = 'POST';
+
+                form.action =
+                    "{{ route('cart.add') }}";
+
+
+                form.style.display =
+                    'none';
+
+
+                // CSRF
+
+                const csrf =
+                    document.createElement(
+                        'input'
+                    );
+
+                csrf.type = 'hidden';
+
+                csrf.name = '_token';
+
+                csrf.value =
+                    "{{ csrf_token() }}";
+
+
+                form.appendChild(
+                    csrf
+                );
+
+
+                // Product ID
+
+                const productId =
+                    document.createElement(
+                        'input'
+                    );
+
+                productId.type =
+                    'hidden';
+
+                productId.name =
+                    'product_id';
+
+                productId.value =
+                    "{{ $product->product_id }}";
+
+
+                form.appendChild(
+                    productId
+                );
+
+
+                // Quantity
+
+                const qty =
+                    document.createElement(
+                        'input'
+                    );
+
+                qty.type =
+                    'hidden';
+
+                qty.name =
+                    'quantity';
+
+                qty.value =
+                    quantity;
+
+
+                form.appendChild(
+                    qty
+                );
+
+
+                // Size
+
+                const sizeInput =
+                    document.createElement(
+                        'input'
+                    );
+
+                sizeInput.type =
+                    'hidden';
+
+                sizeInput.name =
+                    'size';
+
+                sizeInput.value =
+                    size;
+
+
+                form.appendChild(
+                    sizeInput
+                );
+
+
+                // Color
+
+                const colorInput =
+                    document.createElement(
+                        'input'
+                    );
+
+                colorInput.type =
+                    'hidden';
+
+                colorInput.name =
+                    'color';
+
+                colorInput.value =
+                    color;
+
+
+                form.appendChild(
+                    colorInput
+                );
+
+
+                document.body.appendChild(
+                    form
+                );
+
+
+                form.submit();
+
+            }
+
+
+            // =====================================================
+            // Initial load
+            // =====================================================
+
+            document.addEventListener(
+                'DOMContentLoaded',
+                function() {
+
+                    calculateRental();
+
+                }
+            );
         </script>
     @endpush
 

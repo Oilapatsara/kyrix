@@ -22,8 +22,11 @@ class Rental extends Model
         'deposit_amount',
         'service_type',
         'service_fee',
+
+        // ข้อมูลการรับชุด
         'delivery_method',
         'delivery_address',
+        'recipient_name',
         'recipient_phone',
 
         // ข้อมูลการจัดส่งจากร้านไปลูกค้า
@@ -37,15 +40,29 @@ class Rental extends Model
         // กำหนดคืนชุด
         'return_due_at',
 
-        // ข้อมูลการส่งคืนจากลูกค้ามาร้าน
+        // ==========================================================
+        // ระบบคืนชุดแบบง่าย
+        // วิธีคืน: ส่งพัสดุ / คืนที่ร้าน
+        // สถานะ: ยังไม่คืน / แจ้งคืนแล้ว / คืนชุดแล้ว
+        // ==========================================================
+        'return_method',
+        'return_tracking_number',
+        'return_status',
+        'return_requested_at',
+        'return_received_at',
+
+        // ข้อมูลการส่งคืนจากลูกค้ามาร้าน (ระบบเดิม)
         'return_tracking_no',
         'return_shipping_carrier',
         'return_shipping_status',
         'return_shipped_at',
         'return_estimated_delivery_at',
 
+        // สถานะหลัก
         'status',
         'note',
+
+        // ตรวจรับ / มัดจำ / ความเสียหาย
         'condition_status',
         'deposit_status',
         'deposit_refund_amount',
@@ -61,6 +78,7 @@ class Rental extends Model
         'deposit_amount' => 'float',
         'service_fee' => 'float',
         'deposit_refund_amount' => 'float',
+
         'inspected_at' => 'datetime',
 
         // ข้อมูลวันที่และเวลาการจัดส่ง
@@ -70,6 +88,12 @@ class Rental extends Model
         // วันและเวลาที่ต้องคืนชุด
         'return_due_at' => 'datetime',
 
+        // ==========================================================
+        // ระบบคืนชุด
+        // ==========================================================
+        'return_requested_at' => 'datetime',
+        'return_received_at' => 'datetime',
+
         // ข้อมูลวันที่และเวลาการส่งคืน
         'return_shipped_at' => 'datetime',
         'return_estimated_delivery_at' => 'datetime',
@@ -77,7 +101,8 @@ class Rental extends Model
 
     /**
      * Accessor: Grand Total
-     * Net rental + deposit + service fee
+     *
+     * ค่าเช่าสุทธิ + เงินมัดจำ + ค่าบริการ
      */
     public function getGrandTotalAttribute(): float
     {
@@ -94,6 +119,7 @@ class Rental extends Model
 
     /**
      * Accessor: Net Rental Amount
+     *
      * ค่าเช่าชุดหลังหักส่วนลด
      */
     public function getNetRentalAmountAttribute(): float
@@ -136,7 +162,12 @@ class Rental extends Model
             return null;
         }
 
-        if (str_starts_with($this->damage_image, 'http')) {
+        if (
+            str_starts_with(
+                $this->damage_image,
+                'http'
+            )
+        ) {
             return $this->damage_image;
         }
 
@@ -152,7 +183,12 @@ class Rental extends Model
             return null;
         }
 
-        if (str_starts_with($this->refund_slip, 'http')) {
+        if (
+            str_starts_with(
+                $this->refund_slip,
+                'http'
+            )
+        ) {
             return $this->refund_slip;
         }
 
@@ -161,6 +197,14 @@ class Rental extends Model
 
     /**
      * Accessor: Step Index for Timeline
+     *
+     * 1 = รอชำระเงิน
+     * 2 = รอตรวจสอบสลิป
+     * 3 = ยืนยันการเช่า
+     * 4 = รอรับชุด
+     * 5 = กำลังเช่า / รอตรวจรับคืน
+     * 6 = คืนชุดแล้ว
+     * 7 = เสร็จสิ้น
      */
     public function getStepIndexAttribute(): int
     {
@@ -210,7 +254,9 @@ class Rental extends Model
 
             'cancelled' => 'ยกเลิกรายการ',
 
-            default => ucfirst($this->status),
+            default => ucfirst(
+                (string) $this->status
+            ),
         };
     }
 
@@ -248,19 +294,30 @@ class Rental extends Model
     {
         return in_array(
             $this->status,
-            ['returned', 'completed'],
+            [
+                'returned',
+                'completed',
+            ],
             true
         );
     }
 
     /**
      * ยอดเงินที่ชำระแล้ว
+     *
+     * ใช้ amount ให้ตรงกับ Payment Model
      */
     public function getPaidAmountAttribute(): float
     {
         return (float) $this->payments
             ->where('status', 'approved')
-            ->sum('payment_amount');
+            ->sum(function ($payment) {
+                return (float) (
+                    $payment->amount
+                    ?? $payment->payment_amount
+                    ?? 0
+                );
+            });
     }
 
     /**
@@ -279,7 +336,9 @@ class Rental extends Model
             'pending' => 'รอตรวจสอบ',
             'rejected' => 'สลิปถูกปฏิเสธ',
 
-            default => ucfirst($payment->status),
+            default => ucfirst(
+                (string) $payment->status
+            ),
         };
     }
 
@@ -320,57 +379,177 @@ class Rental extends Model
     }
 
     /**
-     * Accessor: สร้างลิงก์ติดตามพัสดุขาไปอัตโนมัติ
+     * Accessor: สร้างลิงก์ติดตามพัสดุขาออกอัตโนมัติ
+     *
      * จากบริษัทขนส่ง + เลขพัสดุ
+     *
+     * สำคัญ:
+     * คืนค่าเป็น URL จริงเท่านั้น
+     * ห้ามใส่ Markdown
      */
     public function getTrackingUrlAttribute($value): ?string
     {
         $trackingNumber = trim(
-            (string) ($this->tracking_number ?? '')
+            (string) (
+                $this->tracking_number ?? ''
+            )
         );
 
         if ($trackingNumber === '') {
             return $value ?: null;
         }
 
-        $number = rawurlencode($trackingNumber);
-
-        $carrier = strtolower(
-            trim((string) ($this->shipping_carrier ?? ''))
+        $number = rawurlencode(
+            $trackingNumber
         );
 
-        return match ($carrier) {
-            'ไปรษณีย์ไทย',
-            'thailand post',
-            'thai post' =>
-                'https://track.thailandpost.co.th/?trackNumber=' . $number,
+        $carrier = mb_strtolower(
+            trim(
+                (string) (
+                    $this->shipping_carrier ?? ''
+                )
+            )
+        );
 
-            'j&t express',
-            'j&t' =>
-                'https://www.jtexpress.co.th/service/track?waybillNo=' . $number,
+        // ไปรษณีย์ไทย
+        if (
+            str_contains(
+                $carrier,
+                'ไปรษณีย์ไทย'
+            ) ||
+            str_contains(
+                $carrier,
+                'thailand post'
+            ) ||
+            str_contains(
+                $carrier,
+                'thai post'
+            )
+        ) {
+            return
+                'https://track.thailandpost.co.th/?trackNumber=' .
+                $number;
+        }
 
-            'flash express',
-            'flash' =>
-                'https://flashexpress.com/fle/tracking',
+        // J&T Express
+        if (
+            str_contains(
+                $carrier,
+                'j&t'
+            ) ||
+            str_contains(
+                $carrier,
+                'jnt'
+            )
+        ) {
+            return
+                'https://www.jtexpress.co.th/service/track?waybillNo=' .
+                $number;
+        }
 
-            'kex',
-            'kerry',
-            'kerry express' =>
-                'https://th.kex-express.com/th/track-parcel',
+        // Flash Express
+        if (
+            str_contains(
+                $carrier,
+                'flash'
+            )
+        ) {
+            return
+                'https://www.flashexpress.co.th/fle/tracking';
+        }
 
-            'ninja van',
-            'ninjavan' =>
-                'https://www.ninjavan.co/th-th/tracking',
+        // KEX / Kerry
+        if (
+            str_contains(
+                $carrier,
+                'kex'
+            ) ||
+            str_contains(
+                $carrier,
+                'kerry'
+            )
+        ) {
+            return
+                'https://th.kex-express.com/en/track-parcel';
+        }
 
-            'dhl',
-            'dhl express' =>
-                'https://www.dhl.com/th-th/home/tracking.html',
+        // Ninja Van
+        if (
+            str_contains(
+                $carrier,
+                'ninja van'
+            ) ||
+            str_contains(
+                $carrier,
+                'ninjavan'
+            )
+        ) {
+            return
+                'https://www.ninjavan.co/th-th/tracking';
+        }
 
-            'best express',
-            'best' =>
-                'https://www.best-inc.co.th/',
+        // DHL
+        if (
+            str_contains(
+                $carrier,
+                'dhl'
+            )
+        ) {
+            return
+                'https://www.dhl.com/th-th/home/tracking.html';
+        }
 
-            default => $value ?: null,
+        // BEST Express
+        if (
+            str_contains(
+                $carrier,
+                'best'
+            )
+        ) {
+            return
+                'https://www.best-inc.co.th/';
+        }
+
+        return $value ?: null;
+    }
+
+    /**
+     * ==========================================================
+     * ระบบคืนชุด
+     * ==========================================================
+     */
+
+    /**
+     * Accessor: สถานะการคืนชุดภาษาไทย
+     *
+     * not_returned       = ยังไม่คืน
+     * returned_requested = แจ้งคืนแล้ว
+     * returned           = คืนชุดแล้ว
+     */
+    public function getReturnStatusLabelAttribute(): string
+    {
+        return match ($this->return_status) {
+            'not_returned' => 'ยังไม่คืน',
+            'returned_requested' => 'แจ้งคืนแล้ว',
+            'returned' => 'คืนชุดแล้ว',
+
+            default => 'ยังไม่คืน',
+        };
+    }
+
+    /**
+     * Accessor: วิธีคืนชุดภาษาไทย
+     *
+     * parcel = ส่งพัสดุ
+     * store  = คืนที่ร้าน
+     */
+    public function getReturnMethodLabelAttribute(): ?string
+    {
+        return match ($this->return_method) {
+            'parcel' => 'ส่งพัสดุ',
+            'store' => 'คืนที่ร้าน',
+
+            default => null,
         };
     }
 
@@ -380,68 +559,162 @@ class Rental extends Model
     public function getReturnShippingStatusLabelAttribute(): string
     {
         return match ($this->return_shipping_status) {
-            'ลูกค้ายังไม่ได้ส่งคืน' => 'ลูกค้ายังไม่ได้ส่งคืน',
-            'ส่งพัสดุแล้ว' => 'ส่งพัสดุแล้ว',
-            'กำลังขนส่ง' => 'กำลังขนส่ง',
-            'กำลังนำจ่าย' => 'กำลังนำจ่าย',
-            'ถึงร้านแล้ว' => 'ถึงร้านแล้ว',
-            default => 'ยังไม่มีข้อมูล',
+            'ลูกค้ายังไม่ได้ส่งคืน' =>
+                'ลูกค้ายังไม่ได้ส่งคืน',
+
+            'รอลูกค้านำชุดมาคืนที่ร้าน' =>
+                'รอลูกค้านำชุดมาคืนที่ร้าน',
+
+            'ส่งพัสดุแล้ว' =>
+                'ส่งพัสดุแล้ว',
+
+            'กำลังขนส่ง' =>
+                'กำลังขนส่ง',
+
+            'กำลังนำจ่าย' =>
+                'กำลังนำจ่าย',
+
+            'ถึงร้านแล้ว' =>
+                'ถึงร้านแล้ว',
+
+            default =>
+                'ยังไม่มีข้อมูล',
         };
     }
 
     /**
      * Accessor: สร้างลิงก์ติดตามพัสดุส่งคืนอัตโนมัติ
-     * จากบริษัทขนส่งขากลับ + เลขพัสดุ
+     *
+     * รองรับ:
+     * - return_tracking_number
+     * - return_tracking_no
      */
     public function getReturnTrackingUrlAttribute(): ?string
     {
         $trackingNumber = trim(
-            (string) ($this->return_tracking_no ?? '')
+            (string) (
+                $this->return_tracking_number
+                ?: $this->return_tracking_no
+                ?: ''
+            )
         );
 
         if ($trackingNumber === '') {
             return null;
         }
 
-        $number = rawurlencode($trackingNumber);
-
-        $carrier = strtolower(
-            trim((string) ($this->return_shipping_carrier ?? ''))
+        $number = rawurlencode(
+            $trackingNumber
         );
 
-        return match ($carrier) {
-            'ไปรษณีย์ไทย',
-            'thailand post',
-            'thai post' =>
-                'https://track.thailandpost.co.th/?trackNumber=' . $number,
+        $carrier = mb_strtolower(
+            trim(
+                (string) (
+                    $this->return_shipping_carrier ?? ''
+                )
+            )
+        );
 
-            'j&t express',
-            'j&t' =>
-                'https://www.jtexpress.co.th/service/track?waybillNo=' . $number,
+        // ไปรษณีย์ไทย
+        if (
+            str_contains(
+                $carrier,
+                'ไปรษณีย์ไทย'
+            ) ||
+            str_contains(
+                $carrier,
+                'thailand post'
+            ) ||
+            str_contains(
+                $carrier,
+                'thai post'
+            )
+        ) {
+            return
+                'https://track.thailandpost.co.th/?trackNumber=' .
+                $number;
+        }
 
-            'flash express',
-            'flash' =>
-                'https://flashexpress.com/fle/tracking',
+        // J&T Express
+        if (
+            str_contains(
+                $carrier,
+                'j&t'
+            ) ||
+            str_contains(
+                $carrier,
+                'jnt'
+            )
+        ) {
+            return
+                'https://www.jtexpress.co.th/service/track?waybillNo=' .
+                $number;
+        }
 
-            'kex',
-            'kerry',
-            'kerry express' =>
-                'https://th.kex-express.com/th/track-parcel',
+        // Flash Express
+        if (
+            str_contains(
+                $carrier,
+                'flash'
+            )
+        ) {
+            return
+                'https://www.flashexpress.co.th/fle/tracking';
+        }
 
-            'ninja van',
-            'ninjavan' =>
-                'https://www.ninjavan.co/th-th/tracking',
+        // KEX / Kerry
+        if (
+            str_contains(
+                $carrier,
+                'kex'
+            ) ||
+            str_contains(
+                $carrier,
+                'kerry'
+            )
+        ) {
+            return
+                'https://th.kex-express.com/en/track-parcel';
+        }
 
-            'dhl',
-            'dhl express' =>
-                'https://www.dhl.com/th-th/home/tracking.html',
+        // Ninja Van
+        if (
+            str_contains(
+                $carrier,
+                'ninja van'
+            ) ||
+            str_contains(
+                $carrier,
+                'ninjavan'
+            )
+        ) {
+            return
+                'https://www.ninjavan.co/th-th/tracking';
+        }
 
-            'best express',
-            'best' =>
-                'https://www.best-inc.co.th/',
+        // DHL
+        if (
+            str_contains(
+                $carrier,
+                'dhl'
+            )
+        ) {
+            return
+                'https://www.dhl.com/th-th/home/tracking.html';
+        }
 
-            default => null,
-        };
+        // BEST Express
+        if (
+            str_contains(
+                $carrier,
+                'best'
+            )
+        ) {
+            return
+                'https://www.best-inc.co.th/';
+        }
+
+        return null;
     }
 
     /**
@@ -456,14 +729,20 @@ class Rental extends Model
         if (
             in_array(
                 $this->status,
-                ['returned', 'completed', 'cancelled'],
+                [
+                    'returned',
+                    'completed',
+                    'cancelled',
+                ],
                 true
             )
         ) {
             return false;
         }
 
-        return now()->greaterThan($this->return_due_at);
+        return now()->greaterThan(
+            $this->return_due_at
+        );
     }
 
     /**
@@ -475,7 +754,37 @@ class Rental extends Model
             return null;
         }
 
-        return $this->return_due_at->format('d/m/Y H:i') . ' น.';
+        return
+            $this->return_due_at->format(
+                'd/m/Y H:i'
+            ) . ' น.';
+    }
+
+    /**
+     * ที่อยู่ร้านสำหรับการคืนแบบคืนที่ร้าน
+     */
+    public function getReturnStoreAddressAttribute(): string
+    {
+        return '77 ตำบลในเมือง อำเภอเมือง จังหวัดนครราชสีมา 30000';
+    }
+
+    /**
+     * เบอร์โทรร้าน
+     */
+    public function getReturnStorePhoneAttribute(): string
+    {
+        return '0652599072';
+    }
+
+    /**
+     * Google Maps URL ของร้าน
+     */
+    public function getReturnStoreMapUrlAttribute(): string
+    {
+        return 'https://www.google.com/maps/search/?api=1&query=' .
+            urlencode(
+                $this->return_store_address
+            );
     }
 
     /**
@@ -531,7 +840,9 @@ class Rental extends Model
             Payment::class,
             'rental_id',
             'rental_id'
-        )->latestOfMany('payment_id');
+        )->latestOfMany(
+            'payment_id'
+        );
     }
 
     /**

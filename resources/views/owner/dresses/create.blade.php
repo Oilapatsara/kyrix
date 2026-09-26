@@ -691,7 +691,7 @@
                             </span>
 
                             <input type="text" name="measurement_note" class="form-control"
-                                value="{{ old('measurement_note', 'ทางร้านมีบริการปรับแก้ทรงชั่วคราวให้พอดีสัดส่วนฟรี โดยไม่ทำให้ผ้าเสียหาย') }}"
+                                
                                 placeholder="หมายเหตุที่จะแสดงใต้ตารางสัดส่วน">
 
                         </div>

@@ -3,166 +3,222 @@
 namespace Database\Seeders;
 
 use App\Models\Category;
-use App\Models\Customer;
-use App\Models\Payment;
 use App\Models\Product;
 use App\Models\ProductImage;
-use App\Models\Rental;
-use App\Models\RentalDetail;
-use App\Models\Review;
-use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 
 class DressRentalCustomerSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1. Create, update or delete Categories
+        // Seeder นี้ปรับตามข้อมูลปัจจุบันจากฐานข้อมูล kyrix (9).sql
+        // เน้นเฉพาะ Categories + Products + Product Images
+        // ไม่แตะ Customers / Rentals / Payments / Reviews ที่เป็นข้อมูลจากการใช้งานจริง
+
+        // 1. Categories ปัจจุบัน
         $categoriesData = [
             [
-                'category_id'   => 1,
+                'category_id' => 1,
                 'category_name' => 'Western Muse — เดรสสายฝอ',
-                'description'   => 'เดรสสไตล์สายฝอ ดีไซน์เรียบหรู เซ็กซี่ มั่นใจ โดดเด่นทุกงาน',
-                'status'        => 'active',
+                'description' => 'เดรสสไตล์สายฝอ ดีไซน์เรียบหรู เซ็กซี่ มั่นใจ โดดเด่นทุกงาน',
+                'status' => 'active',
             ],
             [
-                'category_id'   => 2,
+                'category_id' => 2,
                 'category_name' => 'Sweet Romance — เดรสหวาน',
-                'description'   => 'เดรสสไตล์หวาน น่ารัก อ่อนหวาน เหมาะสำหรับงานเลี้ยงและโอกาสพิเศษ',
-                'status'        => 'active',
+                'description' => 'เดรสสไตล์หวาน น่ารัก อ่อนหวาน เหมาะสำหรับงานเลี้ยงและโอกาสพิเศษ',
+                'status' => 'active',
             ],
             [
-                'category_id'   => 3,
+                'category_id' => 3,
                 'category_name' => 'Mini Chic — มินิเดรส',
-                'description'   => 'มินิเดรสเก๋ๆ คล่องตัว สวมใส่ง่าย เหมาะสำหรับปาร์ตี้และสังสรรค์',
-                'status'        => 'active',
+                'description' => 'มินิเดรสเก๋ๆ คล่องตัว สวมใส่ง่าย เหมาะสำหรับปาร์ตี้และสังสรรค์',
+                'status' => 'active',
             ],
             [
-                'category_id'   => 4,
+                'category_id' => 4,
                 'category_name' => 'Elegant Tops — เสื้อ & ท็อปส์',
-                'description'   => 'เสื้อและท็อปส์ดีไซน์หรูหรา แมตช์ง่าย สวมใส่ได้หลายโอกาส',
-                'status'        => 'active',
+                'description' => 'เสื้อและท็อปส์ดีไซน์หรูหรา แมตช์ง่าย สวมใส่ได้หลายโอกาส',
+                'status' => 'active',
             ],
             [
-                'category_id'   => 5,
+                'category_id' => 5,
                 'category_name' => 'Feminine Skirts — กระโปรง',
-                'description'   => 'กระโปรงทรงสวย ตัดเย็บประณีต เพิ่มเสน่ห์และความอ่อนหวาน',
-                'status'        => 'active',
+                'description' => 'กระโปรงทรงสวย ตัดเย็บประณีต เพิ่มเสน่ห์และความอ่อนหวาน',
+                'status' => 'active',
             ],
             [
-                'category_id'   => 6,
+                'category_id' => 6,
                 'category_name' => 'Modern Pants — กางเกง',
-                'description'   => 'กางเกงทรงโมเดิร์น ดีไซน์ทันสมัย สวมใส่สบายและสง่างาม',
-                'status'        => 'active',
+                'description' => 'กางเกงทรงโมเดิร์น ดีไซน์ทันสมัย สวมใส่สบายและสง่างาม',
+                'status' => 'active',
             ],
             [
-                'category_id'   => 7,
+                'category_id' => 7,
                 'category_name' => 'Elegant Shoes — รองเท้า',
-                'description'   => 'รองเท้าส้นสูงและรองเท้าดีไซน์หรู เติมเต็มลุคให้สมบูรณ์แบบ',
-                'status'        => 'active',
+                'description' => 'รองเท้าส้นสูงและรองเท้าดีไซน์หรู เติมเต็มลุคให้สมบูรณ์แบบ',
+                'status' => 'active',
             ],
             [
-                'category_id'   => 8,
+                'category_id' => 8,
                 'category_name' => 'Luxury Bags — กระเป๋า',
-                'description'   => 'กระเป๋าถือและออกงานระดับแบรนด์พรีเมียม เสริมความหรูหรา',
-                'status'        => 'active',
+                'description' => 'กระเป๋าถือและออกงานระดับแบรนด์พรีเมียม เสริมความหรูหรา',
+                'status' => 'active',
             ],
         ];
 
-        $keptIds = [];
-        $categories = [];
-        foreach ($categoriesData as $cat) {
-            $catId = $cat['category_id'] ?? null;
-            if ($catId) {
-                $category = Category::updateOrCreate(['category_id' => $catId], $cat);
-            } else {
-                $category = Category::updateOrCreate(['category_name' => $cat['category_name']], $cat);
-            }
-            $keptIds[] = $category->category_id;
-            $categories[] = $category;
+        $keptCategoryIds = [];
+
+        foreach ($categoriesData as $categoryData) {
+            $category = Category::updateOrCreate(
+                ['category_id' => $categoryData['category_id']],
+                $categoryData
+            );
+
+            $keptCategoryIds[] = $category->category_id;
         }
 
-        // ลบหมวดหมู่ใน DB ที่ไม่มีใน $categoriesData (เฉพาะหมวดหมู่ที่ไม่มีสินค้าผูกอยู่)
-        $deletableIds = Category::whereNotIn('category_id', $keptIds)->whereDoesntHave('products')->pluck('category_id');
-        if ($deletableIds->isNotEmpty()) {
-            Category::whereIn('category_id', $deletableIds)->delete();
+        // ลบเฉพาะหมวดหมู่เก่าที่ไม่มีสินค้าใช้งานอยู่
+        $oldCategoryIds = Category::whereNotIn('category_id', $keptCategoryIds)
+            ->whereDoesntHave('products')
+            ->pluck('category_id');
+
+        if ($oldCategoryIds->isNotEmpty()) {
+            Category::whereIn('category_id', $oldCategoryIds)->delete();
         }
 
-        // 2. Products Data (2 items per category = 16 total products)
+        // 2. Products ปัจจุบัน
         $productsData = [
-            // Western Muse — เดรสสายฝอ (Category 0)
             [
-                'category_id' => $categories[0]->category_id,
-                'product_code' => 'KY-WM-001',
-                'product_name' => 'เดรสยาวเข้ารูป',
-                'description' => 'เดรสสไตล์สายฝอ ดีไซน์กระชับสัดส่วน',
-                'size' => 'M',
-                'color' => 'แดงเบอร์กันดี, ดำคลาสสิก',
-                'available_sizes' => 'S, M, L, XL, Free Size',
-                'available_colors' => 'แดงเบอร์กันดี, ดำคลาสสิก, เขียวเอเมอรัลด์',
+                'category_id' => 1,
+                'product_code' => 'KY-EVN-001',
+                'product_name' => 'มินิเดรสผ้าลูกไม้สายเดี่ยวผูกโบว์',
+                'description' => 'มินิเดรสผ้าลูกไม้สายเดี่ยวสีขาวครีม (สไตล์ Fairycore / Coquette)',
+                'size' => 'Free Size',
+                'available_sizes' => 'Free Size',
+                'color' => 'สีขาวงาช้าง',
+                'available_colors' => 'สีขาวงาช้าง',
                 'bust' => '32-34 นิ้ว',
-                'waist' => '25-27 นิ้ว',
-                'hips' => '35-37 นิ้ว',
-                'length' => '145 ซม.',
-                'rental_price' => 1500.00,
-                'deposit' => 2000.00,
+                'waist' => '26-27 นิ้ว',
+                'hips' => 'ฟรีไซส์',
+                'length' => '76 - 81 ซม.',
+                'rental_price' => 450.0,
+                'deposit' => 100.0,
+                'stock' => 1,
+                'status' => 'available',
+                'is_featured' => true,
+                'is_popular' => true,
+                'is_new' => true,
+                'views_count' => 147,
+                'rental_count' => 22,
+            ],
+            [
+                'category_id' => 1,
+                'product_code' => 'KY-EVN-002',
+                'product_name' => 'เดรสหน้าสั้นหลังยาว',
+                'description' => 'เดรสสไตล์สไตล์แฟรี่คอร์ (Fairycore)',
+                'size' => 'Free Size',
+                'available_sizes' => 'Free Size',
+                'color' => 'สีครีม',
+                'available_colors' => 'สีครีม',
+                'bust' => '31-33 นิ้ว',
+                'waist' => '24-26 นิ้ว',
+                'hips' => '34-36 นิ้ว',
+                'length' => '148 ซม.',
+                'rental_price' => 850.0,
+                'deposit' => 100.0,
+                'stock' => 3,
+                'status' => 'available',
+                'is_featured' => true,
+                'is_popular' => true,
+                'is_new' => false,
+                'views_count' => 213,
+                'rental_count' => 27,
+            ],
+            [
+                'category_id' => 1,
+                'product_code' => 'KY-EVN-003',
+                'product_name' => 'เดรสสั้นรัดรูป',
+                'description' => 'เดรสสั้นรัดรูปสีน้ำเงิน เนื้อผ้าซาติน',
+                'size' => 'Free Size',
+                'available_sizes' => 'Free Size',
+                'color' => 'Detached Sleeves / Arm Warmers: ปลอกแขนที่แยกชิ้นอ',
+                'available_colors' => 'Detached Sleeves / Arm Warmers: ปลอกแขนที่แยกชิ้นออกจากตัวชุด โดยมีดีเทลปลายแขนบาน',
+                'bust' => '30-32 นิ้ว',
+                'waist' => '23-25 นิ้ว',
+                'hips' => '33-35 นิ้ว',
+                'length' => '71 - 78 ซม',
+                'rental_price' => 390.0,
+                'deposit' => 100.0,
                 'stock' => 3,
                 'status' => 'available',
                 'is_featured' => true,
                 'is_popular' => true,
                 'is_new' => true,
-                'views_count' => 142,
-                'rental_count' => 18,
-                'images' => [
-                    'https://i.ibb.co/bggGj0V4/1.jpg',
-                    'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=800&auto=format&fit=crop&q=80',
-                ],
+                'views_count' => 161,
+                'rental_count' => 19,
             ],
             [
-                'category_id' => $categories[0]->category_id,
+                'category_id' => 1,
+                'product_code' => 'KY-WM-001',
+                'product_name' => 'เดรสสั้นคล้องคอ',
+                'description' => 'เดรสสายเดี่ยวเข้ารูปดีไซน์สายฝอ ผ้าซาตินกำมะหยี่เกรดนำเข้า โทนสีแดงเบอร์กันดีขับผิว โชว์แผ่นหลังสุดเซ็กซี่เรียบหรู',
+                'size' => 'Free Size',
+                'available_sizes' => 'Free Size',
+                'color' => 'น้ำตาล',
+                'available_colors' => 'น้ำตาล',
+                'bust' => '36-38 นิ้ว',
+                'waist' => '29-31 นิ้ว',
+                'hips' => '39-41 นิ้ว',
+                'length' => '73 - 84 ซม.',
+                'rental_price' => 450.0,
+                'deposit' => 100.0,
+                'stock' => 0,
+                'status' => 'rented',
+                'is_featured' => true,
+                'is_popular' => true,
+                'is_new' => true,
+                'views_count' => 155,
+                'rental_count' => 22,
+            ],
+            [
+                'category_id' => 1,
                 'product_code' => 'KY-WM-002',
-                'product_name' => 'Golden Champagne Sequin Backless Dress (เดรสปักเลื่อมโชว์หลังสีทองแชมเปญ)',
-                'description' => 'เดรสปักเลื่อมชิมเมอร์เล่นแสงไฟสไตล์สายฝอ ดีไซน์เปิดหลังทรงคอร์เซ็ตกระชับสัดส่วน ให้ลุคเฉิดฉายโดดเด่นสไตล์ Western Muse',
+                'product_name' => 'เดรสยาวเข้ารูป',
+                'description' => 'เดรสสไตล์สายฝอ ดีไซน์กระชับสัดส่วน',
                 'size' => 'S',
-                'color' => 'ทองแชมเปญ (Golden Champagne)',
-                'available_sizes' => 'S, M',
-                'available_colors' => 'ทองแชมเปญ, เงินสปาร์คเกิล',
+                'available_sizes' => 'S, M, L, XL',
+                'color' => 'ดำ, แดงเบอกันดี',
+                'available_colors' => 'ดำ, แดงเบอกันดี',
                 'bust' => '31-33 นิ้ว',
                 'waist' => '24-26 นิ้ว',
                 'hips' => '34-36 นิ้ว',
                 'length' => '148 ซม.',
-                'rental_price' => 1800.00,
-                'deposit' => 2500.00,
-                'stock' => 2,
+                'rental_price' => 1800.0,
+                'deposit' => 100.0,
+                'stock' => 3,
                 'status' => 'available',
                 'is_featured' => true,
                 'is_popular' => true,
                 'is_new' => false,
                 'views_count' => 210,
                 'rental_count' => 24,
-                'images' => [
-                    'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=800&auto=format&fit=crop&q=80',
-                    'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=800&auto=format&fit=crop&q=80',
-                ],
             ],
-
-            // Sweet Romance — เดรสหวาน (Category 1)
             [
-                'category_id' => $categories[1]->category_id,
+                'category_id' => 2,
                 'product_code' => 'KY-SR-001',
-                'product_name' => 'Rose Gold Satin Ribbon Dress (เดรสโบว์ซาตินสีโรสโกลด์หวานละมุน)',
-                'description' => 'เดรสหวานพริ้วดีไซน์แต่งโบว์ช่วงไหล่ ผ้าซาตินเงางามสีโรสโกลด์ ลุคคุณหนูหวานละมุน เหมาะสำหรับงานเลี้ยง ดินเนอร์ หรืองานแต่งงาน',
-                'size' => 'M',
-                'color' => 'โรสโกลด์ (Rose Gold)',
-                'available_sizes' => 'S, M, L',
-                'available_colors' => 'โรสโกลด์, ชมพูดัสตี้, ครีมงาช้าง',
+                'product_name' => 'เดรสซาตินหวานละมุน',
+                'description' => 'เดรสหวานพริ้ว ผ้าซาตินเงางามสีชมพูนม ลุคคุณหนูหวานละมุน เหมาะสำหรับงานเลี้ยง ดินเนอร์ หรืองานแต่งงาน',
+                'size' => 'S',
+                'available_sizes' => 'S, M, L, XL',
+                'color' => 'สีชมพูนม',
+                'available_colors' => 'สีชมพูนม',
                 'bust' => '32-35 นิ้ว',
                 'waist' => '25-28 นิ้ว',
                 'hips' => '35-38 นิ้ว',
                 'length' => '110 ซม.',
-                'rental_price' => 1200.00,
-                'deposit' => 1500.00,
+                'rental_price' => 1200.0,
+                'deposit' => 100.0,
                 'stock' => 4,
                 'status' => 'available',
                 'is_featured' => false,
@@ -170,108 +226,91 @@ class DressRentalCustomerSeeder extends Seeder
                 'is_new' => true,
                 'views_count' => 98,
                 'rental_count' => 12,
-                'images' => [
-                    'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=800&auto=format&fit=crop&q=80',
-                    'https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=800&auto=format&fit=crop&q=80',
-                ],
             ],
             [
-                'category_id' => $categories[1]->category_id,
+                'category_id' => 2,
                 'product_code' => 'KY-SR-002',
-                'product_name' => 'Pastel Chiffon Floral Romantic Dress (เดรสชีฟองลายดอกไม้พาสเทลสายหวาน)',
-                'description' => 'เดรสยาวผ้าชีฟองพริ้วไหว ลายดอกไม้พาสเทลอ่อนหวาน คัตติ้งระบายชั้นๆ ให้ความรู้สึกน่ารัก อบอุ่น สไตล์ Sweet Romance',
-                'size' => 'S',
-                'color' => 'ชมพูพาสเทล (Pastel Pink)',
-                'available_sizes' => 'S, M',
-                'available_colors' => 'ชมพูพาสเทล, ฟ้าพีช',
+                'product_name' => 'เดรสคล้องคอลายผีเสื้อพาสเทลสายหวาน',
+                'description' => 'เดรสยาวผ้าชีฟองพริ้วไหว ลายผีเสื้อพาสเทลอ่อนหวาน คัตติ้งระบายชั้นๆ ให้ความรู้สึกน่ารัก อบอุ่น สไตล์ Sweet Romance',
+                'size' => 'Free Size',
+                'available_sizes' => 'Free Size',
+                'color' => 'สีขาวครีม',
+                'available_colors' => 'สีขาวครีม',
                 'bust' => '31-33 นิ้ว',
                 'waist' => '24-26 นิ้ว',
                 'hips' => 'ฟรีไซซ์',
                 'length' => '130 ซม.',
-                'rental_price' => 1100.00,
-                'deposit' => 1500.00,
+                'rental_price' => 1100.0,
+                'deposit' => 100.0,
                 'stock' => 3,
                 'status' => 'available',
                 'is_featured' => true,
                 'is_popular' => false,
                 'is_new' => true,
-                'views_count' => 85,
-                'rental_count' => 9,
-                'images' => [
-                    'https://images.unsplash.com/photo-1525457136159-8878648a7ad0?w=800&auto=format&fit=crop&q=80',
-                ],
+                'views_count' => 89,
+                'rental_count' => 10,
             ],
-
-            // Mini Chic — มินิเดรส (Category 2)
             [
-                'category_id' => $categories[2]->category_id,
+                'category_id' => 3,
                 'product_code' => 'KY-MC-001',
-                'product_name' => 'Sparkling Sequin Party Mini Dress (มินิเดรสปักเลื่อมระยิบระยับสายปาร์ตี้)',
+                'product_name' => 'มินิเดรสปักเลื่อมระยิบระยับสายปาร์ตี้',
                 'description' => 'มินิเดรสสั้นดีไซน์ชิค ปักเลื่อมระยิบระยับทั้งตัว คล่องตัว ทรงเข้ารูปสวยเป๊ะ เหมาะสำหรับงานปาร์ตี้สังสรรค์ยามค่ำคืน',
                 'size' => 'S',
-                'color' => 'เงินสปาร์คเกิล (Sparkle Silver)',
-                'available_sizes' => 'S, M',
-                'available_colors' => 'เงินสปาร์คเกิล, ดำชิมเมอร์',
+                'available_sizes' => 'S, M, L, XL',
+                'color' => 'ดำชิมเมอร์',
+                'available_colors' => 'ดำชิมเมอร์',
                 'bust' => '31-34 นิ้ว',
                 'waist' => '24-27 นิ้ว',
                 'hips' => '34-37 นิ้ว',
                 'length' => '82 ซม.',
-                'rental_price' => 850.00,
-                'deposit' => 1200.00,
+                'rental_price' => 850.0,
+                'deposit' => 100.0,
                 'stock' => 5,
                 'status' => 'available',
                 'is_featured' => true,
                 'is_popular' => true,
                 'is_new' => true,
-                'views_count' => 175,
-                'rental_count' => 22,
-                'images' => [
-                    'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=800&auto=format&fit=crop&q=80',
-                ],
+                'views_count' => 177,
+                'rental_count' => 24,
             ],
             [
-                'category_id' => $categories[2]->category_id,
+                'category_id' => 3,
                 'product_code' => 'KY-MC-002',
-                'product_name' => 'Chic Velvet Cut-out Mini Dress (มินิเดรสผ้ากำมะหยี่ทรงชิคเว้าเอว)',
-                'description' => 'มินิเดรสผ้ากำมะหยี่สีดำทรงชิค มีดีเทลเว้าเอวเล็กน้อยเพิ่มความเก๋และเปรี้ยวเท่ สวมใส่ง่าย เข้าได้กับทุกโอกาส',
-                'size' => 'M',
-                'color' => 'ดำคลาสสิก (Classic Black)',
-                'available_sizes' => 'S, M, L',
-                'available_colors' => 'ดำคลาสสิก, แดงไวน์',
+                'product_name' => 'มินิเดรสเกาะอกทรงชิคเว้าเอว',
+                'description' => 'มินิเดรสเกาะอกทรงชิค มีดีเทลเว้าเอวเล็กน้อยเพิ่มความเก๋และเปรี้ยวเท่ สวมใส่ง่าย เข้าได้กับทุกโอกาส',
+                'size' => 'S',
+                'available_sizes' => 'S, M, L, XL',
+                'color' => 'สีครีม',
+                'available_colors' => 'สีครีม',
                 'bust' => '32-35 นิ้ว',
                 'waist' => '25-28 นิ้ว',
                 'hips' => '35-38 นิ้ว',
                 'length' => '85 ซม.',
-                'rental_price' => 900.00,
-                'deposit' => 1200.00,
+                'rental_price' => 2500.0,
+                'deposit' => 100.0,
                 'stock' => 3,
                 'status' => 'available',
                 'is_featured' => false,
                 'is_popular' => true,
                 'is_new' => false,
-                'views_count' => 130,
-                'rental_count' => 15,
-                'images' => [
-                    'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=800&auto=format&fit=crop&q=80',
-                ],
+                'views_count' => 136,
+                'rental_count' => 16,
             ],
-
-            // Elegant Tops — เสื้อ & ท็อปส์ (Category 3)
             [
-                'category_id' => $categories[3]->category_id,
+                'category_id' => 4,
                 'product_code' => 'KY-TOP-001',
-                'product_name' => 'Silk Corset Bustier Top (เสื้อครอปคอร์เซ็ตผ้าซาตินหรูหรา)',
-                'description' => 'เสื้อท็อปส์คอร์เซ็ตผ้าซาตินเนื้อหนา คัตติ้งเน้นสัดส่วนเพรียวสวย แมตช์คู่กับกระโปรงหรือกางเกงเพิ่มความหรูหรา',
-                'size' => 'S',
-                'color' => 'ขาวครีม (Cream White)',
-                'available_sizes' => 'S, M',
-                'available_colors' => 'ขาวครีม, ดำ, โรสโกลด์',
+                'product_name' => 'เสื้อครอปคล้องคอผ้าซาตินหรูหรา',
+                'description' => 'เสื้อครอปคล้องคอผ้าซาตินเนื้อหนา คัตติ้งเน้นสัดส่วนเพรียวสวย แมตช์คู่กับกระโปรงหรือกางเกงเพิ่มความหรูหรา',
+                'size' => 'Free Size',
+                'available_sizes' => 'Free Size',
+                'color' => 'สีขาว',
+                'available_colors' => 'สีขาว',
                 'bust' => '31-34 นิ้ว',
                 'waist' => '24-26 นิ้ว',
                 'hips' => 'N/A',
                 'length' => '40 ซม.',
-                'rental_price' => 650.00,
-                'deposit' => 1000.00,
+                'rental_price' => 650.0,
+                'deposit' => 100.0,
                 'stock' => 4,
                 'status' => 'available',
                 'is_featured' => true,
@@ -279,25 +318,22 @@ class DressRentalCustomerSeeder extends Seeder
                 'is_new' => true,
                 'views_count' => 110,
                 'rental_count' => 10,
-                'images' => [
-                    'https://images.unsplash.com/photo-1594552072238-b8a33785b261?w=800&auto=format&fit=crop&q=80',
-                ],
             ],
             [
-                'category_id' => $categories[3]->category_id,
+                'category_id' => 4,
                 'product_code' => 'KY-TOP-002',
-                'product_name' => 'Off-Shoulder Feather Satin Top (เสื้อท็อปส์ปาดไหล่แต่งขนนกพรีเมียม)',
-                'description' => 'เสื้อท็อปส์ปาดไหล่ผ้าซาตินแต่งขนนกพรีเมียมรอบอก ให้ลุคโดดเด่น สวยหรูสง่างามสไตล์ Elegant Tops',
-                'size' => 'M',
-                'color' => 'ดำชาร์โคล (Charcoal Black)',
-                'available_sizes' => 'S, M, L',
-                'available_colors' => 'ดำชาร์โคล, ขาวออฟไวท์',
+                'product_name' => 'เสื้อปาดไหล่แต่งขนนก',
+                'description' => 'เสื้อท็อปส์ปาดไหล่แต่งขนนกพรีเมียมรอบอก ให้ลุคโดดเด่น สวยหรูสง่างามสไตล์ Elegant Tops',
+                'size' => 'Free Size',
+                'available_sizes' => 'Free Size',
+                'color' => 'ดำชาร์โคล',
+                'available_colors' => 'ดำชาร์โคล',
                 'bust' => '32-35 นิ้ว',
                 'waist' => '25-28 นิ้ว',
                 'hips' => 'N/A',
                 'length' => '42 ซม.',
-                'rental_price' => 750.00,
-                'deposit' => 1000.00,
+                'rental_price' => 750.0,
+                'deposit' => 100.0,
                 'stock' => 3,
                 'status' => 'available',
                 'is_featured' => false,
@@ -305,27 +341,22 @@ class DressRentalCustomerSeeder extends Seeder
                 'is_new' => false,
                 'views_count' => 95,
                 'rental_count' => 14,
-                'images' => [
-                    'https://images.unsplash.com/photo-1549416864-228c7f24cf7a?w=800&auto=format&fit=crop&q=80',
-                ],
             ],
-
-            // Feminine Skirts — กระโปรง (Category 4)
             [
-                'category_id' => $categories[4]->category_id,
+                'category_id' => 5,
                 'product_code' => 'KY-SKT-001',
-                'product_name' => 'High-Waist Satin Mermaid Skirt (กระโปรงยาวทรงหางปลาผ้าซาติน)',
+                'product_name' => 'กระโปรงยาวทรงหางปลาผ้าซาติน',
                 'description' => 'กระโปรงเอวสูงทรงหางปลาผ้าซาตินเงางาม ช่วยเน้นทรวดทรงเอวเอสและสะโพกสวย สง่างามสไตล์ Feminine Skirts',
-                'size' => 'M',
-                'color' => 'เขียวเสจ (Sage Green)',
-                'available_sizes' => 'S, M, L',
-                'available_colors' => 'เขียวเสจ, แชมเปญ, ดำ',
+                'size' => 'Free Size',
+                'available_sizes' => 'Free Size',
+                'color' => 'แชมเปญ',
+                'available_colors' => 'แชมเปญ',
                 'bust' => 'N/A',
                 'waist' => '25-27 นิ้ว',
                 'hips' => '35-38 นิ้ว',
                 'length' => '105 ซม.',
-                'rental_price' => 700.00,
-                'deposit' => 1000.00,
+                'rental_price' => 700.0,
+                'deposit' => 100.0,
                 'stock' => 4,
                 'status' => 'available',
                 'is_featured' => true,
@@ -333,79 +364,68 @@ class DressRentalCustomerSeeder extends Seeder
                 'is_new' => false,
                 'views_count' => 140,
                 'rental_count' => 20,
-                'images' => [
-                    'https://images.unsplash.com/photo-1568252542512-9fe8fe9c87bb?w=800&auto=format&fit=crop&q=80',
-                ],
             ],
             [
-                'category_id' => $categories[4]->category_id,
+                'category_id' => 5,
                 'product_code' => 'KY-SKT-002',
-                'product_name' => 'Pleated Metallic Midi Skirt (กระโปรงอัดพรีทเมทัลลิกทรงยาวพริ้วงดงาม)',
+                'product_name' => 'กระโปรงอัดพรีทเมทัลลิกทรงยาวพริ้ว',
                 'description' => 'กระโปรง midi อัดพรีทผ้าเมทัลลิกเงาวาว พริ้วไหวสวยงามตามการเคลื่อนไหว สวมใส่สบาย แมตช์ง่ายกับเสื้อทุกแบบ',
                 'size' => 'Free Size',
-                'color' => 'ทองเมทัลลิก (Metallic Gold)',
-                'available_sizes' => 'Free Size (S-XL)',
-                'available_colors' => 'ทองเมทัลลิก, เงินเมทัลลิก',
+                'available_sizes' => 'Free Size',
+                'color' => 'น้ำตาล',
+                'available_colors' => 'น้ำตาล',
                 'bust' => 'N/A',
                 'waist' => '24-32 นิ้ว (เอวยางยืด)',
                 'hips' => 'ฟรีไซซ์',
                 'length' => '85 ซม.',
-                'rental_price' => 600.00,
-                'deposit' => 1000.00,
+                'rental_price' => 600.0,
+                'deposit' => 100.0,
                 'stock' => 5,
                 'status' => 'available',
                 'is_featured' => false,
                 'is_popular' => false,
                 'is_new' => true,
-                'views_count' => 78,
+                'views_count' => 79,
                 'rental_count' => 8,
-                'images' => [
-                    'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=800&auto=format&fit=crop&q=80',
-                ],
             ],
-
-            // Modern Pants — กางเกง (Category 5)
             [
-                'category_id' => $categories[5]->category_id,
+                'category_id' => 6,
                 'product_code' => 'KY-PNT-001',
-                'product_name' => 'Midnight Blue Velvet Tailored Pants (กางเกงขายาวผ้ากำมะหยี่สีกรมท่า)',
-                'description' => 'กางเกงขายาวผ้ากำมะหยี่เนื้อดี ทรงกระบอกสมาร์ทเท่ ทันสมัย คัตติ้งเนี้ยบ สไตล์ Modern Pants',
-                'size' => 'L',
-                'color' => 'น้ำเงินมิดไนท์บลู (Midnight Blue)',
-                'available_sizes' => 'M, L, XL',
-                'available_colors' => 'น้ำเงินมิดไนท์บลู, ดำคลาสสิก',
+                'product_name' => 'กางเกงยีนส์ขาสั้น',
+                'description' => 'กางเกงยีนส์ขาสั้นเอวต่ำคาร์โกแต่งเข็มขัดคาวบอยสไตล์ Y2K',
+                'size' => 'S',
+                'available_sizes' => 'S, M, L, XL',
+                'color' => 'น้ำตาล',
+                'available_colors' => 'น้ำตาล',
                 'bust' => 'N/A',
                 'waist' => '30-32 นิ้ว',
                 'hips' => '39-41 นิ้ว',
                 'length' => '102 ซม.',
-                'rental_price' => 800.00,
-                'deposit' => 1200.00,
+                'rental_price' => 450.0,
+                'deposit' => 100.0,
                 'stock' => 3,
                 'status' => 'available',
                 'is_featured' => true,
                 'is_popular' => false,
                 'is_new' => true,
-                'views_count' => 105,
+                'views_count' => 107,
                 'rental_count' => 11,
-                'images' => [
-                    'https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=800&auto=format&fit=crop&q=80',
-                ],
             ],
             [
-                'category_id' => $categories[5]->category_id,
+                'category_id' => 6,
                 'product_code' => 'KY-PNT-002',
-                'product_name' => 'High-Waisted Satin Wide-Leg Trousers (กางเกงเอวสูงผ้าซาตินทรงกระบอกใหญ่)',
-                'description' => 'กางเกงขายาวเอวสูงผ้าซาตินพริ้วทรง Wide-leg ทรงสวยช่วยให้ขาดูยาวเพรียว สวมใส่สบาย เรียบหรูดูดี',
-                'size' => 'M',
-                'color' => 'ครีมเบจ (Cream Beige)',
-                'available_sizes' => 'S, M, L',
-                'available_colors' => 'ครีมเบจ, ดำ, นู้ด',
+                'product_name' => 'กางเกงกระโปรงยีนส์สั้น',
+                'description' => 'กระโปรงยีนส์มินิสเกิร์ตสไตล์ Y2K วินเทจ',
+                'size' => 'S',
+                'available_sizes' => 'S, M, L, XL',
+                'color' => 'ฟ้ายีนส์หม่น',
+                'available_colors' => 'ฟ้ายีนส์หม่น',
                 'bust' => 'N/A',
                 'waist' => '26-28 นิ้ว',
                 'hips' => '36-39 นิ้ว',
                 'length' => '104 ซม.',
-                'rental_price' => 750.00,
-                'deposit' => 1000.00,
+                'rental_price' => 750.0,
+                'deposit' => 100.0,
                 'stock' => 4,
                 'status' => 'available',
                 'is_featured' => false,
@@ -413,27 +433,22 @@ class DressRentalCustomerSeeder extends Seeder
                 'is_new' => false,
                 'views_count' => 120,
                 'rental_count' => 16,
-                'images' => [
-                    'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=800&auto=format&fit=crop&q=80',
-                ],
             ],
-
-            // Elegant Shoes — รองเท้า (Category 6)
             [
-                'category_id' => $categories[6]->category_id,
+                'category_id' => 7,
                 'product_code' => 'KY-SHO-001',
-                'product_name' => 'Crystal Stiletto High Heels (รองเท้าส้นสูงหัวแหลมประดับคริสตัล)',
-                'description' => 'รองเท้าส้นสูง 3.5 นิ้ว ทรงหัวแหลมประดับคริสตัลระยิบระยับ สวมใส่สบาย เสริมบุคลิกภาพให้ดูสง่างามสไตล์ Elegant Shoes',
-                'size' => '38',
-                'color' => 'เงินคริสตัล (Crystal Silver)',
-                'available_sizes' => '36, 37, 38, 39',
-                'available_colors' => 'เงินคริสตัล, ทองแชมเปญ',
+                'product_name' => 'รองเท้าส้นสูงหัวแหลม',
+                'description' => 'รองเท้าส้นสูงทรงหัวแหลม สวมใส่สบาย เสริมบุคลิกภาพให้ดูสง่างาม',
+                'size' => 'S',
+                'available_sizes' => 'S, M, L',
+                'color' => 'ขาวเบจ',
+                'available_colors' => 'ขาวเบจ',
                 'bust' => 'N/A',
                 'waist' => 'N/A',
                 'hips' => 'N/A',
                 'length' => 'ส้นสูง 3.5 นิ้ว',
-                'rental_price' => 500.00,
-                'deposit' => 800.00,
+                'rental_price' => 5000.0,
+                'deposit' => 100.0,
                 'stock' => 3,
                 'status' => 'available',
                 'is_featured' => true,
@@ -441,25 +456,22 @@ class DressRentalCustomerSeeder extends Seeder
                 'is_new' => true,
                 'views_count' => 160,
                 'rental_count' => 25,
-                'images' => [
-                    'https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=800&auto=format&fit=crop&q=80',
-                ],
             ],
             [
-                'category_id' => $categories[6]->category_id,
+                'category_id' => 7,
                 'product_code' => 'KY-SHO-002',
-                'product_name' => 'Strappy Champagne Metallic Heels (รองเท้าส้นสูงสายพันข้อเมทัลลิกสีทอง)',
-                'description' => 'รองเท้าส้นสูงดีไซน์สายพันข้อสีทองเมทัลลิก เรียบหรูดูแพง สวมใส่ง่าย แมตช์ได้กับเดรสทุกแบบ',
-                'size' => '37',
-                'color' => 'ทองเมทัลลิก (Metallic Gold)',
-                'available_sizes' => '36, 37, 38',
-                'available_colors' => 'ทองเมทัลลิก, โรสโกลด์',
+                'product_name' => 'รองเท้าส้นสูง',
+                'description' => 'รองเท้าส้นสูง แบรนด์ YSL เรียบหรูดูแพง สวมใส่ง่าย แมตช์ได้กับเดรสทุกแบบ',
+                'size' => 'S',
+                'available_sizes' => 'S, M, L',
+                'color' => 'ดำคลาสสิก',
+                'available_colors' => 'ดำคลาสสิก',
                 'bust' => 'N/A',
                 'waist' => 'N/A',
                 'hips' => 'N/A',
                 'length' => 'ส้นสูง 3 นิ้ว',
-                'rental_price' => 450.00,
-                'deposit' => 800.00,
+                'rental_price' => 5500.0,
+                'deposit' => 100.0,
                 'stock' => 4,
                 'status' => 'available',
                 'is_featured' => false,
@@ -467,27 +479,22 @@ class DressRentalCustomerSeeder extends Seeder
                 'is_new' => true,
                 'views_count' => 90,
                 'rental_count' => 12,
-                'images' => [
-                    'https://images.unsplash.com/photo-1560343776-97e7d202ff0e?w=800&auto=format&fit=crop&q=80',
-                ],
             ],
-
-            // Luxury Bags — กระเป๋า (Category 7)
             [
-                'category_id' => $categories[7]->category_id,
+                'category_id' => 8,
                 'product_code' => 'KY-BAG-001',
-                'product_name' => 'Luxury Gold Chain Evening Clutch (กระเป๋าคลัทช์ออกงานสายโซ่สีทองหรู)',
-                'description' => 'กระเป๋าคลัทช์ออกงานสีทองประดับสายโซ่เรียบหรู จุของได้ครบ เหมาะสำหรับงานกาล่า งานแต่งงาน และปาร์ตี้',
-                'size' => 'Standard Clutch',
-                'color' => 'ทองกลิตเตอร์ (Glitter Gold)',
-                'available_sizes' => 'Standard (20x12 cm)',
-                'available_colors' => 'ทองกลิตเตอร์, เงินกลิตเตอร์, ดำ',
+                'product_name' => 'กระเป๋า Chanel 11.12 ทรงคลาสสิก หนังแกะสีดำ อะไหล่ทอง',
+                'description' => 'ปรับสายโซ่เป็นสายคู่สะพายไหล่ขนาบลำตัวเพื่อความโก้หรูเป็นทางการในวันทำงานหรือออกงานกลางคืน หรือปรับเป็นสายเดี่ยวสะพายข้างก็ได้',
+                'size' => 'Free Size',
+                'available_sizes' => 'Free Size',
+                'color' => 'ดำ',
+                'available_colors' => 'ดำ',
                 'bust' => 'N/A',
                 'waist' => 'N/A',
                 'hips' => 'N/A',
                 'length' => '20 x 12 ซม.',
-                'rental_price' => 550.00,
-                'deposit' => 1000.00,
+                'rental_price' => 550.0,
+                'deposit' => 100.0,
                 'stock' => 3,
                 'status' => 'available',
                 'is_featured' => true,
@@ -495,25 +502,22 @@ class DressRentalCustomerSeeder extends Seeder
                 'is_new' => true,
                 'views_count' => 180,
                 'rental_count' => 30,
-                'images' => [
-                    'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=800&auto=format&fit=crop&q=80',
-                ],
             ],
             [
-                'category_id' => $categories[7]->category_id,
+                'category_id' => 8,
                 'product_code' => 'KY-BAG-002',
-                'product_name' => 'Pearl Embellished Mini Luxury Bag (กระเป๋าถือทรงมินิประดับมุกไฮเอนด์)',
-                'description' => 'กระเป๋าถือทรงมินิประดับมุกแท้สังเคราะห์รอบตัว ดีไซน์หรูหรา น่ารัก เสริมความโดดเด่นทุกโอกาสสไตล์ Luxury Bags',
-                'size' => 'Mini',
-                'color' => 'ขาวมุก (Pearl White)',
-                'available_sizes' => 'Mini (18x10 cm)',
-                'available_colors' => 'ขาวมุก, ครีมงาช้าง',
+                'product_name' => 'กระเป๋า Mini Lady Dior',
+                'description' => 'ไซส์ Mini ยอดนิยม ขนาดกะทัดรัด ถือแล้วดูน่ารัก พรางหุ่นให้ดูเพรียวสวย',
+                'size' => 'Free Size',
+                'available_sizes' => 'Free Size',
+                'color' => 'ขาวมุก',
+                'available_colors' => 'ขาวมุก',
                 'bust' => 'N/A',
                 'waist' => 'N/A',
                 'hips' => 'N/A',
                 'length' => '18 x 10 ซม.',
-                'rental_price' => 600.00,
-                'deposit' => 1000.00,
+                'rental_price' => 5000.0,
+                'deposit' => 100.0,
                 'stock' => 2,
                 'status' => 'available',
                 'is_featured' => false,
@@ -521,188 +525,318 @@ class DressRentalCustomerSeeder extends Seeder
                 'is_new' => false,
                 'views_count' => 140,
                 'rental_count' => 18,
-                'images' => [
-                    'https://images.unsplash.com/photo-1566150905458-1bf1fc113f0d?w=800&auto=format&fit=crop&q=80',
+            ],
+            [
+                'category_id' => 5,
+                'product_code' => 'KY-DRS-0025',
+                'product_name' => 'กระโปรงมินิสเกิร์ตจับเดรปห้อยชายสไตล์กรีกโรมัน',
+                'description' => 'เผยเสน่ห์ความสง่างามที่เซ็กซี่สะกดทุกสายตากับกระโปรงดีไซน์ลักชูรีตัวแม่!',
+                'size' => 'Free Size',
+                'available_sizes' => 'Free Size',
+                'color' => 'ขาวเบจ',
+                'available_colors' => 'ขาวเบจ',
+                'bust' => null,
+                'waist' => null,
+                'hips' => null,
+                'length' => null,
+                'rental_price' => 350.0,
+                'deposit' => 100.0,
+                'stock' => 1,
+                'status' => 'available',
+                'is_featured' => false,
+                'is_popular' => false,
+                'is_new' => false,
+                'views_count' => 5,
+                'rental_count' => 3,
+            ],
+        ];
+
+        $keptProductCodes = [];
+        $productIdMap = [];
+
+        foreach ($productsData as $productData) {
+            $product = Product::updateOrCreate(
+                ['product_code' => $productData['product_code']],
+                $productData
+            );
+
+            $keptProductCodes[] = $product->product_code;
+            $productIdMap[$product->product_code] = $product->product_id;
+        }
+
+        // 3. Product Images ปัจจุบัน
+        $imagesData = [
+            1 => [
+                [
+                    'image_path' => 'https://raw.githubusercontent.com/Oilapatsara/kyrix/main/public/images/dresses/1.jpg',
+                    'is_main' => false,
+                    'color_name' => null,
+                ],
+                [
+                    'image_path' => 'https://raw.githubusercontent.com/Oilapatsara/kyrix/main/public/images/dresses/2.jpg',
+                    'is_main' => false,
+                    'color_name' => null,
+                ],
+                [
+                    'image_path' => 'https://raw.githubusercontent.com/Oilapatsara/kyrix/main/public/images/dresses/3.jpg',
+                    'is_main' => false,
+                    'color_name' => null,
+                ],
+                [
+                    'image_path' => 'https://raw.githubusercontent.com/Oilapatsara/kyrix/main/public/images/dresses/5.jpg',
+                    'is_main' => true,
+                    'color_name' => 'สีขาวงาช้าง',
+                ],
+            ],
+            2 => [
+                [
+                    'image_path' => 'https://raw.githubusercontent.com/Oilapatsara/kyrix/main/public/images/dresses/4.jpg',
+                    'is_main' => false,
+                    'color_name' => null,
+                ],
+                [
+                    'image_path' => 'https://raw.githubusercontent.com/Oilapatsara/kyrix/main/public/images/dresses/5.jpg',
+                    'is_main' => false,
+                    'color_name' => null,
+                ],
+                [
+                    'image_path' => 'https://raw.githubusercontent.com/Oilapatsara/kyrix/main/public/images/dresses/1.jpg',
+                    'is_main' => true,
+                    'color_name' => 'สีครีม',
+                ],
+            ],
+            8 => [
+                [
+                    'image_path' => 'https://raw.githubusercontent.com/Oilapatsara/kyrix/main/public/images/dresses/6.jpg',
+                    'is_main' => false,
+                    'color_name' => null,
+                ],
+                [
+                    'image_path' => 'https://raw.githubusercontent.com/Oilapatsara/kyrix/main/public/images/dresses/7.jpg',
+                    'is_main' => false,
+                    'color_name' => null,
+                ],
+                [
+                    'image_path' => 'https://raw.githubusercontent.com/Oilapatsara/kyrix/main/public/images/dresses/6.jpg',
+                    'is_main' => true,
+                    'color_name' => 'Detached Sleeves / Arm Warmers: ปลอกแขนที่แยกชิ้นออกจากตัวชุด โดยมีดีเทลปลายแขนบาน',
+                ],
+            ],
+            9 => [
+                [
+                    'image_path' => 'https://raw.githubusercontent.com/Oilapatsara/kyrix/main/public/images/dresses/8.jpg',
+                    'is_main' => false,
+                    'color_name' => null,
+                ],
+                [
+                    'image_path' => 'https://raw.githubusercontent.com/Oilapatsara/kyrix/main/public/images/dresses/9.jpg',
+                    'is_main' => false,
+                    'color_name' => null,
+                ],
+                [
+                    'image_path' => 'https://raw.githubusercontent.com/Oilapatsara/kyrix/main/public/images/dresses/3.jpg',
+                    'is_main' => true,
+                    'color_name' => 'น้ำตาล',
+                ],
+            ],
+            10 => [
+                [
+                    'image_path' => 'https://raw.githubusercontent.com/Oilapatsara/kyrix/main/public/images/dresses/10.jpg',
+                    'is_main' => false,
+                    'color_name' => null,
+                ],
+                [
+                    'image_path' => 'https://raw.githubusercontent.com/Oilapatsara/kyrix/main/public/images/dresses/11.jpg',
+                    'is_main' => false,
+                    'color_name' => null,
+                ],
+                [
+                    'image_path' => 'https://raw.githubusercontent.com/Oilapatsara/kyrix/main/public/images/dresses/2.jpg',
+                    'is_main' => true,
+                    'color_name' => 'ดำ',
+                ],
+                [
+                    'image_path' => 'products/ppXzNuFTE35EnKkVPgMiVpzSaNyu5o2whoPKxm4r.jpg',
+                    'is_main' => false,
+                    'color_name' => 'แดงเบอกันดี',
+                ],
+            ],
+            11 => [
+                [
+                    'image_path' => 'https://raw.githubusercontent.com/Oilapatsara/kyrix/main/public/images/dresses/12.jpg',
+                    'is_main' => false,
+                    'color_name' => null,
+                ],
+                [
+                    'image_path' => 'https://raw.githubusercontent.com/Oilapatsara/kyrix/main/public/images/dresses/13.jpg',
+                    'is_main' => false,
+                    'color_name' => null,
+                ],
+                [
+                    'image_path' => 'https://raw.githubusercontent.com/Oilapatsara/kyrix/main/public/images/dresses/8.jpg',
+                    'is_main' => true,
+                    'color_name' => 'สีชมพูนม',
+                ],
+            ],
+            12 => [
+                [
+                    'image_path' => 'https://raw.githubusercontent.com/Oilapatsara/kyrix/main/public/images/dresses/14.jpg',
+                    'is_main' => false,
+                    'color_name' => null,
+                ],
+                [
+                    'image_path' => 'https://raw.githubusercontent.com/Oilapatsara/kyrix/main/public/images/dresses/7.jpg',
+                    'is_main' => true,
+                    'color_name' => 'สีขาวครีม',
+                ],
+            ],
+            13 => [
+                [
+                    'image_path' => 'https://raw.githubusercontent.com/Oilapatsara/kyrix/main/public/images/dresses/15.jpg',
+                    'is_main' => false,
+                    'color_name' => null,
+                ],
+                [
+                    'image_path' => 'https://raw.githubusercontent.com/Oilapatsara/kyrix/main/public/images/dresses/9.jpg',
+                    'is_main' => true,
+                    'color_name' => 'ดำชิมเมอร์',
+                ],
+            ],
+            14 => [
+                [
+                    'image_path' => 'https://raw.githubusercontent.com/Oilapatsara/kyrix/main/public/images/dresses/16.jpg',
+                    'is_main' => false,
+                    'color_name' => null,
+                ],
+                [
+                    'image_path' => 'https://raw.githubusercontent.com/Oilapatsara/kyrix/main/public/images/dresses/10.jpg',
+                    'is_main' => true,
+                    'color_name' => 'สีครีม',
+                ],
+            ],
+            15 => [
+                [
+                    'image_path' => 'https://raw.githubusercontent.com/Oilapatsara/kyrix/main/public/images/dresses/17.jpg',
+                    'is_main' => false,
+                    'color_name' => null,
+                ],
+                [
+                    'image_path' => 'https://raw.githubusercontent.com/Oilapatsara/kyrix/main/public/images/dresses/13.jpg',
+                    'is_main' => true,
+                    'color_name' => 'สีขาว',
+                ],
+            ],
+            16 => [
+                [
+                    'image_path' => 'https://raw.githubusercontent.com/Oilapatsara/kyrix/main/public/images/dresses/18.jpg',
+                    'is_main' => false,
+                    'color_name' => null,
+                ],
+                [
+                    'image_path' => 'https://raw.githubusercontent.com/Oilapatsara/kyrix/main/public/images/dresses/12.jpg',
+                    'is_main' => true,
+                    'color_name' => 'ดำชาร์โคล',
+                ],
+            ],
+            17 => [
+                [
+                    'image_path' => 'https://raw.githubusercontent.com/Oilapatsara/kyrix/main/public/images/dresses/17.jpg',
+                    'is_main' => true,
+                    'color_name' => 'แชมเปญ',
+                ],
+            ],
+            18 => [
+                [
+                    'image_path' => 'https://raw.githubusercontent.com/Oilapatsara/kyrix/main/public/images/dresses/16.jpg',
+                    'is_main' => true,
+                    'color_name' => 'น้ำตาล',
+                ],
+            ],
+            19 => [
+                [
+                    'image_path' => 'https://raw.githubusercontent.com/Oilapatsara/kyrix/main/public/images/dresses/14.jpg',
+                    'is_main' => true,
+                    'color_name' => 'น้ำตาล',
+                ],
+            ],
+            20 => [
+                [
+                    'image_path' => 'https://raw.githubusercontent.com/Oilapatsara/kyrix/main/public/images/dresses/15.jpg',
+                    'is_main' => true,
+                    'color_name' => 'ฟ้ายีนส์หม่น',
+                ],
+            ],
+            21 => [
+                [
+                    'image_path' => 'https://raw.githubusercontent.com/Oilapatsara/kyrix/main/public/images/dresses/22.jpg',
+                    'is_main' => true,
+                    'color_name' => 'ขาวเบจ',
+                ],
+            ],
+            22 => [
+                [
+                    'image_path' => 'https://raw.githubusercontent.com/Oilapatsara/kyrix/main/public/images/dresses/21.jpg',
+                    'is_main' => true,
+                    'color_name' => 'ดำคลาสสิก',
+                ],
+            ],
+            23 => [
+                [
+                    'image_path' => 'https://raw.githubusercontent.com/Oilapatsara/kyrix/main/public/images/dresses/20.jpg',
+                    'is_main' => true,
+                    'color_name' => 'ดำ',
+                ],
+            ],
+            24 => [
+                [
+                    'image_path' => 'https://raw.githubusercontent.com/Oilapatsara/kyrix/main/public/images/dresses/19.jpg',
+                    'is_main' => true,
+                    'color_name' => 'ขาวมุก',
+                ],
+            ],
+            25 => [
+                [
+                    'image_path' => 'https://raw.githubusercontent.com/Oilapatsara/kyrix/main/public/images/dresses/11.jpg',
+                    'is_main' => true,
+                    'color_name' => null,
                 ],
             ],
         ];
 
-        $keptCodes = [];
-        $createdProducts = [];
-        foreach ($productsData as $pData) {
-            $imgs = $pData['images'];
-            unset($pData['images']);
+        foreach ($productsData as $productData) {
+            $productId = $productIdMap[$productData['product_code']];
+            $productImages = $imagesData[$productId] ?? [];
 
-            $product = Product::updateOrCreate(['product_code' => $pData['product_code']], $pData);
-            $keptCodes[] = $product->product_code;
-            $createdProducts[] = $product;
+            // ลบรูปเดิมของสินค้านั้นก่อน แล้วใส่ชุดรูปที่ตรงกับฐานข้อมูลปัจจุบัน
+            ProductImage::where('product_id', $productId)->delete();
 
-            // Images
-            ProductImage::where('product_id', $product->product_id)->delete();
-            foreach ($imgs as $idx => $url) {
+            foreach ($productImages as $image) {
                 ProductImage::create([
-                    'product_id' => $product->product_id,
-                    'image_path' => $url,
-                    'is_main' => $idx === 0,
+                    'product_id' => $productId,
+                    'image_path' => $image['image_path'],
+                    'is_main' => $image['is_main'],
+                    'color_name' => $image['color_name'],
                     'created_at' => now(),
                 ]);
             }
         }
 
-        // ลบรหัสสินค้าตัวอย่างเก่าที่ไม่อยู่ใน $productsData แล้วออก (ถ้าไม่มีรายการเช่าผูกอยู่)
-        $oldProductIds = Product::whereNotIn('product_code', $keptCodes)->pluck('product_id');
+        // 4. ลบสินค้าเก่าที่ไม่มีรายการเช่าผูกอยู่
+        $oldProductIds = Product::whereNotIn('product_code', $keptProductCodes)->pluck('product_id');
+
         if ($oldProductIds->isNotEmpty()) {
-            $usedProductIds = RentalDetail::whereIn('product_id', $oldProductIds)->pluck('product_id');
+            $usedProductIds = \App\Models\RentalDetail::whereIn('product_id', $oldProductIds)
+                ->pluck('product_id')
+                ->unique();
+
             $deletableIds = $oldProductIds->diff($usedProductIds);
+
             if ($deletableIds->isNotEmpty()) {
                 ProductImage::whereIn('product_id', $deletableIds)->delete();
                 Product::whereIn('product_id', $deletableIds)->delete();
             }
         }
 
-        // 3. Demo Customer User
-        $customerUser = User::firstOrCreate(
-            ['email' => 'customer@kyrix.com'],
-            [
-                'name' => 'คุณพิมลภัส รัตนวิเชียร',
-                'password' => Hash::make('password123'),
-                'role' => 'customer',
-                'status' => 'active',
-            ]
-        );
-
-        $customer = Customer::firstOrCreate(
-            ['user_id' => $customerUser->user_id],
-            [
-                'phone' => '0652599072',
-                'address' => '77 ตำบลในเมือง อำเภอเมือง จังหวัดนครราชสีมา 30000',
-            ]
-        );
-
-        // 4. Sample Rental Orders for Customer (To test My Bookings & Tracker)
-        $sampleRental1 = Rental::firstOrCreate(
-            ['rental_code' => 'KR-202609-0001'],
-            [
-                'customer_id' => $customer->customer_id,
-                'rental_date' => now()->subDays(10),
-                'start_date' => now()->subDays(8),
-                'end_date' => now()->subDays(5),
-                'total_amount' => 1500.00,
-                'deposit_amount' => 2000.00,
-                'service_type' => 'ซักแห้งรีดไอน้ำพรีเมียม',
-                'service_fee' => 150.00,
-                'delivery_method' => 'delivery',
-                'delivery_address' => $customer->address,
-                'recipient_phone' => $customer->phone,
-                'tracking_number' => 'TH26091100998B',
-                'return_tracking_no' => 'TH26091555667K',
-                'status' => 'completed',
-                'note' => 'ส่งคืนเรียบร้อย สภาพชุดสมบูรณ์ คืนเงินมัดจำแล้ว',
-            ]
-        );
-
-        RentalDetail::firstOrCreate(
-            ['rental_id' => $sampleRental1->rental_id, 'product_id' => $createdProducts[0]->product_id],
-            [
-                'quantity' => 1,
-                'selected_size' => 'M',
-                'selected_color' => 'แดงเบอร์กันดี',
-                'rental_days' => 3,
-                'price' => 1500.00,
-                'subtotal' => 1500.00,
-                'created_at' => now()->subDays(10),
-            ]
-        );
-
-        Payment::firstOrCreate(
-            ['rental_id' => $sampleRental1->rental_id],
-            [
-                'payment_amount' => 3650.00,
-                'payment_date' => now()->subDays(10),
-                'payment_method' => 'qr',
-                'slip_image' => 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600&auto=format&fit=crop&q=80',
-                'status' => 'approved',
-                'note' => 'ชำระค่าเช่า + มัดจำ + ค่าบริการเสริมเรียบร้อย',
-            ]
-        );
-
-        // Sample Review for Rental 1
-        Review::firstOrCreate(
-            ['rental_id' => $sampleRental1->rental_id, 'product_id' => $createdProducts[0]->product_id],
-            [
-                'customer_id' => $customer->customer_id,
-                'rating' => 5,
-                'comment' => 'ชุดสวยมากกกก ใส่ไปงานกาล่าคนชมทั้งคืนเลยค่ะ ผ้ากำมะหยี่มีน้ำหนักทิ้งตัวสวย คัตติ้งเนี้ยบสุดๆ ทางร้านทำความสะอาดมาหอมสะอาดมาก ประทับใจมากค่ะ!',
-                'image_path' => 'https://images.unsplash.com/photo-1566174053879-31528523f8ae?w=600&auto=format&fit=crop&q=80',
-                'status' => 'published',
-            ]
-        );
-
-        // Sample Rental 2: In progress (status: renting)
-        $sampleRental2 = Rental::firstOrCreate(
-            ['rental_code' => 'KR-202609-0002'],
-            [
-                'customer_id' => $customer->customer_id,
-                'rental_date' => now()->subDays(2),
-                'start_date' => now()->subDays(1),
-                'end_date' => now()->addDays(2),
-                'total_amount' => 1800.00,
-                'deposit_amount' => 2500.00,
-                'service_type' => 'จัดส่งด่วนแมสเซนเจอร์',
-                'service_fee' => 100.00,
-                'delivery_method' => 'delivery',
-                'delivery_address' => $customer->address,
-                'recipient_phone' => $customer->phone,
-                'tracking_number' => 'GRAB-891100',
-                'status' => 'renting',
-                'note' => 'ลูกค้าได้รับชุดแล้ว ใช้งานได้ถึงวันที่นัดหมาย',
-            ]
-        );
-
-        RentalDetail::firstOrCreate(
-            ['rental_id' => $sampleRental2->rental_id, 'product_id' => $createdProducts[1]->product_id],
-            [
-                'quantity' => 1,
-                'selected_size' => 'S',
-                'selected_color' => 'ทองแชมเปญ',
-                'rental_days' => 3,
-                'price' => 1800.00,
-                'subtotal' => 1800.00,
-                'created_at' => now()->subDays(2),
-            ]
-        );
-
-        Payment::firstOrCreate(
-            ['rental_id' => $sampleRental2->rental_id],
-            [
-                'payment_amount' => 4400.00,
-                'payment_date' => now()->subDays(2),
-                'payment_method' => 'qr',
-                'slip_image' => 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600&auto=format&fit=crop&q=80',
-                'status' => 'approved',
-                'note' => 'ตรวจสอบสลิปแล้ว อนุมัติการเช่า',
-            ]
-        );
-
-        // Sample other reviews
-        Review::firstOrCreate(
-            ['product_id' => $createdProducts[3]->product_id, 'customer_id' => $customer->customer_id],
-            [
-                'rating' => 5,
-                'comment' => 'ชุดไทยบรมพิมานไหมแท้สวยวิจิตรมากค่ะ ผ้านุ่งปักเลื่อมแน่น สวยหรูสมราคา แขกในงานชมไม่ขาดสาย ขอบคุณร้าน KYRIX นะคะ',
-                'image_path' => 'https://images.unsplash.com/photo-1617059063772-34532796cdb5?w=600&auto=format&fit=crop&q=80',
-                'status' => 'published',
-            ]
-        );
-
-        Review::firstOrCreate(
-            ['product_id' => $createdProducts[4]->product_id, 'customer_id' => $customer->customer_id],
-            [
-                'rating' => 5,
-                'comment' => 'ชุดแต่งงานสวยเกินต้าน ลูกไม้ฝรั่งเศสละมุนตามาก ถ่ายพรีเวดดิ้งออกมาเหมือนภาพวาดในฝันเลยค่ะ แนะนำเลยค่ะ!',
-                'image_path' => 'https://images.unsplash.com/photo-1594552072238-b8a33785b261?w=600&auto=format&fit=crop&q=80',
-                'status' => 'published',
-            ]
-        );
+        $this->command?->info('DressRentalCustomerSeeder: sync categories, products and images from current database completed.');
     }
 }

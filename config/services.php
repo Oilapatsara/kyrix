@@ -44,8 +44,13 @@ return [
         'client_secret' => trim(env('GOOGLE_CLIENT_SECRET', '')),
         'redirect' => env(
             'GOOGLE_REDIRECT_URI',
-            rtrim((string) env('APP_URL', 'http://localhost:8000'), '/')
-                . '/auth/google/callback'
+            rtrim(
+                (string) env(
+                    'APP_URL',
+                    'http://localhost:8000'
+                ),
+                '/'
+            ) . '/auth/google/callback'
         ),
     ],
 
@@ -53,6 +58,16 @@ return [
         'client_id' => env('FACEBOOK_CLIENT_ID'),
         'client_secret' => env('FACEBOOK_CLIENT_SECRET'),
         'redirect' => env('FACEBOOK_REDIRECT_URI'),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | PromptPay
+    |--------------------------------------------------------------------------
+    */
+
+    'promptpay' => [
+        'phone' => env('PROMPTPAY_PHONE', ''),
     ],
 
 ];

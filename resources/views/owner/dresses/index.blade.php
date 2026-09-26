@@ -193,7 +193,7 @@
 
         table {
             width: 100%;
-            min-width: 1080px;
+            min-width: 1220px;
             border-collapse: collapse;
         }
 
@@ -376,15 +376,21 @@
             white-space: nowrap;
         }
 
+        /* =========================
+               ACTIONS
+            ========================= */
+
         .action-buttons {
             display: flex;
             align-items: center;
+            flex-wrap: wrap;
             gap: 6px;
+            min-width: 250px;
         }
 
         .action-btn {
-            width: 34px;
-            height: 34px;
+            width: 36px;
+            height: 36px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -394,15 +400,21 @@
             color: #6f665f;
             text-decoration: none;
             transition: .18s ease;
+            cursor: pointer;
         }
 
         .action-btn:hover {
             background: #faf7f5;
             border-color: #d5c3b7;
+            transform: translateY(-1px);
         }
 
         .action-btn.edit {
             color: #725b4d;
+        }
+
+        .action-btn.stock {
+            color: #3d6c4d;
         }
 
         .action-btn.delete {
@@ -411,6 +423,38 @@
 
         .delete-form {
             display: inline;
+            margin: 0;
+        }
+
+        .stock-add-form {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin: 0;
+        }
+
+        .stock-add-input {
+            width: 58px;
+            height: 36px;
+            padding: 0 8px;
+            border: 1px solid #e4ded9;
+            border-radius: 8px;
+            background: #fff;
+            color: #332d29;
+            font-size: 11px;
+            text-align: center;
+            outline: none;
+        }
+
+        .stock-add-input:focus {
+            border-color: #7a1f2b;
+            box-shadow: 0 0 0 3px rgba(122, 31, 43, .08);
+        }
+
+        .stock-add-label {
+            color: #928983;
+            font-size: 10px;
+            white-space: nowrap;
         }
 
         .empty-row {
@@ -444,14 +488,79 @@
             font-size: 11px;
         }
 
+        /* =========================
+               PAGINATION
+            ========================= */
+
         .pagination-wrap {
-            padding: 18px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            padding: 16px 20px;
             border-top: 1px solid #f0ece9;
+            background: #fff;
         }
 
-        .pagination-wrap nav {
+        .pagination-info {
+            color: #918983;
+            font-size: 11px;
+            white-space: nowrap;
+        }
+
+        .pagination-info strong {
+            color: #4a413c;
+            font-weight: 700;
+        }
+
+        .pagination-buttons {
             display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .page-btn {
+            width: 34px;
+            height: 34px;
+            display: inline-flex;
+            align-items: center;
             justify-content: center;
+            border: 1px solid #e5dfda;
+            border-radius: 8px;
+            background: #fff;
+            color: #625952;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 700;
+            transition: all .18s ease;
+        }
+
+        .page-btn:hover {
+            color: #7a1f2b;
+            border-color: #c9a184;
+            background: #fcf7f5;
+            transform: translateY(-1px);
+        }
+
+        .page-btn.active {
+            color: #fff;
+            background: #7a1f2b;
+            border-color: #7a1f2b;
+            box-shadow: 0 3px 8px rgba(122, 31, 43, .18);
+        }
+
+        .page-btn.disabled {
+            color: #c9c2bd;
+            background: #f8f6f4;
+            border-color: #eeeae7;
+            cursor: default;
+        }
+
+        .page-dots {
+            width: 24px;
+            text-align: center;
+            color: #a69d97;
+            font-size: 11px;
         }
 
         .alert-success {
@@ -504,14 +613,31 @@
             .add-product-btn {
                 width: 100%;
             }
+
+            .pagination-wrap {
+                flex-direction: column;
+                justify-content: center;
+                gap: 12px;
+            }
+
+            .pagination-info {
+                text-align: center;
+            }
+
+            .pagination-buttons {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
         }
     </style>
+
 
     <div class="dresses-page">
 
         {{-- =========================================================
-         ALERT
-    ========================================================== --}}
+             ALERT
+        ========================================================== --}}
+
         @if (session('success'))
             <div class="alert-success">
                 <i class="fa-solid fa-circle-check"></i>
@@ -528,31 +654,34 @@
 
 
         {{-- =========================================================
-         HEADER
-    ========================================================== --}}
+             HEADER
+        ========================================================== --}}
+
         <div class="page-header">
 
             <div class="page-header-left">
+
                 <h1>คลังชุด</h1>
 
                 <p>
                     จัดการข้อมูลชุดและตรวจสอบจำนวนสินค้าคงเหลือของร้าน
                 </p>
+
             </div>
 
-            @if (Route::has('products.create'))
-                <a href="{{ route('products.create') }}" class="add-product-btn">
-                    <i class="fa-solid fa-plus"></i>
-                    เพิ่มสินค้า
-                </a>
-            @endif
+
+            <a href="{{ route('owner.dresses.create') }}" class="add-product-btn">
+                <i class="fa-solid fa-plus"></i>
+                เพิ่มสินค้า
+            </a>
 
         </div>
 
 
         {{-- =========================================================
-         SUMMARY
-    ========================================================== --}}
+             SUMMARY
+        ========================================================== --}}
+
         @php
 
             $allProducts = $products ?? collect();
@@ -560,17 +689,18 @@
             $totalProducts = method_exists($allProducts, 'total') ? $allProducts->total() : $allProducts->count();
 
             $totalStock = 0;
+
             $lowStockProducts = 0;
+
             $outOfStockProducts = 0;
 
             foreach ($allProducts as $summaryProduct) {
-                $summaryStock = 0;
+                /*
+                 * ใช้ stock จาก products เป็นหลัก
+                 * เพราะระบบเช่าชุดของคุณเก็บ stock ไว้ที่ products.stock
+                 */
 
-                foreach ($summaryProduct->variants ?? collect() as $summaryVariant) {
-                    $summaryStock +=
-                        (int) ($summaryVariant->stock_quantity ??
-                            ($summaryVariant->stock ?? ($summaryVariant->quantity ?? 0)));
-                }
+                $summaryStock = $summaryProduct->stock !== null ? (int) $summaryProduct->stock : 0;
 
                 $totalStock += $summaryStock;
 
@@ -641,8 +771,9 @@
 
 
         {{-- =========================================================
-         TOOLBAR
-    ========================================================== --}}
+             TOOLBAR
+        ========================================================== --}}
+
         <div class="toolbar">
 
             <form method="GET" action="{{ url()->current() }}" class="toolbar-form">
@@ -696,6 +827,7 @@
                         ค้นหา
                     </button>
 
+
                     <a href="{{ url()->current() }}" class="reset-btn">
                         ล้าง
                     </a>
@@ -708,17 +840,21 @@
 
 
         {{-- =========================================================
-         TABLE
-    ========================================================== --}}
+             TABLE
+        ========================================================== --}}
+
         <div class="table-card">
 
             <div class="table-top">
 
                 <div>
+
                     <h2 class="table-title">
                         รายการชุดทั้งหมด
                     </h2>
+
                 </div>
+
 
                 <div class="table-count">
 
@@ -781,16 +917,10 @@
                             @php
 
                                 /*
-                            |--------------------------------------------------------------------------
-                            | รูปภาพสินค้า
-                            |--------------------------------------------------------------------------
-                            | ใช้รูปใน product_images ที่ is_main = 1 ก่อน
-                            | ถ้าไม่มี ให้ใช้รูปแรก
-                            | ถ้าเป็น URL เช่น GitHub ให้ใช้ URL โดยตรง
-                            | ถ้าเป็น path ให้แปลงด้วย asset()
-                            | ถ้าไม่มี ให้ fallback ไป products.image_url
-                            |--------------------------------------------------------------------------
-                            */
+                                |--------------------------------------------------------------------------
+                                | รูปภาพ
+                                |--------------------------------------------------------------------------
+                                */
 
                                 $image = null;
 
@@ -802,12 +932,6 @@
                                     $mainImageObject = $images->first();
                                 }
 
-                                /*
-                            |--------------------------------------------------------------------------
-                            | จาก product_images
-                            |--------------------------------------------------------------------------
-                            */
-
                                 if ($mainImageObject && !empty($mainImageObject->image_path)) {
                                     $imagePath = trim((string) $mainImageObject->image_path);
 
@@ -817,15 +941,15 @@
                                     ) {
                                         $image = $imagePath;
                                     } else {
-                                        $image = asset('storage/' . ltrim($imagePath, '/'));
+                                        $cleanImagePath = ltrim($imagePath, '/');
+
+                                        if (str_starts_with($cleanImagePath, 'storage/')) {
+                                            $image = asset($cleanImagePath);
+                                        } else {
+                                            $image = asset('storage/' . $cleanImagePath);
+                                        }
                                     }
                                 }
-
-                                /*
-                            |--------------------------------------------------------------------------
-                            | fallback ไป products.image_url
-                            |--------------------------------------------------------------------------
-                            */
 
                                 if (empty($image) && !empty($product->image_url)) {
                                     $productImage = trim((string) $product->image_url);
@@ -841,23 +965,18 @@
                                 }
 
                                 /*
-                            |--------------------------------------------------------------------------
-                            | Variants
-                            |--------------------------------------------------------------------------
-                            */
+                                |--------------------------------------------------------------------------
+                                | Variants
+                                |--------------------------------------------------------------------------
+                                */
 
                                 $variants = $product->variants ?? collect();
 
-                                $stockTotal = 0;
-
                                 $sizes = [];
+
                                 $colors = [];
 
                                 foreach ($variants as $variant) {
-                                    $stockTotal +=
-                                        (int) ($variant->stock_quantity ??
-                                            ($variant->stock ?? ($variant->quantity ?? 0)));
-
                                     $sizeValue = $variant->size ?? ($variant->size_name ?? null);
 
                                     if ($sizeValue !== null && $sizeValue !== '') {
@@ -876,10 +995,12 @@
                                 $colors = array_values(array_unique($colors));
 
                                 /*
-                            |--------------------------------------------------------------------------
-                            | stock status
-                            |--------------------------------------------------------------------------
-                            */
+                                |--------------------------------------------------------------------------
+                                | STOCK
+                                |--------------------------------------------------------------------------
+                                */
+
+                                $stockTotal = (int) ($product->stock ?? 0);
 
                                 if ($stockTotal <= 0) {
                                     $stockClass = 'stock-out';
@@ -896,10 +1017,10 @@
                                 }
 
                                 /*
-                            |--------------------------------------------------------------------------
-                            | Gender
-                            |--------------------------------------------------------------------------
-                            */
+                                |--------------------------------------------------------------------------
+                                | Gender
+                                |--------------------------------------------------------------------------
+                                */
 
                                 $gender = strtolower(trim((string) ($product->gender ?? '')));
 
@@ -916,23 +1037,33 @@
 
                                     $genderText = $product->gender ?: 'ไม่ระบุ';
                                 }
+
+                                /*
+                                |--------------------------------------------------------------------------
+                                | Product ID
+                                |--------------------------------------------------------------------------
+                                */
+
+                                $productId = $product->product_id ?? $product->id;
                             @endphp
 
 
                             <tr>
 
-                                {{-- =================================================
-                                 PRODUCT
-                            ================================================== --}}
+
+                                {{-- PRODUCT --}}
+
                                 <td>
 
                                     <div class="product-cell">
 
-
                                         @if ($image)
                                             <img src="{{ $image }}" alt="{{ $product->product_name }}"
                                                 class="dress-image" loading="lazy"
-                                                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                                onerror="
+                                                    this.style.display='none';
+                                                    this.nextElementSibling.style.display='flex';
+                                                ">
 
                                             <div class="dress-image-empty" style="display:none;">
                                                 <i class="fa-solid fa-shirt"></i>
@@ -949,13 +1080,15 @@
                                         <div class="product-info">
 
                                             <div class="product-name">
+
                                                 {{ $product->product_name }}
+
                                             </div>
 
                                             <div class="product-id">
 
                                                 รหัสสินค้า:
-                                                {{ $product->product_id }}
+                                                {{ $productId }}
 
                                             </div>
 
@@ -966,12 +1099,12 @@
                                 </td>
 
 
-                                {{-- =================================================
-                                 SKU
-                            ================================================== --}}
+                                {{-- SKU --}}
+
                                 <td>
 
                                     @php
+
                                         $skuList = [];
 
                                         foreach ($variants as $variant) {
@@ -983,6 +1116,7 @@
                                         }
 
                                         $skuList = array_values(array_unique($skuList));
+
                                     @endphp
 
 
@@ -999,9 +1133,9 @@
                                             @if (count($skuList) > 2)
                                                 <div
                                                     style="
-                                                    color:#aaa19b;
-                                                    font-size:10px;
-                                                ">
+                                                        color:#aaa19b;
+                                                        font-size:10px;
+                                                    ">
                                                     +{{ count($skuList) - 2 }}
                                                     รายการ
                                                 </div>
@@ -1017,9 +1151,8 @@
                                 </td>
 
 
-                                {{-- =================================================
-                                 GENDER
-                            ================================================== --}}
+                                {{-- GENDER --}}
+
                                 <td>
 
                                     <span class="gender-badge {{ $genderClass }}">
@@ -1029,9 +1162,8 @@
                                 </td>
 
 
-                                {{-- =================================================
-                                 VARIANTS
-                            ================================================== --}}
+                                {{-- VARIANTS --}}
+
                                 <td>
 
                                     <div class="variant-list">
@@ -1073,16 +1205,24 @@
                                 </td>
 
 
-                                {{-- =================================================
-                                 STOCK
-                            ================================================== --}}
+                                {{-- STOCK --}}
+
                                 <td>
 
-                                    <div class="stock-number {{ $stockClass }}">
+                                    <div
+                                        class="
+                                            stock-number
+                                            {{ $stockClass }}
+                                        ">
                                         {{ number_format($stockTotal) }}
                                     </div>
 
-                                    <div class="stock-badge {{ $stockBadge }}">
+
+                                    <div
+                                        class="
+                                            stock-badge
+                                            {{ $stockBadge }}
+                                        ">
 
                                         <span>
                                             ●
@@ -1095,51 +1235,87 @@
                                 </td>
 
 
-                                {{-- =================================================
-                                 PRICE
-                            ================================================== --}}
+                                {{-- PRICE --}}
+
                                 <td>
 
                                     <div class="price">
 
-                                        ฿{{ number_format((float) ($product->price ?? 0), 0) }}
+                                        ฿{{ number_format((float) ($product->rental_price ?? ($product->price ?? 0)), 0) }}
 
                                     </div>
 
                                 </td>
 
 
-                                {{-- =================================================
-                                 ACTIONS
-                            ================================================== --}}
+                                {{-- ACTIONS --}}
+
                                 <td>
 
                                     <div class="action-buttons">
 
 
-                                        @if (Route::has('products.edit'))
-                                            <a href="{{ route('products.edit', $product->product_id) }}"
-                                                class="action-btn edit" title="แก้ไข">
-                                                <i class="fa-solid fa-pen"></i>
-                                            </a>
-                                        @endif
+                                        {{-- แก้ไข --}}
+
+                                        <a href="{{ route('owner.dresses.edit', $productId) }}"
+                                            class="action-btn edit" title="แก้ไขข้อมูลชุด">
+
+                                            <i class="fa-solid fa-pen"></i>
+
+                                        </a>
 
 
-                                        @if (Route::has('products.destroy'))
-                                            <form method="POST"
-                                                action="{{ route('products.destroy', $product->product_id) }}"
-                                                class="delete-form"
-                                                onsubmit="return confirm('ต้องการลบสินค้านี้ใช่หรือไม่?');">
+                                        {{-- เพิ่มสต็อก --}}
 
-                                                @csrf
-                                                @method('DELETE')
+                                        <form method="POST"
+                                            action="{{ url('/owner/dresses/' . $productId . '/add-stock') }}"
+                                            class="stock-add-form"
+                                            onsubmit="
+                                                return confirm(
+                                                    'ต้องการเพิ่มสต็อกสินค้านี้ใช่หรือไม่?'
+                                                );
+                                            ">
 
-                                                <button type="submit" class="action-btn delete" title="ลบ">
-                                                    <i class="fa-solid fa-trash"></i>
-                                                </button>
+                                            @csrf
 
-                                            </form>
-                                        @endif
+                                            <span class="stock-add-label">
+                                                +
+                                            </span>
+
+                                            <input type="number" name="quantity" value="1" min="1"
+                                                max="9999" class="stock-add-input" title="จำนวนที่ต้องการเพิ่ม">
+
+                                            <button type="submit" class="action-btn stock" title="เพิ่มสต็อก">
+
+                                                <i class="fa-solid fa-plus"></i>
+
+                                            </button>
+
+                                        </form>
+
+
+                                        {{-- ลบ --}}
+
+                                        <form method="POST"
+                                            action="{{ route('owner.dresses.destroy', $productId) }}"
+                                            class="delete-form"
+                                            onsubmit="
+                                                return confirm(
+                                                    'ต้องการลบสินค้านี้ใช่หรือไม่?'
+                                                );
+                                            ">
+
+                                            @csrf
+
+                                            @method('DELETE')
+
+                                            <button type="submit" class="action-btn delete" title="ลบสินค้า">
+
+                                                <i class="fa-solid fa-trash"></i>
+
+                                            </button>
+
+                                        </form>
 
 
                                     </div>
@@ -1147,6 +1323,7 @@
                                 </td>
 
                             </tr>
+
 
                         @empty
 
@@ -1160,14 +1337,14 @@
 
                                     </div>
 
+
                                     <div class="empty-title">
                                         ไม่พบสินค้า
                                     </div>
 
+
                                     <div class="empty-text">
-
                                         ยังไม่มีสินค้าที่ตรงกับเงื่อนไขการค้นหา
-
                                     </div>
 
                                 </td>
@@ -1183,14 +1360,144 @@
 
 
             {{-- =========================================================
-             PAGINATION
-        ========================================================== --}}
-            @if (isset($products) && method_exists($products, 'links'))
+                 PAGINATION
+            ========================================================== --}}
+
+            @if (isset($products) && method_exists($products, 'hasPages') && $products->total() > 0)
+
+                @php
+
+                    $pagination = $products->withQueryString();
+
+                    $currentPage = $pagination->currentPage();
+
+                    $lastPage = $pagination->lastPage();
+
+                    $startPage = max(1, $currentPage - 2);
+
+                    $endPage = min($lastPage, $currentPage + 2);
+
+                @endphp
+
+
                 <div class="pagination-wrap">
 
-                    {{ $products->withQueryString()->links() }}
+
+                    <div class="pagination-info">
+
+                        แสดง
+
+                        <strong>
+                            {{ $pagination->firstItem() }}
+                        </strong>
+
+                        -
+
+                        <strong>
+                            {{ $pagination->lastItem() }}
+                        </strong>
+
+                        จาก
+
+                        <strong>
+                            {{ $pagination->total() }}
+                        </strong>
+
+                        รายการ
+
+                    </div>
+
+
+                    <div class="pagination-buttons">
+
+
+                        {{-- ก่อนหน้า --}}
+
+                        @if ($pagination->onFirstPage())
+                            <span class="page-btn disabled">
+
+                                <i class="fa-solid fa-chevron-left"></i>
+
+                            </span>
+                        @else
+                            <a href="{{ $pagination->previousPageUrl() }}" class="page-btn" aria-label="ก่อนหน้า">
+
+                                <i class="fa-solid fa-chevron-left"></i>
+
+                            </a>
+                        @endif
+
+
+                        {{-- หน้าแรก --}}
+
+                        @if ($startPage > 1)
+
+                            <a href="{{ $pagination->url(1) }}" class="page-btn">
+                                1
+                            </a>
+
+                            @if ($startPage > 2)
+                                <span class="page-dots">
+                                    ...
+                                </span>
+                            @endif
+
+                        @endif
+
+
+                        {{-- หมายเลขหน้า --}}
+
+                        @for ($page = $startPage; $page <= $endPage; $page++)
+                            @if ($page == $currentPage)
+                                <span class="page-btn active">
+                                    {{ $page }}
+                                </span>
+                            @else
+                                <a href="{{ $pagination->url($page) }}" class="page-btn">
+                                    {{ $page }}
+                                </a>
+                            @endif
+                        @endfor
+
+
+                        {{-- หน้าสุดท้าย --}}
+
+                        @if ($endPage < $lastPage)
+
+                            @if ($endPage < $lastPage - 1)
+                                <span class="page-dots">
+                                    ...
+                                </span>
+                            @endif
+
+
+                            <a href="{{ $pagination->url($lastPage) }}" class="page-btn">
+                                {{ $lastPage }}
+                            </a>
+
+                        @endif
+
+
+                        {{-- ถัดไป --}}
+
+                        @if ($pagination->hasMorePages())
+                            <a href="{{ $pagination->nextPageUrl() }}" class="page-btn" aria-label="ถัดไป">
+
+                                <i class="fa-solid fa-chevron-right"></i>
+
+                            </a>
+                        @else
+                            <span class="page-btn disabled">
+
+                                <i class="fa-solid fa-chevron-right"></i>
+
+                            </span>
+                        @endif
+
+                    </div>
 
                 </div>
+
             @endif
 
         </div>

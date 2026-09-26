@@ -1,6 +1,6 @@
 @extends('layouts.customer')
 
-@section('title', 'ชุดทั้งหมด | KYRIX ร้านเช่าชุดราตรี ชุดไทย ชุดแต่งงาน')
+@section('title', 'ชุดทั้งหมด | KYRIX ร้านเช่าชุดออกงาน ชุดสายฝอ และชุดสายหวาน')
 
 @push('styles')
     <style>
@@ -323,57 +323,84 @@
             margin-top: 2px;
         }
 
+        /* =====================================================
+               CUSTOM PAGINATION
+            ====================================================== */
+
         .pagination-wrap {
-            margin-top: 40px;
+            width: 100%;
+            margin-top: 32px;
+            padding: 16px 0 4px;
             display: flex;
-            justify-content: center;
-        }
-
-        .pagination {
-            display: flex;
-            padding-left: 0;
-            list-style: none;
-            gap: 6px;
             align-items: center;
+            justify-content: space-between;
+            gap: 18px;
         }
 
-        .page-item .page-link,
-        .page-item span.page-link {
-            position: relative;
-            display: block;
-            padding: 8px 16px;
-            color: var(--primary);
-            text-decoration: none;
-            background-color: #fff;
+        .pagination-info {
+            color: var(--text-muted);
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .pagination-info strong {
+            color: var(--text-main);
+            font-weight: 700;
+        }
+
+        .pagination-buttons {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .page-btn {
+            width: 36px;
+            height: 36px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             border: 1px solid var(--border);
-            border-radius: 8px;
-            font-size: 14px;
+            border-radius: 9px;
+            background: #fff;
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 13px;
             font-weight: 600;
-            transition: all 0.2s;
+            transition: all .2s ease;
+            box-sizing: border-box;
         }
 
-        .page-item.active .page-link {
-            z-index: 3;
-            color: #fff;
-            background-color: var(--primary);
+        .page-btn:hover {
+            color: var(--primary);
             border-color: var(--primary);
+            background: #fff8f8;
+            transform: translateY(-1px);
         }
 
-        .page-item.disabled .page-link {
-            color: #999;
-            pointer-events: none;
-            background-color: #f9f9f9;
-            border-color: var(--border);
-        }
-
-        .page-link:hover {
-            z-index: 2;
+        .page-btn.active {
             color: #fff;
-            background-color: #a02a3a;
-            border-color: #a02a3a;
+            background: var(--primary);
+            border-color: var(--primary);
+            box-shadow: 0 3px 8px rgba(122, 31, 43, .18);
+        }
+
+        .page-btn.disabled {
+            color: #c9c2bd;
+            background: #f7f5f3;
+            border-color: #e8e3df;
+            cursor: default;
+        }
+
+        .page-dots {
+            width: 28px;
+            text-align: center;
+            color: #9b918a;
+            font-size: 13px;
         }
 
         @media (max-width: 1024px) {
+
             .catalog-layout {
                 grid-template-columns: 1fr;
             }
@@ -385,9 +412,31 @@
             .catalog-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
+
+        }
+
+        @media (max-width: 700px) {
+
+            .pagination-wrap {
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .pagination-info {
+                text-align: center;
+            }
+
+            .pagination-buttons {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
         }
 
         @media (max-width: 600px) {
+
             .catalog-header {
                 padding: 24px 16px;
             }
@@ -412,6 +461,7 @@
             .product-footer {
                 align-items: flex-end;
             }
+
         }
     </style>
 @endpush
@@ -437,8 +487,11 @@
             </div>
 
             <a href="{{ route('cart.index') }}" class="btn btn-secondary">
+
                 <i class="fa-solid fa-bag-shopping"></i>
+
                 ดูตะกร้าเช่า ({{ count(session('cart', [])) }})
+
             </a>
 
         </div>
@@ -448,13 +501,13 @@
 
     <div class="catalog-layout">
 
-        <!-- Sidebar Filters -->
+        {{-- Sidebar Filters --}}
 
         <aside class="filter-card">
 
             <form action="{{ route('products.index') }}" method="GET" id="filterForm">
 
-                <!-- Search -->
+                {{-- Search --}}
 
                 <div class="filter-group">
 
@@ -470,19 +523,19 @@
 
                         <input type="text" name="q" value="{{ request('q') }}" placeholder="ชื่อชุด, รหัส, สี..."
                             style="
-                            width:100%;
-                            padding:8px 12px;
-                            border:1px solid var(--border);
-                            border-radius:8px;
-                            font-size:13px;
-                        ">
+                                width:100%;
+                                padding:8px 12px;
+                                border:1px solid var(--border);
+                                border-radius:8px;
+                                font-size:13px;
+                            ">
 
                     </div>
 
                 </div>
 
 
-                <!-- Categories -->
+                {{-- Categories --}}
 
                 <div class="filter-group">
 
@@ -495,9 +548,9 @@
                         @if (request('category_id'))
                             <a href="{{ route('products.index', request()->except('category_id')) }}"
                                 style="
-                                font-size:11px;
-                                color:var(--primary);
-                            ">
+                                    font-size:11px;
+                                    color:var(--primary);
+                                ">
                                 ล้าง
                             </a>
                         @endif
@@ -529,7 +582,6 @@
                                 <span>
 
                                     {{ $category->category_name }}
-
                                     ({{ $category->products_count }})
                                 </span>
 
@@ -541,7 +593,7 @@
                 </div>
 
 
-                <!-- Price -->
+                {{-- Price --}}
 
                 <div class="filter-group">
 
@@ -570,7 +622,7 @@
                 </div>
 
 
-                <!-- Sizes -->
+                {{-- Sizes --}}
 
                 <div class="filter-group">
 
@@ -592,9 +644,7 @@
                                     {{ request('size') == $sz ? 'checked' : '' }} onchange="this.form.submit()">
 
                                 <span class="size-pill-label">
-
                                     {{ $sz }}
-
                                 </span>
 
                             </label>
@@ -605,7 +655,7 @@
                 </div>
 
 
-                <!-- Color -->
+                {{-- Color --}}
 
                 <div class="filter-group">
 
@@ -620,17 +670,17 @@
 
                     <input type="text" name="color" value="{{ request('color') }}" placeholder="เช่น แดง, ดำ, ชมพู..."
                         style="
-                        width:100%;
-                        padding:8px 12px;
-                        border:1px solid var(--border);
-                        border-radius:8px;
-                        font-size:13px;
-                    ">
+                            width:100%;
+                            padding:8px 12px;
+                            border:1px solid var(--border);
+                            border-radius:8px;
+                            font-size:13px;
+                        ">
 
                 </div>
 
 
-                <!-- Status -->
+                {{-- Status --}}
 
                 <div class="filter-group">
 
@@ -666,9 +716,9 @@
 
                                 <i class="fa-solid fa-circle"
                                     style="
-                                    color:#16a34a;
-                                    font-size:8px;
-                                "></i>
+                                        color:#16a34a;
+                                        font-size:8px;
+                                    "></i>
 
                                 ว่างพร้อมเช่า
 
@@ -686,9 +736,9 @@
 
                                 <i class="fa-solid fa-circle"
                                     style="
-                                    color:#b45309;
-                                    font-size:8px;
-                                "></i>
+                                        color:#b45309;
+                                        font-size:8px;
+                                    "></i>
 
                                 อยู่ระหว่างเช่า
 
@@ -706,9 +756,9 @@
 
                                 <i class="fa-solid fa-circle"
                                     style="
-                                    color:#dc2626;
-                                    font-size:8px;
-                                "></i>
+                                        color:#dc2626;
+                                        font-size:8px;
+                                    "></i>
 
                                 ซ่อม / ปรับปรุง
 
@@ -721,14 +771,14 @@
                 </div>
 
 
-                <!-- Buttons -->
+                {{-- Buttons --}}
 
                 <div
                     style="
-                    display:flex;
-                    gap:8px;
-                    margin-top:20px;
-                ">
+                        display:flex;
+                        gap:8px;
+                        margin-top:20px;
+                    ">
 
                     <button type="submit" class="btn btn-primary btn-block">
                         ค้นหา
@@ -748,11 +798,11 @@
         </aside>
 
 
-        <!-- Products -->
+        {{-- Products --}}
 
         <main>
 
-            <!-- Toolbar -->
+            {{-- Toolbar --}}
 
             <div class="catalog-toolbar">
 
@@ -781,21 +831,19 @@
 
                     <select name="sort" class="sort-select"
                         onchange="
-                        const form = document.getElementById('filterForm');
+                            const form = document.getElementById('filterForm');
+                            let sortInput = form.elements['sort'];
 
-                        let sortInput = form.elements['sort'];
+                            if (!sortInput) {
+                                sortInput = document.createElement('input');
+                                sortInput.type = 'hidden';
+                                sortInput.name = 'sort';
+                                form.appendChild(sortInput);
+                            }
 
-                        if (!sortInput) {
-                            sortInput = document.createElement('input');
-                            sortInput.type = 'hidden';
-                            sortInput.name = 'sort';
-                            form.appendChild(sortInput);
-                        }
-
-                        sortInput.value = this.value;
-
-                        form.submit();
-                    ">
+                            sortInput.value = this.value;
+                            form.submit();
+                        ">
 
                         <option value="newest" {{ request('sort', 'newest') == 'newest' ? 'selected' : '' }}>
                             มาใหม่ล่าสุด
@@ -823,9 +871,9 @@
             </div>
 
 
-            <!-- ===================================================== -->
-            <!-- PRODUCT IMAGE MAP -->
-            <!-- ===================================================== -->
+            {{-- =====================================================
+                 PRODUCT IMAGE MAP
+            ====================================================== --}}
 
             @php
 
@@ -856,31 +904,31 @@
                         $productId = (int) $imageRow->product_id;
 
                         /*
-                    | เก็บแค่รูปแรกของแต่ละ product_id
-                    | เพราะ query เรียง is_main = 1 ก่อน
-                    */
+                         | เก็บแค่รูปแรกของแต่ละ product_id
+                         | เพราะ query เรียง is_main = 1 ก่อน
+                         */
 
                         if (!isset($productImageMap[$productId])) {
                             $productImageMap[$productId] = trim((string) $imageRow->image_path);
                         }
                     }
                 }
+
             @endphp
 
 
-            <!-- Product Cards -->
+            {{-- Product Cards --}}
 
             <div class="catalog-grid">
 
                 @forelse($products as $product)
-
                     @php
 
                         /*
-                    |--------------------------------------------------------------------------
-                    | รูปของสินค้านี้
-                    |--------------------------------------------------------------------------
-                    */
+                        |--------------------------------------------------------------------------
+                        | รูปของสินค้านี้
+                        |--------------------------------------------------------------------------
+                        */
 
                         $productId = (int) $product->product_id;
 
@@ -889,10 +937,10 @@
                         $productImageUrl = null;
 
                         /*
-                    |--------------------------------------------------------------------------
-                    | แปลง image_path เป็น URL
-                    |--------------------------------------------------------------------------
-                    */
+                        |--------------------------------------------------------------------------
+                        | แปลง image_path เป็น URL
+                        |--------------------------------------------------------------------------
+                        */
 
                         if (!empty($productImage)) {
                             if (filter_var($productImage, FILTER_VALIDATE_URL)) {
@@ -911,10 +959,10 @@
                         }
 
                         /*
-                    |--------------------------------------------------------------------------
-                    | Variants
-                    |--------------------------------------------------------------------------
-                    */
+                        |--------------------------------------------------------------------------
+                        | Variants
+                        |--------------------------------------------------------------------------
+                        */
 
                         $variants = $product->variants ?? collect();
 
@@ -939,13 +987,14 @@
                         $sizes = array_values(array_unique($sizes));
 
                         $colors = array_values(array_unique($colors));
+
                     @endphp
 
 
                     <div class="product-card">
 
 
-                        <!-- Product Image -->
+                        {{-- Product Image --}}
 
                         <a href="{{ route('products.show', $product->product_id) }}" class="product-img-wrap">
 
@@ -953,19 +1002,18 @@
                                 <img src="{{ $productImageUrl }}" alt="{{ $product->product_name }}" loading="eager"
                                     decoding="async" referrerpolicy="no-referrer"
                                     onerror="
-                                    this.onerror=null;
-                                    this.style.display='none';
+                                        this.onerror=null;
+                                        this.style.display='none';
 
-                                    const fallback =
-                                        this.parentElement.querySelector(
-                                            '.product-image-fallback'
-                                        );
+                                        const fallback =
+                                            this.parentElement.querySelector(
+                                                '.product-image-fallback'
+                                            );
 
-                                    if (fallback) {
-                                        fallback.style.display='flex';
-                                    }
-                                ">
-
+                                        if (fallback) {
+                                            fallback.style.display='flex';
+                                        }
+                                    ">
 
                                 <div class="product-image-fallback">
 
@@ -979,8 +1027,8 @@
                             @else
                                 <div class="product-image-fallback"
                                     style="
-                                    display:flex;
-                                ">
+                                        display:flex;
+                                    ">
 
                                     <i class="fa-regular fa-image"></i>
 
@@ -992,7 +1040,7 @@
                             @endif
 
 
-                            <!-- Badges -->
+                            {{-- Badges --}}
 
                             <div class="product-badges">
 
@@ -1027,7 +1075,7 @@
                             </div>
 
 
-                            <!-- Status -->
+                            {{-- Status --}}
 
                             @if ($product->status === 'available')
                                 <span class="status-badge status-available">
@@ -1048,9 +1096,9 @@
                             @elseif($product->status === 'maintenance')
                                 <span class="status-badge"
                                     style="
-                                    background:#dc2626;
-                                    color:#fff;
-                                ">
+                                        background:#dc2626;
+                                        color:#fff;
+                                    ">
 
                                     <i class="fa-solid fa-screwdriver-wrench"></i>
 
@@ -1060,9 +1108,9 @@
                             @else
                                 <span class="status-badge"
                                     style="
-                                    background:#6b7280;
-                                    color:#fff;
-                                ">
+                                        background:#6b7280;
+                                        color:#fff;
+                                    ">
                                     ปิดใช้งาน
                                 </span>
                             @endif
@@ -1070,12 +1118,12 @@
                         </a>
 
 
-                        <!-- Product Body -->
+                        {{-- Product Body --}}
 
                         <div class="product-body">
 
 
-                            <!-- Category -->
+                            {{-- Category --}}
 
                             <div class="product-cat">
 
@@ -1084,7 +1132,7 @@
                             </div>
 
 
-                            <!-- Product Name -->
+                            {{-- Product Name --}}
 
                             <a href="{{ route('products.show', $product->product_id) }}">
 
@@ -1097,7 +1145,7 @@
                             </a>
 
 
-                            <!-- Product Meta -->
+                            {{-- Product Meta --}}
 
                             <div class="product-meta">
 
@@ -1132,21 +1180,18 @@
 
                                     <i class="fa-solid fa-star"
                                         style="
-                                        color:#f59e0b;
-                                    "></i>
+                                            color:#f59e0b;
+                                        "></i>
 
                                     {{ $product->average_rating }}
 
-                                    (
-                                    {{ $product->reviews_count }}
-                                    )
-
+                                    ({{ $product->reviews_count }})
                                 </span>
 
                             </div>
 
 
-                            <!-- Product Footer -->
+                            {{-- Product Footer --}}
 
                             <div class="product-footer">
 
@@ -1158,10 +1203,10 @@
 
                                         <small
                                             style="
-                                            font-size:12px;
-                                            font-weight:normal;
-                                            color:#888;
-                                        ">
+                                                font-size:12px;
+                                                font-weight:normal;
+                                                color:#888;
+                                            ">
                                             / วัน
                                         </small>
 
@@ -1171,7 +1216,6 @@
                                     <span class="price-deposit">
 
                                         เงินมัดจำ
-
                                         ฿{{ number_format($product->deposit) }}
 
                                     </span>
@@ -1195,38 +1239,38 @@
 
                     <div
                         style="
-                        grid-column:1/-1;
-                        background:#fff;
-                        padding:60px 20px;
-                        text-align:center;
-                        border-radius:var(--radius-md);
-                        border:1px solid var(--border);
-                    ">
+                            grid-column:1/-1;
+                            background:#fff;
+                            padding:60px 20px;
+                            text-align:center;
+                            border-radius:var(--radius-md);
+                            border:1px solid var(--border);
+                        ">
 
                         <i class="fa-solid fa-magnifying-glass"
                             style="
-                            font-size:48px;
-                            color:#cbd5e1;
-                            margin-bottom:16px;
-                        "></i>
+                                font-size:48px;
+                                color:#cbd5e1;
+                                margin-bottom:16px;
+                            "></i>
 
 
                         <h3
                             style="
-                            font-size:20px;
-                            font-weight:700;
-                            margin-bottom:8px;
-                        ">
+                                font-size:20px;
+                                font-weight:700;
+                                margin-bottom:8px;
+                            ">
                             ไม่พบชุดที่ตรงกับเงื่อนไขการค้นหา
                         </h3>
 
 
                         <p
                             style="
-                            color:var(--text-muted);
-                            font-size:14px;
-                            margin-bottom:24px;
-                        ">
+                                color:var(--text-muted);
+                                font-size:14px;
+                                margin-bottom:24px;
+                            ">
                             ลองเปลี่ยนคำค้นหา
                             หรือกดล้างตัวกรองเพื่อดูชุดทั้งหมด
                         </p>
@@ -1242,13 +1286,152 @@
             </div>
 
 
-            <!-- Pagination -->
+            {{-- =====================================================
+                 CUSTOM PAGINATION
+            ====================================================== --}}
 
-            <div class="pagination-wrap">
+            @if ($products->hasPages())
 
-                {{ $products->links('pagination::bootstrap-5') }}
+                @php
 
-            </div>
+                    $currentPage = $products->currentPage();
+
+                    $lastPage = $products->lastPage();
+
+                    $startPage = max(1, $currentPage - 2);
+
+                    $endPage = min($lastPage, $currentPage + 2);
+
+                @endphp
+
+
+                <div class="pagination-wrap">
+
+
+                    {{-- จำนวนรายการ --}}
+
+                    <div class="pagination-info">
+
+                        แสดง
+
+                        <strong>
+                            {{ $products->firstItem() }}
+                        </strong>
+
+                        -
+
+                        <strong>
+                            {{ $products->lastItem() }}
+                        </strong>
+
+                        จากทั้งหมด
+
+                        <strong>
+                            {{ $products->total() }}
+                        </strong>
+
+                        รายการ
+
+                    </div>
+
+
+                    {{-- ปุ่ม Pagination --}}
+
+                    <div class="pagination-buttons">
+
+
+                        {{-- ก่อนหน้า --}}
+
+                        @if ($products->onFirstPage())
+                            <span class="page-btn disabled" aria-disabled="true">
+
+                                <i class="fa-solid fa-chevron-left"></i>
+
+                            </span>
+                        @else
+                            <a href="{{ request()->fullUrlWithQuery(['page' => $currentPage - 1]) }}" class="page-btn"
+                                aria-label="หน้าก่อนหน้า">
+
+                                <i class="fa-solid fa-chevron-left"></i>
+
+                            </a>
+                        @endif
+
+
+                        {{-- หน้าแรก --}}
+
+                        @if ($startPage > 1)
+
+                            <a href="{{ request()->fullUrlWithQuery(['page' => 1]) }}" class="page-btn">
+                                1
+                            </a>
+
+                            @if ($startPage > 2)
+                                <span class="page-dots">
+                                    ...
+                                </span>
+                            @endif
+
+                        @endif
+
+
+                        {{-- หมายเลขหน้า --}}
+
+                        @for ($page = $startPage; $page <= $endPage; $page++)
+                            @if ($page == $currentPage)
+                                <span class="page-btn active" aria-current="page">
+                                    {{ $page }}
+                                </span>
+                            @else
+                                <a href="{{ request()->fullUrlWithQuery(['page' => $page]) }}" class="page-btn">
+                                    {{ $page }}
+                                </a>
+                            @endif
+                        @endfor
+
+
+                        {{-- หน้าสุดท้าย --}}
+
+                        @if ($endPage < $lastPage)
+
+                            @if ($endPage < $lastPage - 1)
+                                <span class="page-dots">
+                                    ...
+                                </span>
+                            @endif
+
+
+                            <a href="{{ request()->fullUrlWithQuery(['page' => $lastPage]) }}" class="page-btn">
+                                {{ $lastPage }}
+                            </a>
+
+                        @endif
+
+
+                        {{-- ถัดไป --}}
+
+                        @if ($products->hasMorePages())
+                            <a href="{{ request()->fullUrlWithQuery(['page' => $currentPage + 1]) }}" class="page-btn"
+                                aria-label="หน้าถัดไป">
+
+                                <i class="fa-solid fa-chevron-right"></i>
+
+                            </a>
+                        @else
+                            <span class="page-btn disabled" aria-disabled="true">
+
+                                <i class="fa-solid fa-chevron-right"></i>
+
+                            </span>
+                        @endif
+
+
+                    </div>
+
+                </div>
+
+            @endif
+
 
         </main>
 

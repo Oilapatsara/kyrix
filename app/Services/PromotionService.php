@@ -14,7 +14,7 @@ class PromotionService
      * - หรือ ยอดเช่าครบ 2,000 บาทขึ้นไป ทางร้านลดให้ 20%
      *
      * @param int $itemCount จำนวนรายการชุดที่เช่า
-     * @param float $rentalTotal ยอดค่าเช่าชุดรวม (ก่อนคิดมัดจำและบริการเสริม)
+     * @param float $rentalTotal ยอดค่าเช่าชุดรวม (ก่อนคิดมัดจำ)
      * @return array
      */
     public static function calculateDiscount(int $itemCount, float $rentalTotal): array
