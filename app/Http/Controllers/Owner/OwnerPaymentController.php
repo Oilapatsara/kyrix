@@ -16,53 +16,35 @@ class OwnerPaymentController extends Controller
     {
         $status = $request->query('status');
 
-        /*
-        |--------------------------------------------------------------------------
-        | ดึงข้อมูล Payment พร้อม Rental และ Customer
-        |--------------------------------------------------------------------------
-        */
+        // ดึงข้อมูล Payment พร้อม Rental และ Customer
         $query = Payment::query()
             ->with([
                 'rental.customer',
             ])
             ->orderByDesc('payment_id');
 
-        /*
-        |--------------------------------------------------------------------------
-        | Filter Status
-        |--------------------------------------------------------------------------
-        */
-        if (
-            in_array(
-                $status,
-                [
-                    'pending',
-                    'approved',
-                    'rejected',
-                ],
-                true
-            )
-        ) {
+        // Filter Status
+        if (in_array(
+            $status,
+            [
+                'pending',
+                'approved',
+                'rejected',
+            ],
+            true
+        )) {
             $query->where(
                 'status',
                 $status
             );
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | Pagination
-        |--------------------------------------------------------------------------
-        */
+        // Pagination
         $payments = $query
             ->paginate(15)
             ->withQueryString();
 
-        /*
-        |--------------------------------------------------------------------------
-        | จำนวนแต่ละสถานะ
-        |--------------------------------------------------------------------------
-        */
+        // จำนวนแต่ละสถานะ
         $statusCounts = Payment::query()
             ->select(
                 'status',
@@ -79,12 +61,10 @@ class OwnerPaymentController extends Controller
                 'pending',
                 0
             ),
-
             'approved' => $statusCounts->get(
                 'approved',
                 0
             ),
-
             'rejected' => $statusCounts->get(
                 'rejected',
                 0
@@ -103,51 +83,47 @@ class OwnerPaymentController extends Controller
     /**
      * อนุมัติการชำระเงิน
      *
-     * Flow:
-     *
+     * Flow ปกติ:
      * pending
      *   ↓
      * approved
      *
-     * และ Rental:
-     *
+     * Rental:
      * pending_verification
      *   ↓
      * renting
+     *
+     * กรณีรายการเก่าที่ Rental เป็น renting แล้ว:
+     * pending
+     *   ↓
+     * approved
+     *
+     * Rental จะยังคงเป็น renting
      */
     public function approve($id)
     {
         try {
             DB::transaction(
                 function () use ($id) {
-
-                    /*
-                    |--------------------------------------------------------------------------
-                    | Lock Payment
-                    |--------------------------------------------------------------------------
-                    */
+                    // Lock Payment เพื่อป้องกันการกดอนุมัติซ้ำ
                     $payment = Payment::query()
                         ->lockForUpdate()
                         ->findOrFail($id);
 
-                    /*
-                    |--------------------------------------------------------------------------
-                    | ป้องกันอนุมัติซ้ำ
-                    |--------------------------------------------------------------------------
-                    */
-                    if (
-                        $payment->status === 'approved'
-                    ) {
+                    // ต้องอนุมัติเฉพาะ Payment ที่ยัง pending
+                    if ($payment->status !== 'pending') {
+                        if ($payment->status === 'approved') {
+                            throw new \RuntimeException(
+                                'รายการชำระเงินนี้ได้รับการอนุมัติแล้ว'
+                            );
+                        }
+
                         throw new \RuntimeException(
-                            'รายการชำระเงินนี้ได้รับการอนุมัติแล้ว'
+                            'รายการชำระเงินนี้ไม่อยู่ในสถานะที่สามารถอนุมัติได้'
                         );
                     }
 
-                    /*
-                    |--------------------------------------------------------------------------
-                    | ตรวจสอบว่ามี Rental
-                    |--------------------------------------------------------------------------
-                    */
+                    // ตรวจสอบ Rental
                     $rental = $payment->rental;
 
                     if (!$rental) {
@@ -157,51 +133,48 @@ class OwnerPaymentController extends Controller
                     }
 
                     /*
-                    |--------------------------------------------------------------------------
-                    | อนุมัติเฉพาะรายการที่รอตรวจสอบ
-                    |--------------------------------------------------------------------------
-                    */
-                    if (
-                        !in_array(
-                            $payment->status,
-                            [
-                                'pending',
-                            ],
-                            true
-                        )
-                    ) {
+                     * อนุญาต 2 กรณี
+                     *
+                     * 1. pending_verification
+                     *    = flow ปกติ
+                     *
+                     * 2. renting
+                     *    = รายการเก่าที่ถูกเปลี่ยนเป็น renting
+                     *      ก่อนอนุมัติ Payment
+                     */
+                    if (!in_array(
+                        $rental->status,
+                        [
+                            'pending_verification',
+                            'renting',
+                        ],
+                        true
+                    )) {
                         throw new \RuntimeException(
-                            'รายการชำระเงินนี้ไม่อยู่ในสถานะที่สามารถอนุมัติได้'
+                            'รายการเช่านี้ไม่อยู่ในสถานะที่สามารถตรวจสอบการชำระเงินได้'
                         );
                     }
 
-                    /*
-                    |--------------------------------------------------------------------------
-                    | 1. อัปเดต Payment
-                    |--------------------------------------------------------------------------
-                    |
-                    | สำคัญ:
-                    | - status = approved
-                    | - paid_at = เวลาที่เจ้าของร้านอนุมัติ
-                    |
-                    */
+                    // อัปเดต Payment
+                    // status = approved
+                    // paid_at = เวลาที่เจ้าของร้านอนุมัติ
                     $payment->update([
                         'status' => 'approved',
                         'paid_at' => now(),
                     ]);
 
                     /*
-                    |--------------------------------------------------------------------------
-                    | 2. อัปเดต Rental
-                    |--------------------------------------------------------------------------
-                    |
-                    | เมื่ออนุมัติการชำระเงินแล้ว
-                    | รายการเช่าต้องเข้าสู่ "กำลังเช่า"
-                    |
-                    */
-                    $rental->update([
-                        'status' => 'renting',
-                    ]);
+                     * ถ้า Rental ยังรอตรวจสอบ
+                     * เปลี่ยนเป็นกำลังเช่า
+                     *
+                     * ถ้า Rental เป็น renting อยู่แล้ว
+                     * ไม่ต้องเปลี่ยนซ้ำ
+                     */
+                    if ($rental->status === 'pending_verification') {
+                        $rental->update([
+                            'status' => 'renting',
+                        ]);
+                    }
                 }
             );
 
@@ -209,10 +182,9 @@ class OwnerPaymentController extends Controller
                 ->back()
                 ->with(
                     'success',
-                    'อนุมัติการชำระเงินเรียบร้อยแล้ว รายการเช่าเปลี่ยนเป็น "กำลังเช่า"'
+                    'อนุมัติการชำระเงินเรียบร้อยแล้ว ยอดเงินถูกบันทึกเป็นยอดชำระแล้ว'
                 );
         } catch (\RuntimeException $e) {
-
             return redirect()
                 ->back()
                 ->with(
@@ -220,7 +192,6 @@ class OwnerPaymentController extends Controller
                     $e->getMessage()
                 );
         } catch (\Throwable $e) {
-
             return redirect()
                 ->back()
                 ->with(
@@ -234,13 +205,11 @@ class OwnerPaymentController extends Controller
      * ปฏิเสธการชำระเงิน
      *
      * Flow:
-     *
      * pending
      *   ↓
      * rejected
      *
      * Rental:
-     *
      * pending_verification
      *   ↓
      * pending_payment
@@ -251,8 +220,7 @@ class OwnerPaymentController extends Controller
     ) {
         $request->validate(
             [
-                'note' =>
-                    'nullable|string|max:500',
+                'note' => 'nullable|string|max:500',
             ],
             [
                 'note.max' =>
@@ -266,34 +234,25 @@ class OwnerPaymentController extends Controller
                     $request,
                     $id
                 ) {
-
-                    /*
-                    |--------------------------------------------------------------------------
-                    | Lock Payment
-                    |--------------------------------------------------------------------------
-                    */
+                    // Lock Payment
                     $payment = Payment::query()
                         ->lockForUpdate()
                         ->findOrFail($id);
 
-                    /*
-                    |--------------------------------------------------------------------------
-                    | ป้องกันปฏิเสธรายการที่อนุมัติแล้ว
-                    |--------------------------------------------------------------------------
-                    */
-                    if (
-                        $payment->status === 'approved'
-                    ) {
+                    // ต้องเป็น pending เท่านั้น
+                    if ($payment->status !== 'pending') {
+                        if ($payment->status === 'approved') {
+                            throw new \RuntimeException(
+                                'รายการนี้อนุมัติการชำระเงินแล้ว ไม่สามารถปฏิเสธได้'
+                            );
+                        }
+
                         throw new \RuntimeException(
-                            'รายการนี้อนุมัติการชำระเงินแล้ว ไม่สามารถปฏิเสธได้'
+                            'รายการชำระเงินนี้ไม่อยู่ในสถานะที่สามารถปฏิเสธได้'
                         );
                     }
 
-                    /*
-                    |--------------------------------------------------------------------------
-                    | ตรวจสอบ Rental
-                    |--------------------------------------------------------------------------
-                    */
+                    // ตรวจสอบ Rental
                     $rental = $payment->rental;
 
                     if (!$rental) {
@@ -302,24 +261,14 @@ class OwnerPaymentController extends Controller
                         );
                     }
 
-                    /*
-                    |--------------------------------------------------------------------------
-                    | ต้องเป็น pending เท่านั้น
-                    |--------------------------------------------------------------------------
-                    */
-                    if (
-                        $payment->status !== 'pending'
-                    ) {
+                    // ปฏิเสธได้เฉพาะ Rental ที่กำลังรอตรวจสอบ
+                    if ($rental->status !== 'pending_verification') {
                         throw new \RuntimeException(
-                            'รายการชำระเงินนี้ไม่อยู่ในสถานะที่สามารถปฏิเสธได้'
+                            'รายการเช่านี้ไม่ได้อยู่ในสถานะรอตรวจสอบการชำระเงิน จึงไม่สามารถปฏิเสธรายการนี้ได้'
                         );
                     }
 
-                    /*
-                    |--------------------------------------------------------------------------
-                    | หมายเหตุ
-                    |--------------------------------------------------------------------------
-                    */
+                    // รับหมายเหตุจากเจ้าของร้าน
                     $note = trim(
                         (string) (
                             $request->input(
@@ -329,31 +278,18 @@ class OwnerPaymentController extends Controller
                         )
                     );
 
-                    /*
-                    |--------------------------------------------------------------------------
-                    | อัปเดต Payment
-                    |--------------------------------------------------------------------------
-                    */
+                    // อัปเดต Payment
                     $payment->update([
                         'status' => 'rejected',
                         'note' => $note !== ''
                             ? $note
                             : $payment->note,
-
-                        /*
-                        | ป้องกันกรณีมี paid_at จากข้อมูลเก่า
-                        */
                         'paid_at' => null,
                     ]);
 
-                    /*
-                    |--------------------------------------------------------------------------
-                    | Rental กลับไปสถานะรอชำระเงิน
-                    |--------------------------------------------------------------------------
-                    */
+                    // Rental กลับไปสถานะรอชำระเงิน
                     $rental->update([
-                        'status' =>
-                            'pending_payment',
+                        'status' => 'pending_payment',
                     ]);
                 }
             );
@@ -365,7 +301,6 @@ class OwnerPaymentController extends Controller
                     'ปฏิเสธรายการชำระเงินเรียบร้อยแล้ว รายการเช่ากลับไปสถานะ "รอชำระเงิน"'
                 );
         } catch (\RuntimeException $e) {
-
             return redirect()
                 ->back()
                 ->with(
@@ -373,7 +308,6 @@ class OwnerPaymentController extends Controller
                     $e->getMessage()
                 );
         } catch (\Throwable $e) {
-
             return redirect()
                 ->back()
                 ->with(

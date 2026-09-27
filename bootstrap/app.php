@@ -17,8 +17,17 @@ return Application::configure(basePath: dirname(__DIR__))
         
         $middleware->validateCsrfTokens(except: [
             '/logout',
+            'owner/bookings/*/status',
+            'owner/bookings/*',
+            'owner/payments/*',
+            'owner/returns/*',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        $exceptions->render(function (\Illuminate\Session\TokenMismatchException $e, $request) {
+            return redirect()
+                ->back()
+                ->withInput($request->except('_token', '_method'))
+                ->with('error', 'เซสชันหมดอายุ หรือ CSRF Token ไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง');
+        });
     })->create();
