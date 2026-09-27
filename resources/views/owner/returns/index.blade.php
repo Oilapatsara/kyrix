@@ -1110,11 +1110,7 @@
                                 |
                                 */
 
-                                $canInspectReturn =
-                                    $returnStatus === 'returned_requested' &&
-                                    ($returnMethod === 'store' ||
-                                        ($returnMethod === 'parcel' && $returnShippingStatus === 'ถึงร้านแล้ว') ||
-                                        ($returnMethod === '' && $returnTrackingNo === ''));
+                                $canInspectReturn = ($returnStatus === 'returned_requested');
 
                                 /*
                                 |--------------------------------------------------------------------------

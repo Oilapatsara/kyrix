@@ -440,13 +440,8 @@ class OwnerReturnController extends Controller
                         );
                     }
 
-                    if (
-                        $shippingStatus !==
-                        'ถึงร้านแล้ว'
-                    ) {
-                        throw new \RuntimeException(
-                            'ยังไม่สามารถตรวจรับชุดได้ เนื่องจากพัสดุส่งคืนยังไม่ถึงร้าน'
-                        );
+                    if ($shippingStatus !== 'ถึงร้านแล้ว') {
+                        $rental->return_shipping_status = 'ถึงร้านแล้ว';
                     }
                 }
 
