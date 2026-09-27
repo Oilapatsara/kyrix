@@ -19,11 +19,11 @@ class OwnerReportController extends Controller
         $currentYear  = Carbon::now()->year;
 
         // Total Approved Revenue
-        $totalRevenue = (float) Payment::where('status', 'approved')->sum('payment_amount');
+        $totalRevenue = (float) Payment::where('status', 'approved')->sum('amount');
         $monthRevenue = (float) Payment::where('status', 'approved')
-            ->whereMonth('payment_date', $currentMonth)
-            ->whereYear('payment_date', $currentYear)
-            ->sum('payment_amount');
+            ->whereMonth(DB::raw('COALESCE(paid_at, created_at)'), $currentMonth)
+            ->whereYear(DB::raw('COALESCE(paid_at, created_at)'), $currentYear)
+            ->sum('amount');
 
         if ($monthRevenue == 0) {
             $monthRevenue = $totalRevenue;
@@ -105,8 +105,8 @@ class OwnerReportController extends Controller
         ];
 
         $dailyPayments = Payment::where('status', 'approved')
-            ->whereBetween('payment_date', [$startDate, $endDate])
-            ->selectRaw('DATE(payment_date) as p_date, SUM(payment_amount) as total, COUNT(payment_id) as p_count')
+            ->whereBetween(DB::raw('COALESCE(paid_at, created_at)'), [$startDate, $endDate])
+            ->selectRaw('DATE(COALESCE(paid_at, created_at)) as p_date, SUM(amount) as total, COUNT(payment_id) as p_count')
             ->groupBy('p_date')
             ->get()
             ->keyBy('p_date');
@@ -124,8 +124,8 @@ class OwnerReportController extends Controller
         $monthlyCounts = array_fill(0, 12, 0);
 
         $monthPayments = Payment::where('status', 'approved')
-            ->whereYear('payment_date', $currentYear)
-            ->selectRaw('MONTH(payment_date) as p_month, SUM(payment_amount) as total, COUNT(payment_id) as p_count')
+            ->whereYear(DB::raw('COALESCE(paid_at, created_at)'), $currentYear)
+            ->selectRaw('MONTH(COALESCE(paid_at, created_at)) as p_month, SUM(amount) as total, COUNT(payment_id) as p_count')
             ->groupBy('p_month')
             ->get()
             ->keyBy('p_month');
