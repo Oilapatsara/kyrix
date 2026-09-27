@@ -2,6 +2,12 @@
 
 use Illuminate\Support\Facades\Route;
 
+/*
+|--------------------------------------------------------------------------
+| Controllers
+|--------------------------------------------------------------------------
+*/
+
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
@@ -70,11 +76,24 @@ Route::prefix('cart')
 |--------------------------------------------------------------------------
 */
 
+/*
+|--------------------------------------------------------------------------
+| Login
+|--------------------------------------------------------------------------
+*/
+
 Route::get('/login', [AuthController::class, 'showLogin'])
     ->name('login');
 
 Route::post('/login', [AuthController::class, 'login'])
     ->name('login.submit');
+
+
+/*
+|--------------------------------------------------------------------------
+| Register
+|--------------------------------------------------------------------------
+*/
 
 Route::get('/register', [AuthController::class, 'showRegister'])
     ->name('register');
@@ -82,11 +101,25 @@ Route::get('/register', [AuthController::class, 'showRegister'])
 Route::post('/register', [AuthController::class, 'register'])
     ->name('register.submit');
 
+
+/*
+|--------------------------------------------------------------------------
+| Forgot Password
+|--------------------------------------------------------------------------
+*/
+
 Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])
     ->name('password.request');
 
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])
     ->name('password.reset.submit');
+
+
+/*
+|--------------------------------------------------------------------------
+| Logout
+|--------------------------------------------------------------------------
+*/
 
 Route::post('/logout', [AuthController::class, 'logout'])
     ->name('logout');
@@ -94,15 +127,39 @@ Route::post('/logout', [AuthController::class, 'logout'])
 
 /*
 |--------------------------------------------------------------------------
-| SOCIAL LOGIN
+| GOOGLE SOCIAL LOGIN
+|--------------------------------------------------------------------------
+|
+| ใช้สำหรับทั้ง
+|
+| 1. เข้าสู่ระบบด้วย Google
+| 2. สมัครสมาชิกด้วย Google
+|
+| URL:
+| /auth/google
+|
+| Callback:
+| /auth/google/callback
+|
 |--------------------------------------------------------------------------
 */
 
-Route::get('/auth/{provider}', [SocialAuthController::class, 'redirect'])
-    ->name('social.redirect');
+/*
+| ส่งผู้ใช้ไปหน้า Google
+*/
 
-Route::get('/auth/{provider}/callback', [SocialAuthController::class, 'callback'])
-    ->name('social.callback');
+Route::get('/auth/google', [SocialAuthController::class, 'redirect'])
+    ->name('social.redirect')
+    ->defaults('provider', 'google');
+
+
+/*
+| รับข้อมูลกลับจาก Google
+*/
+
+Route::get('/auth/google/callback', [SocialAuthController::class, 'callback'])
+    ->name('social.callback')
+    ->defaults('provider', 'google');
 
 
 /*
@@ -276,10 +333,19 @@ Route::middleware(['auth', 'owner'])
             ->name('dresses.')
             ->group(function () {
 
+                /*
+                | รายการชุด
+                */
+
                 Route::get(
                     '/',
                     [OwnerDressController::class, 'index']
                 )->name('index');
+
+
+                /*
+                | เพิ่มชุด
+                */
 
                 Route::get(
                     '/create',
@@ -420,19 +486,30 @@ Route::middleware(['auth', 'owner'])
             ->name('returns.')
             ->group(function () {
 
-                // หน้าจัดการรับคืนชุด
+                /*
+                | หน้าจัดการรับคืนชุด
+                */
+
                 Route::get(
                     '/',
                     [OwnerReturnController::class, 'index']
                 )->name('index');
 
-                // อัปเดตสถานะพัสดุส่งคืน
+
+                /*
+                | อัปเดตสถานะพัสดุส่งคืน
+                */
+
                 Route::post(
                     '/{id}/shipping-status',
                     [OwnerReturnController::class, 'updateReturnShippingStatus']
                 )->name('update-status');
 
-                // ตรวจรับชุดและจัดการเงินมัดจำ
+
+                /*
+                | ตรวจรับชุดและจัดการเงินมัดจำ
+                */
+
                 Route::post(
                     '/{id}/confirm',
                     [OwnerReturnController::class, 'confirmReturn']
@@ -450,10 +527,19 @@ Route::middleware(['auth', 'owner'])
             ->name('customers.')
             ->group(function () {
 
+                /*
+                | รายชื่อลูกค้า
+                */
+
                 Route::get(
                     '/',
                     [OwnerCustomerController::class, 'index']
                 )->name('index');
+
+
+                /*
+                | เพิ่มลูกค้า
+                */
 
                 Route::get(
                     '/create',
@@ -465,10 +551,20 @@ Route::middleware(['auth', 'owner'])
                     [OwnerCustomerController::class, 'store']
                 )->name('store');
 
+
+                /*
+                | ดูข้อมูลลูกค้า
+                */
+
                 Route::get(
                     '/{id}',
                     [OwnerCustomerController::class, 'show']
                 )->name('show');
+
+
+                /*
+                | แก้ไขลูกค้า
+                */
 
                 Route::get(
                     '/{id}/edit',
@@ -479,6 +575,11 @@ Route::middleware(['auth', 'owner'])
                     '/{id}',
                     [OwnerCustomerController::class, 'update']
                 )->name('update');
+
+
+                /*
+                | ลบลูกค้า
+                */
 
                 Route::delete(
                     '/{id}',

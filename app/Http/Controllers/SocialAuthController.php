@@ -6,72 +6,196 @@ use App\Models\User;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
-use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Laravel\Socialite\Facades\Socialite;
 
 class SocialAuthController extends Controller
 {
-    public function redirect($provider)
+    /**
+     * ============================================================
+     * GOOGLE LOGIN / REGISTER
+     * ============================================================
+     */
+
+    /**
+     * ส่งผู้ใช้ไป Google
+     *
+     * URL:
+     * /auth/google
+     */
+    public function redirect($provider = 'google')
     {
-        if (!in_array($provider, ['google'], true)) {
+        // ระบบนี้ใช้ Google เท่านั้น
+        if ($provider !== 'google') {
             abort(404);
         }
 
-        return Socialite::driver($provider)->redirect();
+        /*
+        |--------------------------------------------------------------------------
+        | ตรวจสอบ Google OAuth
+        |--------------------------------------------------------------------------
+        */
+
+        $clientId = config('services.google.client_id');
+        $clientSecret = config('services.google.client_secret');
+        $redirect = config('services.google.redirect');
+
+        if (empty($clientId)) {
+            return redirect()
+                ->route('login')
+                ->with(
+                    'error',
+                    'ไม่พบ GOOGLE_CLIENT_ID กรุณาตรวจสอบไฟล์ .env และ config/services.php'
+                );
+        }
+
+        if (empty($clientSecret)) {
+            return redirect()
+                ->route('login')
+                ->with(
+                    'error',
+                    'ไม่พบ GOOGLE_CLIENT_SECRET กรุณาตรวจสอบไฟล์ .env และ config/services.php'
+                );
+        }
+
+        if (empty($redirect)) {
+            return redirect()
+                ->route('login')
+                ->with(
+                    'error',
+                    'ไม่พบ GOOGLE_REDIRECT_URI กรุณาตรวจสอบไฟล์ .env และ config/services.php'
+                );
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | เริ่ม Google OAuth
+        |--------------------------------------------------------------------------
+        */
+
+        return Socialite::driver('google')
+            ->redirect();
     }
 
-    public function callback(Request $request, $provider)
+
+    /**
+     * รับข้อมูลกลับจาก Google
+     *
+     * URL:
+     * /auth/google/callback
+     */
+    public function callback(Request $request, $provider = 'google')
     {
-        if (!in_array($provider, ['google'], true)) {
+        // ระบบนี้ใช้ Google เท่านั้น
+        if ($provider !== 'google') {
             abort(404);
         }
 
+        $transactionStarted = false;
+
         try {
-            $socialUser = Socialite::driver($provider)->user();
+
+            /*
+            |--------------------------------------------------------------------------
+            | ตรวจสอบ Google OAuth Configuration
+            |--------------------------------------------------------------------------
+            */
+
+            $clientId = config('services.google.client_id');
+            $clientSecret = config('services.google.client_secret');
+            $redirect = config('services.google.redirect');
+
+            if (
+                empty($clientId) ||
+                empty($clientSecret) ||
+                empty($redirect)
+            ) {
+                return redirect()
+                    ->route('login')
+                    ->with(
+                        'error',
+                        'การตั้งค่า Google Login ไม่สมบูรณ์ กรุณาตรวจสอบ .env และ config/services.php'
+                    );
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | รับข้อมูลจาก Google
+            |--------------------------------------------------------------------------
+            */
+
+            $socialUser = Socialite::driver('google')->user();
+
+            $googleId = $socialUser->getId();
+            $email = $socialUser->getEmail();
+
+            $name = $socialUser->getName()
+                ?: $socialUser->getNickname()
+                ?: 'ผู้ใช้งาน Google';
+
+            $avatar = $socialUser->getAvatar();
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | ตรวจสอบข้อมูลจาก Google
+            |--------------------------------------------------------------------------
+            */
+
+            if (empty($googleId)) {
+                return redirect()
+                    ->route('login')
+                    ->with(
+                        'error',
+                        'ไม่สามารถรับรหัสบัญชี Google ได้ กรุณาลองใหม่อีกครั้ง'
+                    );
+            }
+
+            if (empty($email)) {
+                return redirect()
+                    ->route('login')
+                    ->with(
+                        'error',
+                        'ไม่สามารถรับอีเมลจากบัญชี Google ได้ กรุณาลองใหม่อีกครั้ง'
+                    );
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | เริ่ม Database Transaction
+            |--------------------------------------------------------------------------
+            */
 
             DB::beginTransaction();
+            $transactionStarted = true;
+
 
             /*
             |--------------------------------------------------------------------------
-            | ข้อมูลจาก Google
+            | ค้นหา User จาก Google
             |--------------------------------------------------------------------------
             */
 
-            $providerId = (string) $socialUser->getId();
-
-            $email = $socialUser->getEmail()
-                ?: ($provider . '_' . $providerId . '@example.com');
-
-            $rawName = trim(
-                $socialUser->getName()
-                    ?: $socialUser->getNickname()
-                    ?: 'ผู้ใช้งาน Google'
-            );
-
-            /*
-            |--------------------------------------------------------------------------
-            | ค้นหา User จาก provider + provider_id ก่อน
-            |--------------------------------------------------------------------------
-            */
-
-            $user = User::where('provider', $provider)
-                ->where('provider_id', $providerId)
-                ->where('role', 'customer')
+            $user = User::where('provider', 'google')
+                ->where('provider_id', $googleId)
                 ->first();
 
+
             /*
             |--------------------------------------------------------------------------
-            | ถ้ายังไม่เจอ ให้ค้นหาจาก Email เฉพาะ Customer
+            | ถ้าไม่พบ ให้ค้นหาจาก Email
             |--------------------------------------------------------------------------
             */
 
-            if (!$user && $socialUser->getEmail()) {
-                $user = User::where('email', $socialUser->getEmail())
-                    ->where('role', 'customer')
-                    ->first();
+            if (!$user) {
+                $user = User::where('email', $email)->first();
             }
+
 
             /*
             |--------------------------------------------------------------------------
@@ -80,52 +204,68 @@ class SocialAuthController extends Controller
             */
 
             if (!$user) {
+
                 $user = User::create([
-                    'name' => $rawName,
+                    'name' => $name,
+
                     'email' => $email,
-                    'password' => Hash::make(Str::random(32)),
-                    'provider' => $provider,
-                    'provider_id' => $providerId,
-                    'avatar' => $socialUser->getAvatar(),
+
+                    'password' => Hash::make(
+                        Str::random(64)
+                    ),
+
+                    'provider' => 'google',
+
+                    'provider_id' => $googleId,
+
+                    'avatar' => $avatar,
+
                     'role' => 'customer',
-                    'status' => 'active',
+
+                    'status' => 1,
                 ]);
+
             } else {
+
                 /*
                 |--------------------------------------------------------------------------
-                | อัปเดตข้อมูล Social Login ของ User เดิม
+                | มี User อยู่แล้ว
+                | อัปเดตข้อมูล Google
                 |--------------------------------------------------------------------------
                 */
 
                 $user->update([
-                    'provider' => $provider,
-                    'provider_id' => $providerId,
-                    'avatar' => $socialUser->getAvatar(),
+                    'provider' => 'google',
+                    'provider_id' => $googleId,
+                    'avatar' => $avatar,
                 ]);
             }
 
+
             /*
             |--------------------------------------------------------------------------
-            | ตรวจสอบสถานะบัญชี
+            | ตรวจสอบ Role
             |--------------------------------------------------------------------------
+            |
+            | ถ้าเป็น Owner/Admin อยู่แล้ว
+            | จะไม่เปลี่ยน role เป็น customer
+            |
             */
 
-            if ($user->status !== 'active') {
-                DB::rollBack();
-
-                return redirect()
-                    ->route('login')
-                    ->with(
-                        'error',
-                        'บัญชีของคุณถูกปิดการใช้งาน'
-                    );
+            if (empty($user->role)) {
+                $user->update([
+                    'role' => 'customer',
+                ]);
             }
 
+
             /*
             |--------------------------------------------------------------------------
-            | แยกชื่อสำหรับ Customer
+            | แยกชื่อ - นามสกุล
             |--------------------------------------------------------------------------
             */
+
+            $rawName = trim($name);
 
             $parts = preg_split(
                 '/\s+/u',
@@ -136,9 +276,10 @@ class SocialAuthController extends Controller
             $firstName = $parts[0] ?? $rawName;
             $lastName = $parts[1] ?? '-';
 
+
             /*
             |--------------------------------------------------------------------------
-            | ค้นหา Customer จาก user_id ก่อน
+            | ค้นหา Customer จาก user_id
             |--------------------------------------------------------------------------
             */
 
@@ -147,117 +288,205 @@ class SocialAuthController extends Controller
                 $user->user_id
             )->first();
 
+
             /*
             |--------------------------------------------------------------------------
-            | ถ้ายังไม่เจอ ให้ค้นหาจาก email
+            | ถ้ายังไม่พบ Customer
+            | ค้นหาจาก Email
             |--------------------------------------------------------------------------
             */
 
             if (!$customer) {
+
                 $customer = Customer::where(
                     'email',
                     $email
                 )->first();
             }
 
+
             /*
             |--------------------------------------------------------------------------
-            | ถ้ายังไม่มี Customer ให้สร้าง
+            | ถ้ายังไม่มี Customer
+            | สร้าง Customer ใหม่
             |--------------------------------------------------------------------------
             */
 
             if (!$customer) {
+
                 $customer = Customer::create([
                     'user_id' => $user->user_id,
+
                     'first_name' => $firstName,
+
                     'last_name' => $lastName,
+
                     'email' => $email,
-                    'password' => $user->password,
+
+                    'password' => Hash::make(
+                        Str::random(64)
+                    ),
                 ]);
+
             } else {
+
                 /*
                 |--------------------------------------------------------------------------
-                | ผูก Customer เดิมเข้ากับ User
+                | Customer มีอยู่แล้ว
                 |--------------------------------------------------------------------------
                 */
 
-                $customerData = [];
+                $updateData = [];
 
-                if (!$customer->user_id) {
-                    $customerData['user_id'] = $user->user_id;
+
+                /*
+                | เชื่อม User
+                */
+
+                if (empty($customer->user_id)) {
+                    $updateData['user_id'] = $user->user_id;
                 }
 
-                if (!$customer->first_name) {
-                    $customerData['first_name'] = $firstName;
+
+                /*
+                | อัปเดตชื่อ ถ้ายังไม่มี
+                */
+
+                if (empty($customer->first_name)) {
+                    $updateData['first_name'] = $firstName;
                 }
 
-                if (!$customer->last_name) {
-                    $customerData['last_name'] = $lastName;
+
+                if (
+                    empty($customer->last_name) ||
+                    $customer->last_name === '-'
+                ) {
+                    $updateData['last_name'] = $lastName;
                 }
 
-                if (!empty($customerData)) {
-                    $customer->update($customerData);
+
+                /*
+                | อัปเดต Email ถ้ายังไม่มี
+                */
+
+                if (empty($customer->email)) {
+                    $updateData['email'] = $email;
+                }
+
+
+                /*
+                | บันทึกข้อมูลที่เปลี่ยน
+                */
+
+                if (!empty($updateData)) {
+                    $customer->update($updateData);
                 }
             }
 
-            DB::commit();
 
             /*
             |--------------------------------------------------------------------------
-            | Login Laravel Auth
+            | Commit
+            |--------------------------------------------------------------------------
+            */
+
+            DB::commit();
+            $transactionStarted = false;
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Login Laravel
             |--------------------------------------------------------------------------
             */
 
             Auth::login($user, true);
 
+
             /*
             |--------------------------------------------------------------------------
-            | สร้าง Session ใหม่
+            | Regenerate Session
             |--------------------------------------------------------------------------
             */
 
             $request->session()->regenerate();
 
+
             /*
             |--------------------------------------------------------------------------
-            | Session สำหรับระบบลูกค้า
+            | Session Customer
             |--------------------------------------------------------------------------
             */
 
             $request->session()->put([
                 'customer_logged_in' => true,
+
                 'customer_id' => $customer->customer_id,
+
                 'customer_name' => trim(
-                    ($customer->first_name ?? '') . ' ' .
+                    ($customer->first_name ?? '') .
+                    ' ' .
                     ($customer->last_name ?? '')
                 ),
+
                 'customer_email' => $customer->email,
             ]);
 
+
             /*
             |--------------------------------------------------------------------------
-            | ส่งไป Dashboard ลูกค้า
+            | ส่งไปหน้า Dashboard
             |--------------------------------------------------------------------------
             */
 
             return redirect()
-                ->intended(route('customer.dashboard'))
+                ->route('customer.dashboard')
                 ->with(
                     'success',
                     'เข้าสู่ระบบด้วย Google สำเร็จแล้ว!'
                 );
 
+
         } catch (\Throwable $e) {
 
-            DB::rollBack();
+            /*
+            |--------------------------------------------------------------------------
+            | Rollback เฉพาะเมื่อ Transaction ถูกเปิดจริง
+            |--------------------------------------------------------------------------
+            */
 
-            report($e);
+            if ($transactionStarted) {
+                DB::rollBack();
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | บันทึก Error ไว้ใน Laravel Log
+            |--------------------------------------------------------------------------
+            */
+
+            Log::error(
+                'Google Login Error',
+                [
+                    'message' => $e->getMessage(),
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                ]
+            );
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | กลับหน้า Login
+            |--------------------------------------------------------------------------
+            */
 
             return redirect()
                 ->route('login')
                 ->with(
                     'error',
-                    'ไม่สามารถเข้าสู่ระบบด้วยบัญชี Google ได้ กรุณาลองใหม่อีกครั้ง'
+                    'ไม่สามารถเข้าสู่ระบบด้วย Google ได้ กรุณาลองใหม่อีกครั้ง'
                 );
         }
     }
