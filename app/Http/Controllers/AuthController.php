@@ -157,6 +157,8 @@ class AuthController extends Controller
                     );
             }
 
+            Auth::login($user, $remember);
+
             $request->session()->regenerate();
 
             $request->session()->put([

@@ -14,10 +14,15 @@ class OwnerMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!Auth::check() || Auth::user()->role !== 'owner') {
-            Auth::logout();
+        if (!Auth::check()) {
             return redirect()->route('login')->withErrors([
-                'email' => 'ไม่มีสิทธิ์เข้าถึงส่วนผู้ดูแลร้านค้า กรุณาเข้าสู่ระบบด้วยบัญชีเจ้าของร้าน'
+                'email' => 'กรุณาเข้าสู่ระบบก่อนใช้งาน'
+            ]);
+        }
+
+        if (Auth::user()->role !== 'owner') {
+            return redirect()->route('customer.dashboard')->withErrors([
+                'email' => 'ไม่มีสิทธิ์เข้าถึงส่วนผู้ดูแลร้านค้า'
             ]);
         }
 
