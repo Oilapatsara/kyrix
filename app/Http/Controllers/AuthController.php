@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Customer;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -22,7 +21,6 @@ class AuthController extends Controller
     {
         return view('auth.login');
     }
-
 
     /*
     |--------------------------------------------------------------------------
@@ -46,7 +44,6 @@ class AuthController extends Controller
 
         $remember = $request->boolean('remember');
 
-
         /*
         |--------------------------------------------------------------------------
         | ล้าง Session ลูกค้าเก่าก่อน Login
@@ -59,7 +56,6 @@ class AuthController extends Controller
             'customer_name',
             'customer_email',
         ]);
-
 
         /*
         |--------------------------------------------------------------------------
@@ -74,50 +70,194 @@ class AuthController extends Controller
         if ($owner && Hash::check($data['password'], $owner->password)) {
 
             if ($owner->status !== 'active') {
-
                 return back()
                     ->withErrors([
-                        'email' => 'บัญชีเจ้าของร้านถูกปิดการใช้งาน'
+                        'email' => 'บัญชีเจ้าของร้านถูกปิดการใช้งาน',
                     ])
-                    ->withInput($request->only('email'));
+                    ->withInput(
+                        $request->only('email')
+                    );
             }
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | Laravel Auth
-            |--------------------------------------------------------------------------
-            */
 
             Auth::login($owner, $remember);
 
             $request->session()->regenerate();
 
-
             return redirect()->route('owner.dashboard');
         }
 
-
         /*
         |--------------------------------------------------------------------------
-        | CUSTOMER LOGIN
+        | CUSTOMER LOGIN - ใช้ users เป็นบัญชีหลัก
         |--------------------------------------------------------------------------
         */
 
-        $customer = Customer::where('email', $data['email'])->first();
+        $user = User::where('email', $data['email'])
+            ->where('role', 'customer')
+            ->first();
 
-        if ($customer && $customer->password && Hash::check($data['password'], $customer->password)) {
+        if ($user && Hash::check($data['password'], $user->password)) {
+
+            if ($user->status !== 'active') {
+                return back()
+                    ->withErrors([
+                        'email' => 'บัญชีลูกค้าถูกปิดการใช้งาน',
+                    ])
+                    ->withInput(
+                        $request->only('email')
+                    );
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | หา Customer ที่ผูกกับ user_id
+            |--------------------------------------------------------------------------
+            */
+
+            $customer = Customer::where(
+                'user_id',
+                $user->user_id
+            )->first();
+
+            /*
+            |--------------------------------------------------------------------------
+            | กรณีมี users แต่ customer ยังไม่ผูก
+            |--------------------------------------------------------------------------
+            |
+            | ใช้อีเมลค้นหาเพื่อรองรับข้อมูลเก่าที่ user_id ยังว่าง
+            |
+            */
+
+            if (!$customer) {
+                $customer = Customer::where(
+                    'email',
+                    $user->email
+                )->first();
+
+                if ($customer) {
+                    $customer->update([
+                        'user_id' => $user->user_id,
+                    ]);
+                }
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | ต้องมี Customer สำหรับระบบเช่าชุด
+            |--------------------------------------------------------------------------
+            */
+
+            if (!$customer) {
+                return back()
+                    ->withErrors([
+                        'email' => 'ไม่พบข้อมูลลูกค้าในระบบ กรุณาติดต่อเจ้าของร้าน',
+                    ])
+                    ->withInput(
+                        $request->only('email')
+                    );
+            }
+
             $request->session()->regenerate();
+
             $request->session()->put([
                 'customer_logged_in' => true,
                 'customer_id' => $customer->customer_id,
-                'customer_name' => trim(($customer->first_name ?? '') . ' ' . ($customer->last_name ?? '')),
+                'customer_name' => trim(
+                    ($customer->first_name ?? '') . ' ' .
+                    ($customer->last_name ?? '')
+                ),
                 'customer_email' => $customer->email,
             ]);
 
-            return redirect()->intended(route('customer.dashboard'));
+            return redirect()->intended(
+                route('customer.dashboard')
+            );
         }
 
+        /*
+        |--------------------------------------------------------------------------
+        | CUSTOMER LOGIN แบบข้อมูลเก่า
+        |--------------------------------------------------------------------------
+        |
+        | รองรับลูกค้าเดิมที่ยังมีเฉพาะ customers
+        | และยังไม่มี user_id ใน users
+        |
+        */
+
+        $legacyCustomer = Customer::where(
+            'email',
+            $data['email']
+        )->first();
+
+        if (
+            $legacyCustomer &&
+            $legacyCustomer->password &&
+            Hash::check(
+                $data['password'],
+                $legacyCustomer->password
+            )
+        ) {
+
+            /*
+            |--------------------------------------------------------------------------
+            | พยายามผูก Customer เก่าเข้ากับ User
+            |--------------------------------------------------------------------------
+            */
+
+            try {
+
+                $existingUser = User::where(
+                    'email',
+                    $legacyCustomer->email
+                )
+                    ->where('role', 'customer')
+                    ->first();
+
+                if (!$existingUser) {
+
+                    $existingUser = User::create([
+                        'name' => trim(
+                            ($legacyCustomer->first_name ?? '') . ' ' .
+                            ($legacyCustomer->last_name ?? '')
+                        ),
+                        'email' => $legacyCustomer->email,
+                        'password' => $legacyCustomer->password,
+                        'role' => 'customer',
+                        'status' => 'active',
+                    ]);
+                }
+
+                if (!$legacyCustomer->user_id) {
+                    $legacyCustomer->update([
+                        'user_id' => $existingUser->user_id,
+                    ]);
+                }
+
+            } catch (\Throwable $e) {
+                /*
+                |--------------------------------------------------------------------------
+                | ถ้าผูกบัญชีไม่สำเร็จ ยังให้ลูกค้าเก่า Login ได้
+                |--------------------------------------------------------------------------
+                */
+                report($e);
+            }
+
+            $request->session()->regenerate();
+
+            $request->session()->put([
+                'customer_logged_in' => true,
+                'customer_id' => $legacyCustomer->customer_id,
+                'customer_name' => trim(
+                    ($legacyCustomer->first_name ?? '') . ' ' .
+                    ($legacyCustomer->last_name ?? '')
+                ),
+                'customer_email' => $legacyCustomer->email,
+            ]);
+
+            return redirect()->intended(
+                route('customer.dashboard')
+            );
+        }
 
         /*
         |--------------------------------------------------------------------------
@@ -127,13 +267,12 @@ class AuthController extends Controller
 
         return back()
             ->withErrors([
-                'email' => 'อีเมลหรือรหัสผ่านไม่ถูกต้อง'
+                'email' => 'อีเมลหรือรหัสผ่านไม่ถูกต้อง',
             ])
             ->withInput(
                 $request->only('email')
             );
     }
-
 
     /*
     |--------------------------------------------------------------------------
@@ -145,7 +284,6 @@ class AuthController extends Controller
     {
         return view('auth.register');
     }
-
 
     /*
     |--------------------------------------------------------------------------
@@ -173,7 +311,6 @@ class AuthController extends Controller
             ]
         );
 
-
         /*
         |--------------------------------------------------------------------------
         | ตรวจอีเมลซ้ำ
@@ -181,14 +318,12 @@ class AuthController extends Controller
         */
 
         if (
+            User::where('email', $data['email'])->exists() ||
             Customer::where('email', $data['email'])->exists()
-            ||
-            User::where('email', $data['email'])->exists()
         ) {
-
             return back()
                 ->withErrors([
-                    'email' => 'อีเมลนี้ถูกใช้งานแล้ว'
+                    'email' => 'อีเมลนี้ถูกใช้งานแล้ว',
                 ])
                 ->withInput(
                     $request->except(
@@ -198,42 +333,63 @@ class AuthController extends Controller
                 );
         }
 
-
-        DB::beginTransaction();
-
         try {
 
-            $rawName = trim($data['name']);
+            $customer = DB::transaction(function () use ($data) {
 
-            $parts = preg_split(
-                '/\s+/u',
-                $rawName,
-                2
-            );
+                $rawName = trim($data['name']);
 
-            $firstName = $parts[0] ?? $rawName;
+                $parts = preg_split(
+                    '/\s+/u',
+                    $rawName,
+                    2
+                );
 
-            $lastName = $parts[1] ?? '-';
+                $firstName = $parts[0] ?? $rawName;
+                $lastName = $parts[1] ?? '-';
 
+                /*
+                |--------------------------------------------------------------------------
+                | เข้ารหัสรหัสผ่านครั้งเดียว
+                |--------------------------------------------------------------------------
+                */
 
-            /*
-            |--------------------------------------------------------------------------
-            | สร้าง Customer
-            |--------------------------------------------------------------------------
-            */
+                $hashedPassword = Hash::make(
+                    $data['password']
+                );
 
-            $customer = Customer::create([
-                'first_name' => $firstName,
-                'last_name' => $lastName,
-                'email' => $data['email'],
-                'password' => Hash::make($data['password']),
-                'phone' => $data['phone'] ?? null,
-                'address' => $data['address'] ?? null,
-            ]);
+                /*
+                |--------------------------------------------------------------------------
+                | สร้าง User
+                |--------------------------------------------------------------------------
+                */
 
+                $user = User::create([
+                    'name' => $rawName,
+                    'email' => $data['email'],
+                    'password' => $hashedPassword,
+                    'role' => 'customer',
+                    'status' => 'active',
+                ]);
 
-            DB::commit();
+                /*
+                |--------------------------------------------------------------------------
+                | สร้าง Customer และผูก user_id
+                |--------------------------------------------------------------------------
+                */
 
+                $customer = Customer::create([
+                    'user_id' => $user->user_id,
+                    'first_name' => $firstName,
+                    'last_name' => $lastName,
+                    'email' => $data['email'],
+                    'password' => $hashedPassword,
+                    'phone' => $data['phone'] ?? null,
+                    'address' => $data['address'] ?? null,
+                ]);
+
+                return $customer;
+            });
 
             /*
             |--------------------------------------------------------------------------
@@ -247,11 +403,11 @@ class AuthController extends Controller
                 'customer_logged_in' => true,
                 'customer_id' => $customer->customer_id,
                 'customer_name' => trim(
-                    $customer->first_name . ' ' . $customer->last_name
+                    ($customer->first_name ?? '') . ' ' .
+                    ($customer->last_name ?? '')
                 ),
                 'customer_email' => $customer->email,
             ]);
-
 
             return redirect()
                 ->route('home')
@@ -262,12 +418,12 @@ class AuthController extends Controller
 
         } catch (\Throwable $e) {
 
-            DB::rollBack();
+            report($e);
 
             return back()
                 ->withErrors([
                     'register' =>
-                        'สมัครสมาชิกไม่สำเร็จ กรุณาลองใหม่อีกครั้ง'
+                        'สมัครสมาชิกไม่สำเร็จ กรุณาลองใหม่อีกครั้ง',
                 ])
                 ->withInput(
                     $request->except(
@@ -277,7 +433,6 @@ class AuthController extends Controller
                 );
         }
     }
-
 
     /*
     |--------------------------------------------------------------------------
@@ -289,7 +444,6 @@ class AuthController extends Controller
     {
         return view('auth.forgot-password');
     }
-
 
     /*
     |--------------------------------------------------------------------------
@@ -308,15 +462,20 @@ class AuthController extends Controller
                 'email.required' => 'กรุณากรอกอีเมล',
                 'email.email' => 'รูปแบบอีเมลไม่ถูกต้อง',
                 'new_password.required' => 'กรุณากรอกรหัสผ่านใหม่',
-                'new_password.min' => 'รหัสผ่านใหม่ต้องมีอย่างน้อย 6 ตัวอักษร',
-                'new_password.confirmed' => 'ยืนยันรหัสผ่านใหม่ไม่ตรงกัน',
+                'new_password.min' =>
+                    'รหัสผ่านใหม่ต้องมีอย่างน้อย 6 ตัวอักษร',
+                'new_password.confirmed' =>
+                    'ยืนยันรหัสผ่านใหม่ไม่ตรงกัน',
             ]
         );
 
+        $newHashedPassword = Hash::make(
+            $data['new_password']
+        );
 
         /*
         |--------------------------------------------------------------------------
-        | เปลี่ยนรหัสผ่านเจ้าของร้าน
+        | OWNER
         |--------------------------------------------------------------------------
         */
 
@@ -327,9 +486,7 @@ class AuthController extends Controller
         if ($owner) {
 
             $owner->update([
-                'password' => Hash::make(
-                    $data['new_password']
-                ),
+                'password' => $newHashedPassword,
             ]);
 
             return redirect()
@@ -340,10 +497,9 @@ class AuthController extends Controller
                 );
         }
 
-
         /*
         |--------------------------------------------------------------------------
-        | เปลี่ยนรหัสผ่านลูกค้า
+        | CUSTOMER
         |--------------------------------------------------------------------------
         */
 
@@ -354,11 +510,37 @@ class AuthController extends Controller
 
         if ($customer) {
 
-            $customer->update([
-                'password' => Hash::make(
-                    $data['new_password']
-                ),
-            ]);
+            DB::transaction(function () use (
+                $customer,
+                $newHashedPassword
+            ) {
+
+                /*
+                |--------------------------------------------------------------------------
+                | เปลี่ยนรหัสผ่าน Customer
+                |--------------------------------------------------------------------------
+                */
+
+                $customer->update([
+                    'password' => $newHashedPassword,
+                ]);
+
+                /*
+                |--------------------------------------------------------------------------
+                | เปลี่ยนรหัสผ่าน User ที่ผูกกัน
+                |--------------------------------------------------------------------------
+                */
+
+                if ($customer->user_id) {
+
+                    User::where(
+                        'user_id',
+                        $customer->user_id
+                    )->update([
+                        'password' => $newHashedPassword,
+                    ]);
+                }
+            });
 
             return redirect()
                 ->route('login')
@@ -368,15 +550,19 @@ class AuthController extends Controller
                 );
         }
 
+        /*
+        |--------------------------------------------------------------------------
+        | ไม่พบบัญชี
+        |--------------------------------------------------------------------------
+        */
 
         return back()
             ->withErrors([
                 'email' =>
-                    'ไม่พบบัญชีที่ใช้อีเมลนี้ในระบบ'
+                    'ไม่พบบัญชีที่ใช้อีเมลนี้ในระบบ',
             ])
             ->withInput();
     }
-
 
     /*
     |--------------------------------------------------------------------------
@@ -388,16 +574,15 @@ class AuthController extends Controller
     {
         /*
         |--------------------------------------------------------------------------
-        | Logout Owner
+        | Logout Laravel Auth
         |--------------------------------------------------------------------------
         */
 
         Auth::logout();
 
-
         /*
         |--------------------------------------------------------------------------
-        | Logout Customer
+        | ล้าง Session Customer
         |--------------------------------------------------------------------------
         */
 
@@ -408,7 +593,6 @@ class AuthController extends Controller
             'customer_email',
         ]);
 
-
         /*
         |--------------------------------------------------------------------------
         | Destroy Session
@@ -416,9 +600,7 @@ class AuthController extends Controller
         */
 
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
-
 
         return redirect()
             ->route('home')

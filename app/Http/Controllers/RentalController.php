@@ -14,9 +14,12 @@ use Illuminate\Support\Facades\DB;
 
 class RentalController extends Controller
 {
-    /**
-     * สร้างรายการเช่า
-     */
+    /*
+    |--------------------------------------------------------------------------
+    | สร้างรายการเช่า
+    |--------------------------------------------------------------------------
+    */
+
     public function book(Request $request, $productId)
     {
         $product = Product::findOrFail($productId);
@@ -58,6 +61,7 @@ class RentalController extends Controller
 
         // ระบบคิดราคาเช่าต่อ 1 ครั้ง ไม่คูณจำนวนวัน
         $pricePerRental = (float) $product->rental_price;
+
         $subtotal = $pricePerRental * $quantity;
 
         $depositTotal = (float) $product->deposit * $quantity;
@@ -93,7 +97,7 @@ class RentalController extends Controller
                 $product
             );
 
-            // รหัสการเช่า
+            // สร้างรหัสการเช่า
             $rentalCode =
                 'KR-' .
                 date('Ym') .
@@ -195,6 +199,7 @@ class RentalController extends Controller
                     'success',
                     'บันทึกการจองเช่าชุดเรียบร้อยแล้ว กรุณาดำเนินการชำระเงิน'
                 );
+
         } catch (\Throwable $e) {
             DB::rollBack();
 
@@ -208,9 +213,12 @@ class RentalController extends Controller
         }
     }
 
-    /**
-     * หน้า Payment / Checkout
-     */
+    /*
+    |--------------------------------------------------------------------------
+    | หน้า Payment / Checkout
+    |--------------------------------------------------------------------------
+    */
+
     public function payment($id)
     {
         $customer = $this->getCustomer();
@@ -314,9 +322,12 @@ class RentalController extends Controller
         );
     }
 
-    /**
-     * บันทึกที่อยู่จัดส่ง
-     */
+    /*
+    |--------------------------------------------------------------------------
+    | บันทึกที่อยู่จัดส่ง
+    |--------------------------------------------------------------------------
+    */
+
     public function updateAddress(
         Request $request,
         $id
@@ -335,6 +346,7 @@ class RentalController extends Controller
                     'string',
                     'max:1000',
                 ],
+
                 'recipient_phone' => [
                     'required',
                     'string',
@@ -384,9 +396,12 @@ class RentalController extends Controller
         );
     }
 
-    /**
-     * บันทึกการชำระเงิน
-     */
+    /*
+    |--------------------------------------------------------------------------
+    | บันทึกการชำระเงิน
+    |--------------------------------------------------------------------------
+    */
+
     public function submitPayment(
         Request $request,
         $id
@@ -539,6 +554,7 @@ class RentalController extends Controller
                 $recipientPhone;
 
             $customer->save();
+
         } else {
             // รับที่ร้าน
             $deliveryAddress = null;
@@ -571,7 +587,7 @@ class RentalController extends Controller
             $discountAmount
         );
 
-        // ค่าส่ง = 0
+        // ค่าส่ง = 0 ตามระบบ KYRIX
         $shippingFee = 0;
 
         $paymentAmount = round(
@@ -665,7 +681,8 @@ class RentalController extends Controller
                 ' + ค่าส่ง ฿0.00)';
         }
 
-        // บันทึก Payment
+        // บันทึก Payment ให้ตรงกับฐานปัจจุบัน:
+        // amount / payment_method / qr_code / slip_image / status / note / paid_at
         Payment::create([
             'rental_id' =>
                 $rental->rental_id,
@@ -688,12 +705,12 @@ class RentalController extends Controller
             'note' =>
                 $paymentNote,
 
+            // ยังไม่ถือว่าจ่ายสำเร็จจนกว่า Owner จะอนุมัติ
             'paid_at' =>
                 null,
         ]);
 
-        // ลูกค้าเพิ่งส่งสลิป
-        // ต้องรอเจ้าของร้านตรวจสอบก่อน
+        // ลูกค้าเพิ่งส่งสลิป ต้องรอเจ้าของร้านตรวจสอบ
         $rental->update([
             'status' =>
                 'pending_verification',
@@ -710,9 +727,12 @@ class RentalController extends Controller
             );
     }
 
-    /**
-     * รายการเช่าปัจจุบัน
-     */
+    /*
+    |--------------------------------------------------------------------------
+    | รายการเช่าปัจจุบัน
+    |--------------------------------------------------------------------------
+    */
+
     public function index()
     {
         $customer =
@@ -741,9 +761,12 @@ class RentalController extends Controller
         );
     }
 
-    /**
-     * ประวัติการเช่า
-     */
+    /*
+    |--------------------------------------------------------------------------
+    | ประวัติการเช่า
+    |--------------------------------------------------------------------------
+    */
+
     public function history()
     {
         $customer =
@@ -772,9 +795,12 @@ class RentalController extends Controller
         );
     }
 
-    /**
-     * รายละเอียดรายการเช่า
-     */
+    /*
+    |--------------------------------------------------------------------------
+    | รายละเอียดรายการเช่า
+    |--------------------------------------------------------------------------
+    */
+
     public function show($id)
     {
         $customer =
@@ -791,7 +817,7 @@ class RentalController extends Controller
                 ])
                 ->findOrFail($id);
 
-        // รองรับทั้งฟิลด์ใหม่และฟิลด์เดิม
+        // รองรับทั้งฟิลด์ return_tracking_number และ return_tracking_no
         $returnTrackingNumber = trim(
             (string) (
                 $rental->return_tracking_number
@@ -816,9 +842,12 @@ class RentalController extends Controller
         );
     }
 
-    /**
-     * อัปโหลดสลิป
-     */
+    /*
+    |--------------------------------------------------------------------------
+    | อัปโหลดสลิป
+    |--------------------------------------------------------------------------
+    */
+
     public function uploadSlip(
         Request $request,
         $id
@@ -829,21 +858,18 @@ class RentalController extends Controller
         );
     }
 
-    /**
-     * แจ้งคืนชุด
-     *
-     * Flow:
-     *
-     * not_returned
-     *      ↓
-     * returned_requested
-     *      ↓
-     * returned
-     *
-     * วิธีคืน:
-     * parcel = ส่งพัสดุ
-     * store  = คืนที่ร้าน
-     */
+    /*
+    |--------------------------------------------------------------------------
+    | แจ้งคืนชุด
+    |--------------------------------------------------------------------------
+    |
+    | รองรับ:
+    | parcel    = ส่งพัสดุ
+    | store     = คืนที่ร้าน
+    | messenger = Grab / Lineman
+    |
+    */
+
     public function requestReturn(
         Request $request,
         $id
@@ -892,9 +918,6 @@ class RentalController extends Controller
             ]
         );
 
-        /*
-         * ใช้ transaction เพื่อให้ lockForUpdate() ทำงานจริง
-         */
         try {
             $result = DB::transaction(
                 function () use (
@@ -911,8 +934,11 @@ class RentalController extends Controller
                             ->findOrFail($id);
 
                     /*
-                     * อนุญาตให้แจ้งคืนเมื่อรายการอยู่ในช่วงเช่า
-                     */
+                    |--------------------------------------------------------------------------
+                    | อนุญาตให้แจ้งคืนเมื่อรายการอยู่ในช่วงเช่า
+                    |--------------------------------------------------------------------------
+                    */
+
                     if (
                         !in_array(
                             $rental->status,
@@ -930,8 +956,11 @@ class RentalController extends Controller
                     }
 
                     /*
-                     * ป้องกันการแจ้งคืนซ้ำ
-                     */
+                    |--------------------------------------------------------------------------
+                    | ป้องกันการแจ้งคืนซ้ำ
+                    |--------------------------------------------------------------------------
+                    */
+
                     if (
                         $rental->return_status ===
                         'returned_requested'
@@ -951,8 +980,11 @@ class RentalController extends Controller
                     }
 
                     /*
-                     * แปลงวิธีคืนให้เป็นค่ามาตรฐาน
-                     */
+                    |--------------------------------------------------------------------------
+                    | แปลงวิธีคืนให้เป็นค่ามาตรฐาน
+                    |--------------------------------------------------------------------------
+                    */
+
                     $rawReturnMethod = trim(
                         (string) (
                             $data['return_method'] ?? ''
@@ -966,6 +998,7 @@ class RentalController extends Controller
 
                     $returnMethod = null;
 
+                    // ส่งพัสดุ
                     if (
                         in_array(
                             $returnMethodLower,
@@ -982,6 +1015,7 @@ class RentalController extends Controller
                         $returnMethod = 'parcel';
                     }
 
+                    // คืนที่ร้าน
                     if (
                         in_array(
                             $returnMethodLower,
@@ -991,6 +1025,7 @@ class RentalController extends Controller
                                 'คืนที่ร้าน',
                                 'คืนหน้าร้าน',
                                 'หน้าร้าน',
+                                'นำมาคืนที่หน้าร้าน kyrix (โคราช)',
                             ],
                             true
                         )
@@ -998,15 +1033,35 @@ class RentalController extends Controller
                         $returnMethod = 'store';
                     }
 
+                    // Messenger / Grab / Lineman
+                    if (
+                        in_array(
+                            $returnMethodLower,
+                            [
+                                'messenger',
+                                'grab',
+                                'lineman',
+                                'ส่งผ่านแมสเซนเจอร์',
+                                'ส่งผ่านแมสเซนเจอร์ (grab / lineman)',
+                            ],
+                            true
+                        )
+                    ) {
+                        $returnMethod = 'messenger';
+                    }
+
                     if (!$returnMethod) {
                         throw new \RuntimeException(
-                            'วิธีการคืนชุดไม่ถูกต้อง กรุณาเลือก ส่งพัสดุ หรือ คืนที่ร้าน'
+                            'วิธีการคืนชุดไม่ถูกต้อง กรุณาเลือกวิธีการคืนชุดใหม่'
                         );
                     }
 
                     /*
-                     * ดึงเลขพัสดุ
-                     */
+                    |--------------------------------------------------------------------------
+                    | ดึงเลขพัสดุ
+                    |--------------------------------------------------------------------------
+                    */
+
                     $returnTrackingNumber = trim(
                         (string) (
                             $data['return_tracking_number']
@@ -1016,8 +1071,11 @@ class RentalController extends Controller
                     );
 
                     /*
-                     * ดึงบริษัทขนส่ง
-                     */
+                    |--------------------------------------------------------------------------
+                    | ดึงบริษัทขนส่ง
+                    |--------------------------------------------------------------------------
+                    */
+
                     $returnCarrier = trim(
                         (string) (
                             $data['return_shipping_carrier']
@@ -1026,8 +1084,15 @@ class RentalController extends Controller
                     );
 
                     /*
-                     * กรณีส่งพัสดุ
-                     */
+                    |--------------------------------------------------------------------------
+                    | กำหนดข้อมูลการคืนตามวิธี
+                    |--------------------------------------------------------------------------
+                    */
+
+                    $returnShippingStatus = null;
+                    $returnShippedAt = null;
+
+                    // กรณีส่งพัสดุ
                     if (
                         $returnMethod === 'parcel'
                     ) {
@@ -1039,14 +1104,26 @@ class RentalController extends Controller
                             );
                         }
 
+                        // แก้ให้บังคับบริษัทขนส่งเมื่อส่งพัสดุ
+                        if (
+                            $returnCarrier === ''
+                        ) {
+                            throw new \RuntimeException(
+                                'กรุณาระบุบริษัทขนส่งสำหรับการส่งคืนชุด'
+                            );
+                        }
+
                         $returnShippingStatus =
                             'ส่งพัสดุแล้ว';
 
-                        $returnShippedAt = now();
-                    } else {
-                        /*
-                         * กรณีคืนที่ร้าน
-                         */
+                        $returnShippedAt =
+                            now();
+                    }
+
+                    // กรณีคืนที่ร้าน
+                    if (
+                        $returnMethod === 'store'
+                    ) {
                         $returnTrackingNumber = null;
                         $returnCarrier = null;
 
@@ -1056,9 +1133,30 @@ class RentalController extends Controller
                         $returnShippedAt = null;
                     }
 
+                    // กรณี Messenger
+                    if (
+                        $returnMethod === 'messenger'
+                    ) {
+                        $returnTrackingNumber = null;
+
+                        if ($returnCarrier === '') {
+                            $returnCarrier =
+                                'Grab / Lineman';
+                        }
+
+                        $returnShippingStatus =
+                            'ส่งผ่านแมสเซนเจอร์แล้ว';
+
+                        $returnShippedAt =
+                            now();
+                    }
+
                     /*
-                     * สร้างข้อความลง note
-                     */
+                    |--------------------------------------------------------------------------
+                    | สร้างข้อความลง note
+                    |--------------------------------------------------------------------------
+                    */
+
                     $returnNoteParts = [];
 
                     $returnNoteParts[] =
@@ -1066,7 +1164,11 @@ class RentalController extends Controller
                         (
                             $returnMethod === 'parcel'
                                 ? 'ส่งพัสดุ'
-                                : 'คืนที่ร้าน'
+                                : (
+                                    $returnMethod === 'messenger'
+                                        ? 'ส่งผ่านแมสเซนเจอร์ (Grab / Lineman)'
+                                        : 'คืนที่ร้าน'
+                                )
                         );
 
                     if (
@@ -1087,9 +1189,11 @@ class RentalController extends Controller
                     }
 
                     /*
-                     * ที่อยู่ร้าน
-                     * บันทึกไว้ใน note กรณีคืนที่ร้าน
-                     */
+                    |--------------------------------------------------------------------------
+                    | ที่อยู่ร้าน
+                    |--------------------------------------------------------------------------
+                    */
+
                     if (
                         $returnMethod === 'store'
                     ) {
@@ -1099,6 +1203,12 @@ class RentalController extends Controller
                         $returnNoteParts[] =
                             'โทรร้าน: 0652599072';
                     }
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | ข้อความแจ้งคืน
+                    |--------------------------------------------------------------------------
+                    */
 
                     $returnNote =
                         implode(
@@ -1123,13 +1233,17 @@ class RentalController extends Controller
                             : $returnNoteFull;
 
                     /*
-                     * บันทึกข้อมูลคืนชุด
-                     */
+                    |--------------------------------------------------------------------------
+                    | บันทึกข้อมูลคืนชุด
+                    |--------------------------------------------------------------------------
+                    */
+
                     $updateData = [
                         // ระบบหลัก
                         'return_method' =>
                             $returnMethod,
 
+                        // รองรับข้อมูลเดิม
                         'return_tracking_number' =>
                             $returnTrackingNumber,
 
@@ -1146,7 +1260,7 @@ class RentalController extends Controller
                         'status' =>
                             'pending_return',
 
-                        // ระบบคืนชุดเดิม
+                        // ระบบคืนชุด
                         'return_shipping_carrier' =>
                             $returnCarrier !== ''
                                 ? $returnCarrier
@@ -1181,8 +1295,11 @@ class RentalController extends Controller
             );
 
             /*
-             * ข้อความแจ้งผล
-             */
+            |--------------------------------------------------------------------------
+            | ข้อความแจ้งผล
+            |--------------------------------------------------------------------------
+            */
+
             if (
                 $result['return_method'] === 'parcel'
             ) {
@@ -1192,18 +1309,33 @@ class RentalController extends Controller
                 );
             }
 
+            if (
+                $result['return_method'] === 'messenger'
+            ) {
+                return back()->with(
+                    'success',
+                    'แจ้งส่งคืนชุดผ่านแมสเซนเจอร์เรียบร้อยแล้ว กรุณารอร้านตรวจรับคืน'
+                );
+            }
+
             return back()->with(
                 'success',
                 'แจ้งคืนชุดที่ร้านเรียบร้อยแล้ว กรุณานำชุดมาคืนที่ร้าน'
             );
+
         } catch (\RuntimeException $e) {
+
             return back()
                 ->with(
                     'error',
                     $e->getMessage()
                 )
                 ->withInput();
+
         } catch (\Throwable $e) {
+
+            report($e);
+
             return back()
                 ->with(
                     'error',
@@ -1213,9 +1345,12 @@ class RentalController extends Controller
         }
     }
 
-    /**
-     * สร้าง URL สำหรับติดตามพัสดุส่งคืน
-     */
+    /*
+    |--------------------------------------------------------------------------
+    | สร้าง URL สำหรับติดตามพัสดุส่งคืน
+    |--------------------------------------------------------------------------
+    */
+
     private function buildReturnTrackingUrl(
         ?string $carrier,
         ?string $trackingNo
@@ -1238,11 +1373,11 @@ class RentalController extends Controller
         }
 
         /*
-         * ไปรษณีย์ไทย
-         *
-         * ต้องเป็น URL ปกติ
-         * ห้ามใส่ Markdown
-         */
+        |--------------------------------------------------------------------------
+        | ไปรษณีย์ไทย
+        |--------------------------------------------------------------------------
+        */
+
         if (
             str_contains(
                 $carrier,
@@ -1263,8 +1398,11 @@ class RentalController extends Controller
         }
 
         /*
-         * J&T Express
-         */
+        |--------------------------------------------------------------------------
+        | J&T Express
+        |--------------------------------------------------------------------------
+        */
+
         if (
             str_contains(
                 $carrier,
@@ -1285,8 +1423,11 @@ class RentalController extends Controller
         }
 
         /*
-         * KEX / Kerry
-         */
+        |--------------------------------------------------------------------------
+        | KEX / Kerry
+        |--------------------------------------------------------------------------
+        */
+
         if (
             str_contains(
                 $carrier,
@@ -1302,8 +1443,11 @@ class RentalController extends Controller
         }
 
         /*
-         * Flash Express
-         */
+        |--------------------------------------------------------------------------
+        | Flash Express
+        |--------------------------------------------------------------------------
+        */
+
         if (
             str_contains(
                 $carrier,
@@ -1317,9 +1461,12 @@ class RentalController extends Controller
         return null;
     }
 
-    /**
-     * ลูกค้าขอยกเลิกรายการเช่า
-     */
+    /*
+    |--------------------------------------------------------------------------
+    | ลูกค้าขอยกเลิกรายการเช่า
+    |--------------------------------------------------------------------------
+    */
+
     public function cancel(
         Request $request,
         $id
@@ -1343,6 +1490,7 @@ class RentalController extends Controller
             );
 
         try {
+
             DB::transaction(
                 function () use (
                     $customer,
@@ -1392,17 +1540,13 @@ class RentalController extends Controller
                                 )
                             );
 
-                        /*
-                         * คืนสต็อก
-                         */
+                        // คืนสต็อก
                         $product->increment(
                             'stock',
                             $quantity
                         );
 
-                        /*
-                         * ลดจำนวนครั้งเช่า
-                         */
+                        // ลดจำนวนครั้งเช่า
                         $product->rental_count =
                             max(
                                 0,
@@ -1413,10 +1557,7 @@ class RentalController extends Controller
                                 $quantity
                             );
 
-                        /*
-                         * ถ้ามีสต็อกกลับมา
-                         * ให้เปิดพร้อมเช่า
-                         */
+                        // ถ้ามีสต็อกกลับมา ให้เปิดพร้อมเช่า
                         if (
                             (int) $product->stock > 0 &&
                             in_array(
@@ -1471,12 +1612,18 @@ class RentalController extends Controller
                     'success',
                     'ยกเลิกรายการเช่าเรียบร้อยแล้ว ระบบคืนจำนวนชุดเข้าสต็อกแล้ว'
                 );
+
         } catch (\RuntimeException $e) {
+
             return back()->with(
                 'error',
                 $e->getMessage()
             );
+
         } catch (\Throwable $e) {
+
+            report($e);
+
             return back()->with(
                 'error',
                 'ไม่สามารถยกเลิกรายการเช่าได้ กรุณาลองใหม่อีกครั้ง'
@@ -1484,9 +1631,12 @@ class RentalController extends Controller
         }
     }
 
-    /**
-     * ทำความสะอาดขนาด
-     */
+    /*
+    |--------------------------------------------------------------------------
+    | ทำความสะอาดขนาด
+    |--------------------------------------------------------------------------
+    */
+
     private function normalizeSelectedSize(
         ?string $size
     ): ?string {
@@ -1515,9 +1665,12 @@ class RentalController extends Controller
         );
     }
 
-    /**
-     * แปลงค่าที่ส่งเข้ามาให้เป็นชื่อสีที่เหมาะสม
-     */
+    /*
+    |--------------------------------------------------------------------------
+    | แปลงค่าที่ส่งเข้ามาให้เป็นชื่อสีที่เหมาะสม
+    |--------------------------------------------------------------------------
+    */
+
     private function resolveSelectedColor(
         ?string $selectedColor,
         Product $product
@@ -1760,9 +1913,12 @@ class RentalController extends Controller
         );
     }
 
-    /**
-     * ดึงข้อมูลลูกค้าที่ Login อยู่
-     */
+    /*
+    |--------------------------------------------------------------------------
+    | ดึงข้อมูลลูกค้าที่ Login อยู่
+    |--------------------------------------------------------------------------
+    */
+
     private function getCustomer(): Customer
     {
         $customerId =

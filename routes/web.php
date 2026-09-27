@@ -439,6 +439,13 @@ Route::middleware(['auth', 'owner'])
                     '/{id}/status',
                     [OwnerBookingController::class, 'updateStatus']
                 )->name('updateStatus');
+
+                Route::get(
+                    '/{id}/status',
+                    function ($id) {
+                        return redirect()->route('owner.bookings.show', $id);
+                    }
+                );
             });
 
 

@@ -374,6 +374,20 @@ class OwnerBookingController extends Controller
                             : $rental->note,
                 ]);
 
+                // หากอัปเดตสถานะเป็นยืนยัน/กำลังเช่า/เสร็จสิ้น ให้อนุมัติรายการชำระเงินที่รอดำเนินการอัตโนมัติ
+                if (in_array($newStatus, ['confirmed', 'ready_pickup', 'renting', 'pending_return', 'returned', 'completed'], true)) {
+                    \App\Models\Payment::where('rental_id', $rental->rental_id)
+                        ->where('status', 'pending')
+                        ->get()
+                        ->each(function ($payment) use ($rental) {
+                            $payment->update([
+                                'status'  => 'approved',
+                                'amount'  => ((float)$payment->amount > 0) ? $payment->amount : $rental->grand_total,
+                                'paid_at' => $payment->paid_at ?? now(),
+                            ]);
+                        });
+                }
+
                 // ตรวจว่ารายการเพิ่งเปลี่ยนเป็นคืนแล้วหรือเสร็จสิ้น
                 $isNowReturned = in_array(
                     $newStatus,

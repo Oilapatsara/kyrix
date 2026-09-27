@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
 
@@ -20,46 +21,52 @@ class SocialAuthController extends Controller
      */
 
     /**
-     * ส่งผู้ใช้ไปเข้าสู่ระบบด้วย Google
+     * ส่งผู้ใช้ไป Google
      *
      * URL:
      * /auth/google
      */
     public function redirect($provider = 'google')
     {
-        // ระบบนี้รองรับ Google เท่านั้น
+        // ระบบนี้ใช้ Google เท่านั้น
         if ($provider !== 'google') {
             abort(404);
         }
 
         /*
         |--------------------------------------------------------------------------
-        | ตรวจสอบ Google OAuth Configuration
+        | ตรวจสอบ Google OAuth
         |--------------------------------------------------------------------------
         */
 
         $clientId = config('services.google.client_id');
         $clientSecret = config('services.google.client_secret');
-        $redirectUri = config('services.google.redirect');
+        $redirect = config('services.google.redirect');
 
-        /*
-        | ถ้าไม่ได้ตั้งค่า Google OAuth
-        | จะไม่ปล่อยให้ Google ขึ้น
-        | "Missing required parameter: client_id"
-        |
-        | แต่จะกลับหน้า Login พร้อมข้อความแทน
-        */
-
-        if (
-            empty($clientId) ||
-            empty($clientSecret) ||
-            empty($redirectUri)
-        ) {
+        if (empty($clientId)) {
             return redirect()
                 ->route('login')
                 ->with(
                     'error',
-                    'ยังไม่ได้ตั้งค่า Google Login กรุณาตรวจสอบ GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET และ GOOGLE_REDIRECT_URI ในไฟล์ .env'
+                    'ไม่พบ GOOGLE_CLIENT_ID กรุณาตรวจสอบไฟล์ .env และ config/services.php'
+                );
+        }
+
+        if (empty($clientSecret)) {
+            return redirect()
+                ->route('login')
+                ->with(
+                    'error',
+                    'ไม่พบ GOOGLE_CLIENT_SECRET กรุณาตรวจสอบไฟล์ .env และ config/services.php'
+                );
+        }
+
+        if (empty($redirect)) {
+            return redirect()
+                ->route('login')
+                ->with(
+                    'error',
+                    'ไม่พบ GOOGLE_REDIRECT_URI กรุณาตรวจสอบไฟล์ .env และ config/services.php'
                 );
         }
 
@@ -75,42 +82,42 @@ class SocialAuthController extends Controller
 
 
     /**
-     * รับข้อมูลจาก Google หลังจาก Login สำเร็จ
+     * รับข้อมูลกลับจาก Google
      *
      * URL:
      * /auth/google/callback
      */
-    public function callback(
-        Request $request,
-        $provider = 'google'
-    ) {
-        // ระบบนี้รองรับ Google เท่านั้น
+    public function callback(Request $request, $provider = 'google')
+    {
+        // ระบบนี้ใช้ Google เท่านั้น
         if ($provider !== 'google') {
             abort(404);
         }
+
+        $transactionStarted = false;
 
         try {
 
             /*
             |--------------------------------------------------------------------------
-            | ตรวจสอบ Configuration อีกครั้ง
+            | ตรวจสอบ Google OAuth Configuration
             |--------------------------------------------------------------------------
             */
 
             $clientId = config('services.google.client_id');
             $clientSecret = config('services.google.client_secret');
-            $redirectUri = config('services.google.redirect');
+            $redirect = config('services.google.redirect');
 
             if (
                 empty($clientId) ||
                 empty($clientSecret) ||
-                empty($redirectUri)
+                empty($redirect)
             ) {
                 return redirect()
                     ->route('login')
                     ->with(
                         'error',
-                        'การตั้งค่า Google Login ไม่สมบูรณ์ กรุณาตรวจสอบไฟล์ .env'
+                        'การตั้งค่า Google Login ไม่สมบูรณ์ กรุณาตรวจสอบ .env และ config/services.php'
                     );
             }
 
@@ -123,13 +130,6 @@ class SocialAuthController extends Controller
 
             $socialUser = Socialite::driver('google')->user();
 
-
-            /*
-            |--------------------------------------------------------------------------
-            | ตรวจสอบข้อมูลสำคัญจาก Google
-            |--------------------------------------------------------------------------
-            */
-
             $googleId = $socialUser->getId();
             $email = $socialUser->getEmail();
 
@@ -141,7 +141,9 @@ class SocialAuthController extends Controller
 
 
             /*
-            | Google ต้องมี ID
+            |--------------------------------------------------------------------------
+            | ตรวจสอบข้อมูลจาก Google
+            |--------------------------------------------------------------------------
             */
 
             if (empty($googleId)) {
@@ -149,33 +151,33 @@ class SocialAuthController extends Controller
                     ->route('login')
                     ->with(
                         'error',
-                        'ไม่สามารถรับข้อมูลบัญชี Google ได้ กรุณาลองใหม่อีกครั้ง'
+                        'ไม่สามารถรับรหัสบัญชี Google ได้ กรุณาลองใหม่อีกครั้ง'
+                    );
+            }
+
+            if (empty($email)) {
+                return redirect()
+                    ->route('login')
+                    ->with(
+                        'error',
+                        'ไม่สามารถรับอีเมลจากบัญชี Google ได้ กรุณาลองใหม่อีกครั้ง'
                     );
             }
 
 
             /*
-            | ถ้า Google ไม่ส่ง Email มา
-            | สร้าง Email สำรองเพื่อไม่ให้ฐานข้อมูลพัง
-            */
-
-            if (empty($email)) {
-                $email = 'google_' . $googleId . '@example.com';
-            }
-
-
-            /*
             |--------------------------------------------------------------------------
-            | เริ่ม Transaction
+            | เริ่ม Database Transaction
             |--------------------------------------------------------------------------
             */
 
             DB::beginTransaction();
+            $transactionStarted = true;
 
 
             /*
             |--------------------------------------------------------------------------
-            | 1. ค้นหา User จาก Google ID
+            | ค้นหา User จาก Google
             |--------------------------------------------------------------------------
             */
 
@@ -186,35 +188,27 @@ class SocialAuthController extends Controller
 
             /*
             |--------------------------------------------------------------------------
-            | 2. ถ้ายังไม่เจอ ให้ค้นหาจาก Email
+            | ถ้าไม่พบ ให้ค้นหาจาก Email
             |--------------------------------------------------------------------------
             */
 
             if (!$user) {
-
-                $user = User::where('email', $email)
-                    ->first();
+                $user = User::where('email', $email)->first();
             }
 
 
             /*
             |--------------------------------------------------------------------------
-            | 3. ถ้ายังไม่มี User
-            |    ให้สร้าง User ใหม่
+            | ถ้ายังไม่มี User ให้สร้างใหม่
             |--------------------------------------------------------------------------
             */
 
             if (!$user) {
 
                 $user = User::create([
-
                     'name' => $name,
 
                     'email' => $email,
-
-                    /*
-                    | Google Login ไม่จำเป็นต้องใช้ Password จริง
-                    */
 
                     'password' => Hash::make(
                         Str::random(64)
@@ -226,11 +220,6 @@ class SocialAuthController extends Controller
 
                     'avatar' => $avatar,
 
-                    /*
-                    | ผู้สมัครผ่าน Google
-                    | ให้เป็น customer
-                    */
-
                     'role' => 'customer',
 
                     'status' => 1,
@@ -240,27 +229,39 @@ class SocialAuthController extends Controller
 
                 /*
                 |--------------------------------------------------------------------------
-                | 4. User มีอยู่แล้ว
-                |    อัปเดตข้อมูล Google
+                | มี User อยู่แล้ว
+                | อัปเดตข้อมูล Google
                 |--------------------------------------------------------------------------
                 */
 
                 $user->update([
-
                     'provider' => 'google',
-
                     'provider_id' => $googleId,
-
                     'avatar' => $avatar,
-
                 ]);
-
             }
 
 
             /*
             |--------------------------------------------------------------------------
-            | 5. แยกชื่อ - นามสกุล
+            | ตรวจสอบ Role
+            |--------------------------------------------------------------------------
+            |
+            | ถ้าเป็น Owner/Admin อยู่แล้ว
+            | จะไม่เปลี่ยน role เป็น customer
+            |
+            */
+
+            if (empty($user->role)) {
+                $user->update([
+                    'role' => 'customer',
+                ]);
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | แยกชื่อ - นามสกุล
             |--------------------------------------------------------------------------
             */
 
@@ -273,13 +274,12 @@ class SocialAuthController extends Controller
             );
 
             $firstName = $parts[0] ?? $rawName;
-
             $lastName = $parts[1] ?? '-';
 
 
             /*
             |--------------------------------------------------------------------------
-            | 6. ค้นหา Customer จาก user_id
+            | ค้นหา Customer จาก user_id
             |--------------------------------------------------------------------------
             */
 
@@ -291,8 +291,8 @@ class SocialAuthController extends Controller
 
             /*
             |--------------------------------------------------------------------------
-            | 7. ถ้ายังไม่มี Customer
-            |    ค้นหาจาก Email
+            | ถ้ายังไม่พบ Customer
+            | ค้นหาจาก Email
             |--------------------------------------------------------------------------
             */
 
@@ -307,15 +307,14 @@ class SocialAuthController extends Controller
 
             /*
             |--------------------------------------------------------------------------
-            | 8. ถ้ายังไม่มี Customer
-            |    สร้าง Customer ใหม่
+            | ถ้ายังไม่มี Customer
+            | สร้าง Customer ใหม่
             |--------------------------------------------------------------------------
             */
 
             if (!$customer) {
 
                 $customer = Customer::create([
-
                     'user_id' => $user->user_id,
 
                     'first_name' => $firstName,
@@ -323,11 +322,6 @@ class SocialAuthController extends Controller
                     'last_name' => $lastName,
 
                     'email' => $email,
-
-                    /*
-                    | Customer มี Password สำรองไว้
-                    | แต่การ Login ครั้งนี้ใช้ User + Google
-                    */
 
                     'password' => Hash::make(
                         Str::random(64)
@@ -338,24 +332,30 @@ class SocialAuthController extends Controller
 
                 /*
                 |--------------------------------------------------------------------------
-                | 9. ถ้ามี Customer อยู่แล้ว
-                |    แต่ยังไม่มี user_id
+                | Customer มีอยู่แล้ว
                 |--------------------------------------------------------------------------
                 */
 
                 $updateData = [];
 
+
+                /*
+                | เชื่อม User
+                */
+
                 if (empty($customer->user_id)) {
                     $updateData['user_id'] = $user->user_id;
                 }
 
+
                 /*
-                | อัปเดตชื่อถ้าข้อมูลยังว่าง
+                | อัปเดตชื่อ ถ้ายังไม่มี
                 */
 
                 if (empty($customer->first_name)) {
                     $updateData['first_name'] = $firstName;
                 }
+
 
                 if (
                     empty($customer->last_name) ||
@@ -363,6 +363,7 @@ class SocialAuthController extends Controller
                 ) {
                     $updateData['last_name'] = $lastName;
                 }
+
 
                 /*
                 | อัปเดต Email ถ้ายังไม่มี
@@ -372,6 +373,11 @@ class SocialAuthController extends Controller
                     $updateData['email'] = $email;
                 }
 
+
+                /*
+                | บันทึกข้อมูลที่เปลี่ยน
+                */
+
                 if (!empty($updateData)) {
                     $customer->update($updateData);
                 }
@@ -380,28 +386,26 @@ class SocialAuthController extends Controller
 
             /*
             |--------------------------------------------------------------------------
-            | 10. Commit Database
+            | Commit
             |--------------------------------------------------------------------------
             */
 
             DB::commit();
+            $transactionStarted = false;
 
 
             /*
             |--------------------------------------------------------------------------
-            | 11. Login เข้าระบบ Laravel
+            | Login Laravel
             |--------------------------------------------------------------------------
             */
 
-            Auth::login(
-                $user,
-                true
-            );
+            Auth::login($user, true);
 
 
             /*
             |--------------------------------------------------------------------------
-            | 12. ป้องกัน Session Fixation
+            | Regenerate Session
             |--------------------------------------------------------------------------
             */
 
@@ -410,12 +414,11 @@ class SocialAuthController extends Controller
 
             /*
             |--------------------------------------------------------------------------
-            | 13. สร้าง Session สำหรับ Customer
+            | Session Customer
             |--------------------------------------------------------------------------
             */
 
             $request->session()->put([
-
                 'customer_logged_in' => true,
 
                 'customer_id' => $customer->customer_id,
@@ -427,20 +430,17 @@ class SocialAuthController extends Controller
                 ),
 
                 'customer_email' => $customer->email,
-
             ]);
 
 
             /*
             |--------------------------------------------------------------------------
-            | 14. ส่งไป Dashboard ลูกค้า
+            | ส่งไปหน้า Dashboard
             |--------------------------------------------------------------------------
             */
 
             return redirect()
-                ->intended(
-                    route('customer.dashboard')
-                )
+                ->route('customer.dashboard')
                 ->with(
                     'success',
                     'เข้าสู่ระบบด้วย Google สำเร็จแล้ว!'
@@ -451,25 +451,23 @@ class SocialAuthController extends Controller
 
             /*
             |--------------------------------------------------------------------------
-            | ถ้าเกิด Error ให้ Rollback
+            | Rollback เฉพาะเมื่อ Transaction ถูกเปิดจริง
             |--------------------------------------------------------------------------
             */
 
-            DB::rollBack();
+            if ($transactionStarted) {
+                DB::rollBack();
+            }
 
 
             /*
             |--------------------------------------------------------------------------
-            | เก็บ Error ไว้ใน Log
+            | บันทึก Error ไว้ใน Laravel Log
             |--------------------------------------------------------------------------
-            |
-            | ผู้ใช้จะไม่เห็นรายละเอียด Database หรือ OAuth
-            | บนหน้าเว็บ
-            |
             */
 
-            \Log::error(
-                'Google Social Login Error',
+            Log::error(
+                'Google Login Error',
                 [
                     'message' => $e->getMessage(),
                     'file' => $e->getFile(),
