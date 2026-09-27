@@ -412,9 +412,11 @@ class OwnerBookingController extends Controller
                     !$wasPreviouslyReturned
                 ) {
                     // บันทึกข้อมูลตรวจรับ
-                    if (!$rental->inspected_at) {
+                    if (!$rental->inspected_at || $rental->return_status !== 'returned') {
                         $rental->update([
-                            'inspected_at' => now(),
+                            'return_status'      => 'returned',
+                            'return_received_at' => $rental->return_received_at ?? now(),
+                            'inspected_at'       => $rental->inspected_at ?? now(),
 
                             'condition_status' =>
                                 $rental->condition_status

@@ -979,14 +979,10 @@
 
                                 $returnStatus = trim((string) ($rental->return_status ?? ''));
 
-                                if ($returnStatus === '') {
-                                    if ($rental->status === 'pending_return') {
-                                        $returnStatus = 'returned_requested';
-                                    } elseif (in_array($rental->status, ['returned', 'completed'], true)) {
-                                        $returnStatus = 'returned';
-                                    } else {
-                                        $returnStatus = 'not_returned';
-                                    }
+                                if (in_array($rental->status, ['returned', 'completed'], true)) {
+                                    $returnStatus = 'returned';
+                                } elseif ($returnStatus === '' || $rental->status === 'pending_return') {
+                                    $returnStatus = ($returnStatus !== '' && $returnStatus !== 'not_returned') ? $returnStatus : 'returned_requested';
                                 }
 
                                 /*
