@@ -35,24 +35,24 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Social Login
+    | Google Social Login
     |--------------------------------------------------------------------------
     */
 
     'google' => [
-        'client_id' => trim(env('GOOGLE_CLIENT_ID', '')),
-        'client_secret' => trim(env('GOOGLE_CLIENT_SECRET', '')),
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
         'redirect' => env(
             'GOOGLE_REDIRECT_URI',
-            rtrim(
-                (string) env(
-                    'APP_URL',
-                    'http://localhost:8000'
-                ),
-                '/'
-            ) . '/auth/google/callback'
+            'http://127.0.0.1:8000/auth/google/callback'
         ),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Facebook Social Login
+    |--------------------------------------------------------------------------
+    */
 
     'facebook' => [
         'client_id' => env('FACEBOOK_CLIENT_ID'),

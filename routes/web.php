@@ -130,8 +130,7 @@ Route::post('/logout', [AuthController::class, 'logout'])
 | GOOGLE SOCIAL LOGIN
 |--------------------------------------------------------------------------
 |
-| ใช้สำหรับทั้ง
-|
+| ใช้สำหรับ:
 | 1. เข้าสู่ระบบด้วย Google
 | 2. สมัครสมาชิกด้วย Google
 |
@@ -227,12 +226,9 @@ Route::middleware('customer')->group(function () {
         [RentalController::class, 'uploadSlip']
     )->name('rentals.upload-slip');
 
-    Route::get(
-        '/my-rentals/{id}/return',
-        function ($id) {
-            return redirect()->route('rentals.show', $id);
-        }
-    );
+    Route::get('/my-rentals/{id}/return', function ($id) {
+        return redirect()->route('rentals.show', $id);
+    });
 
     Route::post(
         '/my-rentals/{id}/return',
@@ -447,12 +443,9 @@ Route::middleware(['auth', 'owner'])
                     [OwnerBookingController::class, 'updateStatus']
                 )->name('updateStatus');
 
-                Route::get(
-                    '/{id}/status',
-                    function ($id) {
-                        return redirect()->route('owner.bookings.show', $id);
-                    }
-                );
+                Route::get('/{id}/status', function ($id) {
+                    return redirect()->route('owner.bookings.show', $id);
+                });
             });
 
 
@@ -493,29 +486,15 @@ Route::middleware(['auth', 'owner'])
             ->name('returns.')
             ->group(function () {
 
-                /*
-                | หน้าจัดการรับคืนชุด
-                */
-
                 Route::get(
                     '/',
                     [OwnerReturnController::class, 'index']
                 )->name('index');
 
-
-                /*
-                | อัปเดตสถานะพัสดุส่งคืน
-                */
-
                 Route::post(
                     '/{id}/shipping-status',
                     [OwnerReturnController::class, 'updateReturnShippingStatus']
                 )->name('update-status');
-
-
-                /*
-                | ตรวจรับชุดและจัดการเงินมัดจำ
-                */
 
                 Route::post(
                     '/{id}/confirm',
@@ -534,19 +513,10 @@ Route::middleware(['auth', 'owner'])
             ->name('customers.')
             ->group(function () {
 
-                /*
-                | รายชื่อลูกค้า
-                */
-
                 Route::get(
                     '/',
                     [OwnerCustomerController::class, 'index']
                 )->name('index');
-
-
-                /*
-                | เพิ่มลูกค้า
-                */
 
                 Route::get(
                     '/create',
@@ -558,20 +528,10 @@ Route::middleware(['auth', 'owner'])
                     [OwnerCustomerController::class, 'store']
                 )->name('store');
 
-
-                /*
-                | ดูข้อมูลลูกค้า
-                */
-
                 Route::get(
                     '/{id}',
                     [OwnerCustomerController::class, 'show']
                 )->name('show');
-
-
-                /*
-                | แก้ไขลูกค้า
-                */
 
                 Route::get(
                     '/{id}/edit',
@@ -582,11 +542,6 @@ Route::middleware(['auth', 'owner'])
                     '/{id}',
                     [OwnerCustomerController::class, 'update']
                 )->name('update');
-
-
-                /*
-                | ลบลูกค้า
-                */
 
                 Route::delete(
                     '/{id}',
