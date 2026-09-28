@@ -121,7 +121,7 @@
 
         /*
         |--------------------------------------------------------------------------
-        | Pagination SVG
+        | PAGINATION STYLES
         |--------------------------------------------------------------------------
         */
 
@@ -136,6 +136,86 @@
             display: inline-block !important;
             vertical-align: middle !important;
             flex-shrink: 0 !important;
+        }
+
+        .kyrix-pagination-nav,
+        .pagination-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 12px 16px;
+        }
+
+        .pagination-info {
+            font-size: 13.5px;
+            color: var(--text-muted, #736b66);
+            font-weight: 500;
+        }
+
+        ul.pagination,
+        .pagination {
+            display: flex !important;
+            flex-wrap: wrap !important;
+            align-items: center !important;
+            gap: 6px !important;
+            list-style: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        ul.pagination li.page-item,
+        .pagination li.page-item {
+            list-style: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            display: inline-block !important;
+        }
+
+        ul.pagination li.page-item .page-link,
+        .pagination li.page-item .page-link,
+        .pagination a,
+        .pagination span {
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            min-width: 36px !important;
+            height: 36px !important;
+            padding: 0 12px !important;
+            font-size: 14px !important;
+            font-weight: 600 !important;
+            color: var(--text-main, #2a2421) !important;
+            background: #ffffff !important;
+            border: 1px solid var(--border, #ede8e3) !important;
+            border-radius: 8px !important;
+            text-decoration: none !important;
+            transition: all 0.2s ease-in-out !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+        }
+
+        ul.pagination li.page-item .page-link:hover,
+        .pagination li.page-item a.page-link:hover {
+            background: var(--primary-soft, #fbf0f2) !important;
+            color: var(--primary, #7a1f2b) !important;
+            border-color: var(--primary-light, #9c2e3d) !important;
+        }
+
+        ul.pagination li.page-item.active .page-link,
+        .pagination li.page-item.active .page-link {
+            background: var(--primary, #7a1f2b) !important;
+            color: #ffffff !important;
+            border-color: var(--primary, #7a1f2b) !important;
+            box-shadow: 0 3px 8px rgba(122, 31, 43, 0.25) !important;
+        }
+
+        ul.pagination li.page-item.disabled .page-link,
+        .pagination li.page-item.disabled .page-link {
+            background: #f5f3f0 !important;
+            color: #b5afa9 !important;
+            border-color: #e5e0db !important;
+            cursor: not-allowed !important;
+            opacity: 0.65 !important;
         }
 
         a {

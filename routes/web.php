@@ -227,6 +227,13 @@ Route::middleware('customer')->group(function () {
         [RentalController::class, 'uploadSlip']
     )->name('rentals.upload-slip');
 
+    Route::get(
+        '/my-rentals/{id}/return',
+        function ($id) {
+            return redirect()->route('rentals.show', $id);
+        }
+    );
+
     Route::post(
         '/my-rentals/{id}/return',
         [RentalController::class, 'requestReturn']

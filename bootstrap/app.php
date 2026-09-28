@@ -10,6 +10,8 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->trustProxies(at: '*');
+
         $middleware->alias([
             'customer' => \App\Http\Middleware\CustomerMiddleware::class,
             'owner'    => \App\Http\Middleware\OwnerMiddleware::class,
@@ -21,6 +23,9 @@ return Application::configure(basePath: dirname(__DIR__))
             'owner/bookings/*',
             'owner/payments/*',
             'owner/returns/*',
+            'my-rentals/*/return',
+            'my-rentals/*/cancel',
+            'my-rentals/*/slip',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
@@ -29,5 +34,14 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->back()
                 ->withInput($request->except('_token', '_method'))
                 ->with('error', 'เซสชันหมดอายุ หรือ CSRF Token ไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง');
+        });
+
+        $exceptions->render(function (\Symfony\Component\HttpKernel\Exception\HttpException $e, $request) {
+            if ($e->getStatusCode() === 419) {
+                return redirect()
+                    ->back()
+                    ->withInput($request->except('_token', '_method'))
+                    ->with('error', 'เซสชันหมดอายุ หรือ CSRF Token ไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง');
+            }
         });
     })->create();
