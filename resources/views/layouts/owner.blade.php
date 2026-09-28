@@ -1758,10 +1758,10 @@
                 @endphp
 
 
-                <div class="notif-dropdown-wrapper" id="notifDropdownWrapper">
+                <div class="notif-dropdown-wrapper" id="notifDropdownWrapper" data-owner-id="{{ auth()->id() }}">
 
                     <button type="button" class="notif-bell-btn" id="notifBellBtn" onclick="toggleNotifDropdown(event)"
-                        title="แจ้งเตือน">
+                        title="แจ้งเตือน" aria-expanded="false" aria-controls="notifDropdownMenu">
 
                         <i class="fa-regular fa-bell"></i>
 
@@ -2137,6 +2137,7 @@
 
         function toggleNotifDropdown(event) {
 
+            event.preventDefault();
             event.stopPropagation();
 
             const menu =
@@ -2151,6 +2152,8 @@
             menu.classList.toggle(
                 'show'
             );
+
+            document.getElementById('notifBellBtn').setAttribute('aria-expanded', menu.classList.contains('show'));
 
         }
 
@@ -2180,6 +2183,7 @@
                     menu.classList.remove(
                         'show'
                     );
+                    document.getElementById('notifBellBtn').setAttribute('aria-expanded', 'false');
 
                 }
 
@@ -2216,19 +2220,42 @@
         |--------------------------------------------------------------------------
         */
 
+        const notifStorageKey = 'kyrix_read_notifs:' + document.getElementById('notifDropdownWrapper').dataset.ownerId;
+        let memoryReadNotifs = {};
+
+        function saveReadNotifs(readNotifs) {
+            memoryReadNotifs = readNotifs;
+            try {
+                localStorage.setItem(notifStorageKey, JSON.stringify(readNotifs));
+            } catch (error) {
+                // Navigation and the badge still work when browser storage is unavailable.
+            }
+        }
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape' && notifMenu?.classList.contains('show')) {
+                notifMenu.classList.remove('show');
+                const bell = document.getElementById('notifBellBtn');
+                bell.setAttribute('aria-expanded', 'false');
+                bell.focus();
+            }
+        });
+
         function getReadNotifs() {
 
             try {
 
-                return JSON.parse(
+                const stored = JSON.parse(
                     localStorage.getItem(
-                        'kyrix_read_notifs'
+                        notifStorageKey
                     ) || '{}'
                 );
 
+                return Object.assign({}, stored && typeof stored === 'object' && !Array.isArray(stored) ? stored : {}, memoryReadNotifs);
+
             } catch (error) {
 
-                return {};
+                return memoryReadNotifs;
 
             }
 
@@ -2383,12 +2410,7 @@
                 new Date().getTime();
 
 
-            localStorage.setItem(
-                'kyrix_read_notifs',
-                JSON.stringify(
-                    readNotifs
-                )
-            );
+            saveReadNotifs(readNotifs);
 
 
             /*
@@ -2469,12 +2491,7 @@
 
                 if (updated) {
 
-                    localStorage.setItem(
-                        'kyrix_read_notifs',
-                        JSON.stringify(
-                            readNotifs
-                        )
-                    );
+                    saveReadNotifs(readNotifs);
 
                 }
 

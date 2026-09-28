@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use App\Models\Customer;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -19,6 +19,15 @@ class AuthController extends Controller
 
     public function showLogin()
     {
+        if (Auth::check() && Auth::user()->status === 'active') {
+            return redirect()->route(Auth::user()->role === 'owner'
+                ? 'owner.dashboard' : 'customer.dashboard');
+        }
+
+        if (! Auth::check() && session('customer_logged_in') && Customer::find(session('customer_id'))) {
+            return redirect()->route('customer.dashboard');
+        }
+
         return view('auth.login');
     }
 
@@ -46,19 +55,6 @@ class AuthController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | ล้าง Session ลูกค้าเก่าก่อน Login
-        |--------------------------------------------------------------------------
-        */
-
-        $request->session()->forget([
-            'customer_logged_in',
-            'customer_id',
-            'customer_name',
-            'customer_email',
-        ]);
-
-        /*
-        |--------------------------------------------------------------------------
         | OWNER LOGIN
         |--------------------------------------------------------------------------
         */
@@ -80,6 +76,11 @@ class AuthController extends Controller
             }
 
             Auth::login($owner, $remember);
+
+            $request->session()->forget([
+                'customer_logged_in', 'customer_id', 'customer_name',
+                'customer_email', 'customer_profile_image',
+            ]);
 
             $request->session()->regenerate();
 
@@ -128,7 +129,7 @@ class AuthController extends Controller
             |
             */
 
-            if (!$customer) {
+            if (! $customer) {
                 $customer = Customer::where(
                     'email',
                     $user->email
@@ -147,7 +148,7 @@ class AuthController extends Controller
             |--------------------------------------------------------------------------
             */
 
-            if (!$customer) {
+            if (! $customer) {
                 return back()
                     ->withErrors([
                         'email' => 'ไม่พบข้อมูลลูกค้าในระบบ กรุณาติดต่อเจ้าของร้าน',
@@ -165,7 +166,7 @@ class AuthController extends Controller
                 'customer_logged_in' => true,
                 'customer_id' => $customer->customer_id,
                 'customer_name' => trim(
-                    ($customer->first_name ?? '') . ' ' .
+                    ($customer->first_name ?? '').' '.
                     ($customer->last_name ?? '')
                 ),
                 'customer_email' => $customer->email,
@@ -215,11 +216,11 @@ class AuthController extends Controller
                     ->where('role', 'customer')
                     ->first();
 
-                if (!$existingUser) {
+                if (! $existingUser) {
 
                     $existingUser = User::create([
                         'name' => trim(
-                            ($legacyCustomer->first_name ?? '') . ' ' .
+                            ($legacyCustomer->first_name ?? '').' '.
                             ($legacyCustomer->last_name ?? '')
                         ),
                         'email' => $legacyCustomer->email,
@@ -229,7 +230,7 @@ class AuthController extends Controller
                     ]);
                 }
 
-                if (!$legacyCustomer->user_id) {
+                if ($legacyCustomer->user_id != $existingUser->user_id) {
                     $legacyCustomer->update([
                         'user_id' => $existingUser->user_id,
                     ]);
@@ -244,13 +245,19 @@ class AuthController extends Controller
                 report($e);
             }
 
+            // A legacy session must never retain the previous account's guard.
+            Auth::logout();
+            if (isset($existingUser) && $existingUser->status === 'active') {
+                Auth::login($existingUser, $remember);
+            }
+
             $request->session()->regenerate();
 
             $request->session()->put([
                 'customer_logged_in' => true,
                 'customer_id' => $legacyCustomer->customer_id,
                 'customer_name' => trim(
-                    ($legacyCustomer->first_name ?? '') . ' ' .
+                    ($legacyCustomer->first_name ?? '').' '.
                     ($legacyCustomer->last_name ?? '')
                 ),
                 'customer_email' => $legacyCustomer->email,
@@ -399,13 +406,14 @@ class AuthController extends Controller
             |--------------------------------------------------------------------------
             */
 
+            Auth::login($customer->user);
             $request->session()->regenerate();
 
             $request->session()->put([
                 'customer_logged_in' => true,
                 'customer_id' => $customer->customer_id,
                 'customer_name' => trim(
-                    ($customer->first_name ?? '') . ' ' .
+                    ($customer->first_name ?? '').' '.
                     ($customer->last_name ?? '')
                 ),
                 'customer_email' => $customer->email,
@@ -424,8 +432,7 @@ class AuthController extends Controller
 
             return back()
                 ->withErrors([
-                    'register' =>
-                        'สมัครสมาชิกไม่สำเร็จ กรุณาลองใหม่อีกครั้ง',
+                    'register' => 'สมัครสมาชิกไม่สำเร็จ กรุณาลองใหม่อีกครั้ง',
                 ])
                 ->withInput(
                     $request->except(
@@ -464,10 +471,8 @@ class AuthController extends Controller
                 'email.required' => 'กรุณากรอกอีเมล',
                 'email.email' => 'รูปแบบอีเมลไม่ถูกต้อง',
                 'new_password.required' => 'กรุณากรอกรหัสผ่านใหม่',
-                'new_password.min' =>
-                    'รหัสผ่านใหม่ต้องมีอย่างน้อย 6 ตัวอักษร',
-                'new_password.confirmed' =>
-                    'ยืนยันรหัสผ่านใหม่ไม่ตรงกัน',
+                'new_password.min' => 'รหัสผ่านใหม่ต้องมีอย่างน้อย 6 ตัวอักษร',
+                'new_password.confirmed' => 'ยืนยันรหัสผ่านใหม่ไม่ตรงกัน',
             ]
         );
 
@@ -560,8 +565,7 @@ class AuthController extends Controller
 
         return back()
             ->withErrors([
-                'email' =>
-                    'ไม่พบบัญชีที่ใช้อีเมลนี้ในระบบ',
+                'email' => 'ไม่พบบัญชีที่ใช้อีเมลนี้ในระบบ',
             ])
             ->withInput();
     }
