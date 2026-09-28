@@ -224,6 +224,18 @@
             </div>
         @endif
 
+        @if (session('error'))
+            <div class="error">
+                {{ session('error') }}
+            </div>
+        @endif
+
+        @if (session('success'))
+            <div class="error" style="background:#f0fdf4;color:#15803d;">
+                {{ session('success') }}
+            </div>
+        @endif
+
         {{-- Login ด้วยอีเมลและรหัสผ่าน --}}
 
         <form method="POST" action="{{ route('login.submit') }}">
@@ -286,7 +298,7 @@
 
             {{-- Google --}}
 
-            <a href="{{ route('social.redirect', 'google') }}" class="social-btn">
+            <a href="/auth/google" class="social-btn">
                 <span class="social-icon google-icon">G</span>
                 <span>เข้าสู่ระบบด้วย Google</span>
             </a>
